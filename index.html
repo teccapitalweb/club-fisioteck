@@ -376,18 +376,80 @@
 </head>
 <body>
 
-<!-- ===== SPLASH / LOGIN ===== -->
+<!-- ===== SPLASH / LOGIN & REGISTER ===== -->
 <div id="splash-screen">
-  <div class="splash-content">
+  <div class="splash-content" style="max-width:440px;">
     <div class="splash-logo">Club Fisio<span>Teck</span></div>
     <p class="splash-sub">Membresía profesional en fisioterapia</p>
-    <div class="splash-form">
+
+    <!-- TABS -->
+    <div style="display:flex;margin-bottom:24px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid rgba(255,255,255,.12);">
+      <button id="tabLogin" class="splash-tab active" onclick="switchAuthTab('login')" style="flex:1;padding:10px;font-size:.9rem;font-weight:600;font-family:inherit;border:none;cursor:pointer;transition:var(--transition);background:var(--accent);color:var(--bg-dark);">Iniciar Sesión</button>
+      <button id="tabRegister" class="splash-tab" onclick="switchAuthTab('register')" style="flex:1;padding:10px;font-size:.9rem;font-weight:600;font-family:inherit;border:none;cursor:pointer;transition:var(--transition);background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);">Registrarme</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="formLogin" class="splash-form">
       <input type="email" class="splash-input" id="login-email" placeholder="Correo electrónico">
       <input type="password" class="splash-input" id="login-pass" placeholder="Contraseña">
       <button class="btn-splash" onclick="handleLogin()">Iniciar Sesión</button>
       <div class="splash-error" id="login-error">Credenciales incorrectas</div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:16px 0 12px;">
+        <div style="flex:1;height:1px;background:rgba(255,255,255,.1);"></div>
+        <span style="font-size:.78rem;color:rgba(255,255,255,.3);">o continúa con</span>
+        <div style="flex:1;height:1px;background:rgba(255,255,255,.1);"></div>
+      </div>
+
+      <button class="btn-google" onclick="handleGoogleLogin()" style="width:100%;padding:12px;border-radius:var(--radius-sm);font-size:.9rem;font-weight:500;font-family:inherit;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:var(--transition);">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Continuar con Google
+      </button>
     </div>
-    <p class="splash-register">¿Aún no eres socio? <a href="https://wa.me/52XXXXXXXXXX?text=Hola%2C%20quiero%20unirme%20al%20Club%20FisioTeck" target="_blank">Contáctanos por WhatsApp</a></p>
+
+    <!-- REGISTER FORM -->
+    <div id="formRegister" class="splash-form" style="display:none;">
+      <input type="text" class="splash-input" id="reg-name" placeholder="Nombre completo">
+      <input type="email" class="splash-input" id="reg-email" placeholder="Correo electrónico">
+      <input type="password" class="splash-input" id="reg-pass" placeholder="Contraseña">
+      <input type="password" class="splash-input" id="reg-pass-confirm" placeholder="Confirmar contraseña">
+
+      <!-- TERMS CHECKBOX -->
+      <div style="display:flex;align-items:flex-start;gap:10px;margin:8px 0 4px;">
+        <input type="checkbox" id="reg-terms" onchange="toggleRegisterBtn()" style="margin-top:3px;accent-color:var(--accent);width:18px;height:18px;cursor:pointer;flex-shrink:0;">
+        <label for="reg-terms" style="font-size:.8rem;color:rgba(255,255,255,.55);line-height:1.4;cursor:pointer;">
+          He leído y acepto los <a href="#" onclick="event.preventDefault();openLegalModal('terms')" style="color:var(--accent);text-decoration:underline;">Términos y Condiciones</a> y la <a href="#" onclick="event.preventDefault();openLegalModal('privacy')" style="color:var(--accent);text-decoration:underline;">Política de Privacidad</a>
+        </label>
+      </div>
+
+      <button class="btn-splash" id="btnRegister" onclick="handleRegister()" disabled style="opacity:.4;cursor:not-allowed;">Crear Cuenta</button>
+      <div class="splash-error" id="register-error"></div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:16px 0 12px;">
+        <div style="flex:1;height:1px;background:rgba(255,255,255,.1);"></div>
+        <span style="font-size:.78rem;color:rgba(255,255,255,.3);">o continúa con</span>
+        <div style="flex:1;height:1px;background:rgba(255,255,255,.1);"></div>
+      </div>
+
+      <button class="btn-google" onclick="handleGoogleLogin()" style="width:100%;padding:12px;border-radius:var(--radius-sm);font-size:.9rem;font-weight:500;font-family:inherit;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:var(--transition);">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Continuar con Google
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LEGAL MODAL (for splash screen) -->
+<div id="legalModal" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,.8);padding:20px;overflow-y:auto;">
+  <div style="max-width:600px;margin:40px auto;background:#fff;border-radius:var(--radius);overflow:hidden;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 24px;border-bottom:1px solid var(--border);">
+      <h3 id="legalModalTitle" style="font-size:1.05rem;font-weight:600;color:var(--text);">Título</h3>
+      <button onclick="closeLegalModal()" style="background:none;border:none;font-size:1.5rem;color:var(--text-muted);cursor:pointer;">&times;</button>
+    </div>
+    <div id="legalModalBody" style="padding:24px;font-size:.85rem;color:var(--text-light);line-height:1.8;max-height:70vh;overflow-y:auto;"></div>
+    <div style="padding:16px 24px;border-top:1px solid var(--border);text-align:right;">
+      <button onclick="closeLegalModal()" style="padding:10px 24px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:.9rem;font-weight:500;cursor:pointer;">Entendido</button>
+    </div>
   </div>
 </div>
 
@@ -437,7 +499,7 @@
         Configuración
       </div>
     </div>
-    <div class="sidebar-footer" onclick="handleLogout()">
+    <div class="sidebar-footer" onclick="showLogoutPopup()" style="position:relative;">
       <div class="sidebar-avatar" id="sidebarAvatar">S</div>
       <div class="sidebar-user-info">
         <div class="sidebar-user-name" id="sidebarName">Socio</div>
@@ -446,6 +508,22 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2" width="18"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
     </div>
   </nav>
+
+  <!-- LOGOUT POPUP -->
+  <div id="logoutPopup" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.5);align-items:center;justify-content:center;padding:20px;">
+    <div style="background:#fff;border-radius:var(--radius);width:100%;max-width:360px;overflow:hidden;animation:fadeUp .3s ease;">
+      <div style="padding:28px 24px;text-align:center;">
+        <div id="logoutAvatar" style="width:64px;height:64px;border-radius:50%;background:var(--primary);color:#fff;font-size:1.6rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">S</div>
+        <div id="logoutName" style="font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:2px;">Socio</div>
+        <div id="logoutEmail" style="font-size:.85rem;color:var(--text-muted);margin-bottom:20px;">correo@email.com</div>
+        <p style="font-size:.92rem;color:var(--text-light);margin-bottom:24px;">¿Deseas cerrar sesión?</p>
+        <div style="display:flex;gap:10px;justify-content:center;">
+          <button onclick="closeLogoutPopup()" style="flex:1;padding:11px;border-radius:var(--radius-sm);border:1px solid var(--border);background:#fff;color:var(--text);font-family:inherit;font-size:.9rem;font-weight:500;cursor:pointer;transition:var(--transition);">Cancelar</button>
+          <button onclick="confirmLogout()" style="flex:1;padding:11px;border-radius:var(--radius-sm);border:none;background:var(--danger);color:#fff;font-family:inherit;font-size:.9rem;font-weight:500;cursor:pointer;transition:var(--transition);">Cerrar Sesión</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ===== MAIN ===== -->
   <main class="main-content">
@@ -545,7 +623,7 @@
             <input class="form-input" id="accEmail" type="email" value="">
           </div>
           <div class="form-group">
-            <label class="form-label">Teléfono</label>
+            <label class="form-label">Teléfono (opcional)</label>
             <input class="form-input" id="accPhone" value="">
           </div>
           <div class="form-group">
@@ -595,11 +673,11 @@
         </div>
         <div class="sub-detail-item">
           <div class="sub-detail-label">Método de pago</div>
-          <div class="sub-detail-value" id="subPayment">WhatsApp / Transferencia</div>
+          <div class="sub-detail-value" id="subPayment">Transferencia</div>
         </div>
         <div class="sub-detail-item">
           <div class="sub-detail-label">Estado</div>
-          <div class="sub-detail-value" style="color:var(--success);">✓ Activa</div>
+          <div class="sub-detail-value" style="color:var(--success);">Activa</div>
         </div>
       </div>
       <div class="card" style="margin-bottom:24px;">
@@ -622,6 +700,86 @@
         <h4>Cancelar suscripción</h4>
         <p>Si cancelas, perderás acceso a todo el contenido exclusivo al finalizar tu período actual. Esta acción no se puede deshacer desde aquí — contacta a soporte para reactivar.</p>
         <button class="btn-danger" onclick="cancelSubscription()">Cancelar mi Suscripción</button>
+      </div>
+
+      <!-- TÉRMINOS Y CONDICIONES -->
+      <div class="card" style="margin-top:24px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="toggleLegal('terms')">
+          <h3 style="font-size:1rem;font-weight:600;">📋 Términos y Condiciones</h3>
+          <span id="termsArrow" style="font-size:1.2rem;color:var(--text-muted);transition:var(--transition);">▼</span>
+        </div>
+        <div id="termsContent" style="display:none;margin-top:16px;font-size:.85rem;color:var(--text-light);line-height:1.8;">
+          <p style="margin-bottom:12px;"><strong>Última actualización:</strong> Abril 2026</p>
+
+          <p style="margin-bottom:12px;">Al suscribirte y utilizar la plataforma Club FisioTeck (en adelante "el Club"), operada por FisioTeck, aceptas los siguientes términos y condiciones. Te recomendamos leerlos cuidadosamente.</p>
+
+          <p style="margin-bottom:6px;"><strong>1. Descripción del servicio</strong></p>
+          <p style="margin-bottom:12px;">Club FisioTeck es una plataforma digital de membresía mensual que ofrece acceso a cursos grabados, clases en línea en vivo, material en formato PDF y otros recursos educativos en el área de fisioterapia y rehabilitación. El acceso al contenido está condicionado al pago vigente de la suscripción mensual de $249.00 MXN (doscientos cuarenta y nueve pesos mexicanos).</p>
+
+          <p style="margin-bottom:6px;"><strong>2. Registro y cuenta</strong></p>
+          <p style="margin-bottom:12px;">Para acceder al Club debes contar con una cuenta activa proporcionada por el administrador. Cada cuenta es personal e intransferible. Eres responsable de mantener la confidencialidad de tus credenciales de acceso. Club FisioTeck se reserva el derecho de suspender o cancelar cualquier cuenta que comparta credenciales con terceros o haga uso indebido de la plataforma.</p>
+
+          <p style="margin-bottom:6px;"><strong>3. Suscripción y pagos</strong></p>
+          <p style="margin-bottom:12px;">La membresía tiene un costo mensual de $249.00 MXN. El pago se realiza mediante transferencia bancaria. El acceso al contenido se activa una vez confirmado el pago y permanece activo durante el período pagado. No se realizan cobros automáticos; el socio es responsable de realizar su pago cada mes para mantener el acceso activo.</p>
+
+          <p style="margin-bottom:6px;"><strong>4. Política de reembolso</strong></p>
+          <p style="margin-bottom:12px;">No se otorgan reembolsos una vez procesado el pago del período mensual. Si cancelas tu suscripción, mantendrás el acceso hasta que finalice el período ya pagado. Tras ello, tu acceso se desactivará automáticamente.</p>
+
+          <p style="margin-bottom:6px;"><strong>5. Uso del contenido</strong></p>
+          <p style="margin-bottom:12px;">Todo el contenido disponible en Club FisioTeck (videos, PDFs, transmisiones en vivo y demás materiales) es propiedad de FisioTeck y está protegido por derechos de autor. Queda estrictamente prohibido copiar, reproducir, distribuir, transmitir, descargar no autorizado, vender o compartir cualquier contenido del Club sin autorización previa por escrito. El contenido es exclusivamente para uso personal y educativo del socio suscrito.</p>
+
+          <p style="margin-bottom:6px;"><strong>6. Conducta del usuario</strong></p>
+          <p style="margin-bottom:12px;">El socio se compromete a utilizar la plataforma de manera respetuosa y responsable. Está prohibido usar la plataforma para actividades ilegales, compartir material ofensivo o que viole derechos de terceros, o intentar acceder a áreas restringidas del sistema. El incumplimiento de estas normas puede resultar en la suspensión inmediata de la cuenta sin derecho a reembolso.</p>
+
+          <p style="margin-bottom:6px;"><strong>7. Disponibilidad del servicio</strong></p>
+          <p style="margin-bottom:12px;">Club FisioTeck se esfuerza por mantener la plataforma disponible de manera ininterrumpida. Sin embargo, no garantizamos disponibilidad permanente y podemos realizar mantenimiento, actualizaciones o modificaciones al contenido y la plataforma en cualquier momento sin previo aviso.</p>
+
+          <p style="margin-bottom:6px;"><strong>8. Modificación de términos</strong></p>
+          <p style="margin-bottom:12px;">FisioTeck se reserva el derecho de modificar estos términos y condiciones en cualquier momento. Los cambios serán notificados a través de la plataforma. El uso continuado del servicio después de la publicación de cambios constituye la aceptación de los mismos.</p>
+
+          <p style="margin-bottom:6px;"><strong>9. Limitación de responsabilidad</strong></p>
+          <p style="margin-bottom:12px;">El contenido ofrecido en Club FisioTeck tiene fines educativos e informativos. No sustituye el diagnóstico, tratamiento o consejo médico profesional. FisioTeck no se hace responsable por el uso inadecuado de la información proporcionada ni por daños derivados de la aplicación de las técnicas o conocimientos adquiridos a través de la plataforma.</p>
+
+          <p style="margin-bottom:6px;"><strong>10. Contacto</strong></p>
+          <p>Para cualquier consulta relacionada con estos términos, puedes comunicarte a través de nuestras líneas de WhatsApp: +52 1 238 147 8840 o +52 1 236 111 2213.</p>
+        </div>
+      </div>
+
+      <!-- POLÍTICA DE PRIVACIDAD -->
+      <div class="card" style="margin-top:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="toggleLegal('privacy')">
+          <h3 style="font-size:1rem;font-weight:600;">🔒 Política de Privacidad</h3>
+          <span id="privacyArrow" style="font-size:1.2rem;color:var(--text-muted);transition:var(--transition);">▼</span>
+        </div>
+        <div id="privacyContent" style="display:none;margin-top:16px;font-size:.85rem;color:var(--text-light);line-height:1.8;">
+          <p style="margin-bottom:12px;"><strong>Última actualización:</strong> Abril 2026</p>
+
+          <p style="margin-bottom:12px;">En Club FisioTeck, operado por FisioTeck, nos comprometemos a proteger tu información personal. Esta Política de Privacidad describe cómo recopilamos, usamos y protegemos tus datos conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP) de México.</p>
+
+          <p style="margin-bottom:6px;"><strong>1. Datos que recopilamos</strong></p>
+          <p style="margin-bottom:12px;">Para brindarte nuestro servicio, recopilamos los siguientes datos personales: nombre completo, correo electrónico, número de teléfono (opcional), especialidad profesional y datos de actividad dentro de la plataforma (cursos vistos, progreso, preferencias). No recopilamos datos financieros como números de tarjeta, ya que los pagos se realizan mediante transferencia bancaria directa.</p>
+
+          <p style="margin-bottom:6px;"><strong>2. Finalidad del uso de datos</strong></p>
+          <p style="margin-bottom:12px;">Tus datos personales se utilizan para: administrar tu cuenta y suscripción, brindarte acceso al contenido de la plataforma, comunicarnos contigo respecto a tu membresía y actualizaciones del servicio, enviar notificaciones sobre nuevo contenido, clases en vivo y materiales, y mejorar tu experiencia dentro de la plataforma. No utilizamos tus datos con fines publicitarios de terceros.</p>
+
+          <p style="margin-bottom:6px;"><strong>3. Almacenamiento y seguridad</strong></p>
+          <p style="margin-bottom:12px;">Tu información se almacena de forma local en tu navegador y en los sistemas seguros de la plataforma. Implementamos medidas de seguridad técnicas y organizativas para proteger tus datos contra acceso no autorizado, alteración, divulgación o destrucción.</p>
+
+          <p style="margin-bottom:6px;"><strong>4. Compartición de datos</strong></p>
+          <p style="margin-bottom:12px;">Club FisioTeck no vende, alquila ni comparte tu información personal con terceros, salvo cuando sea requerido por obligación legal o autoridad competente.</p>
+
+          <p style="margin-bottom:6px;"><strong>5. Derechos ARCO</strong></p>
+          <p style="margin-bottom:12px;">Como titular de tus datos personales, tienes derecho a Acceder, Rectificar, Cancelar u Oponerte al tratamiento de tus datos (derechos ARCO). Para ejercer estos derechos, comunícate con nosotros a través de nuestras líneas de WhatsApp: +52 1 238 147 8840 o +52 1 236 111 2213. Atenderemos tu solicitud en un plazo máximo de 20 días hábiles.</p>
+
+          <p style="margin-bottom:6px;"><strong>6. Cookies y datos de navegación</strong></p>
+          <p style="margin-bottom:12px;">La plataforma utiliza almacenamiento local del navegador (localStorage) para guardar tu sesión y preferencias. No utilizamos cookies de rastreo de terceros ni herramientas de analítica que compartan tu información con empresas externas.</p>
+
+          <p style="margin-bottom:6px;"><strong>7. Cambios a esta política</strong></p>
+          <p style="margin-bottom:12px;">Nos reservamos el derecho de actualizar esta Política de Privacidad. Cualquier cambio será publicado en esta misma sección. Te recomendamos revisarla periódicamente.</p>
+
+          <p style="margin-bottom:6px;"><strong>8. Contacto</strong></p>
+          <p>Si tienes dudas sobre el tratamiento de tus datos personales, contáctanos por WhatsApp: +52 1 238 147 8840 o +52 1 236 111 2213.</p>
+        </div>
       </div>
     </section>
 
@@ -653,17 +811,6 @@
       </div>
 
       <div class="settings-section card" style="margin-bottom:20px;">
-        <h3>Apariencia</h3>
-        <div class="toggle-row">
-          <div class="toggle-info"><h4>Tema</h4><p>Elige el tema de la interfaz</p></div>
-          <div class="theme-options">
-            <div class="theme-btn light active" onclick="setTheme('light',this)" title="Claro"></div>
-            <div class="theme-btn dark" onclick="setTheme('dark',this)" title="Oscuro"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="settings-section card" style="margin-bottom:20px;">
         <h3>Idioma y Región</h3>
         <div class="form-group">
           <label class="form-label">Idioma de la plataforma</label>
@@ -684,22 +831,62 @@
         </div>
       </div>
 
-      <div class="settings-section card" style="margin-bottom:20px;">
-        <h3>Privacidad</h3>
-        <div class="toggle-row">
-          <div class="toggle-info"><h4>Perfil público</h4><p>Permite que otros socios vean tu perfil</p></div>
-          <div class="toggle-switch" onclick="this.classList.toggle('active')"></div>
-        </div>
-        <div class="toggle-row">
-          <div class="toggle-info"><h4>Mostrar progreso</h4><p>Comparte tu avance en cursos con la comunidad</p></div>
-          <div class="toggle-switch" onclick="this.classList.toggle('active')"></div>
-        </div>
-      </div>
-
       <div class="settings-section card">
         <h3>Soporte</h3>
-        <p style="font-size:.9rem;color:var(--text-light);margin-bottom:16px;">¿Tienes algún problema o sugerencia? Contáctanos directamente.</p>
-        <a href="https://wa.me/52XXXXXXXXXX?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20del%20Club%20FisioTeck" target="_blank" class="btn-primary" style="display:inline-block;">Contactar por WhatsApp</a>
+        <p style="font-size:.9rem;color:var(--text-light);margin-bottom:20px;">¿Tienes algún problema o sugerencia? Completa el formulario y te atenderemos por WhatsApp.</p>
+        
+        <div class="form-group">
+          <label class="form-label">¿Cuál es el motivo de tu contacto?</label>
+          <select class="form-input" id="supportReason" style="cursor:pointer;" onchange="toggleSupportOther()">
+            <option value="">— Selecciona una opción —</option>
+            <option value="Problema con mi cuenta">Problema con mi cuenta</option>
+            <option value="No puedo acceder a un curso">No puedo acceder a un curso</option>
+            <option value="Problema con un PDF o material">Problema con un PDF o material</option>
+            <option value="Dudas sobre mi suscripción o pago">Dudas sobre mi suscripción o pago</option>
+            <option value="Quiero cancelar o pausar mi membresía">Quiero cancelar o pausar mi membresía</option>
+            <option value="Sugerencia de contenido o mejora">Sugerencia de contenido o mejora</option>
+            <option value="Error técnico en la plataforma">Error técnico en la plataforma</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="supportOtherGroup" style="display:none;">
+          <label class="form-label">Especifica el motivo</label>
+          <input class="form-input" id="supportOtherText" placeholder="Escribe aquí tu motivo...">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Descríbenos brevemente tu situación</label>
+          <textarea class="form-input" id="supportDetail" rows="3" style="resize:vertical;min-height:80px;" placeholder="Cuéntanos qué pasó o qué necesitas para ayudarte mejor..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">¿Qué tan urgente es?</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <label style="display:flex;align-items:center;gap:6px;padding:8px 16px;border:1px solid var(--border);border-radius:20px;cursor:pointer;font-size:.85rem;transition:var(--transition);" class="urgency-opt">
+              <input type="radio" name="urgency" value="Baja" style="accent-color:var(--primary);"> Baja
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;padding:8px 16px;border:1px solid var(--border);border-radius:20px;cursor:pointer;font-size:.85rem;transition:var(--transition);" class="urgency-opt">
+              <input type="radio" name="urgency" value="Media" checked style="accent-color:var(--primary);"> Media
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;padding:8px 16px;border:1px solid var(--border);border-radius:20px;cursor:pointer;font-size:.85rem;transition:var(--transition);" class="urgency-opt">
+              <input type="radio" name="urgency" value="Urgente" style="accent-color:var(--danger);"> Urgente
+            </label>
+          </div>
+        </div>
+
+        <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:16px;">Elige a qué línea deseas contactar:</p>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <button class="btn-primary" style="display:inline-flex;align-items:center;gap:8px;" onclick="sendSupport('5212381478840')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.138.563 4.14 1.535 5.874L0 24l6.29-1.508A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.814 9.814 0 01-5.058-1.4l-.361-.214-3.735.896.944-3.653-.235-.374A9.817 9.817 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+            Línea 1 — 238 147 8840
+          </button>
+          <button class="btn-primary" style="display:inline-flex;align-items:center;gap:8px;background:var(--primary-dark);" onclick="sendSupport('5212361112213')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.138.563 4.14 1.535 5.874L0 24l6.29-1.508A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.814 9.814 0 01-5.058-1.4l-.361-.214-3.735.896.944-3.653-.235-.374A9.817 9.817 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+            Línea 2 — 236 111 2213
+          </button>
+        </div>
       </div>
     </section>
 
@@ -773,6 +960,113 @@
     loadUserProfile();
   }
 
+  // ===== AUTH TABS =====
+  function switchAuthTab(tab) {
+    document.getElementById('formLogin').style.display = tab === 'login' ? 'flex' : 'none';
+    document.getElementById('formRegister').style.display = tab === 'register' ? 'flex' : 'none';
+    const tl = document.getElementById('tabLogin');
+    const tr = document.getElementById('tabRegister');
+    if (tab === 'login') {
+      tl.style.background = 'var(--accent)'; tl.style.color = 'var(--bg-dark)';
+      tr.style.background = 'rgba(255,255,255,.06)'; tr.style.color = 'rgba(255,255,255,.5)';
+    } else {
+      tr.style.background = 'var(--accent)'; tr.style.color = 'var(--bg-dark)';
+      tl.style.background = 'rgba(255,255,255,.06)'; tl.style.color = 'rgba(255,255,255,.5)';
+    }
+  }
+  function toggleRegisterBtn() {
+    const checked = document.getElementById('reg-terms').checked;
+    const btn = document.getElementById('btnRegister');
+    btn.disabled = !checked;
+    btn.style.opacity = checked ? '1' : '.4';
+    btn.style.cursor = checked ? 'pointer' : 'not-allowed';
+  }
+  function handleRegister() {
+    const name = document.getElementById('reg-name').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const pass = document.getElementById('reg-pass').value;
+    const passC = document.getElementById('reg-pass-confirm').value;
+    const errEl = document.getElementById('register-error');
+
+    if (!name || !email || !pass || !passC) { showRegError('Completa todos los campos'); return; }
+    if (pass.length < 4) { showRegError('La contraseña debe tener al menos 4 caracteres'); return; }
+    if (pass !== passC) { showRegError('Las contraseñas no coinciden'); return; }
+    if (!document.getElementById('reg-terms').checked) { showRegError('Debes aceptar los términos'); return; }
+
+    const user = { name, email, phone:'', specialty:'', startDate: new Date().toISOString().split('T')[0] };
+    localStorage.setItem('clubft_user', JSON.stringify(user));
+    document.getElementById('splash-screen').classList.add('hidden');
+    loadUserProfile();
+    showToast('¡Bienvenido al Club FisioTeck, ' + name.split(' ')[0] + '!');
+  }
+  function showRegError(msg) {
+    const el = document.getElementById('register-error');
+    el.textContent = msg; el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 3000);
+  }
+  function handleGoogleLogin() {
+    showToast('Login con Google próximamente — por ahora usa correo y contraseña');
+  }
+
+  // ===== LEGAL MODAL (splash) =====
+  const legalTexts = {
+    terms: {
+      title: '📋 Términos y Condiciones',
+      body: `<p style="margin-bottom:12px;"><strong>Última actualización:</strong> Abril 2026</p>
+<p style="margin-bottom:12px;">Al suscribirte y utilizar la plataforma Club FisioTeck (en adelante "el Club"), operada por FisioTeck, aceptas los siguientes términos y condiciones.</p>
+<p style="margin-bottom:6px;"><strong>1. Descripción del servicio</strong></p>
+<p style="margin-bottom:12px;">Club FisioTeck es una plataforma digital de membresía mensual que ofrece acceso a cursos grabados, clases en línea en vivo, material en formato PDF y otros recursos educativos en el área de fisioterapia y rehabilitación. El acceso al contenido está condicionado al pago vigente de la suscripción mensual de $249.00 MXN.</p>
+<p style="margin-bottom:6px;"><strong>2. Registro y cuenta</strong></p>
+<p style="margin-bottom:12px;">Cada cuenta es personal e intransferible. Eres responsable de mantener la confidencialidad de tus credenciales. Club FisioTeck se reserva el derecho de suspender cualquier cuenta que comparta credenciales con terceros o haga uso indebido de la plataforma.</p>
+<p style="margin-bottom:6px;"><strong>3. Suscripción y pagos</strong></p>
+<p style="margin-bottom:12px;">La membresía tiene un costo mensual de $249.00 MXN. El pago se realiza mediante transferencia bancaria. El acceso se activa una vez confirmado el pago y permanece activo durante el período pagado.</p>
+<p style="margin-bottom:6px;"><strong>4. Política de reembolso</strong></p>
+<p style="margin-bottom:12px;">No se otorgan reembolsos una vez procesado el pago del período mensual. Si cancelas, mantendrás el acceso hasta que finalice el período ya pagado.</p>
+<p style="margin-bottom:6px;"><strong>5. Uso del contenido</strong></p>
+<p style="margin-bottom:12px;">Todo el contenido es propiedad de FisioTeck y está protegido por derechos de autor. Queda prohibido copiar, reproducir, distribuir, vender o compartir cualquier contenido sin autorización. El contenido es exclusivamente para uso personal y educativo del socio.</p>
+<p style="margin-bottom:6px;"><strong>6. Conducta del usuario</strong></p>
+<p style="margin-bottom:12px;">El socio se compromete a utilizar la plataforma de manera respetuosa. El incumplimiento puede resultar en la suspensión inmediata de la cuenta sin derecho a reembolso.</p>
+<p style="margin-bottom:6px;"><strong>7. Disponibilidad del servicio</strong></p>
+<p style="margin-bottom:12px;">No garantizamos disponibilidad permanente. Podemos realizar mantenimiento o modificaciones en cualquier momento.</p>
+<p style="margin-bottom:6px;"><strong>8. Modificación de términos</strong></p>
+<p style="margin-bottom:12px;">FisioTeck se reserva el derecho de modificar estos términos en cualquier momento. El uso continuado del servicio constituye la aceptación de los cambios.</p>
+<p style="margin-bottom:6px;"><strong>9. Limitación de responsabilidad</strong></p>
+<p style="margin-bottom:12px;">El contenido tiene fines educativos e informativos. No sustituye el diagnóstico o consejo médico profesional.</p>
+<p style="margin-bottom:6px;"><strong>10. Contacto</strong></p>
+<p>WhatsApp: +52 1 238 147 8840 o +52 1 236 111 2213.</p>`
+    },
+    privacy: {
+      title: '🔒 Política de Privacidad',
+      body: `<p style="margin-bottom:12px;"><strong>Última actualización:</strong> Abril 2026</p>
+<p style="margin-bottom:12px;">En Club FisioTeck nos comprometemos a proteger tu información personal conforme a la LFPDPPP de México.</p>
+<p style="margin-bottom:6px;"><strong>1. Datos que recopilamos</strong></p>
+<p style="margin-bottom:12px;">Nombre completo, correo electrónico, teléfono (opcional), especialidad profesional y datos de actividad en la plataforma. No recopilamos datos financieros.</p>
+<p style="margin-bottom:6px;"><strong>2. Finalidad del uso</strong></p>
+<p style="margin-bottom:12px;">Administrar tu cuenta y suscripción, brindarte acceso al contenido, comunicarnos contigo respecto a tu membresía, y enviar notificaciones sobre nuevo contenido.</p>
+<p style="margin-bottom:6px;"><strong>3. Almacenamiento y seguridad</strong></p>
+<p style="margin-bottom:12px;">Tu información se almacena de forma segura. Implementamos medidas técnicas para proteger tus datos contra acceso no autorizado.</p>
+<p style="margin-bottom:6px;"><strong>4. Compartición de datos</strong></p>
+<p style="margin-bottom:12px;">No vendemos, alquilamos ni compartimos tu información personal con terceros.</p>
+<p style="margin-bottom:6px;"><strong>5. Derechos ARCO</strong></p>
+<p style="margin-bottom:12px;">Tienes derecho a Acceder, Rectificar, Cancelar u Oponerte al tratamiento de tus datos. Contáctanos por WhatsApp para ejercerlos.</p>
+<p style="margin-bottom:6px;"><strong>6. Cookies</strong></p>
+<p style="margin-bottom:12px;">Usamos almacenamiento local del navegador para tu sesión y preferencias. No usamos cookies de rastreo de terceros.</p>
+<p style="margin-bottom:6px;"><strong>7. Cambios a esta política</strong></p>
+<p style="margin-bottom:12px;">Podemos actualizar esta política. Los cambios se publicarán en la plataforma.</p>
+<p style="margin-bottom:6px;"><strong>8. Contacto</strong></p>
+<p>WhatsApp: +52 1 238 147 8840 o +52 1 236 111 2213.</p>`
+    }
+  };
+  function openLegalModal(type) {
+    const data = legalTexts[type];
+    document.getElementById('legalModalTitle').textContent = data.title;
+    document.getElementById('legalModalBody').innerHTML = data.body;
+    document.getElementById('legalModal').style.display = 'block';
+  }
+  function closeLegalModal() {
+    document.getElementById('legalModal').style.display = 'none';
+  }
+
   // ===== AUTH =====
   function handleLogin() {
     const email = document.getElementById('login-email').value.trim();
@@ -799,11 +1093,20 @@
     el.style.display = 'block';
     setTimeout(() => el.style.display = 'none', 3000);
   }
-  function handleLogout() {
-    if(confirm('¿Cerrar sesión?')) {
-      localStorage.removeItem('clubft_user');
-      location.reload();
-    }
+  function showLogoutPopup() {
+    const user = JSON.parse(localStorage.getItem('clubft_user') || '{}');
+    const initial = (user.name || 'S')[0].toUpperCase();
+    document.getElementById('logoutAvatar').textContent = initial;
+    document.getElementById('logoutName').textContent = user.name || 'Socio';
+    document.getElementById('logoutEmail').textContent = user.email || '';
+    document.getElementById('logoutPopup').style.display = 'flex';
+  }
+  function closeLogoutPopup() {
+    document.getElementById('logoutPopup').style.display = 'none';
+  }
+  function confirmLogout() {
+    localStorage.removeItem('clubft_user');
+    location.reload();
   }
   function checkAuth() {
     const user = localStorage.getItem('clubft_user');
@@ -996,6 +1299,49 @@
     });
   }
 
+  // ===== LEGAL TOGGLES =====
+  function toggleLegal(section) {
+    const content = document.getElementById(section + 'Content');
+    const arrow = document.getElementById(section + 'Arrow');
+    if (content.style.display === 'none') {
+      content.style.display = 'block';
+      arrow.textContent = '▲';
+    } else {
+      content.style.display = 'none';
+      arrow.textContent = '▼';
+    }
+  }
+
+  // ===== SUPPORT =====
+  function toggleSupportOther() {
+    const val = document.getElementById('supportReason').value;
+    document.getElementById('supportOtherGroup').style.display = val === 'Otro' ? 'block' : 'none';
+  }
+  function sendSupport(phone) {
+    const reason = document.getElementById('supportReason').value;
+    const otherText = document.getElementById('supportOtherText')?.value || '';
+    const detail = document.getElementById('supportDetail').value;
+    const urgency = document.querySelector('input[name="urgency"]:checked')?.value || 'Media';
+    const user = JSON.parse(localStorage.getItem('clubft_user') || '{}');
+
+    if (!reason) { showToast('Selecciona un motivo de contacto'); return; }
+    if (reason === 'Otro' && !otherText.trim()) { showToast('Especifica el motivo'); return; }
+    if (!detail.trim()) { showToast('Describe brevemente tu situación'); return; }
+
+    const finalReason = reason === 'Otro' ? otherText : reason;
+    const msg = `🏥 *SOPORTE — Club FisioTeck*\n\n` +
+      `👤 *Socio:* ${user.name || 'No especificado'}\n` +
+      `📧 *Correo:* ${user.email || 'No especificado'}\n` +
+      `📋 *Motivo:* ${finalReason}\n` +
+      `⚡ *Urgencia:* ${urgency}\n\n` +
+      `💬 *Detalle:*\n${detail}\n\n` +
+      `— Enviado desde Club FisioTeck`;
+
+    const encoded = encodeURIComponent(msg);
+    window.open(`https://wa.me/${phone}?text=${encoded}`, '_blank');
+    showToast('Redirigiendo a WhatsApp...');
+  }
+
   // ===== UTILS =====
   function formatDate(dateStr) {
     const d = new Date(dateStr + 'T12:00:00');
@@ -1042,9 +1388,13 @@
     document.getElementById('login-pass').addEventListener('keypress', e => {
       if(e.key === 'Enter') handleLogin();
     });
+    // Enter key on register
+    document.getElementById('reg-pass-confirm').addEventListener('keypress', e => {
+      if(e.key === 'Enter' && !document.getElementById('btnRegister').disabled) handleRegister();
+    });
   });
-  // Close video modal on escape
-  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeVideo(); });
+  // Close video modal and legal modal on escape
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') { closeVideo(); closeLegalModal(); } });
 </script>
 
 <!-- MODIFICADO: Club FisioTeck — sitio de membresía creado desde cero -->
