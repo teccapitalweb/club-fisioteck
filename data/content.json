@@ -1,7 +1,7 @@
 {
   "stats": {
     "courses": 7,
-    "pdfs": 5,
+    "pdfs": 6,
     "live": 4,
     "members": 87
   },
@@ -138,6 +138,16 @@
     }
   ],
   "pdfs": [
+    {
+      "id": 1775787573229,
+      "title": "Presentación para nuevos usuarios  ",
+      "desc": ":) holita helow bonyornoo",
+      "category": "rehabilitacion",
+      "size": "153 KB",
+      "date": "2026-04-10",
+      "fileUrl": "https://drive.google.com/file/d/1_fqzKYV1w5pzDBZuR66bPVm5g04lYqGN/view?usp=drive_link",
+      "type": "pdf"
+    },
     {
       "id": 201,
       "title": "Guía de Evaluación Postural",
