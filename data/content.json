@@ -1,29 +1,203 @@
 {
   "stats": {
-    "courses": 12,
-    "pdfs": 25,
+    "courses": 7,
+    "pdfs": 6,
     "live": 4,
     "members": 87
   },
   "courses": [
-    { "id":1, "title":"Fundamentos de Fisioterapia Deportiva", "desc":"Aprende las bases del tratamiento deportivo profesional", "category":"fisioterapia", "type":"video", "duration":"2h 30min", "date":"2026-04-01", "badge":"Nuevo", "videoUrl":"", "thumbnail":"" },
-    { "id":2, "title":"Anatomía Funcional del Miembro Superior", "desc":"Estudio detallado de la anatomía aplicada", "category":"anatomia", "type":"video", "duration":"1h 45min", "date":"2026-03-28", "badge":"", "videoUrl":"", "thumbnail":"" },
-    { "id":3, "title":"Rehabilitación Post-Quirúrgica de Rodilla", "desc":"Protocolos actualizados de recuperación", "category":"rehabilitacion", "type":"video", "duration":"3h 10min", "date":"2026-03-20", "badge":"Popular", "videoUrl":"", "thumbnail":"" },
-    { "id":4, "title":"Vendaje Neuromuscular Avanzado", "desc":"Técnicas de kinesiotaping para profesionales", "category":"especializacion", "type":"video", "duration":"2h 00min", "date":"2026-03-15", "badge":"", "videoUrl":"", "thumbnail":"" },
-    { "id":5, "title":"Electroterapia Clínica", "desc":"Uso correcto de equipos de electroterapia", "category":"fisioterapia", "type":"video", "duration":"1h 50min", "date":"2026-03-10", "badge":"", "videoUrl":"", "thumbnail":"" },
-    { "id":6, "title":"Pilates Terapéutico", "desc":"Método Pilates aplicado a la rehabilitación", "category":"rehabilitacion", "type":"video", "duration":"2h 20min", "date":"2026-03-05", "badge":"Nuevo", "videoUrl":"", "thumbnail":"" }
+    {
+      "id": 1775785869814,
+      "title": "Fisioterapia pulmonar Hipoxemia 2",
+      "desc": "PRUEBAAAAAA",
+      "category": "fisioterapia",
+      "duration": "1 hora",
+      "date": "2026-04-10",
+      "badge": "nuevo",
+      "videoUrl": "https://drive.google.com/file/d/1ItvjJd8bKbF8PzSol2jrBa8brUqS3F5W/view?usp=sharing",
+      "thumbnail": "",
+      "type": "video"
+    },
+    {
+      "id": 1,
+      "title": "Fundamentos de Fisioterapia Deportiva",
+      "desc": "Aprende las bases del tratamiento deportivo profesional",
+      "category": "fisioterapia",
+      "duration": "2h 30min",
+      "date": "2026-04-01",
+      "badge": "Nuevo",
+      "videoUrl": "",
+      "thumbnail": "",
+      "type": "video"
+    },
+    {
+      "id": 2,
+      "title": "Anatomía Funcional del Miembro Superior",
+      "desc": "Estudio detallado de la anatomía aplicada",
+      "category": "anatomia",
+      "duration": "1h 45min",
+      "date": "2026-03-28",
+      "badge": "",
+      "videoUrl": "",
+      "thumbnail": "",
+      "type": "video"
+    },
+    {
+      "id": 3,
+      "title": "Rehabilitación Post-Quirúrgica de Rodilla",
+      "desc": "Protocolos actualizados de recuperación",
+      "category": "rehabilitacion",
+      "duration": "3h 10min",
+      "date": "2026-03-20",
+      "badge": "Popular",
+      "videoUrl": "",
+      "thumbnail": "",
+      "type": "video"
+    },
+    {
+      "id": 4,
+      "title": "Vendaje Neuromuscular Avanzado",
+      "desc": "Técnicas de kinesiotaping para profesionales",
+      "category": "especializacion",
+      "duration": "2h 00min",
+      "date": "2026-03-15",
+      "badge": "",
+      "videoUrl": "",
+      "thumbnail": "",
+      "type": "video"
+    },
+    {
+      "id": 5,
+      "title": "Electroterapia Clínica",
+      "desc": "Uso correcto de equipos de electroterapia",
+      "category": "fisioterapia",
+      "duration": "1h 50min",
+      "date": "2026-03-10",
+      "badge": "",
+      "videoUrl": "",
+      "thumbnail": "",
+      "type": "video"
+    },
+    {
+      "id": 6,
+      "title": "Pilates Terapéutico",
+      "desc": "Método Pilates aplicado a la rehabilitación",
+      "category": "rehabilitacion",
+      "duration": "2h 20min",
+      "date": "2026-03-05",
+      "badge": "Nuevo",
+      "videoUrl": "",
+      "thumbnail": "",
+      "type": "video"
+    }
   ],
   "live": [
-    { "id":101, "title":"Masterclass: Punción Seca", "desc":"Sesión en vivo con el Dr. García — Técnicas avanzadas", "category":"especializacion", "type":"live", "date":"2026-04-15", "time":"18:00 hrs", "badge":"Próximamente", "link":"" },
-    { "id":102, "title":"Caso Clínico: Lumbalgia Crónica", "desc":"Análisis en grupo con discusión interactiva", "category":"rehabilitacion", "type":"live", "date":"2026-04-20", "time":"19:00 hrs", "badge":"", "link":"" },
-    { "id":103, "title":"Q&A: Fisioterapia Pediátrica", "desc":"Resuelve tus dudas con especialistas", "category":"fisioterapia", "type":"live", "date":"2026-04-25", "time":"17:00 hrs", "badge":"", "link":"" }
+    {
+      "id": 1775786861193,
+      "title": "Fisioterapia pulmonar Hipoxemia 3",
+      "desc": "en vivooo",
+      "category": "fisioterapia",
+      "date": "2026-04-09",
+      "time": "20:05",
+      "badge": "hoy mismo ",
+      "link": "https://meet.google.com/kgj-ncwc-zwj",
+      "type": "live"
+    },
+    {
+      "id": 101,
+      "title": "Masterclass: Punción Seca",
+      "desc": "Sesión en vivo con el Dr. García",
+      "category": "especializacion",
+      "date": "2026-04-15",
+      "time": "18:00",
+      "badge": "Próximamente",
+      "link": "",
+      "type": "live"
+    },
+    {
+      "id": 102,
+      "title": "Caso Clínico: Lumbalgia Crónica",
+      "desc": "Análisis en grupo",
+      "category": "rehabilitacion",
+      "date": "2026-04-20",
+      "time": "19:00",
+      "badge": "",
+      "link": "",
+      "type": "live"
+    },
+    {
+      "id": 103,
+      "title": "Q&A: Fisioterapia Pediátrica",
+      "desc": "Resuelve tus dudas",
+      "category": "fisioterapia",
+      "date": "2026-04-25",
+      "time": "17:00",
+      "badge": "",
+      "link": "",
+      "type": "live"
+    }
   ],
   "pdfs": [
-    { "id":201, "title":"Guía de Evaluación Postural", "desc":"Manual completo de evaluación — 42 páginas", "category":"fisioterapia", "type":"pdf", "size":"3.2 MB", "date":"2026-04-01", "fileUrl":"" },
-    { "id":202, "title":"Protocolo de Rehabilitación de Hombro", "desc":"Fases de tratamiento post-quirúrgico", "category":"rehabilitacion", "type":"pdf", "size":"1.8 MB", "date":"2026-03-28", "fileUrl":"" },
-    { "id":203, "title":"Atlas de Anatomía Palpatoria", "desc":"Referencia visual para exploración física", "category":"anatomia", "type":"pdf", "size":"8.5 MB", "date":"2026-03-20", "fileUrl":"" },
-    { "id":204, "title":"Ejercicios Terapéuticos para Cervicalgia", "desc":"Programa de ejercicios con ilustraciones", "category":"rehabilitacion", "type":"pdf", "size":"2.1 MB", "date":"2026-03-15", "fileUrl":"" },
-    { "id":205, "title":"Guía de Vendaje Funcional", "desc":"Técnicas paso a paso con fotografías", "category":"especializacion", "type":"pdf", "size":"4.7 MB", "date":"2026-03-10", "fileUrl":"" }
+    {
+      "id": 1775787573229,
+      "title": "Presentación para nuevos usuarios  ",
+      "desc": ":) holita helow bonyornoo",
+      "category": "rehabilitacion",
+      "size": "153 KB",
+      "date": "2026-04-10",
+      "fileUrl": "https://drive.google.com/file/d/1_fqzKYV1w5pzDBZuR66bPVm5g04lYqGN/view?usp=drive_link",
+      "type": "pdf"
+    },
+    {
+      "id": 201,
+      "title": "Guía de Evaluación Postural",
+      "desc": "Manual completo — 42 páginas",
+      "category": "fisioterapia",
+      "size": "3.2 MB",
+      "date": "2026-04-01",
+      "fileUrl": "",
+      "type": "pdf"
+    },
+    {
+      "id": 202,
+      "title": "Protocolo de Rehabilitación de Hombro",
+      "desc": "Fases de tratamiento",
+      "category": "rehabilitacion",
+      "size": "1.8 MB",
+      "date": "2026-03-28",
+      "fileUrl": "",
+      "type": "pdf"
+    },
+    {
+      "id": 203,
+      "title": "Atlas de Anatomía Palpatoria",
+      "desc": "Referencia visual",
+      "category": "anatomia",
+      "size": "8.5 MB",
+      "date": "2026-03-20",
+      "fileUrl": "",
+      "type": "pdf"
+    },
+    {
+      "id": 204,
+      "title": "Ejercicios Terapéuticos para Cervicalgia",
+      "desc": "Programa con ilustraciones",
+      "category": "rehabilitacion",
+      "size": "2.1 MB",
+      "date": "2026-03-15",
+      "fileUrl": "",
+      "type": "pdf"
+    },
+    {
+      "id": 205,
+      "title": "Guía de Vendaje Funcional",
+      "desc": "Técnicas paso a paso",
+      "category": "especializacion",
+      "size": "4.7 MB",
+      "date": "2026-03-10",
+      "fileUrl": "",
+      "type": "pdf"
+    }
   ],
   "members": []
 }
