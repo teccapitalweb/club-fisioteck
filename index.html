@@ -910,6 +910,22 @@
   </div>
 </div>
 
+<!-- INACTIVE MEMBERSHIP SCREEN -->
+<div id="inactiveScreen" style="display:none;position:fixed;inset:0;z-index:9998;background:linear-gradient(135deg,var(--bg-dark) 0%,#0A3D32 100%);align-items:center;justify-content:center;padding:20px;">
+  <div style="text-align:center;color:#fff;max-width:440px;animation:fadeUp .6s ease;">
+    <div style="width:80px;height:80px;border-radius:50%;background:rgba(239,68,68,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.2rem;">⚠️</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:8px;">Membresía no activa</h2>
+    <p style="color:rgba(255,255,255,.6);font-size:.95rem;line-height:1.6;margin-bottom:24px;">Tu membresía del Club FisioTeck no se encuentra activa en este momento. Para reactivarla o resolver cualquier duda, contáctanos por WhatsApp.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="https://wa.me/5212381478840?text=Hola%2C%20quiero%20reactivar%20mi%20membresía%20del%20Club%20FisioTeck" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:8px;background:#25D366;color:#fff;font-family:inherit;font-size:.9rem;font-weight:500;text-decoration:none;transition:all .25s ease;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.138.563 4.14 1.535 5.874L0 24l6.29-1.508A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.814 9.814 0 01-5.058-1.4l-.361-.214-3.735.896.944-3.653-.235-.374A9.817 9.817 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+        Contactar por WhatsApp
+      </a>
+      <button onclick="auth.signOut().then(()=>location.reload())" style="padding:12px 24px;border-radius:8px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.15);font-family:inherit;font-size:.9rem;cursor:pointer;transition:all .25s ease;">Cerrar sesión</button>
+    </div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
@@ -1488,12 +1504,34 @@
   document.addEventListener('DOMContentLoaded', () => {
     init(); // Load content data
     // Firebase auth state listener
-    auth.onAuthStateChanged(user => {
+    auth.onAuthStateChanged(async user => {
       if (user) {
-        document.getElementById('splash-screen').classList.add('hidden');
-        loadUserProfile();
+        // Check membership status in Firestore
+        try {
+          const doc = await db.collection('members').doc(user.uid).get();
+          if (doc.exists && doc.data().status === 'active') {
+            // Active member — allow access
+            document.getElementById('splash-screen').classList.add('hidden');
+            document.getElementById('inactiveScreen').style.display = 'none';
+            loadUserProfile();
+          } else if (doc.exists && doc.data().status === 'inactive') {
+            // Inactive member — block access
+            document.getElementById('splash-screen').classList.add('hidden');
+            document.getElementById('inactiveScreen').style.display = 'flex';
+          } else {
+            // New user (just registered, no doc yet or status not set) — allow access
+            document.getElementById('splash-screen').classList.add('hidden');
+            document.getElementById('inactiveScreen').style.display = 'none';
+            loadUserProfile();
+          }
+        } catch(e) {
+          // Firestore error — allow access as fallback
+          document.getElementById('splash-screen').classList.add('hidden');
+          loadUserProfile();
+        }
       } else {
         document.getElementById('splash-screen').classList.remove('hidden');
+        document.getElementById('inactiveScreen').style.display = 'none';
       }
     });
     // Enter key on login
