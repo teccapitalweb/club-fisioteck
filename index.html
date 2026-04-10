@@ -560,13 +560,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="text" placeholder="Buscar cursos..." id="searchLibrary" oninput="filterContent('library')">
       </div>
-      <div class="library-tabs">
-        <button class="lib-tab active" onclick="filterCategory(this,'all')">Todos</button>
-        <button class="lib-tab" onclick="filterCategory(this,'fisioterapia')">Fisioterapia</button>
-        <button class="lib-tab" onclick="filterCategory(this,'rehabilitacion')">Rehabilitación</button>
-        <button class="lib-tab" onclick="filterCategory(this,'anatomia')">Anatomía</button>
-        <button class="lib-tab" onclick="filterCategory(this,'especializacion')">Especialización</button>
-      </div>
+      <div class="library-tabs" id="libraryTabs"></div>
       <div class="content-list" id="libraryList"></div>
     </section>
 
@@ -814,20 +808,13 @@
         <h3>Idioma y Región</h3>
         <div class="form-group">
           <label class="form-label">Idioma de la plataforma</label>
-          <select class="form-input" style="cursor:pointer;">
-            <option>Español (México)</option>
-            <option>Español (España)</option>
-            <option>English</option>
-          </select>
+          <div class="form-input" style="background:var(--bg);color:var(--text);cursor:default;">Español (México)</div>
+          <p style="font-size:.75rem;color:var(--text-muted);margin-top:6px;font-style:italic;">Próximamente más idiomas.</p>
         </div>
         <div class="form-group">
           <label class="form-label">Zona horaria</label>
-          <select class="form-input" style="cursor:pointer;">
-            <option>América/Ciudad de México (GMT-6)</option>
-            <option>América/Bogotá (GMT-5)</option>
-            <option>América/Buenos Aires (GMT-3)</option>
-            <option>Europa/Madrid (GMT+1)</option>
-          </select>
+          <div class="form-input" style="background:var(--bg);color:var(--text);cursor:default;">América/Ciudad de México (GMT-6)</div>
+          <p style="font-size:.75rem;color:var(--text-muted);margin-top:6px;line-height:1.5;">Si te encuentras en otra zona horaria, los horarios de clases en vivo se muestran en hora centro de México, por favor verificar zona horaria con anticipación.</p>
         </div>
       </div>
 
@@ -878,11 +865,11 @@
         <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:16px;">Elige a qué línea deseas contactar:</p>
 
         <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <button class="btn-primary" style="display:inline-flex;align-items:center;gap:8px;" onclick="sendSupport('5212381478840')">
+          <button style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius-sm);background:#25D366;color:#fff;font-family:inherit;font-size:.88rem;font-weight:500;border:none;cursor:pointer;transition:all .25s ease;box-shadow:0 2px 8px rgba(37,211,102,.25);" onmouseover="this.style.background='#1EBE5A';this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 16px rgba(37,211,102,.35)'" onmouseout="this.style.background='#25D366';this.style.transform='translateY(0)';this.style.boxShadow='0 2px 8px rgba(37,211,102,.25)'" onmousedown="this.style.transform='scale(.97)'" onmouseup="this.style.transform='translateY(-2px)'" onclick="sendSupport('5212381478840')">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.138.563 4.14 1.535 5.874L0 24l6.29-1.508A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.814 9.814 0 01-5.058-1.4l-.361-.214-3.735.896.944-3.653-.235-.374A9.817 9.817 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
             Línea 1 — 238 147 8840
           </button>
-          <button class="btn-primary" style="display:inline-flex;align-items:center;gap:8px;background:var(--primary-dark);" onclick="sendSupport('5212361112213')">
+          <button style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius-sm);background:#25D366;color:#fff;font-family:inherit;font-size:.88rem;font-weight:500;border:none;cursor:pointer;transition:all .25s ease;box-shadow:0 2px 8px rgba(37,211,102,.25);" onmouseover="this.style.background='#1EBE5A';this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 16px rgba(37,211,102,.35)'" onmouseout="this.style.background='#25D366';this.style.transform='translateY(0)';this.style.boxShadow='0 2px 8px rgba(37,211,102,.25)'" onmousedown="this.style.transform='scale(.97)'" onmouseup="this.style.transform='translateY(-2px)'" onclick="sendSupport('5212361112213')">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.138.563 4.14 1.535 5.874L0 24l6.29-1.508A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.814 9.814 0 01-5.058-1.4l-.361-.214-3.735.896.944-3.653-.235-.374A9.817 9.817 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
             Línea 2 — 236 111 2213
           </button>
@@ -1177,7 +1164,7 @@
     container.innerHTML = recent.map(c => `
       <div class="course-card" onclick="openVideo('${c.title}','${c.videoUrl || ''}')">
         <div class="course-thumb">
-          ${c.thumbnail ? `<img src="${c.thumbnail}" alt="${c.title}">` : '▶'}
+          ${c.thumbnail ? `<img src="${driveImageUrl(c.thumbnail)}" alt="${c.title}">` : '▶'}
           ${c.badge ? `<div class="course-badge">${c.badge}</div>` : ''}
         </div>
         <div class="course-info">
@@ -1192,6 +1179,16 @@
     `).join('');
   }
   function renderLibrary() {
+    // Build dynamic category tabs
+    const cats = [...new Set(siteData.courses.map(c => c.category).filter(Boolean))];
+    const tabsContainer = document.getElementById('libraryTabs');
+    let tabsHTML = `<button class="lib-tab active" onclick="filterCategory(this,'all')">Todos</button>`;
+    cats.forEach(cat => {
+      const label = cat.charAt(0).toUpperCase() + cat.slice(1).replace(/-/g,' ');
+      tabsHTML += `<button class="lib-tab" onclick="filterCategory(this,'${cat}')">${label}</button>`;
+    });
+    tabsContainer.innerHTML = tabsHTML;
+    // Render list
     const container = document.getElementById('libraryList');
     container.innerHTML = siteData.courses.map(c => contentItemHTML(c, 'video')).join('');
   }
@@ -1236,12 +1233,46 @@
     </div>`;
   }
 
+  // ===== GOOGLE DRIVE URL CONVERTER =====
+  function getDriveFileId(url) {
+    if (!url) return null;
+    // Format: https://drive.google.com/file/d/FILE_ID/view...
+    let match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (match) return match[1];
+    // Format: https://drive.google.com/open?id=FILE_ID
+    match = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (match) return match[1];
+    return null;
+  }
+  function driveVideoEmbed(url) {
+    const id = getDriveFileId(url);
+    if (id) return `https://drive.google.com/file/d/${id}/preview`;
+    // YouTube support
+    let yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
+    if (yt) return `https://www.youtube.com/embed/${yt[1]}`;
+    // Vimeo support
+    let vm = url.match(/vimeo\.com\/(\d+)/);
+    if (vm) return `https://player.vimeo.com/video/${vm[1]}`;
+    return url;
+  }
+  function driveImageUrl(url) {
+    const id = getDriveFileId(url);
+    if (id) return `https://drive.google.com/thumbnail?id=${id}&sz=w800`;
+    return url;
+  }
+  function drivePdfUrl(url) {
+    const id = getDriveFileId(url);
+    if (id) return `https://drive.google.com/file/d/${id}/view`;
+    return url;
+  }
+
   // ===== ACTIONS =====
   function openVideo(title, url) {
     document.getElementById('videoTitle').textContent = title;
     const container = document.getElementById('videoContainer');
     if (url) {
-      container.innerHTML = `<iframe src="${url}" style="width:100%;height:100%;border:none;" allowfullscreen></iframe>`;
+      const embedUrl = driveVideoEmbed(url);
+      container.innerHTML = `<iframe src="${embedUrl}" style="width:100%;height:100%;border:none;" allow="autoplay;encrypted-media" allowfullscreen></iframe>`;
     } else {
       container.innerHTML = `<p style="padding:40px;text-align:center;">Este contenido estará disponible pronto.<br>El administrador subirá el video aquí.</p>`;
     }
@@ -1253,7 +1284,7 @@
   }
   function downloadPdf(url, title) {
     if (url) {
-      window.open(url, '_blank');
+      window.open(drivePdfUrl(url), '_blank');
     } else {
       showToast('El PDF "' + title + '" se descargará cuando el admin lo suba');
     }
