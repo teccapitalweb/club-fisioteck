@@ -373,6 +373,23 @@
       .sub-price { font-size:2rem; }
     }
   </style>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_0EUrupGl0YinXQBb0FjOuVX3-MEc_MM",
+      authDomain: "club-fisioteck.firebaseapp.com",
+      projectId: "club-fisioteck",
+      storageBucket: "club-fisioteck.firebasestorage.app",
+      messagingSenderId: "392428159347",
+      appId: "1:392428159347:web:15431483da25c545850506"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  </script>
 </head>
 <body>
 
@@ -973,18 +990,40 @@
     const email = document.getElementById('reg-email').value.trim();
     const pass = document.getElementById('reg-pass').value;
     const passC = document.getElementById('reg-pass-confirm').value;
-    const errEl = document.getElementById('register-error');
 
     if (!name || !email || !pass || !passC) { showRegError('Completa todos los campos'); return; }
-    if (pass.length < 4) { showRegError('La contraseña debe tener al menos 4 caracteres'); return; }
+    if (pass.length < 6) { showRegError('La contraseña debe tener al menos 6 caracteres'); return; }
     if (pass !== passC) { showRegError('Las contraseñas no coinciden'); return; }
     if (!document.getElementById('reg-terms').checked) { showRegError('Debes aceptar los términos'); return; }
 
-    const user = { name, email, phone:'', specialty:'', startDate: new Date().toISOString().split('T')[0] };
-    localStorage.setItem('clubft_user', JSON.stringify(user));
-    document.getElementById('splash-screen').classList.add('hidden');
-    loadUserProfile();
-    showToast('¡Bienvenido al Club FisioTeck, ' + name.split(' ')[0] + '!');
+    document.getElementById('btnRegister').disabled = true;
+    document.getElementById('btnRegister').textContent = 'Creando cuenta...';
+
+    auth.createUserWithEmailAndPassword(email, pass)
+      .then(async (cred) => {
+        await cred.user.updateProfile({ displayName: name });
+        await db.collection('members').doc(cred.user.uid).set({
+          name, email, phone:'', specialty:'',
+          startDate: new Date().toISOString().split('T')[0],
+          status: 'active',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        document.getElementById('splash-screen').classList.add('hidden');
+        loadUserProfile();
+        showToast('¡Bienvenido al Club FisioTeck, ' + name.split(' ')[0] + '!');
+      })
+      .catch(err => {
+        let msg = 'Error al crear cuenta';
+        if (err.code === 'auth/email-already-in-use') msg = 'Este correo ya está registrado';
+        if (err.code === 'auth/weak-password') msg = 'La contraseña es muy débil (mínimo 6 caracteres)';
+        if (err.code === 'auth/invalid-email') msg = 'Correo electrónico inválido';
+        showRegError(msg);
+      })
+      .finally(() => {
+        document.getElementById('btnRegister').disabled = false;
+        document.getElementById('btnRegister').textContent = 'Crear Cuenta';
+        toggleRegisterBtn();
+      });
   }
   function showRegError(msg) {
     const el = document.getElementById('register-error');
@@ -992,7 +1031,32 @@
     setTimeout(() => el.style.display = 'none', 3000);
   }
   function handleGoogleLogin() {
-    showToast('Login con Google próximamente — por ahora usa correo y contraseña');
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider)
+      .then(async (result) => {
+        const user = result.user;
+        const docRef = db.collection('members').doc(user.uid);
+        const doc = await docRef.get();
+        if (!doc.exists) {
+          await docRef.set({
+            name: user.displayName || '',
+            email: user.email || '',
+            phone: user.phoneNumber || '',
+            specialty: '',
+            startDate: new Date().toISOString().split('T')[0],
+            status: 'active',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+        document.getElementById('splash-screen').classList.add('hidden');
+        loadUserProfile();
+        showToast('¡Bienvenido, ' + (user.displayName || '').split(' ')[0] + '!');
+      })
+      .catch(err => {
+        if (err.code !== 'auth/popup-closed-by-user') {
+          showToast('Error al iniciar con Google');
+        }
+      });
   }
 
   // ===== LEGAL MODAL (splash) =====
@@ -1062,17 +1126,20 @@
       showLoginError('Por favor completa todos los campos');
       return;
     }
-    // Check against members in data, or allow demo login
-    const member = siteData.members?.find(m => m.email === email && m.password === pass);
-    if (member || (email && pass.length >= 4)) {
-      const user = member || { name: email.split('@')[0], email, phone:'', specialty:'', startDate:'2026-04-01' };
-      localStorage.setItem('clubft_user', JSON.stringify(user));
-      document.getElementById('splash-screen').classList.add('hidden');
-      loadUserProfile();
-      showToast('¡Bienvenido al Club FisioTeck!');
-    } else {
-      showLoginError('Credenciales incorrectas');
-    }
+    auth.signInWithEmailAndPassword(email, pass)
+      .then(() => {
+        document.getElementById('splash-screen').classList.add('hidden');
+        loadUserProfile();
+        showToast('¡Bienvenido al Club FisioTeck!');
+      })
+      .catch(err => {
+        let msg = 'Credenciales incorrectas';
+        if (err.code === 'auth/user-not-found') msg = 'Este correo no está registrado';
+        if (err.code === 'auth/wrong-password') msg = 'Contraseña incorrecta';
+        if (err.code === 'auth/invalid-credential') msg = 'Credenciales incorrectas';
+        if (err.code === 'auth/too-many-requests') msg = 'Demasiados intentos, espera un momento';
+        showLoginError(msg);
+      });
   }
   function showLoginError(msg) {
     const el = document.getElementById('login-error');
@@ -1081,10 +1148,11 @@
     setTimeout(() => el.style.display = 'none', 3000);
   }
   function showLogoutPopup() {
-    const user = JSON.parse(localStorage.getItem('clubft_user') || '{}');
-    const initial = (user.name || 'S')[0].toUpperCase();
+    const user = auth.currentUser;
+    if (!user) return;
+    const initial = (user.displayName || user.email || 'S')[0].toUpperCase();
     document.getElementById('logoutAvatar').textContent = initial;
-    document.getElementById('logoutName').textContent = user.name || 'Socio';
+    document.getElementById('logoutName').textContent = user.displayName || 'Socio';
     document.getElementById('logoutEmail').textContent = user.email || '';
     document.getElementById('logoutPopup').style.display = 'flex';
   }
@@ -1092,46 +1160,50 @@
     document.getElementById('logoutPopup').style.display = 'none';
   }
   function confirmLogout() {
-    localStorage.removeItem('clubft_user');
-    location.reload();
+    auth.signOut().then(() => location.reload());
   }
   function checkAuth() {
-    const user = localStorage.getItem('clubft_user');
-    if (user) {
-      document.getElementById('splash-screen').classList.add('hidden');
-      return JSON.parse(user);
-    }
-    return null;
+    return null; // Firebase uses onAuthStateChanged instead
   }
-  function loadUserProfile() {
-    const user = JSON.parse(localStorage.getItem('clubft_user') || '{}');
-    const initial = (user.name || 'S')[0].toUpperCase();
+  async function loadUserProfile() {
+    const user = auth.currentUser;
+    if (!user) return;
+    let userData = { name: user.displayName || '', email: user.email || '', phone:'', specialty:'', startDate:'' };
+    try {
+      const doc = await db.collection('members').doc(user.uid).get();
+      if (doc.exists) userData = { ...userData, ...doc.data() };
+    } catch(e) {}
+    const initial = (userData.name || userData.email || 'S')[0].toUpperCase();
     document.getElementById('sidebarAvatar').textContent = initial;
-    document.getElementById('sidebarName').textContent = user.name || 'Socio';
+    document.getElementById('sidebarName').textContent = userData.name || 'Socio';
     document.getElementById('accountAvatar').textContent = initial;
-    document.getElementById('accountName').textContent = user.name || 'Socio FisioTeck';
-    document.getElementById('accountEmail').textContent = user.email || '';
-    document.getElementById('accName').value = user.name || '';
-    document.getElementById('accEmail').value = user.email || '';
-    document.getElementById('accPhone').value = user.phone || '';
-    document.getElementById('accSpecialty').value = user.specialty || '';
-    // Subscription dates
-    const start = user.startDate || '2026-04-01';
+    document.getElementById('accountName').textContent = userData.name || 'Socio FisioTeck';
+    document.getElementById('accountEmail').textContent = userData.email || '';
+    document.getElementById('accName').value = userData.name || '';
+    document.getElementById('accEmail').value = userData.email || '';
+    document.getElementById('accPhone').value = userData.phone || '';
+    document.getElementById('accSpecialty').value = userData.specialty || '';
+    const start = userData.startDate || new Date().toISOString().split('T')[0];
     document.getElementById('subStart').textContent = formatDate(start);
     const nextDate = new Date(start);
     nextDate.setMonth(nextDate.getMonth() + 1);
     document.getElementById('subNext').textContent = formatDate(nextDate.toISOString().split('T')[0]);
     renderPaymentHistory(start);
   }
-  function saveProfile() {
-    const user = JSON.parse(localStorage.getItem('clubft_user') || '{}');
-    user.name = document.getElementById('accName').value;
-    user.email = document.getElementById('accEmail').value;
-    user.phone = document.getElementById('accPhone').value;
-    user.specialty = document.getElementById('accSpecialty').value;
-    localStorage.setItem('clubft_user', JSON.stringify(user));
-    loadUserProfile();
-    showToast('Perfil actualizado correctamente');
+  async function saveProfile() {
+    const user = auth.currentUser;
+    if (!user) return;
+    const updates = {
+      name: document.getElementById('accName').value,
+      phone: document.getElementById('accPhone').value,
+      specialty: document.getElementById('accSpecialty').value
+    };
+    try {
+      await db.collection('members').doc(user.uid).update(updates);
+      await user.updateProfile({ displayName: updates.name });
+      loadUserProfile();
+      showToast('Perfil actualizado correctamente');
+    } catch(e) { showToast('Error al guardar'); }
   }
   function changePassword() {
     const curr = document.getElementById('accPassCurrent').value;
@@ -1139,11 +1211,21 @@
     const conf = document.getElementById('accPassConfirm').value;
     if (!curr || !newP || !conf) { showToast('Completa todos los campos'); return; }
     if (newP !== conf) { showToast('Las contraseñas no coinciden'); return; }
-    if (newP.length < 4) { showToast('La contraseña debe tener al menos 4 caracteres'); return; }
-    showToast('Contraseña actualizada correctamente');
-    document.getElementById('accPassCurrent').value = '';
-    document.getElementById('accPassNew').value = '';
-    document.getElementById('accPassConfirm').value = '';
+    if (newP.length < 6) { showToast('La contraseña debe tener al menos 6 caracteres'); return; }
+    const user = auth.currentUser;
+    const credential = firebase.auth.EmailAuthProvider.credential(user.email, curr);
+    user.reauthenticateWithCredential(credential)
+      .then(() => user.updatePassword(newP))
+      .then(() => {
+        showToast('Contraseña actualizada correctamente');
+        document.getElementById('accPassCurrent').value = '';
+        document.getElementById('accPassNew').value = '';
+        document.getElementById('accPassConfirm').value = '';
+      })
+      .catch(err => {
+        if (err.code === 'auth/wrong-password') showToast('Contraseña actual incorrecta');
+        else showToast('Error al cambiar contraseña');
+      });
   }
   function cancelSubscription() {
     if(confirm('¿Estás seguro de que quieres cancelar tu suscripción? Perderás acceso a todo el contenido exclusivo.')) {
@@ -1409,12 +1491,16 @@
 
   // ===== BOOT =====
   document.addEventListener('DOMContentLoaded', () => {
-    const user = checkAuth();
-    if (user) init();
-    else {
-      // Still load data for login validation
-      init();
-    }
+    init(); // Load content data
+    // Firebase auth state listener
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        document.getElementById('splash-screen').classList.add('hidden');
+        loadUserProfile();
+      } else {
+        document.getElementById('splash-screen').classList.remove('hidden');
+      }
+    });
     // Enter key on login
     document.getElementById('login-pass').addEventListener('keypress', e => {
       if(e.key === 'Enter') handleLogin();
