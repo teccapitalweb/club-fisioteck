@@ -1336,9 +1336,9 @@
 
   // ===== RENDER =====
   function renderHome() {
-    document.getElementById('statCourses').textContent = siteData.stats.courses || siteData.courses.length;
-    document.getElementById('statPdfs').textContent = siteData.stats.pdfs || siteData.pdfs.length;
-    document.getElementById('statLive').textContent = siteData.stats.live || siteData.live.length;
+    document.getElementById('statCourses').textContent = siteData.courses.length;
+    document.getElementById('statPdfs').textContent = siteData.pdfs.length;
+    document.getElementById('statLive').textContent = siteData.live.length;
     document.getElementById('statMembers').textContent = siteData.stats.members || '0';
     const container = document.getElementById('recentCourses');
     const recent = [...siteData.courses].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0,3);
