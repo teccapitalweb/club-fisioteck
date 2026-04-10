@@ -217,7 +217,7 @@
     }
     .content-item:hover { border-color:var(--primary); box-shadow:var(--shadow); }
     .content-icon {
-      width:48px; height:48px; border-radius:var(--radius-sm); display:flex;
+      width:56px; height:56px; border-radius:var(--radius-sm); display:flex;
       align-items:center; justify-content:center; flex-shrink:0; font-size:1.3rem;
     }
     .content-icon.video { background:rgba(10,110,92,.1); color:var(--primary); }
@@ -1396,9 +1396,13 @@
       live: `<button class="content-action" onclick="joinLive('${item.link||''}')">Unirse</button>`
     };
     const meta = type === 'video' ? (item.duration||'') : type === 'pdf' ? (item.size||'') : (item.time||'');
+    const thumbUrl = item.thumbnail ? driveImageUrl(item.thumbnail) : '';
+    const iconHTML = thumbUrl
+      ? `<div class="content-icon ${type}" style="overflow:hidden;padding:0;"><img src="${thumbUrl}" alt="${item.title}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-sm);"></div>`
+      : `<div class="content-icon ${type}">${icons[type]}</div>`;
     return `
       <div class="content-item" data-category="${item.category || 'all'}" data-title="${item.title.toLowerCase()}">
-        <div class="content-icon ${type}">${icons[type]}</div>
+        ${iconHTML}
         <div class="content-details">
           <h4>${item.title} ${item.badge ? `<span style="background:var(--accent);color:var(--bg-dark);padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:600;margin-left:6px;">${item.badge}</span>` : ''}</h4>
           <p>${item.desc} ${meta ? '· '+meta : ''}</p>
