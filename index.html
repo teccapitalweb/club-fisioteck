@@ -1032,32 +1032,27 @@
   }
   function handleGoogleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider)
-      .then(async (result) => {
-        const user = result.user;
-        const docRef = db.collection('members').doc(user.uid);
-        const doc = await docRef.get();
-        if (!doc.exists) {
-          await docRef.set({
-            name: user.displayName || '',
-            email: user.email || '',
-            phone: user.phoneNumber || '',
-            specialty: '',
-            startDate: new Date().toISOString().split('T')[0],
-            status: 'active',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          });
-        }
-        document.getElementById('splash-screen').classList.add('hidden');
-        loadUserProfile();
-        showToast('¡Bienvenido, ' + (user.displayName || '').split(' ')[0] + '!');
-      })
-      .catch(err => {
-        if (err.code !== 'auth/popup-closed-by-user') {
-          showToast('Error al iniciar con Google');
-        }
-      });
+    auth.signInWithRedirect(provider);
   }
+  // Handle Google redirect result
+  auth.getRedirectResult().then(async (result) => {
+    if (result.user) {
+      const user = result.user;
+      const docRef = db.collection('members').doc(user.uid);
+      const doc = await docRef.get();
+      if (!doc.exists) {
+        await docRef.set({
+          name: user.displayName || '',
+          email: user.email || '',
+          phone: user.phoneNumber || '',
+          specialty: '',
+          startDate: new Date().toISOString().split('T')[0],
+          status: 'active',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }
+    }
+  }).catch(err => {});
 
   // ===== LEGAL MODAL (splash) =====
   const legalTexts = {
