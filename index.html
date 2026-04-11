@@ -698,7 +698,7 @@
         </div>
         <div class="sub-detail-item">
           <div class="sub-detail-label">Estado</div>
-          <div class="sub-detail-value" style="color:var(--success);">Activa</div>
+          <div class="sub-detail-value" id="subStatus" style="color:var(--success);">Activa</div>
         </div>
       </div>
       <div class="card" style="margin-bottom:24px;">
@@ -1280,7 +1280,7 @@
   async function loadUserProfile() {
     const user = auth.currentUser;
     if (!user) return;
-    let userData = { name: user.displayName || '', email: user.email || '', phone:'', specialty:'', startDate:'' };
+    let userData = { name: user.displayName || '', email: user.email || '', phone:'', specialty:'', startDate:'', plan:'', payments:[], nextPaymentDate:'', paymentMethod:'', status:'' };
     try {
       const doc = await db.collection('members').doc(user.uid).get();
       if (doc.exists) userData = { ...userData, ...doc.data() };
@@ -1295,12 +1295,60 @@
     document.getElementById('accEmail').value = userData.email || '';
     document.getElementById('accPhone').value = userData.phone || '';
     document.getElementById('accSpecialty').value = userData.specialty || '';
+
+    // --- Datos reales de suscripción desde Firebase ---
+    const plan = userData.plan || 'mensual';
+    const planLabel = plan === 'anual' ? 'Plan Anual' : 'Plan Mensual';
+    const planPrice = plan === 'anual' ? '$2,490' : '$249';
+    const planPeriod = plan === 'anual' ? 'año' : 'mes';
+    const memberStatus = userData.status || 'active';
+    const isActive = memberStatus === 'active' || memberStatus === 'paid';
+
+    // Sidebar plan label
+    const sidebarPlan = document.querySelector('.sidebar-user-plan');
+    if (sidebarPlan) sidebarPlan.textContent = isActive ? planLabel + ' · Activo' : 'Inactivo';
+
+    // Subscription card
+    const subCard = document.querySelector('.sub-card');
+    if (subCard) {
+      subCard.querySelector('h3').textContent = planLabel + ' — Club FisioTeck';
+      subCard.querySelector('.sub-price').innerHTML = planPrice + ' <span>MXN / ' + planPeriod + '</span>';
+      const statusEl = subCard.querySelector('.sub-status');
+      if (isActive) {
+        statusEl.innerHTML = '<div class="dot"></div> Activa';
+        statusEl.style.background = 'rgba(34,197,94,.2)';
+      } else {
+        statusEl.innerHTML = '<div class="dot" style="background:var(--danger);"></div> Inactiva';
+        statusEl.style.background = 'rgba(239,68,68,.15)';
+      }
+    }
+
+    // Subscription details
     const start = userData.startDate || new Date().toISOString().split('T')[0];
     document.getElementById('subStart').textContent = formatDate(start);
-    const nextDate = new Date(start);
-    nextDate.setMonth(nextDate.getMonth() + 1);
-    document.getElementById('subNext').textContent = formatDate(nextDate.toISOString().split('T')[0]);
-    renderPaymentHistory(start);
+
+    const nextPay = userData.nextPaymentDate || '';
+    if (nextPay) {
+      document.getElementById('subNext').textContent = formatDate(nextPay);
+    } else {
+      const nextDate = new Date(start);
+      nextDate.setMonth(nextDate.getMonth() + (plan === 'anual' ? 12 : 1));
+      document.getElementById('subNext').textContent = formatDate(nextDate.toISOString().split('T')[0]);
+    }
+
+    const payMethod = userData.paymentMethod || 'Transferencia';
+    const payLabel = payMethod === 'shopify_payments' ? 'Shopify (Tarjeta)' : payMethod === 'manual' ? 'Transferencia' : payMethod;
+    document.getElementById('subPayment').textContent = payLabel;
+
+    // Estado dinámico
+    const statusValueEl = document.getElementById('subStatus');
+    if (statusValueEl) {
+      statusValueEl.textContent = isActive ? 'Activa' : 'Inactiva';
+      statusValueEl.style.color = isActive ? 'var(--success)' : 'var(--danger)';
+    }
+
+    // Render historial de pagos real
+    renderPaymentHistory(start, userData.payments || []);
   }
   async function saveProfile() {
     const user = auth.currentUser;
@@ -1576,20 +1624,39 @@
     const d = new Date(dateStr + 'T12:00:00');
     return d.toLocaleDateString('es-MX', { day:'numeric', month:'long', year:'numeric' });
   }
-  function renderPaymentHistory(startDate) {
+  function renderPaymentHistory(startDate, payments) {
     const tbody = document.getElementById('paymentHistory');
-    const start = new Date(startDate);
-    const now = new Date();
     let rows = '';
-    let d = new Date(start);
-    while (d <= now) {
-      rows += `<tr style="border-bottom:1px solid var(--border);">
-        <td style="padding:10px 12px;">${formatDate(d.toISOString().split('T')[0])}</td>
-        <td style="padding:10px 12px;">Membresía mensual</td>
-        <td style="padding:10px 12px;">$249.00 MXN</td>
-        <td style="padding:10px 12px;"><span style="background:rgba(34,197,94,.1);color:var(--success);padding:3px 10px;border-radius:10px;font-size:.78rem;">Pagado</span></td>
-      </tr>`;
-      d.setMonth(d.getMonth() + 1);
+
+    if (payments && payments.length > 0) {
+      // Pagos reales desde Firebase
+      const sorted = [...payments].sort((a,b) => new Date(b.date) - new Date(a.date));
+      sorted.forEach(p => {
+        const statusLabel = p.status === 'paid' ? 'Pagado' : p.status === 'pending' ? 'Pendiente' : p.status;
+        const statusColor = p.status === 'paid' ? 'var(--success)' : 'var(--warning)';
+        const statusBg = p.status === 'paid' ? 'rgba(34,197,94,.1)' : 'rgba(245,158,11,.1)';
+        const amount = typeof p.amount === 'number' ? '$' + p.amount.toLocaleString('es-MX', {minimumFractionDigits:2}) + ' MXN' : '$249.00 MXN';
+        rows += `<tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:10px 12px;">${formatDate(p.date)}</td>
+          <td style="padding:10px 12px;">${p.concept || 'Membresía ' + (p.plan || 'mensual')}</td>
+          <td style="padding:10px 12px;">${amount}</td>
+          <td style="padding:10px 12px;"><span style="background:${statusBg};color:${statusColor};padding:3px 10px;border-radius:10px;font-size:.78rem;">${statusLabel}</span></td>
+        </tr>`;
+      });
+    } else {
+      // Fallback: generar historial estimado basado en startDate
+      const start = new Date(startDate);
+      const now = new Date();
+      let d = new Date(start);
+      while (d <= now) {
+        rows += `<tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:10px 12px;">${formatDate(d.toISOString().split('T')[0])}</td>
+          <td style="padding:10px 12px;">Membresía mensual</td>
+          <td style="padding:10px 12px;">$249.00 MXN</td>
+          <td style="padding:10px 12px;"><span style="background:rgba(34,197,94,.1);color:var(--success);padding:3px 10px;border-radius:10px;font-size:.78rem;">Pagado</span></td>
+        </tr>`;
+        d.setMonth(d.getMonth() + 1);
+      }
     }
     tbody.innerHTML = rows || '<tr><td colspan="4" style="padding:20px;text-align:center;color:var(--text-muted);">Sin historial de pagos</td></tr>';
   }
@@ -1613,24 +1680,62 @@
       if (user) {
         // Check membership status in Firestore
         try {
-          const doc = await db.collection('members').doc(user.uid).get();
-          if (doc.exists && doc.data().status === 'active') {
-            // Active member — allow access
+          const docRef = db.collection('members').doc(user.uid);
+          let doc = await docRef.get();
+          let memberData = doc.exists ? doc.data() : null;
+
+          // Si el doc existe pero no tiene datos de pago, buscar por email
+          // (el webhook guarda por email, el registro guarda por UID)
+          if (!memberData || !memberData.payments || memberData.payments.length === 0) {
+            const emailQuery = await db.collection('members')
+              .where('email', '==', user.email.toLowerCase())
+              .limit(5).get();
+            
+            let paymentDoc = null;
+            emailQuery.forEach(d => {
+              const data = d.data();
+              if (d.id !== user.uid && data.payments && data.payments.length > 0) {
+                paymentDoc = { id: d.id, data: data };
+              }
+            });
+
+            if (paymentDoc) {
+              // Merge payment data into the UID-based doc
+              const mergeData = {};
+              if (paymentDoc.data.plan) mergeData.plan = paymentDoc.data.plan;
+              if (paymentDoc.data.payments) mergeData.payments = paymentDoc.data.payments;
+              if (paymentDoc.data.nextPaymentDate) mergeData.nextPaymentDate = paymentDoc.data.nextPaymentDate;
+              if (paymentDoc.data.paymentMethod) mergeData.paymentMethod = paymentDoc.data.paymentMethod;
+              if (paymentDoc.data.status) mergeData.status = paymentDoc.data.status;
+
+              if (doc.exists) {
+                await docRef.update(mergeData);
+              } else {
+                await docRef.set({ ...mergeData, name: user.displayName || '', email: user.email || '' });
+              }
+              // Re-read the merged doc
+              doc = await docRef.get();
+              memberData = doc.exists ? doc.data() : null;
+            }
+          }
+
+          const status = memberData?.status || '';
+          if (memberData && (status === 'active' || status === 'paid')) {
             document.getElementById('splash-screen').classList.add('hidden');
             document.getElementById('inactiveScreen').style.display = 'none';
             loadUserProfile();
-          } else if (doc.exists && doc.data().status === 'inactive') {
-            // Inactive member — block access
+          } else if (memberData && status === 'inactive') {
             document.getElementById('splash-screen').classList.add('hidden');
             document.getElementById('inactiveScreen').style.display = 'flex';
           } else {
-            // New user (just registered, no doc yet or status not set) — allow access
+            // New user or no status — allow access
             document.getElementById('splash-screen').classList.add('hidden');
             document.getElementById('inactiveScreen').style.display = 'none';
             loadUserProfile();
           }
         } catch(e) {
           // Firestore error — allow access as fallback
+          console.error('Auth state error:', e);
           document.getElementById('splash-screen').classList.add('hidden');
           loadUserProfile();
         }
