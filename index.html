@@ -1302,11 +1302,20 @@
     const planPrice = plan === 'anual' ? '$2,490' : '$249';
     const planPeriod = plan === 'anual' ? 'año' : 'mes';
     const memberStatus = userData.status || 'active';
-    const isActive = memberStatus === 'active' || memberStatus === 'paid';
+    const isCancelled = memberStatus === 'cancelled';
+    const accessUntil = userData.accessUntil || userData.nextPaymentDate || '';
+    const now = new Date();
+    const expiry = accessUntil ? new Date(accessUntil + 'T23:59:59') : null;
+    const isExpired = isCancelled && expiry && now > expiry;
+    const isActive = !isExpired && (memberStatus === 'active' || memberStatus === 'paid' || isCancelled);
 
     // Sidebar plan label
     const sidebarPlan = document.querySelector('.sidebar-user-plan');
-    if (sidebarPlan) sidebarPlan.textContent = isActive ? planLabel + ' · Activo' : 'Inactivo';
+    if (sidebarPlan) {
+      if (isCancelled && !isExpired) sidebarPlan.textContent = 'Cancelada · Acceso hasta ' + formatDate(accessUntil);
+      else if (isActive) sidebarPlan.textContent = planLabel + ' · Activo';
+      else sidebarPlan.textContent = 'Inactivo';
+    }
 
     // Subscription card
     const subCard = document.querySelector('.sub-card');
@@ -1314,7 +1323,10 @@
       subCard.querySelector('h3').textContent = planLabel + ' — Club FisioTeck';
       subCard.querySelector('.sub-price').innerHTML = planPrice + ' <span>MXN / ' + planPeriod + '</span>';
       const statusEl = subCard.querySelector('.sub-status');
-      if (isActive) {
+      if (isCancelled && !isExpired) {
+        statusEl.innerHTML = '<div class="dot" style="background:var(--warning);"></div> Cancelada — acceso hasta ' + formatDate(accessUntil);
+        statusEl.style.background = 'rgba(245,158,11,.15)';
+      } else if (isActive) {
         statusEl.innerHTML = '<div class="dot"></div> Activa';
         statusEl.style.background = 'rgba(34,197,94,.2)';
       } else {
@@ -1323,12 +1335,33 @@
       }
     }
 
+    // Cancellation banner
+    let banner = document.getElementById('cancelBanner');
+    if (isCancelled && !isExpired) {
+      if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'cancelBanner';
+        banner.style.cssText = 'background:#FEF3C7;border:1px solid #F59E0B;border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:12px;font-size:.9rem;color:#92400E;';
+        banner.innerHTML = '⚠️ <div><strong>Suscripción cancelada.</strong> Tienes acceso hasta el <strong>' + formatDate(accessUntil) + '</strong>. Después de esa fecha se bloqueará tu acceso. Para reactivar, contacta a soporte por WhatsApp.</div>';
+        const subSection = document.getElementById('page-subscription');
+        if (subSection) subSection.insertBefore(banner, subSection.querySelector('.sub-card'));
+      }
+    } else if (banner) {
+      banner.remove();
+    }
+
+    // Hide cancel button if already cancelled
+    const cancelSection = document.querySelector('.cancel-section');
+    if (cancelSection) cancelSection.style.display = isCancelled ? 'none' : '';
+
     // Subscription details
     const start = userData.startDate || new Date().toISOString().split('T')[0];
     document.getElementById('subStart').textContent = formatDate(start);
 
     const nextPay = userData.nextPaymentDate || '';
-    if (nextPay) {
+    if (isCancelled) {
+      document.getElementById('subNext').textContent = accessUntil ? formatDate(accessUntil) + ' (último día)' : '--';
+    } else if (nextPay) {
       document.getElementById('subNext').textContent = formatDate(nextPay);
     } else {
       const nextDate = new Date(start);
@@ -1343,8 +1376,16 @@
     // Estado dinámico
     const statusValueEl = document.getElementById('subStatus');
     if (statusValueEl) {
-      statusValueEl.textContent = isActive ? 'Activa' : 'Inactiva';
-      statusValueEl.style.color = isActive ? 'var(--success)' : 'var(--danger)';
+      if (isCancelled && !isExpired) {
+        statusValueEl.textContent = 'Cancelada';
+        statusValueEl.style.color = 'var(--warning)';
+      } else if (isActive) {
+        statusValueEl.textContent = 'Activa';
+        statusValueEl.style.color = 'var(--success)';
+      } else {
+        statusValueEl.textContent = 'Inactiva';
+        statusValueEl.style.color = 'var(--danger)';
+      }
     }
 
     // Render historial de pagos real
@@ -1387,11 +1428,30 @@
         else showToast('Error al cambiar contraseña');
       });
   }
-  function cancelSubscription() {
-    if(confirm('¿Estás seguro de que quieres cancelar tu suscripción? Perderás acceso a todo el contenido exclusivo.')) {
-      if(confirm('Esta acción es definitiva. ¿Confirmas la cancelación?')) {
-        showToast('Suscripción cancelada. Acceso hasta fin del período actual.');
-      }
+  async function cancelSubscription() {
+    const user = auth.currentUser;
+    if (!user) return;
+    if(!confirm('¿Estás seguro de que quieres cancelar tu suscripción? Perderás acceso a todo el contenido exclusivo al finalizar tu período actual.')) return;
+    if(!confirm('Esta acción es definitiva. ¿Confirmas la cancelación?')) return;
+
+    try {
+      const docRef = db.collection('members').doc(user.uid);
+      const doc = await docRef.get();
+      const data = doc.exists ? doc.data() : {};
+      const nextPay = data.nextPaymentDate || '';
+
+      await docRef.update({
+        status: 'cancelled',
+        cancelledAt: new Date().toISOString().split('T')[0],
+        accessUntil: nextPay || new Date().toISOString().split('T')[0]
+      });
+
+      const fechaFin = nextPay ? formatDate(nextPay) : 'el fin de tu período actual';
+      showToast('Suscripción cancelada. Acceso hasta ' + fechaFin);
+      loadUserProfile();
+    } catch(e) {
+      console.error('Error al cancelar:', e);
+      showToast('Error al cancelar. Intenta de nuevo.');
     }
   }
 
@@ -1720,7 +1780,25 @@
           }
 
           const status = memberData?.status || '';
-          if (memberData && (status === 'active' || status === 'paid')) {
+          
+          // Check if cancelled membership has expired
+          if (status === 'cancelled') {
+            const accessUntil = memberData.accessUntil || memberData.nextPaymentDate || '';
+            const now = new Date();
+            const expiry = accessUntil ? new Date(accessUntil + 'T23:59:59') : null;
+            if (expiry && now > expiry) {
+              // Expired — auto-update to inactive and block
+              await docRef.update({ status: 'inactive' });
+              memberData.status = 'inactive';
+              document.getElementById('splash-screen').classList.add('hidden');
+              document.getElementById('inactiveScreen').style.display = 'flex';
+              return;
+            }
+            // Still within access period — allow
+            document.getElementById('splash-screen').classList.add('hidden');
+            document.getElementById('inactiveScreen').style.display = 'none';
+            loadUserProfile();
+          } else if (memberData && (status === 'active' || status === 'paid')) {
             document.getElementById('splash-screen').classList.add('hidden');
             document.getElementById('inactiveScreen').style.display = 'none';
             loadUserProfile();
