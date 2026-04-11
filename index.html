@@ -1432,7 +1432,7 @@
     const user = auth.currentUser;
     if (!user) return;
     if(!confirm('¿Estás seguro de que quieres cancelar tu suscripción? Perderás acceso a todo el contenido exclusivo al finalizar tu período actual.')) return;
-    if(!confirm('Esta acción es definitiva. Se cancelará tu cobro automático en Shopify. ¿Confirmas la cancelación?')) return;
+    if(!confirm('Esta acción es definitiva. Se cancelará tu membresía. ¿Confirmas la cancelación?')) return;
 
     const cancelBtn = document.querySelector('.cancel-section .btn-danger');
     if (cancelBtn) { cancelBtn.disabled = true; cancelBtn.textContent = 'Cancelando...'; }
@@ -1447,8 +1447,7 @@
 
       if (result.success) {
         const fechaFin = result.accessUntil ? formatDate(result.accessUntil) : 'el fin de tu período actual';
-        const shopifyMsg = result.shopifyCancelled ? ' Tu cobro automático en Shopify fue cancelado.' : ' Contacta a soporte para confirmar la cancelación del cobro.';
-        showToast('Suscripción cancelada. Acceso hasta ' + fechaFin + '.' + shopifyMsg);
+        showToast('Suscripción cancelada. Acceso hasta ' + fechaFin);
         loadUserProfile();
       } else {
         showToast('Error al cancelar: ' + (result.error || 'Intenta de nuevo'));
