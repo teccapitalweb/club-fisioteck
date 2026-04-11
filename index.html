@@ -1432,26 +1432,32 @@
     const user = auth.currentUser;
     if (!user) return;
     if(!confirm('¿Estás seguro de que quieres cancelar tu suscripción? Perderás acceso a todo el contenido exclusivo al finalizar tu período actual.')) return;
-    if(!confirm('Esta acción es definitiva. ¿Confirmas la cancelación?')) return;
+    if(!confirm('Esta acción es definitiva. Se cancelará tu cobro automático en Shopify. ¿Confirmas la cancelación?')) return;
+
+    const cancelBtn = document.querySelector('.cancel-section .btn-danger');
+    if (cancelBtn) { cancelBtn.disabled = true; cancelBtn.textContent = 'Cancelando...'; }
 
     try {
-      const docRef = db.collection('members').doc(user.uid);
-      const doc = await docRef.get();
-      const data = doc.exists ? doc.data() : {};
-      const nextPay = data.nextPaymentDate || '';
-
-      await docRef.update({
-        status: 'cancelled',
-        cancelledAt: new Date().toISOString().split('T')[0],
-        accessUntil: nextPay || new Date().toISOString().split('T')[0]
+      const response = await fetch('https://web-production-cd020.up.railway.app/api/cancel-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email, uid: user.uid })
       });
+      const result = await response.json();
 
-      const fechaFin = nextPay ? formatDate(nextPay) : 'el fin de tu período actual';
-      showToast('Suscripción cancelada. Acceso hasta ' + fechaFin);
-      loadUserProfile();
+      if (result.success) {
+        const fechaFin = result.accessUntil ? formatDate(result.accessUntil) : 'el fin de tu período actual';
+        const shopifyMsg = result.shopifyCancelled ? ' Tu cobro automático en Shopify fue cancelado.' : ' Contacta a soporte para confirmar la cancelación del cobro.';
+        showToast('Suscripción cancelada. Acceso hasta ' + fechaFin + '.' + shopifyMsg);
+        loadUserProfile();
+      } else {
+        showToast('Error al cancelar: ' + (result.error || 'Intenta de nuevo'));
+      }
     } catch(e) {
       console.error('Error al cancelar:', e);
-      showToast('Error al cancelar. Intenta de nuevo.');
+      showToast('Error de conexión. Intenta de nuevo.');
+    } finally {
+      if (cancelBtn) { cancelBtn.disabled = false; cancelBtn.textContent = 'Cancelar mi Suscripción'; }
     }
   }
 
