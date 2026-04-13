@@ -1,11 +1,23 @@
 {
   "stats": {
-    "courses": 7,
+    "courses": 8,
     "pdfs": 6,
     "live": 4,
     "members": 87
   },
   "courses": [
+    {
+      "id": 1776095113195,
+      "title": "Principios de estimulación temprana ",
+      "desc": "curso nuevo",
+      "category": "rehabilitacion",
+      "duration": "1 hora ",
+      "date": "2026-04-13",
+      "badge": "",
+      "videoUrl": "https://drive.google.com/file/d/1xkABSHIXOfsJWu5N-t99vsOc-BUVQ7de/view?usp=drive_link",
+      "thumbnail": "https://drive.google.com/file/d/12y-nsEU6VPljnFFWbu3omYpgpv2d7j0O/view?usp=drive_link",
+      "type": "video"
+    },
     {
       "id": 1775785869814,
       "title": "Fisioterapia pulmonar Hipoxemia 2",
