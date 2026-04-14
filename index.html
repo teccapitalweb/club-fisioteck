@@ -1817,13 +1817,14 @@
           <h4>${w.title} ${w.badge && type==='upcoming' ? `<span style="background:var(--accent);color:var(--bg-dark);padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:600;margin-left:4px;">${w.badge}</span>` : ''}</h4>
           <p>${w.desc || ''}</p>
           ${w.instructor ? `
-            <div class="webinar-instructor">
-              <div class="webinar-instructor-img" ${instructorImg ? `style="background:none;"><img src="${instructorImg}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : `>${(w.instructor||'?')[0].toUpperCase()}`}</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
               <div>
-                <div class="webinar-instructor-name">${w.instructor}</div>
+                <div class="webinar-instructor-name">👤 ${w.instructor}</div>
                 ${w.instructorRole ? `<div class="webinar-instructor-role">${w.instructorRole}</div>` : ''}
               </div>
-            </div>` : ''}
+              ${instructorImg ? `<button onclick="event.stopPropagation();toggleSemblanza('sem-${w.id}')" style="background:rgba(10,110,92,.1);color:var(--primary);border:1px solid var(--primary);padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:500;cursor:pointer;margin-left:auto;">Ver semblanza</button>` : ''}
+            </div>
+            ${instructorImg ? `<div id="sem-${w.id}" style="display:none;margin-bottom:14px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border);"><img src="${instructorImg}" alt="Semblanza ${w.instructor}" style="width:100%;display:block;"></div>` : ''}` : ''}
           <div class="webinar-meta">
             <span>📅 ${fullDate}</span>
             ${w.time ? `<span>🕐 ${w.time} hrs</span>` : ''}
@@ -1839,6 +1840,10 @@
     document.querySelectorAll('.webinar-card').forEach(card => {
       card.style.display = card.dataset.title.includes(q) ? '' : 'none';
     });
+  }
+  function toggleSemblanza(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
   }
   function renderPdfs() {
     const container = document.getElementById('pdfsList');
