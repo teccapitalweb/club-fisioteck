@@ -243,6 +243,56 @@
       .course-detail-thumb { max-width:100%; }
     }
 
+    /* === WEBINAR === */
+    .webinar-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:20px; }
+    .webinar-card {
+      background:var(--bg-card); border-radius:var(--radius); overflow:hidden; border:1px solid var(--border);
+      transition:var(--transition);
+    }
+    .webinar-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-lg); }
+    .webinar-thumb {
+      height:180px; background:linear-gradient(135deg,#1a1a2e,#16213e);
+      position:relative; overflow:hidden; display:flex;align-items:center;justify-content:center;
+    }
+    .webinar-thumb img { width:100%;height:100%;object-fit:cover; }
+    .webinar-status {
+      position:absolute;top:12px;left:12px;padding:5px 12px;border-radius:20px;font-size:.7rem;font-weight:600;
+      text-transform:uppercase;letter-spacing:.5px;
+    }
+    .webinar-status.live { background:#EF4444;color:#fff;animation:pulse 2s infinite; }
+    .webinar-status.upcoming { background:var(--accent);color:var(--bg-dark); }
+    .webinar-status.recorded { background:var(--primary);color:#fff; }
+    .webinar-status.finished { background:var(--text-muted);color:#fff; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
+    .webinar-date-badge {
+      position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,.75);color:#fff;
+      padding:8px 14px;border-radius:var(--radius-sm);text-align:center;backdrop-filter:blur(4px);
+    }
+    .webinar-date-day { font-size:1.4rem;font-weight:700;line-height:1; }
+    .webinar-date-month { font-size:.7rem;text-transform:uppercase;letter-spacing:1px;opacity:.8; }
+    .webinar-body { padding:16px; }
+    .webinar-body h4 { font-size:1.05rem;font-weight:600;margin-bottom:6px; }
+    .webinar-body p { font-size:.82rem;color:var(--text-light);margin-bottom:12px;line-height:1.4; }
+    .webinar-meta { display:flex;gap:14px;font-size:.78rem;color:var(--text-muted);margin-bottom:14px;flex-wrap:wrap; }
+    .webinar-meta span { display:flex;align-items:center;gap:4px; }
+    .webinar-instructor { display:flex;align-items:center;gap:10px;margin-bottom:14px; }
+    .webinar-instructor-img { width:36px;height:36px;border-radius:50%;object-fit:cover;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8rem;font-weight:600;flex-shrink:0; }
+    .webinar-instructor-name { font-size:.85rem;font-weight:500; }
+    .webinar-instructor-role { font-size:.72rem;color:var(--text-muted); }
+    .webinar-countdown { font-size:.82rem;color:var(--warning);font-weight:500;margin-bottom:12px; }
+    .webinar-actions { display:flex;gap:8px; }
+    .webinar-btn {
+      flex:1;padding:10px;border-radius:var(--radius-sm);font-size:.85rem;font-weight:500;
+      text-align:center;cursor:pointer;transition:var(--transition);border:none;font-family:inherit;
+    }
+    .webinar-btn.primary { background:var(--primary);color:#fff; }
+    .webinar-btn.primary:hover { background:var(--primary-dark); }
+    .webinar-btn.secondary { background:rgba(10,110,92,.1);color:var(--primary);border:1px solid var(--primary); }
+    @media(max-width:600px) {
+      .webinar-grid { grid-template-columns:1fr; }
+      .webinar-thumb { height:160px; }
+    }
+
     /* === LIBRARY === */
     .library-tabs { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; }
     .lib-tab {
@@ -542,7 +592,7 @@
       </div>
       <div class="nav-item" data-page="courses-live" onclick="showPage('courses-live')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-        Cursos en Línea
+        Webinar
       </div>
       <div class="nav-item" data-page="pdfs" onclick="showPage('pdfs')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -658,14 +708,15 @@
     <!-- COURSES LIVE -->
     <section class="section" id="page-courses-live">
       <div class="page-header">
-        <h1 class="page-title">Cursos en Línea</h1>
+        <h1 class="page-title">Webinar y Cursos en Línea</h1>
         <p class="page-subtitle">Sesiones en vivo con instructores especializados</p>
       </div>
       <div class="search-bar">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" placeholder="Buscar cursos en línea..." id="searchLive" oninput="filterContent('live')">
+        <input type="text" placeholder="Buscar webinars..." id="searchLive" oninput="filterWebinars()">
       </div>
-      <div class="content-list" id="liveList"></div>
+      <div id="upcomingWebinars"></div>
+      <div id="pastWebinars" style="margin-top:32px;"></div>
     </section>
 
     <!-- PDFS -->
@@ -1692,12 +1743,102 @@
     });
   }
   function renderLive() {
-    const container = document.getElementById('liveList');
-    if (siteData.live.length === 0) {
-      container.innerHTML = emptyStateHTML('No hay clases en línea programadas aún');
-      return;
+    const now = new Date();
+    const upcoming = siteData.live.filter(w => new Date(w.date + 'T23:59:59') >= now).sort((a,b) => new Date(a.date) - new Date(b.date));
+    const past = siteData.live.filter(w => new Date(w.date + 'T23:59:59') < now).sort((a,b) => new Date(b.date) - new Date(a.date));
+
+    // Upcoming
+    const upEl = document.getElementById('upcomingWebinars');
+    if (upcoming.length > 0) {
+      upEl.innerHTML = `<h3 style="font-size:1.1rem;font-weight:600;margin-bottom:16px;">📡 Próximos webinars</h3><div class="webinar-grid">${upcoming.map(w => webinarCardHTML(w, 'upcoming')).join('')}</div>`;
+    } else {
+      upEl.innerHTML = '<div class="card" style="text-align:center;padding:30px;color:var(--text-muted);">No hay webinars próximos programados</div>';
     }
-    container.innerHTML = siteData.live.map(c => contentItemHTML(c, 'live')).join('');
+
+    // Past / Recordings
+    const pastEl = document.getElementById('pastWebinars');
+    if (past.length > 0) {
+      pastEl.innerHTML = `<h3 style="font-size:1.1rem;font-weight:600;margin-bottom:16px;">🎬 Grabaciones disponibles</h3><div class="webinar-grid">${past.map(w => webinarCardHTML(w, 'past')).join('')}</div>`;
+    } else {
+      pastEl.innerHTML = '';
+    }
+  }
+
+  function webinarCardHTML(w, type) {
+    const thumbUrl = w.thumbnail ? driveImageUrl(w.thumbnail) : '';
+    const d = new Date(w.date + 'T12:00:00');
+    const day = d.getDate();
+    const month = d.toLocaleDateString('es-MX', { month:'short' });
+    const fullDate = d.toLocaleDateString('es-MX', { day:'numeric', month:'long', year:'numeric' });
+    const now = new Date();
+    const diffDays = Math.ceil((d - now) / (1000*60*60*24));
+    const hasRecording = w.recordingUrl && w.recordingUrl.trim() !== '';
+    const instructorImg = w.instructorImg ? driveImageUrl(w.instructorImg) : '';
+
+    let statusHTML = '';
+    let countdownHTML = '';
+    let actionHTML = '';
+
+    if (type === 'upcoming') {
+      if (diffDays === 0) {
+        statusHTML = '<div class="webinar-status live">🔴 Hoy</div>';
+        countdownHTML = `<div class="webinar-countdown">⏰ Hoy a las ${w.time || '--:--'}</div>`;
+      } else if (diffDays === 1) {
+        statusHTML = '<div class="webinar-status upcoming">Mañana</div>';
+        countdownHTML = `<div class="webinar-countdown">⏰ Mañana a las ${w.time || '--:--'}</div>`;
+      } else if (diffDays <= 7) {
+        statusHTML = '<div class="webinar-status upcoming">Próximamente</div>';
+        countdownHTML = `<div class="webinar-countdown">⏰ Faltan ${diffDays} días</div>`;
+      } else {
+        statusHTML = '<div class="webinar-status upcoming">Próximamente</div>';
+      }
+      actionHTML = w.link ? `<button class="webinar-btn primary" onclick="joinLive('${w.link}')">Unirse al webinar</button>` : `<button class="webinar-btn secondary" disabled style="opacity:.6;cursor:default;">Enlace próximamente</button>`;
+    } else {
+      if (hasRecording) {
+        statusHTML = '<div class="webinar-status recorded">Grabación</div>';
+        actionHTML = `<button class="webinar-btn primary" onclick="openVideo('${w.title.replace(/'/g,"\\'")}','${w.recordingUrl}')">▶ Ver grabación</button>`;
+      } else {
+        statusHTML = '<div class="webinar-status finished">Finalizado</div>';
+        actionHTML = `<button class="webinar-btn secondary" disabled style="opacity:.5;cursor:default;">Sin grabación</button>`;
+      }
+    }
+
+    return `
+      <div class="webinar-card" data-title="${w.title.toLowerCase()}">
+        <div class="webinar-thumb">
+          ${thumbUrl ? `<img src="${thumbUrl}" alt="${w.title}">` : '<svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1.5" width="48"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>'}
+          ${statusHTML}
+          <div class="webinar-date-badge">
+            <div class="webinar-date-day">${day}</div>
+            <div class="webinar-date-month">${month}</div>
+          </div>
+        </div>
+        <div class="webinar-body">
+          <h4>${w.title} ${w.badge && type==='upcoming' ? `<span style="background:var(--accent);color:var(--bg-dark);padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:600;margin-left:4px;">${w.badge}</span>` : ''}</h4>
+          <p>${w.desc || ''}</p>
+          ${w.instructor ? `
+            <div class="webinar-instructor">
+              <div class="webinar-instructor-img" ${instructorImg ? `style="background:none;"><img src="${instructorImg}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : `>${(w.instructor||'?')[0].toUpperCase()}`}</div>
+              <div>
+                <div class="webinar-instructor-name">${w.instructor}</div>
+                ${w.instructorRole ? `<div class="webinar-instructor-role">${w.instructorRole}</div>` : ''}
+              </div>
+            </div>` : ''}
+          <div class="webinar-meta">
+            <span>📅 ${fullDate}</span>
+            ${w.time ? `<span>🕐 ${w.time} hrs</span>` : ''}
+          </div>
+          ${countdownHTML}
+          <div class="webinar-actions">${actionHTML}</div>
+        </div>
+      </div>`;
+  }
+
+  function filterWebinars() {
+    const q = document.getElementById('searchLive').value.toLowerCase();
+    document.querySelectorAll('.webinar-card').forEach(card => {
+      card.style.display = card.dataset.title.includes(q) ? '' : 'none';
+    });
   }
   function renderPdfs() {
     const container = document.getElementById('pdfsList');
