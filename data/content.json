@@ -1,127 +1,23 @@
 {
   "stats": {
-    "courses": 7,
-    "pdfs": 5,
-    "live": 3,
-    "members": 87
+    "courses": 0,
+    "pdfs": 6,
+    "live": 4,
+    "members": 10
   },
-  "courses": [
-    {
-      "id": 1776134913440,
-      "title": "Pilates terapéutico aplicado a fisioterapia   ",
-      "desc": "Curso nuevo ",
-      "category": "fisioterapia",
-      "date": "2026-04-14",
-      "badge": "Nuevo",
-      "thumbnail": "https://drive.google.com/file/d/1nynSNIQ25yF65mThT78nor7PYZgpNgxG/view?usp=drive_link",
-      "lessons": [
-        {
-          "id": 1776134913440,
-          "title": "Clase 1",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1pSouLT1r3cJV53Pi7mjz7xnlWOXCZz-C/view?usp=drive_link"
-        },
-        {
-          "id": 1776134913441,
-          "title": "Clase 2",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1Pw9B9qoq9SzGqqjyYksRyJ3zCWFEvNmH/view?usp=drive_link"
-        },
-        {
-          "id": 1776134913442,
-          "title": "Clase 3",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1-y-sAFwOvJpAKdDzftlbGgOkjYsbFCz3/view?usp=drive_link"
-        },
-        {
-          "id": 1776134913443,
-          "title": "Clase 4",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/12gRB81CZpzAPh5eW-shQTI7LYxQ9eIrM/view?usp=drive_link"
-        },
-        {
-          "id": 1776134913444,
-          "title": "Clase 5",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1hxuh9VUcspj3DggWwrhyBUBf66gaWKb9/view?usp=drive_link"
-        }
-      ],
-      "type": "video"
-    },
-    {
-      "id": 1,
-      "title": "Fundamentos de Fisioterapia Deportiva",
-      "desc": "Aprende las bases del tratamiento deportivo profesional",
-      "category": "fisioterapia",
-      "duration": "2h 30min",
-      "date": "2026-04-01",
-      "badge": "Nuevo",
-      "videoUrl": "",
-      "thumbnail": "",
-      "type": "video"
-    },
-    {
-      "id": 2,
-      "title": "Anatomía Funcional del Miembro Superior",
-      "desc": "Estudio detallado de la anatomía aplicada",
-      "category": "anatomia",
-      "duration": "1h 45min",
-      "date": "2026-03-28",
-      "badge": "",
-      "videoUrl": "",
-      "thumbnail": "",
-      "type": "video"
-    },
-    {
-      "id": 3,
-      "title": "Rehabilitación Post-Quirúrgica de Rodilla",
-      "desc": "Protocolos actualizados de recuperación",
-      "category": "rehabilitacion",
-      "duration": "3h 10min",
-      "date": "2026-03-20",
-      "badge": "Popular",
-      "videoUrl": "",
-      "thumbnail": "",
-      "type": "video"
-    },
-    {
-      "id": 4,
-      "title": "Vendaje Neuromuscular Avanzado",
-      "desc": "Técnicas de kinesiotaping para profesionales",
-      "category": "especializacion",
-      "duration": "2h 00min",
-      "date": "2026-03-15",
-      "badge": "",
-      "videoUrl": "",
-      "thumbnail": "",
-      "type": "video"
-    },
-    {
-      "id": 5,
-      "title": "Electroterapia Clínica",
-      "desc": "Uso correcto de equipos de electroterapia",
-      "category": "fisioterapia",
-      "duration": "1h 50min",
-      "date": "2026-03-10",
-      "badge": "",
-      "videoUrl": "",
-      "thumbnail": "",
-      "type": "video"
-    },
-    {
-      "id": 6,
-      "title": "Pilates Terapéutico",
-      "desc": "Método Pilates aplicado a la rehabilitación",
-      "category": "rehabilitacion",
-      "duration": "2h 20min",
-      "date": "2026-03-05",
-      "badge": "Nuevo",
-      "videoUrl": "",
-      "thumbnail": "",
-      "type": "video"
-    }
-  ],
+  "courses": [],
   "live": [
+    {
+      "id": 1775786861193,
+      "title": "Fisioterapia pulmonar Hipoxemia 3",
+      "desc": "en vivooo",
+      "category": "fisioterapia",
+      "date": "2026-04-09",
+      "time": "20:05",
+      "badge": "hoy mismo",
+      "link": "https://meet.google.com/kgj-ncwc-zwj",
+      "type": "live"
+    },
     {
       "id": 101,
       "title": "Masterclass: Punción Seca",
@@ -157,6 +53,16 @@
     }
   ],
   "pdfs": [
+    {
+      "id": 1775787573229,
+      "title": "Presentación para nuevos usuarios",
+      "desc": ":) holita helow bonyornoo",
+      "category": "rehabilitacion",
+      "size": "153 KB",
+      "date": "2026-04-10",
+      "fileUrl": "https://drive.google.com/file/d/1_fqzKYV1w5pzDBZuR66bPVm5g04lYqGN/view?usp=drive_link",
+      "type": "pdf"
+    },
     {
       "id": 201,
       "title": "Guía de Evaluación Postural",

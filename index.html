@@ -1547,22 +1547,25 @@
     document.getElementById('statMembers').textContent = siteData.stats.members || '0';
     const container = document.getElementById('recentCourses');
     const recent = [...siteData.courses].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0,3);
-    container.innerHTML = recent.map(c => `
-      <div class="course-card" onclick="openVideo('${c.title}','${c.videoUrl || ''}')">
+    container.innerHTML = recent.map(c => {
+      const lessonCount = (c.lessons && c.lessons.length) || 0;
+      return `
+      <div class="course-card" onclick="showPage('library');setTimeout(()=>openCourseDetail(${c.id}),100)">
         <div class="course-thumb">
-          ${c.thumbnail ? `<img src="${driveImageUrl(c.thumbnail)}" alt="${c.title}">` : '▶'}
+          ${c.thumbnail ? `<img src="${driveImageUrl(c.thumbnail)}" alt="${c.title}">` : '📚'}
           ${c.badge ? `<div class="course-badge">${c.badge}</div>` : ''}
+          ${lessonCount > 0 ? `<div class="course-lesson-count">${lessonCount} clase${lessonCount>1?'s':''}</div>` : ''}
         </div>
         <div class="course-info">
           <h4>${c.title}</h4>
           <p>${c.desc}</p>
           <div class="course-meta">
-            <span>${c.duration || ''}</span>
+            <span>${lessonCount > 0 ? lessonCount+' clases' : ''}</span>
             <button class="course-btn">Ver curso</button>
           </div>
         </div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
   }
   function renderLibrary() {
     const cats = [...new Set(siteData.courses.map(c => c.category).filter(Boolean))];
