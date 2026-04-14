@@ -3,7 +3,7 @@
     "courses": 7,
     "pdfs": 6,
     "live": 4,
-    "members": 30
+    "members": 87
   },
   "courses": [
     {
@@ -241,6 +241,17 @@
       "type": "pdf"
     }
   ],
-  "members": [],
-  "news": []
+  "news": [
+    {
+      "id": 1776184606384,
+      "title": "El paciente necesita que la especialización en Fisioterapia esté regulado",
+      "excerpt": "Aurora Araújo desgrana los beneficios que tiene la reclasificación de su profesión y la regulación de la especialización",
+      "content": "Las noticias actuales de fisioterapia destacan la integración de tecnología, como realidad virtual para la rehabilitación, el auge de nuevas técnicas de regeneración de tendones y una mayor especialización profesional en áreas neurológicas y deportivas. \nA nivel internacional, España será sede del VI Congreso Europeo y se enfoca en la práctica avanzada.\n\nNoticias y tendencias destacadas:\n\nInnovación tecnológica: La realidad virtual (RV) y aumentada (RA) transforman la fisioterapia en sesiones inmersivas y efectivas.\nNuevas técnicas: Desarrollo de terapias avanzadas para regenerar tendones y tratar lesiones crónicas de rodilla.\n\nFisioterapia en España: Práctica avanzada, formación en dolor inguinal y, según la Asociación Española de Fisioterapeutas, el próximo VI Congreso Europeo de Fisioterapia.\n\nReconocimiento profesional: Redacción Médica señala el avance hacia el Q1 científico en la fisioterapia española.\n\nPrevención y salud: El uso de pilates para la cervicalgia y la importancia del ejercicio terapéutico en el manejo de enfermedades como la ELA.\n\nFormación y empleo: Según Milenio, la oferta educativa y la demanda de fisioterapeutas está aumentando.",
+      "category": "Noticias",
+      "thumbnail": "https://drive.google.com/file/d/1nynSNIQ25yF65mThT78nor7PYZgpNgxG/view?usp=drive_link",
+      "externalLink": "",
+      "date": "2026-04-14"
+    }
+  ],
+  "members": []
 }
