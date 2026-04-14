@@ -1198,6 +1198,49 @@
 </div>
 
 <!-- INACTIVE MEMBERSHIP SCREEN -->
+<!-- PAYWALL SCREEN — Registered but not paid -->
+<div id="paywallScreen" style="display:none;position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,var(--bg-dark) 0%,#0A3D32 100%);align-items:center;justify-content:center;padding:20px;overflow-y:auto;">
+  <div style="text-align:center;color:#fff;max-width:520px;animation:fadeUp .6s ease;padding:40px 0;">
+    <div style="width:80px;height:80px;border-radius:50%;background:rgba(195,163,97,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.2rem;">🔒</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:6px;">¡Bienvenido, <span id="paywall-name">!</span>!</h2>
+    <p style="color:rgba(255,255,255,.55);font-size:.92rem;line-height:1.6;margin-bottom:28px;">Tu cuenta está lista. Elige un plan para activar tu membresía y acceder a todo el contenido exclusivo del Club FisioTeck.</p>
+    
+    <p style="color:#C3A361;font-size:.8rem;margin-bottom:18px;background:rgba(195,163,97,.1);padding:10px 16px;border-radius:8px;border:1px solid rgba(195,163,97,.2);display:inline-block;">
+      ⚠️ <strong>Importante:</strong> Al pagar en Shopify, usa el mismo correo: <strong id="paywall-email"></strong>
+    </p>
+
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;">
+      <!-- PLAN MENSUAL -->
+      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:28px 24px;width:220px;text-align:center;transition:all .3s ease;" onmouseover="this.style.borderColor='#C3A361';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='rgba(255,255,255,.12)';this.style.transform='translateY(0)'">
+        <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.45);margin-bottom:8px;">Mensual</div>
+        <div style="font-family:'Playfair Display',serif;font-size:2.2rem;color:#fff;margin-bottom:4px;">$249</div>
+        <div style="font-size:.8rem;color:rgba(255,255,255,.4);margin-bottom:20px;">MXN / mes</div>
+        <a id="paywall-btn-mensual" href="https://pfueck-wm.myshopify.com/products/membresia-club-fisioteck-plan-mensual" target="_blank" style="display:block;padding:12px;border-radius:10px;background:rgba(195,163,97,.15);color:#C3A361;font-family:inherit;font-size:.88rem;font-weight:600;text-decoration:none;border:1px solid rgba(195,163,97,.3);transition:all .25s ease;" onmouseover="this.style.background='#C3A361';this.style.color='#0F2A22'" onmouseout="this.style.background='rgba(195,163,97,.15)';this.style.color='#C3A361'">
+          Elegir Mensual
+        </a>
+      </div>
+      <!-- PLAN ANUAL -->
+      <div style="background:rgba(195,163,97,.08);border:2px solid #C3A361;border-radius:16px;padding:28px 24px;width:220px;text-align:center;position:relative;transition:all .3s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#C3A361;color:#0F2A22;font-size:.7rem;font-weight:700;padding:4px 14px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;">Ahorra 17%</div>
+        <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.45);margin-bottom:8px;">Anual</div>
+        <div style="font-family:'Playfair Display',serif;font-size:2.2rem;color:#fff;margin-bottom:4px;">$1,999</div>
+        <div style="font-size:.8rem;color:rgba(255,255,255,.4);margin-bottom:20px;">MXN / año</div>
+        <a id="paywall-btn-anual" href="https://pfueck-wm.myshopify.com/products/membresia-club-fisioteck-plan-anual" target="_blank" style="display:block;padding:12px;border-radius:10px;background:#C3A361;color:#0F2A22;font-family:inherit;font-size:.88rem;font-weight:700;text-decoration:none;border:1px solid #C3A361;transition:all .25s ease;" onmouseover="this.style.background='#d4b872'" onmouseout="this.style.background='#C3A361'">
+          Elegir Anual ⭐
+        </a>
+      </div>
+    </div>
+
+    <p style="color:rgba(255,255,255,.35);font-size:.78rem;margin-bottom:20px;">Después de pagar, regresa aquí y recarga la página. Tu acceso se activa automáticamente.</p>
+
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button onclick="location.reload()" style="padding:10px 22px;border-radius:8px;background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.15);font-family:inherit;font-size:.85rem;cursor:pointer;transition:all .25s ease;" onmouseover="this.style.background='rgba(255,255,255,.15)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">🔄 Ya pagué, recargar</button>
+      <button onclick="auth.signOut().then(()=>location.reload())" style="padding:10px 22px;border-radius:8px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.1);font-family:inherit;font-size:.85rem;cursor:pointer;transition:all .25s ease;">Cerrar sesión</button>
+    </div>
+  </div>
+</div>
+
+<!-- INACTIVE SCREEN -->
 <div id="inactiveScreen" style="display:none;position:fixed;inset:0;z-index:9998;background:linear-gradient(135deg,var(--bg-dark) 0%,#0A3D32 100%);align-items:center;justify-content:center;padding:20px;">
   <div style="text-align:center;color:#fff;max-width:440px;animation:fadeUp .6s ease;">
     <div style="width:80px;height:80px;border-radius:50%;background:rgba(239,68,68,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.2rem;">⚠️</div>
@@ -1309,12 +1352,12 @@
         await db.collection('members').doc(cred.user.uid).set({
           name, email, phone:'', specialty:'',
           startDate: new Date().toISOString().split('T')[0],
-          status: 'active',
+          status: 'registered',
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         document.getElementById('splash-screen').classList.add('hidden');
-        loadUserProfile();
-        showToast('¡Bienvenido al Club FisioTeck, ' + name.split(' ')[0] + '!');
+        showPaywall(name.split(' ')[0], email);
+        showToast('¡Cuenta creada! Ahora elige tu plan para activar tu membresía.');
       })
       .catch(err => {
         let msg = 'Error al crear cuenta';
@@ -1329,6 +1372,13 @@
         toggleRegisterBtn();
       });
   }
+  function showPaywall(name, email) {
+    document.getElementById('paywall-name').textContent = name || '';
+    document.getElementById('paywall-email').textContent = email || '';
+    document.getElementById('paywallScreen').style.display = 'flex';
+    document.getElementById('inactiveScreen').style.display = 'none';
+  }
+
   function showRegError(msg) {
     const el = document.getElementById('register-error');
     el.textContent = msg; el.style.display = 'block';
@@ -1349,13 +1399,26 @@
             phone: user.phoneNumber || '',
             specialty: '',
             startDate: new Date().toISOString().split('T')[0],
-            status: 'active',
+            status: 'registered',
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           });
+          document.getElementById('splash-screen').classList.add('hidden');
+          showPaywall((user.displayName || '').split(' ')[0], user.email);
+          showToast('¡Cuenta creada! Ahora elige tu plan para activar tu membresía.');
+        } else {
+          // Existing user — check status
+          const data = doc.data();
+          const st = data.status || '';
+          document.getElementById('splash-screen').classList.add('hidden');
+          if (st === 'active' || st === 'paid') {
+            loadUserProfile();
+            showToast('¡Bienvenido, ' + (user.displayName || '').split(' ')[0] + '!');
+          } else if (st === 'registered') {
+            showPaywall((user.displayName || '').split(' ')[0], user.email);
+          } else {
+            document.getElementById('inactiveScreen').style.display = 'flex';
+          }
         }
-        document.getElementById('splash-screen').classList.add('hidden');
-        loadUserProfile();
-        showToast('¡Bienvenido, ' + (user.displayName || '').split(' ')[0] + '!');
       })
       .catch(err => {
         if (err.code === 'auth/popup-blocked') {
@@ -2465,35 +2528,43 @@
               await docRef.update({ status: 'inactive' });
               memberData.status = 'inactive';
               document.getElementById('splash-screen').classList.add('hidden');
+              document.getElementById('paywallScreen').style.display = 'none';
               document.getElementById('inactiveScreen').style.display = 'flex';
               return;
             }
             // Still within access period — allow
             document.getElementById('splash-screen').classList.add('hidden');
             document.getElementById('inactiveScreen').style.display = 'none';
+            document.getElementById('paywallScreen').style.display = 'none';
             loadUserProfile();
           } else if (memberData && (status === 'active' || status === 'paid')) {
             document.getElementById('splash-screen').classList.add('hidden');
             document.getElementById('inactiveScreen').style.display = 'none';
+            document.getElementById('paywallScreen').style.display = 'none';
             loadUserProfile();
           } else if (memberData && status === 'inactive') {
             document.getElementById('splash-screen').classList.add('hidden');
+            document.getElementById('paywallScreen').style.display = 'none';
             document.getElementById('inactiveScreen').style.display = 'flex';
-          } else {
-            // New user or no status — allow access
+          } else if (memberData && status === 'registered') {
+            // Registered but hasn't paid — show paywall
             document.getElementById('splash-screen').classList.add('hidden');
-            document.getElementById('inactiveScreen').style.display = 'none';
-            loadUserProfile();
+            showPaywall((memberData.name || user.displayName || '').split(' ')[0], memberData.email || user.email);
+          } else {
+            // No status or unknown — show paywall (block by default)
+            document.getElementById('splash-screen').classList.add('hidden');
+            showPaywall((user.displayName || '').split(' ')[0], user.email);
           }
         } catch(e) {
-          // Firestore error — allow access as fallback
+          // Firestore error — show paywall as safe fallback
           console.error('Auth state error:', e);
           document.getElementById('splash-screen').classList.add('hidden');
-          loadUserProfile();
+          showPaywall((user.displayName || '').split(' ')[0], user.email);
         }
       } else {
         document.getElementById('splash-screen').classList.remove('hidden');
         document.getElementById('inactiveScreen').style.display = 'none';
+        document.getElementById('paywallScreen').style.display = 'none';
       }
     });
     // Enter key on login
