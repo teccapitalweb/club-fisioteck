@@ -1,7 +1,7 @@
 {
   "stats": {
     "courses": 7,
-    "pdfs": 5,
+    "pdfs": 6,
     "live": 4,
     "members": 87
   },
@@ -179,6 +179,17 @@
     }
   ],
   "pdfs": [
+    {
+      "id": 1776144408153,
+      "title": "Yoga para flexibilidad y fuerza ",
+      "desc": "Pdf Premium para los nuevos usuarios ",
+      "category": "rehabilitacion",
+      "size": "5.2 MB",
+      "date": "2026-04-14",
+      "fileUrl": "https://drive.google.com/file/d/1T31FCG_148R3mo6OqvoOXOoARmr5cIf2/view?usp=drive_link",
+      "thumbnail": "https://drive.google.com/file/d/1o11Jdjb26Xwy4GyBv4wA6mRDE5eX7PuY/view?usp=drive_link",
+      "type": "pdf"
+    },
     {
       "id": 201,
       "title": "Guía de Evaluación Postural",
