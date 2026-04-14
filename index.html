@@ -177,30 +177,71 @@
     .stat-number { font-size:2rem; font-weight:700; color:var(--primary); }
     .stat-label { font-size:.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-top:4px; }
     .recent-section h3 { font-size:1.1rem; font-weight:600; margin-bottom:16px; }
-    .course-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:20px; }
+    .course-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:24px; }
     .course-card {
       background:var(--bg-card); border-radius:var(--radius); overflow:hidden; border:1px solid var(--border);
-      transition:var(--transition);
+      transition:var(--transition); cursor:pointer;
     }
     .course-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); }
     .course-thumb {
-      height:160px; background:linear-gradient(135deg,var(--primary),var(--primary-dark));
-      display:flex; align-items:center; justify-content:center; color:#fff; font-size:3rem; position:relative;
+      height:180px; background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+      display:flex; align-items:center; justify-content:center; color:#fff; font-size:3rem; position:relative; overflow:hidden;
     }
     .course-thumb img { width:100%; height:100%; object-fit:cover; }
     .course-badge {
       position:absolute; top:12px; right:12px; background:var(--accent); color:var(--bg-dark);
       padding:4px 10px; border-radius:20px; font-size:.7rem; font-weight:600; text-transform:uppercase;
     }
+    .course-lesson-count {
+      position:absolute; bottom:12px; left:12px; background:rgba(0,0,0,.7); color:#fff;
+      padding:4px 10px; border-radius:20px; font-size:.72rem; font-weight:500; backdrop-filter:blur(4px);
+    }
     .course-info { padding:16px; }
-    .course-info h4 { font-size:1rem; font-weight:600; margin-bottom:6px; }
-    .course-info p { font-size:.82rem; color:var(--text-light); margin-bottom:12px; line-height:1.4; }
+    .course-info h4 { font-size:1.05rem; font-weight:600; margin-bottom:6px; }
+    .course-info p { font-size:.82rem; color:var(--text-light); margin-bottom:12px; line-height:1.4; display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden; }
     .course-meta { display:flex; justify-content:space-between; align-items:center; font-size:.78rem; color:var(--text-muted); }
     .course-btn {
       background:var(--primary); color:#fff; padding:8px 16px; border-radius:var(--radius-sm);
       font-size:.82rem; font-weight:500; transition:var(--transition);
     }
     .course-btn:hover { background:var(--primary-dark); }
+    /* Course detail */
+    .course-detail-hero {
+      display:flex; gap:24px; align-items:start; flex-wrap:wrap;
+    }
+    .course-detail-thumb {
+      width:100%; max-width:400px; aspect-ratio:16/9; border-radius:var(--radius); overflow:hidden;
+      background:linear-gradient(135deg,var(--primary),var(--primary-dark)); display:flex;align-items:center;justify-content:center;color:#fff;font-size:4rem;
+    }
+    .course-detail-thumb img { width:100%;height:100%;object-fit:cover; }
+    .course-detail-info { flex:1; min-width:250px; }
+    .course-detail-info h2 { font-size:1.5rem; font-weight:700; margin-bottom:8px; }
+    .course-detail-info p { color:var(--text-light); line-height:1.6; margin-bottom:16px; }
+    .course-detail-stats { display:flex; gap:20px; font-size:.85rem; color:var(--text-muted); margin-bottom:16px; }
+    .course-detail-stats span { display:flex;align-items:center;gap:6px; }
+    .lesson-list { display:flex; flex-direction:column; gap:8px; }
+    .lesson-item {
+      display:flex; align-items:center; gap:14px; padding:14px 18px;
+      background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm);
+      cursor:pointer; transition:var(--transition);
+    }
+    .lesson-item:hover { border-color:var(--primary); background:rgba(10,110,92,.03); }
+    .lesson-item.playing { border-color:var(--primary); background:rgba(10,110,92,.08); }
+    .lesson-num {
+      width:32px;height:32px;border-radius:50%;background:rgba(10,110,92,.1);color:var(--primary);
+      display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:600;flex-shrink:0;
+    }
+    .lesson-item.playing .lesson-num { background:var(--primary);color:#fff; }
+    .lesson-title { flex:1; font-size:.9rem; font-weight:500; }
+    .lesson-duration { font-size:.78rem; color:var(--text-muted); flex-shrink:0; }
+    @media(max-width:600px) {
+      .course-grid { grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:14px; }
+      .course-thumb { height:130px; }
+      .course-info { padding:12px; }
+      .course-info h4 { font-size:.9rem; }
+      .course-detail-hero { flex-direction:column; }
+      .course-detail-thumb { max-width:100%; }
+    }
 
     /* === LIBRARY === */
     .library-tabs { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; }
@@ -596,10 +637,22 @@
       </div>
       <div class="search-bar">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" placeholder="Buscar cursos..." id="searchLibrary" oninput="filterContent('library')">
+        <input type="text" placeholder="Buscar cursos..." id="searchLibrary" oninput="filterCourses()">
       </div>
       <div class="library-tabs" id="libraryTabs"></div>
-      <div class="content-list" id="libraryList"></div>
+      <div class="course-grid" id="libraryGrid"></div>
+    </section>
+
+    <!-- COURSE DETAIL -->
+    <section class="section" id="page-course-detail" style="display:none;">
+      <div style="margin-bottom:20px;">
+        <button onclick="backToLibrary()" style="background:none;border:none;color:var(--primary);font-size:.9rem;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:inherit;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18"><polyline points="15 18 9 12 15 6"/></svg>
+          Volver a Biblioteca
+        </button>
+      </div>
+      <div id="courseDetailHeader"></div>
+      <div id="courseDetailLessons" style="margin-top:24px;"></div>
     </section>
 
     <!-- COURSES LIVE -->
@@ -1512,7 +1565,6 @@
     `).join('');
   }
   function renderLibrary() {
-    // Build dynamic category tabs
     const cats = [...new Set(siteData.courses.map(c => c.category).filter(Boolean))];
     const tabsContainer = document.getElementById('libraryTabs');
     let tabsHTML = `<button class="lib-tab active" onclick="filterCategory(this,'all')">Todos</button>`;
@@ -1521,9 +1573,104 @@
       tabsHTML += `<button class="lib-tab" onclick="filterCategory(this,'${cat}')">${label}</button>`;
     });
     tabsContainer.innerHTML = tabsHTML;
-    // Render list
-    const container = document.getElementById('libraryList');
-    container.innerHTML = siteData.courses.map(c => contentItemHTML(c, 'video')).join('');
+    renderCourseGrid(siteData.courses);
+  }
+  function renderCourseGrid(courses) {
+    const container = document.getElementById('libraryGrid');
+    if (!courses.length) {
+      container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);grid-column:1/-1;">No hay cursos disponibles aún</div>';
+      return;
+    }
+    container.innerHTML = courses.map(c => {
+      const thumbUrl = c.thumbnail ? driveImageUrl(c.thumbnail) : '';
+      const lessonCount = (c.lessons && c.lessons.length) || 0;
+      const totalDuration = c.lessons ? c.lessons.reduce((acc, l) => acc + (l.duration || ''), '') : (c.duration || '');
+      return `
+        <div class="course-card" onclick="openCourseDetail(${c.id})" data-category="${c.category||'all'}" data-title="${c.title.toLowerCase()}">
+          <div class="course-thumb">
+            ${thumbUrl ? `<img src="${thumbUrl}" alt="${c.title}">` : '📚'}
+            ${c.badge ? `<div class="course-badge">${c.badge}</div>` : ''}
+            ${lessonCount > 0 ? `<div class="course-lesson-count">${lessonCount} clase${lessonCount>1?'s':''}</div>` : ''}
+          </div>
+          <div class="course-info">
+            <h4>${c.title}</h4>
+            <p>${c.desc || ''}</p>
+            <div class="course-meta">
+              <span>${c.category ? c.category.charAt(0).toUpperCase()+c.category.slice(1) : ''}</span>
+              <span>${lessonCount > 0 ? lessonCount+' clases' : (c.duration || '')}</span>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+  let currentCourseId = null;
+  function openCourseDetail(courseId) {
+    const course = siteData.courses.find(c => c.id === courseId);
+    if (!course) return;
+    currentCourseId = courseId;
+    const thumbUrl = course.thumbnail ? driveImageUrl(course.thumbnail) : '';
+    const lessons = course.lessons || [];
+    const totalLessons = lessons.length;
+
+    // Header
+    document.getElementById('courseDetailHeader').innerHTML = `
+      <div class="course-detail-hero">
+        <div class="course-detail-thumb">
+          ${thumbUrl ? `<img src="${thumbUrl}" alt="${course.title}">` : '📚'}
+        </div>
+        <div class="course-detail-info">
+          <h2>${course.title}</h2>
+          ${course.badge ? `<span style="display:inline-block;background:var(--accent);color:var(--bg-dark);padding:4px 12px;border-radius:20px;font-size:.75rem;font-weight:600;margin-bottom:12px;">${course.badge}</span>` : ''}
+          <p>${course.desc || ''}</p>
+          <div class="course-detail-stats">
+            <span>📚 ${totalLessons} clase${totalLessons!==1?'s':''}</span>
+            <span>📂 ${course.category ? course.category.charAt(0).toUpperCase()+course.category.slice(1) : ''}</span>
+          </div>
+          ${totalLessons > 0 ? `<button class="course-btn" onclick="playLesson(0)" style="font-size:.9rem;padding:10px 24px;">▶ Comenzar curso</button>` : '<p style="color:var(--text-muted);font-size:.85rem;">Próximamente se agregarán las clases.</p>'}
+        </div>
+      </div>`;
+
+    // Lessons
+    if (totalLessons > 0) {
+      document.getElementById('courseDetailLessons').innerHTML = `
+        <h3 style="font-size:1.1rem;font-weight:600;margin-bottom:16px;">Contenido del curso (${totalLessons} clases)</h3>
+        <div class="lesson-list">
+          ${lessons.map((l, i) => `
+            <div class="lesson-item" id="lesson-${i}" onclick="playLesson(${i})">
+              <div class="lesson-num">${i+1}</div>
+              <div class="lesson-title">${l.title}</div>
+              <div class="lesson-duration">${l.duration || ''}</div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" width="20" style="flex-shrink:0;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </div>
+          `).join('')}
+        </div>`;
+    } else {
+      document.getElementById('courseDetailLessons').innerHTML = '';
+    }
+
+    // Show detail, hide library
+    document.getElementById('page-library').style.display = 'none';
+    document.getElementById('page-course-detail').style.display = 'block';
+  }
+  function playLesson(index) {
+    const course = siteData.courses.find(c => c.id === currentCourseId);
+    if (!course || !course.lessons || !course.lessons[index]) return;
+    const lesson = course.lessons[index];
+    document.querySelectorAll('.lesson-item').forEach(el => el.classList.remove('playing'));
+    document.getElementById('lesson-'+index)?.classList.add('playing');
+    openVideo(lesson.title, lesson.videoUrl || '');
+  }
+  function backToLibrary() {
+    document.getElementById('page-course-detail').style.display = 'none';
+    document.getElementById('page-library').style.display = 'block';
+    currentCourseId = null;
+  }
+  function filterCourses() {
+    const search = document.getElementById('searchLibrary').value.toLowerCase();
+    document.querySelectorAll('#libraryGrid .course-card').forEach(card => {
+      const title = card.dataset.title || '';
+      card.style.display = title.includes(search) ? '' : 'none';
+    });
   }
   function renderLive() {
     const container = document.getElementById('liveList');
@@ -1636,10 +1783,16 @@
 
   // ===== NAVIGATION =====
   function showPage(page) {
+    // Reset course detail if navigating away
+    document.getElementById('page-course-detail').style.display = 'none';
+    document.getElementById('page-library').style.display = '';
+    currentCourseId = null;
+
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.getElementById('page-' + page).classList.add('active');
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.querySelector(`.nav-item[data-page="${page}"]`).classList.add('active');
+    const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
+    if (navItem) navItem.classList.add('active');
     if (window.innerWidth <= 768) toggleSidebar();
     window.scrollTo(0,0);
   }
@@ -1654,7 +1807,12 @@
     currentCategory = cat;
     document.querySelectorAll('.lib-tab').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
-    filterContent('library');
+    const query = document.getElementById('searchLibrary').value.toLowerCase();
+    document.querySelectorAll('#libraryGrid .course-card').forEach(card => {
+      const matchCat = cat === 'all' || card.dataset.category === cat;
+      const matchSearch = !query || card.dataset.title.includes(query);
+      card.style.display = (matchCat && matchSearch) ? '' : 'none';
+    });
   }
   function filterContent(section) {
     const searchEl = section === 'library' ? 'searchLibrary' : section === 'live' ? 'searchLive' : 'searchPdfs';
