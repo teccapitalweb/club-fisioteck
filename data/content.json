@@ -1,35 +1,11 @@
 {
   "stats": {
-    "courses": 8,
-    "pdfs": 6,
-    "live": 4,
-    "members": 10
+    "courses": 6,
+    "pdfs": 5,
+    "live": 3,
+    "members": 87
   },
   "courses": [
-    {
-      "id": 1776095113195,
-      "title": "Principios de estimulación temprana ",
-      "desc": "curso nuevo",
-      "category": "rehabilitacion",
-      "duration": "1 hora ",
-      "date": "2026-04-13",
-      "badge": "",
-      "videoUrl": "https://drive.google.com/file/d/1xkABSHIXOfsJWu5N-t99vsOc-BUVQ7de/view?usp=drive_link",
-      "thumbnail": "https://drive.google.com/file/d/12y-nsEU6VPljnFFWbu3omYpgpv2d7j0O/view?usp=drive_link",
-      "type": "video"
-    },
-    {
-      "id": 1775785869814,
-      "title": "Fisioterapia pulmonar Hipoxemia 2",
-      "desc": "pruebita de amor ",
-      "category": "fisioterapia",
-      "duration": "1 hora",
-      "date": "2026-04-10",
-      "badge": "nuevo",
-      "videoUrl": "https://drive.google.com/file/d/1ItvjJd8bKbF8PzSol2jrBa8brUqS3F5W/view?usp=sharing",
-      "thumbnail": "https://drive.google.com/file/d/1nynSNIQ25yF65mThT78nor7PYZgpNgxG/view?usp=drive_link",
-      "type": "video"
-    },
     {
       "id": 1,
       "title": "Fundamentos de Fisioterapia Deportiva",
@@ -105,17 +81,6 @@
   ],
   "live": [
     {
-      "id": 1775786861193,
-      "title": "Fisioterapia pulmonar Hipoxemia 3",
-      "desc": "en vivooo",
-      "category": "fisioterapia",
-      "date": "2026-04-09",
-      "time": "20:05",
-      "badge": "hoy mismo ",
-      "link": "https://meet.google.com/kgj-ncwc-zwj",
-      "type": "live"
-    },
-    {
       "id": 101,
       "title": "Masterclass: Punción Seca",
       "desc": "Sesión en vivo con el Dr. García",
@@ -150,16 +115,6 @@
     }
   ],
   "pdfs": [
-    {
-      "id": 1775787573229,
-      "title": "Presentación para nuevos usuarios  ",
-      "desc": ":) holita helow bonyornoo",
-      "category": "rehabilitacion",
-      "size": "153 KB",
-      "date": "2026-04-10",
-      "fileUrl": "https://drive.google.com/file/d/1_fqzKYV1w5pzDBZuR66bPVm5g04lYqGN/view?usp=drive_link",
-      "type": "pdf"
-    },
     {
       "id": 201,
       "title": "Guía de Evaluación Postural",
