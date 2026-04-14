@@ -280,7 +280,7 @@
     .webinar-instructor-name { font-size:.85rem;font-weight:500; }
     .webinar-instructor-role { font-size:.72rem;color:var(--text-muted); }
     .webinar-countdown { font-size:.82rem;color:var(--warning);font-weight:500;margin-bottom:12px; }
-    .webinar-actions { display:flex;gap:8px; }
+    .webinar-actions { display:flex;flex-direction:column;gap:8px; }
     .webinar-btn {
       flex:1;padding:10px;border-radius:var(--radius-sm);font-size:.85rem;font-weight:500;
       text-align:center;cursor:pointer;transition:var(--transition);border:none;font-family:inherit;
@@ -1793,6 +1793,7 @@
         statusHTML = '<div class="webinar-status upcoming">Próximamente</div>';
       }
       actionHTML = w.link ? `<button class="webinar-btn primary" onclick="joinLive('${w.link}')">Unirse al webinar</button>` : `<button class="webinar-btn secondary" disabled style="opacity:.6;cursor:default;">Enlace próximamente</button>`;
+      actionHTML += `<button class="webinar-btn secondary" onclick="event.stopPropagation();agendarWebinar('${w.title.replace(/'/g,"\\'")}','${w.date}','${w.time||''}','${w.desc?w.desc.replace(/'/g,"\\'"):''}')">📅 Agendar</button>`;
     } else {
       if (hasRecording) {
         statusHTML = '<div class="webinar-status recorded">Grabación</div>';
@@ -1844,6 +1845,39 @@
   function toggleSemblanza(id) {
     const el = document.getElementById(id);
     if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
+  function agendarWebinar(title, date, time, desc) {
+    const hours = time ? time.split(':')[0].padStart(2,'0') : '10';
+    const mins = time ? time.split(':')[1]?.padStart(2,'0') || '00' : '00';
+    const startDate = date.replace(/-/g,'') + 'T' + hours + mins + '00';
+    const endH = String(parseInt(hours) + 1).padStart(2,'0');
+    const endDate = date.replace(/-/g,'') + 'T' + endH + mins + '00';
+    const ics = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Club FisioTeck//Webinar//ES',
+      'BEGIN:VEVENT',
+      'DTSTART;TZID=America/Mexico_City:' + startDate,
+      'DTEND;TZID=America/Mexico_City:' + endDate,
+      'SUMMARY:' + title,
+      'DESCRIPTION:' + (desc || 'Webinar Club FisioTeck'),
+      'LOCATION:En línea - Club FisioTeck',
+      'BEGIN:VALARM',
+      'TRIGGER:-PT30M',
+      'ACTION:DISPLAY',
+      'DESCRIPTION:Tu webinar comienza en 30 minutos',
+      'END:VALARM',
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = title.replace(/[^a-zA-Z0-9áéíóúñ ]/g,'').replace(/ +/g,'_') + '.ics';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Evento descargado. Ábrelo para agregarlo a tu calendario.');
   }
   function renderPdfs() {
     const container = document.getElementById('pdfsList');
