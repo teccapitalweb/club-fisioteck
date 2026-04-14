@@ -1740,6 +1740,10 @@
   function openArticle(id) {
     const article = (siteData.news || []).find(n => n.id === id);
     if (!article) return;
+
+    // Navigate to news page first (handles resetting other pages)
+    showPage('news');
+
     const thumbUrl = article.thumbnail ? driveImageUrl(article.thumbnail) : '';
     const d = new Date(article.date + 'T12:00:00');
     const dateStr = d.toLocaleDateString('es-MX', { day:'numeric', month:'long', year:'numeric' });
