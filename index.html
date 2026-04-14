@@ -1804,7 +1804,7 @@
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
     if (navItem) navItem.classList.add('active');
-    if (window.innerWidth <= 768) toggleSidebar();
+    if (window.innerWidth <= 768 && document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
     window.scrollTo(0,0);
   }
   function toggleSidebar() {
