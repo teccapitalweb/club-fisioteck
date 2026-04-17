@@ -2517,6 +2517,16 @@
 
       snap.forEach(d => {
         const data = d.data();
+        // Auto-delete: skip notifications older than 1 day
+        if (data.createdAt) {
+          const notifTime = data.createdAt.seconds * 1000;
+          const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
+          if (notifTime < oneDayAgo) {
+            // Delete from Firestore silently
+            db.collection('member_notifications').doc(d.id).delete().catch(()=>{});
+            return;
+          }
+        }
         memberNotifs.push({ id: d.id, ...data, read: readIds.has(d.id) });
       });
       renderMemberNotifs();
@@ -2541,13 +2551,16 @@
       const icon = n.category === 'course' ? '📚' : n.category === 'live' ? '🔴' : n.category === 'pdf' ? '📄' : n.category === 'promo' ? '🎉' : '🔔';
       const date = n.createdAt ? new Date(n.createdAt.seconds * 1000).toLocaleDateString('es-MX', { day:'numeric', month:'short', year:'numeric' }) : '';
       const isNew = !n.read;
-      return `<div class="card" style="margin-bottom:12px;${isNew ? 'border-left:4px solid var(--primary);background:#F0FDF9;' : ''}" onclick="markNotifRead('${n.id}',this)">
+      return `<div class="card" id="notif-${n.id}" style="margin-bottom:12px;${isNew ? 'border-left:4px solid var(--primary);background:#E6F1FB;' : ''}" onclick="markNotifRead('${n.id}',this)">
         <div style="display:flex;gap:14px;align-items:start;">
           <div style="font-size:1.5rem;flex-shrink:0;margin-top:2px;">${icon}</div>
           <div style="flex:1;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
               <h4 style="font-size:.95rem;font-weight:600;">${n.title || 'Notificación'}</h4>
-              <span style="font-size:.75rem;color:var(--text-muted);">${date}</span>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:.75rem;color:var(--text-muted);">${date}</span>
+                <button onclick="event.stopPropagation();deleteNotif('${n.id}')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1rem;padding:2px 4px;border-radius:4px;transition:all .2s;" onmouseover="this.style.color='#E24B4A';this.style.background='rgba(226,75,74,.08)'" onmouseout="this.style.color='var(--text-muted)';this.style.background='none'" title="Eliminar notificación">&times;</button>
+              </div>
             </div>
             <p style="font-size:.85rem;color:var(--text-light);line-height:1.5;">${n.message || ''}</p>
             ${n.link ? '<a href="' + n.link + '" style="display:inline-block;margin-top:8px;font-size:.82rem;color:var(--primary);font-weight:500;">Ver contenido →</a>' : ''}
@@ -2576,6 +2589,16 @@
         b.style.display = unread > 0 ? 'inline-block' : 'none';
       }
     });
+  }
+
+  async function deleteNotif(notifId) {
+    try {
+      const el = document.getElementById('notif-' + notifId);
+      if (el) { el.style.transition = 'opacity .3s, transform .3s'; el.style.opacity = '0'; el.style.transform = 'translateX(20px)'; }
+      await db.collection('member_notifications').doc(notifId).delete();
+      memberNotifs = memberNotifs.filter(n => n.id !== notifId);
+      setTimeout(() => { renderMemberNotifs(); updateBellBadge(); }, 300);
+    } catch(e) { console.error('Delete notif error:', e); }
   }
 
   async function markNotifRead(notifId, el) {
