@@ -1248,6 +1248,10 @@
     <div style="width:80px;height:80px;border-radius:50%;background:rgba(195,163,97,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.2rem;">🔒</div>
     <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:6px;">¡Bienvenido, <span id="paywall-name">!</span>!</h2>
     <p style="color:rgba(255,255,255,.55);font-size:.92rem;line-height:1.6;margin-bottom:28px;">Tu cuenta está lista. Elige un plan para activar tu membresía y acceder a todo el contenido exclusivo del Club FisioTeck.</p>
+    
+    <p style="color:#C3A361;font-size:.8rem;margin-bottom:18px;background:rgba(195,163,97,.1);padding:10px 16px;border-radius:8px;border:1px solid rgba(195,163,97,.2);display:inline-block;">
+      ⚠️ <strong>Importante:</strong> Al pagar en Shopify, usa el mismo correo: <strong id="paywall-email"></strong>
+    </p>
 
     <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;">
       <!-- PLAN MENSUAL -->
@@ -1415,6 +1419,7 @@
   }
   function showPaywall(name, email) {
     document.getElementById('paywall-name').textContent = name || '';
+    document.getElementById('paywall-email').textContent = email || '';
     document.getElementById('paywall-email-hidden').value = email || '';
     document.getElementById('paywallScreen').style.display = 'flex';
     document.getElementById('inactiveScreen').style.display = 'none';
