@@ -8,14 +8,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #0A6E5C;
-      --primary-light: #0D8A73;
-      --primary-dark: #064D40;
-      --accent: #E8B931;
-      --accent-light: #F5D56A;
+      --primary: #1B3F6B;
+      --primary-light: #2A5A8F;
+      --primary-dark: #122D4F;
+      --accent: #1565C0;
+      --accent-light: #4285D6;
       --bg: #FAFBF9;
       --bg-card: #FFFFFF;
-      --bg-dark: #0B1F1A;
+      --bg-dark: #0B1520;
       --text: #1A2E28;
       --text-light: #5A6F68;
       --text-muted: #8FA39C;
@@ -25,8 +25,8 @@
       --warning: #F59E0B;
       --radius: 14px;
       --radius-sm: 8px;
-      --shadow: 0 2px 12px rgba(10,110,92,.08);
-      --shadow-lg: 0 8px 32px rgba(10,110,92,.12);
+      --shadow: 0 2px 12px rgba(27,63,107,.08);
+      --shadow-lg: 0 8px 32px rgba(27,63,107,.12);
       --transition: .3s cubic-bezier(.4,0,.2,1);
     }
 
@@ -46,7 +46,7 @@
     /* ===== SPLASH / LOGIN SCREEN ===== */
     #splash-screen {
       position:fixed; inset:0; z-index:10000;
-      background: linear-gradient(135deg, var(--bg-dark) 0%, #0A3D32 50%, var(--primary) 100%);
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #0F2540 50%, var(--primary) 100%);
       display:flex; align-items:center; justify-content:center;
       transition: opacity .6s, visibility .6s;
     }
@@ -101,7 +101,7 @@
       transition:var(--transition); border-left:3px solid transparent;
     }
     .nav-item:hover { color:#fff; background:rgba(255,255,255,.05); }
-    .nav-item.active { color:var(--accent); border-left-color:var(--accent); background:rgba(232,185,49,.06); }
+    .nav-item.active { color:var(--accent); border-left-color:var(--accent); background:rgba(21,101,192,.06); }
     .nav-item svg { width:20px; height:20px; flex-shrink:0; }
     .sidebar-footer {
       padding:16px 24px; border-top:1px solid rgba(255,255,255,.08);
@@ -213,7 +213,7 @@
     .course-card.locked .course-info { opacity:.5; }
     .course-lock-overlay { position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.55);z-index:2;border-radius:inherit;padding:12px;text-align:center; }
     .course-lock-icon { width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:8px; }
-    .course-lock-date { color:#fff;font-size:.78rem;font-weight:600;background:rgba(232,185,49,.25);padding:4px 12px;border-radius:20px;border:1px solid rgba(232,185,49,.4); }
+    .course-lock-date { color:#fff;font-size:.78rem;font-weight:600;background:rgba(21,101,192,.25);padding:4px 12px;border-radius:20px;border:1px solid rgba(21,101,192,.4); }
     .course-thumb {
       height:180px; background:linear-gradient(135deg,var(--primary),var(--primary-dark));
       display:flex; align-items:center; justify-content:center; color:#fff; font-size:3rem; position:relative; overflow:hidden;
@@ -256,10 +256,10 @@
       background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm);
       cursor:pointer; transition:var(--transition);
     }
-    .lesson-item:hover { border-color:var(--primary); background:rgba(10,110,92,.03); }
-    .lesson-item.playing { border-color:var(--primary); background:rgba(10,110,92,.08); }
+    .lesson-item:hover { border-color:var(--primary); background:rgba(27,63,107,.03); }
+    .lesson-item.playing { border-color:var(--primary); background:rgba(27,63,107,.08); }
     .lesson-num {
-      width:32px;height:32px;border-radius:50%;background:rgba(10,110,92,.1);color:var(--primary);
+      width:32px;height:32px;border-radius:50%;background:rgba(27,63,107,.1);color:var(--primary);
       display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:600;flex-shrink:0;
     }
     .lesson-item.playing .lesson-num { background:var(--primary);color:#fff; }
@@ -318,7 +318,7 @@
     }
     .webinar-btn.primary { background:var(--primary);color:#fff; }
     .webinar-btn.primary:hover { background:var(--primary-dark); }
-    .webinar-btn.secondary { background:rgba(10,110,92,.1);color:var(--primary);border:1px solid var(--primary); }
+    .webinar-btn.secondary { background:rgba(27,63,107,.1);color:var(--primary);border:1px solid var(--primary); }
     @media(max-width:600px) {
       .webinar-grid { grid-template-columns:1fr; }
       .webinar-thumb { height:160px; }
@@ -364,7 +364,7 @@
     .library-tabs { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; }
     .lib-tab {
       padding:8px 20px; border-radius:20px; font-size:.85rem; font-weight:500;
-      background:rgba(10,110,92,.08); color:var(--primary); transition:var(--transition);
+      background:rgba(27,63,107,.08); color:var(--primary); transition:var(--transition);
     }
     .lib-tab.active, .lib-tab:hover { background:var(--primary); color:#fff; }
     .content-list { display:flex; flex-direction:column; gap:12px; }
@@ -378,9 +378,9 @@
       width:56px; height:56px; border-radius:var(--radius-sm); display:flex;
       align-items:center; justify-content:center; flex-shrink:0; font-size:1.3rem;
     }
-    .content-icon.video { background:rgba(10,110,92,.1); color:var(--primary); }
+    .content-icon.video { background:rgba(27,63,107,.1); color:var(--primary); }
     .content-icon.pdf { background:rgba(239,68,68,.1); color:var(--danger); }
-    .content-icon.live { background:rgba(232,185,49,.15); color:var(--warning); }
+    .content-icon.live { background:rgba(21,101,192,.15); color:var(--warning); }
     .content-details { flex:1; }
     .content-details h4 { font-size:.95rem; font-weight:600; margin-bottom:2px; }
     .content-details p { font-size:.8rem; color:var(--text-muted); }
@@ -491,7 +491,7 @@
       width:48px; height:48px; border-radius:var(--radius-sm); border:2px solid var(--border);
       cursor:pointer; transition:var(--transition);
     }
-    .theme-btn.active { border-color:var(--primary); box-shadow:0 0 0 2px rgba(10,110,92,.3); }
+    .theme-btn.active { border-color:var(--primary); box-shadow:0 0 0 2px rgba(27,63,107,.3); }
     .theme-btn.light { background:var(--bg); }
     .theme-btn.dark { background:var(--bg-dark); }
 
@@ -1204,11 +1204,11 @@
           <h3 style="font-size:1.05rem;font-weight:600;margin-bottom:16px;">¿Qué recibirás en el canal?</h3>
           <div style="display:flex;flex-direction:column;gap:14px;">
             <div style="display:flex;align-items:flex-start;gap:12px;">
-              <div style="width:36px;height:36px;border-radius:8px;background:rgba(10,110,92,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;">📢</div>
+              <div style="width:36px;height:36px;border-radius:8px;background:rgba(27,63,107,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;">📢</div>
               <div><div style="font-size:.92rem;font-weight:500;">Avisos de nuevos cursos</div><p style="font-size:.8rem;color:var(--text-muted);margin-top:2px;">Sé el primero en enterarte cuando se publique un nuevo curso o clase en vivo.</p></div>
             </div>
             <div style="display:flex;align-items:flex-start;gap:12px;">
-              <div style="width:36px;height:36px;border-radius:8px;background:rgba(232,185,49,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;">🎓</div>
+              <div style="width:36px;height:36px;border-radius:8px;background:rgba(21,101,192,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;">🎓</div>
               <div><div style="font-size:.92rem;font-weight:500;">Contenido exclusivo</div><p style="font-size:.8rem;color:var(--text-muted);margin-top:2px;">Tips, recursos y material adicional que solo compartimos por el canal.</p></div>
             </div>
             <div style="display:flex;align-items:flex-start;gap:12px;">
@@ -1250,33 +1250,33 @@
 
 <!-- INACTIVE MEMBERSHIP SCREEN -->
 <!-- PAYWALL SCREEN — Registered but not paid -->
-<div id="paywallScreen" style="display:none;position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,var(--bg-dark) 0%,#0A3D32 100%);align-items:center;justify-content:center;padding:20px;overflow-y:auto;">
+<div id="paywallScreen" style="display:none;position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,var(--bg-dark) 0%,#0F2540 100%);align-items:center;justify-content:center;padding:20px;overflow-y:auto;">
   <div style="text-align:center;color:#fff;max-width:520px;animation:fadeUp .6s ease;padding:40px 0;">
-    <div style="width:80px;height:80px;border-radius:50%;background:rgba(195,163,97,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.2rem;">🔒</div>
+    <div style="width:80px;height:80px;border-radius:50%;background:rgba(21,101,192,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.2rem;">🔒</div>
     <h2 style="font-size:1.8rem;margin-bottom:6px;text-transform:uppercase;letter-spacing:3px;">¡Bienvenido, <span id="paywall-name">!</span>!</h2>
     <p style="color:rgba(255,255,255,.55);font-size:.92rem;line-height:1.6;margin-bottom:28px;">Tu cuenta está lista. Elige un plan para activar tu membresía y acceder a todo el contenido exclusivo del Club FisioTeck.</p>
     
-    <p style="color:#C3A361;font-size:.8rem;margin-bottom:18px;background:rgba(195,163,97,.1);padding:10px 16px;border-radius:8px;border:1px solid rgba(195,163,97,.2);display:inline-block;">
+    <p style="color:#1565C0;font-size:.8rem;margin-bottom:18px;background:rgba(21,101,192,.1);padding:10px 16px;border-radius:8px;border:1px solid rgba(21,101,192,.2);display:inline-block;">
       ⚠️ <strong>Importante:</strong> Al pagar en Shopify, usa el mismo correo: <strong id="paywall-email"></strong>
     </p>
 
     <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;">
       <!-- PLAN MENSUAL -->
-      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:28px 24px;width:220px;text-align:center;transition:all .3s ease;" onmouseover="this.style.borderColor='#C3A361';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='rgba(255,255,255,.12)';this.style.transform='translateY(0)'">
+      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:28px 24px;width:220px;text-align:center;transition:all .3s ease;" onmouseover="this.style.borderColor='#1565C0';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='rgba(255,255,255,.12)';this.style.transform='translateY(0)'">
         <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.45);margin-bottom:8px;">Mensual</div>
         <div style="font-size:2.2rem;font-weight:700;color:#fff;margin-bottom:4px;letter-spacing:2px;">$249</div>
         <div style="font-size:.8rem;color:rgba(255,255,255,.4);margin-bottom:20px;">MXN / mes</div>
-        <a id="paywall-btn-mensual" href="#" onclick="event.preventDefault();openShopifyCheckout('45330898878518','2071691318',document.getElementById('paywall-email-hidden').value)" style="display:block;padding:12px;border-radius:10px;background:rgba(195,163,97,.15);color:#C3A361;font-family:inherit;font-size:.88rem;font-weight:600;text-decoration:none;border:1px solid rgba(195,163,97,.3);transition:all .25s ease;cursor:pointer;" onmouseover="this.style.background='#C3A361';this.style.color='#0F2A22'" onmouseout="this.style.background='rgba(195,163,97,.15)';this.style.color='#C3A361'">
+        <a id="paywall-btn-mensual" href="#" onclick="event.preventDefault();openShopifyCheckout('45330898878518','2071691318',document.getElementById('paywall-email-hidden').value)" style="display:block;padding:12px;border-radius:10px;background:rgba(21,101,192,.15);color:#1565C0;font-family:inherit;font-size:.88rem;font-weight:600;text-decoration:none;border:1px solid rgba(21,101,192,.3);transition:all .25s ease;cursor:pointer;" onmouseover="this.style.background='#1565C0';this.style.color='#0F1A2A'" onmouseout="this.style.background='rgba(21,101,192,.15)';this.style.color='#1565C0'">
           Elegir Mensual
         </a>
       </div>
       <!-- PLAN ANUAL -->
-      <div style="background:rgba(195,163,97,.08);border:2px solid #C3A361;border-radius:16px;padding:28px 24px;width:220px;text-align:center;position:relative;transition:all .3s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
-        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#C3A361;color:#0F2A22;font-size:.7rem;font-weight:700;padding:4px 14px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;">Ahorra 17%</div>
+      <div style="background:rgba(21,101,192,.08);border:2px solid #1565C0;border-radius:16px;padding:28px 24px;width:220px;text-align:center;position:relative;transition:all .3s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#1565C0;color:#0F1A2A;font-size:.7rem;font-weight:700;padding:4px 14px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;">Ahorra 17%</div>
         <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.45);margin-bottom:8px;">Anual</div>
         <div style="font-size:2.2rem;font-weight:700;color:#fff;margin-bottom:4px;letter-spacing:2px;">$1,999</div>
         <div style="font-size:.8rem;color:rgba(255,255,255,.4);margin-bottom:20px;">MXN / año</div>
-        <a id="paywall-btn-anual" href="#" onclick="event.preventDefault();openShopifyCheckout('45330971983926','2071724086',document.getElementById('paywall-email-hidden').value)" style="display:block;padding:12px;border-radius:10px;background:#C3A361;color:#0F2A22;font-family:inherit;font-size:.88rem;font-weight:700;text-decoration:none;border:1px solid #C3A361;transition:all .25s ease;cursor:pointer;" onmouseover="this.style.background='#d4b872'" onmouseout="this.style.background='#C3A361'">
+        <a id="paywall-btn-anual" href="#" onclick="event.preventDefault();openShopifyCheckout('45330971983926','2071724086',document.getElementById('paywall-email-hidden').value)" style="display:block;padding:12px;border-radius:10px;background:#1565C0;color:#0F1A2A;font-family:inherit;font-size:.88rem;font-weight:700;text-decoration:none;border:1px solid #1565C0;transition:all .25s ease;cursor:pointer;" onmouseover="this.style.background='#4285D6'" onmouseout="this.style.background='#1565C0'">
           Elegir Anual ⭐
         </a>
       </div>
@@ -1293,7 +1293,7 @@
 </div>
 
 <!-- INACTIVE SCREEN -->
-<div id="inactiveScreen" style="display:none;position:fixed;inset:0;z-index:9998;background:linear-gradient(135deg,var(--bg-dark) 0%,#0A3D32 100%);align-items:center;justify-content:center;padding:20px;">
+<div id="inactiveScreen" style="display:none;position:fixed;inset:0;z-index:9998;background:linear-gradient(135deg,var(--bg-dark) 0%,#0F2540 100%);align-items:center;justify-content:center;padding:20px;">
   <div style="text-align:center;color:#fff;max-width:440px;animation:fadeUp .6s ease;">
     <div style="width:80px;height:80px;border-radius:50%;background:rgba(239,68,68,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.2rem;">⚠️</div>
     <h2 style="font-size:1.8rem;margin-bottom:8px;text-transform:uppercase;letter-spacing:3px;">Membresía no activa</h2>
@@ -2051,7 +2051,7 @@
           </div>
           ${totalLessons > 0 ? `<div style="display:flex;gap:12px;flex-wrap:wrap;">
             <button class="course-btn" onclick="playLesson(0)" style="font-size:.9rem;padding:10px 24px;">▶ Comenzar curso</button>
-            ${course.temarioImg ? `<button onclick="toggleTemario()" style="padding:10px 24px;border-radius:var(--radius-sm);font-size:.9rem;font-weight:500;background:rgba(10,110,92,.1);color:var(--primary);border:1px solid var(--primary);cursor:pointer;transition:var(--transition);">📋 Ver temario</button>` : ''}
+            ${course.temarioImg ? `<button onclick="toggleTemario()" style="padding:10px 24px;border-radius:var(--radius-sm);font-size:.9rem;font-weight:500;background:rgba(27,63,107,.1);color:var(--primary);border:1px solid var(--primary);cursor:pointer;transition:var(--transition);">📋 Ver temario</button>` : ''}
           </div>` : '<p style="color:var(--text-muted);font-size:.85rem;">Próximamente se agregarán las clases.</p>'}
           ${course.temarioImg ? `<div id="temarioSection" style="display:none;margin-top:20px;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);"><img src="${driveImageUrl(course.temarioImg)}" alt="Temario" style="width:100%;display:block;"></div>` : ''}
         </div>
@@ -2192,7 +2192,7 @@
                 <div class="webinar-instructor-name">👤 ${w.instructor}</div>
                 ${w.instructorRole ? `<div class="webinar-instructor-role">${w.instructorRole}</div>` : ''}
               </div>
-              ${instructorImg ? `<button onclick="event.stopPropagation();toggleSemblanza('sem-${w.id}')" style="background:rgba(10,110,92,.1);color:var(--primary);border:1px solid var(--primary);padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:500;cursor:pointer;margin-left:auto;">Ver semblanza</button>` : ''}
+              ${instructorImg ? `<button onclick="event.stopPropagation();toggleSemblanza('sem-${w.id}')" style="background:rgba(27,63,107,.1);color:var(--primary);border:1px solid var(--primary);padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:500;cursor:pointer;margin-left:auto;">Ver semblanza</button>` : ''}
             </div>
             ${instructorImg ? `<div id="sem-${w.id}" style="display:none;margin-bottom:14px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border);"><img src="${instructorImg}" alt="Semblanza ${w.instructor}" style="width:100%;display:block;"></div>` : ''}` : ''}
           <div class="webinar-meta">
