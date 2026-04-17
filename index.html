@@ -1424,7 +1424,7 @@
     var w = 520, h = 750;
     var l = (screen.width - w) / 2, t = (screen.height - h) / 2;
     var popup = window.open('about:blank', 'shopifyCheckout', 'width='+w+',height='+h+',left='+l+',top='+t+',scrollbars=yes,resizable=yes');
-    var returnTo = '/checkout' + (email ? '?checkout[email]=' + encodeURIComponent(email) : '');
+    var returnTo = email ? '/checkout?checkout%5Bemail%5D=' + encodeURIComponent(email) : '/checkout';
     if (popup) {
       popup.document.write(
         '<html><head><title>Procesando...</title></head><body style="display:flex;align-items:center;justify-content:center;height:100vh;margin:0;font-family:sans-serif;background:#f5f5f5;">' +
