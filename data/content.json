@@ -15,38 +15,38 @@
       "badge": "Próximamente",
       "thumbnail": "https://drive.google.com/file/d/1DvcA2GXv0oqiQHe-AUV7TOqC-tNS4ZGn/view?usp=drive_link",
       "temarioImg": "",
-      "availableDate": "2026-04-17",
+      "availableDate": "2026-04-19",
       "lessons": [
         {
-          "id": 1776396508901,
+          "id": 1776396850347,
           "title": "Clase 1",
           "desc": "Super clase para iniciar :)",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/19SRAXPHjXajIWLlRt5p1Qm-kH_hMtd4H/view?usp=drive_link"
         },
         {
-          "id": 1776396508902,
+          "id": 1776396850348,
           "title": "Clase 2",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/16JEBUdHAyOy8mMhZf45g1M69yRgdpXHz/view?usp=drive_link"
         },
         {
-          "id": 1776396508903,
+          "id": 1776396850349,
           "title": "Clase 3",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/13-R3pvVRxPdqA9UpFdWMDD6CWu64tyGF/view?usp=drive_link"
         },
         {
-          "id": 1776396508904,
+          "id": 1776396850350,
           "title": "Clase 4",
           "desc": "Cuarta clase, lo mejor :)",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1dE9gD0AzIgb3JHfDUFfflZLrv2qaryqU/view?usp=drive_link"
         },
         {
-          "id": 1776396508905,
+          "id": 1776396850351,
           "title": "Clase 5",
           "desc": "",
           "duration": "1 Hora",
