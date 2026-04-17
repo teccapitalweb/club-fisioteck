@@ -207,6 +207,13 @@
       transition:var(--transition); cursor:pointer;
     }
     .course-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); }
+    .course-card.locked { opacity:1; cursor:default; pointer-events:none; }
+    .course-card.locked:hover { transform:none; box-shadow:var(--shadow); }
+    .course-card.locked .course-thumb { filter:grayscale(100%) brightness(.6); }
+    .course-card.locked .course-info { opacity:.5; }
+    .course-lock-overlay { position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.55);z-index:2;border-radius:inherit;padding:12px;text-align:center; }
+    .course-lock-icon { width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:8px; }
+    .course-lock-date { color:#fff;font-size:.78rem;font-weight:600;background:rgba(232,185,49,.25);padding:4px 12px;border-radius:20px;border:1px solid rgba(232,185,49,.4); }
     .course-thumb {
       height:180px; background:linear-gradient(135deg,var(--primary),var(--primary-dark));
       display:flex; align-items:center; justify-content:center; color:#fff; font-size:3rem; position:relative; overflow:hidden;
@@ -1802,21 +1809,31 @@
     document.getElementById('statMembers').textContent = siteData.stats.members || '0';
     const container = document.getElementById('recentCourses');
     const recent = [...siteData.courses].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0,3);
+    const today = new Date().toISOString().split('T')[0];
+    const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
     container.innerHTML = recent.map(c => {
       const lessonCount = (c.lessons && c.lessons.length) || 0;
+      const isLocked = c.availableDate && c.availableDate > today;
+      let lockHTML = '';
+      if (isLocked) {
+        const d = new Date(c.availableDate + 'T00:00:00');
+        const dateLabel = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+        lockHTML = `<div class="course-lock-overlay"><div class="course-lock-icon">🔒</div><div class="course-lock-date">Disponible el ${dateLabel}</div></div>`;
+      }
       return `
-      <div class="course-card" onclick="showPage('library');setTimeout(()=>openCourseDetail(${c.id}),100)">
-        <div class="course-thumb">
+      <div class="course-card${isLocked?' locked':''}" ${isLocked?'':'onclick="showPage(\'library\');setTimeout(()=>openCourseDetail('+c.id+'),100)"'}>
+        <div class="course-thumb" style="position:relative;">
           ${c.thumbnail ? `<img src="${driveImageUrl(c.thumbnail)}" alt="${c.title}">` : '📚'}
-          ${c.badge ? `<div class="course-badge">${c.badge}</div>` : ''}
-          ${lessonCount > 0 ? `<div class="course-lesson-count">${lessonCount} clase${lessonCount>1?'s':''}</div>` : ''}
+          ${c.badge && !isLocked ? `<div class="course-badge">${c.badge}</div>` : ''}
+          ${lessonCount > 0 && !isLocked ? `<div class="course-lesson-count">${lessonCount} clase${lessonCount>1?'s':''}</div>` : ''}
+          ${lockHTML}
         </div>
         <div class="course-info">
           <h4>${c.title}</h4>
           <p>${c.desc}</p>
           <div class="course-meta">
-            <span>${lessonCount > 0 ? lessonCount+' clases' : ''}</span>
-            <button class="course-btn">Ver curso</button>
+            <span>${isLocked ? '🔒 Próximamente' : (lessonCount > 0 ? lessonCount+' clases' : '')}</span>
+            ${isLocked ? '' : '<button class="course-btn">Ver curso</button>'}
           </div>
         </div>
       </div>`;
@@ -1978,23 +1995,32 @@
       container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);grid-column:1/-1;">No hay cursos disponibles aún</div>';
       return;
     }
+    const today = new Date().toISOString().split('T')[0];
     container.innerHTML = courses.map(c => {
       const thumbUrl = c.thumbnail ? driveImageUrl(c.thumbnail) : '';
       const lessonCount = (c.lessons && c.lessons.length) || 0;
-      const totalDuration = c.lessons ? c.lessons.reduce((acc, l) => acc + (l.duration || ''), '') : (c.duration || '');
+      const isLocked = c.availableDate && c.availableDate > today;
+      const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+      let lockHTML = '';
+      if (isLocked) {
+        const d = new Date(c.availableDate + 'T00:00:00');
+        const dateLabel = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+        lockHTML = `<div class="course-lock-overlay"><div class="course-lock-icon">🔒</div><div class="course-lock-date">Disponible el ${dateLabel}</div></div>`;
+      }
       return `
-        <div class="course-card" onclick="openCourseDetail(${c.id})" data-category="${c.category||'all'}" data-title="${c.title.toLowerCase()}">
-          <div class="course-thumb">
+        <div class="course-card${isLocked?' locked':''}" ${isLocked?'':'onclick="openCourseDetail('+c.id+')"'} data-category="${c.category||'all'}" data-title="${c.title.toLowerCase()}">
+          <div class="course-thumb" style="position:relative;">
             ${thumbUrl ? `<img src="${thumbUrl}" alt="${c.title}">` : '📚'}
-            ${c.badge ? `<div class="course-badge">${c.badge}</div>` : ''}
-            ${lessonCount > 0 ? `<div class="course-lesson-count">${lessonCount} clase${lessonCount>1?'s':''}</div>` : ''}
+            ${c.badge && !isLocked ? `<div class="course-badge">${c.badge}</div>` : ''}
+            ${lessonCount > 0 && !isLocked ? `<div class="course-lesson-count">${lessonCount} clase${lessonCount>1?'s':''}</div>` : ''}
+            ${lockHTML}
           </div>
           <div class="course-info">
             <h4>${c.title}</h4>
             <p>${c.desc || ''}</p>
             <div class="course-meta">
               <span>${c.category ? c.category.charAt(0).toUpperCase()+c.category.slice(1) : ''}</span>
-              <span>${lessonCount > 0 ? lessonCount+' clases' : (c.duration || '')}</span>
+              <span>${isLocked ? '🔒 Próximamente' : (lessonCount > 0 ? lessonCount+' clases' : (c.duration || ''))}</span>
             </div>
           </div>
         </div>`;
