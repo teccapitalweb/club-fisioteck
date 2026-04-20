@@ -1362,6 +1362,7 @@
     renderPdfs();
     renderNews();
     loadUserProfile();
+    fetchAutoNews();
   }
 
   // ===== AUTH TABS =====
@@ -1919,26 +1920,33 @@
     container.innerHTML = sorted.map(n => newsCardHTML(n)).join('');
   }
   function newsCardHTML(n) {
-    const thumbUrl = n.thumbnail ? driveImageUrl(n.thumbnail) : '';
+    const thumbUrl = n.thumbnail ? (n.autoNews ? n.thumbnail : driveImageUrl(n.thumbnail)) : '';
     const d = new Date(n.date + 'T12:00:00');
     const dateStr = d.toLocaleDateString('es-MX', { day:'numeric', month:'long', year:'numeric' });
     const catClass = (n.category||'noticias').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    const clickAction = n.autoNews && n.externalLink ? `window.open('${n.externalLink}','_blank')` : `openArticle('${n.id}')`;
     return `
-      <div class="news-card" onclick="openArticle(${n.id})" data-category="${n.category||'all'}" data-title="${n.title.toLowerCase()}">
+      <div class="news-card" onclick="${clickAction}" data-category="${n.category||'all'}" data-title="${n.title.toLowerCase()}">
         <div class="news-thumb">
-          ${thumbUrl ? `<img src="${thumbUrl}" alt="${n.title}">` : '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,.3);font-size:3rem;">📰</div>'}
+          ${thumbUrl ? `<img src="${thumbUrl}" alt="${n.title}" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,.3);font-size:3rem;\\'>📰</div>'">` : '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,.3);font-size:3rem;">📰</div>'}
           <div class="news-cat-badge ${catClass}">${n.category || 'Noticias'}</div>
         </div>
         <div class="news-body">
           <h4>${n.title}</h4>
           <p>${n.excerpt || (n.content || '').substring(0,150) + '...'}</p>
-          <div class="news-date">📅 ${dateStr}</div>
+          <div class="news-date">📅 ${dateStr}${n.source ? ' · <span style="color:var(--primary);font-weight:500;">' + n.source + '</span>' : ''}${n.autoNews ? ' <span style="font-size:.65rem;background:var(--primary);color:#fff;padding:2px 6px;border-radius:4px;margin-left:4px;">Auto</span>' : ''}</div>
         </div>
       </div>`;
   }
   function openArticle(id) {
-    const article = (siteData.news || []).find(n => n.id === id);
+    const article = (siteData.news || []).find(n => String(n.id) === String(id));
     if (!article) return;
+
+    // Auto news with external link — open in new tab
+    if (article.autoNews && article.externalLink) {
+      window.open(article.externalLink, '_blank');
+      return;
+    }
 
     // Navigate to news page first (handles resetting other pages)
     showPage('news');
@@ -1965,6 +1973,46 @@
     document.getElementById('page-news').style.display = 'block';
   }
   let currentNewsCategory = 'all';
+
+  // ===== AUTO NEWS FROM GOOGLE NEWS =====
+  async function fetchAutoNews() {
+    try {
+      const rssUrl = encodeURIComponent('https://news.google.com/rss/search?q=fisioterapia+OR+rehabilitación+física+OR+terapia+física&hl=es-419&gl=MX&ceid=MX:es-419');
+      const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + rssUrl);
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data.items || data.items.length === 0) return;
+
+      const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
+      const autoNews = data.items
+        .filter(item => new Date(item.pubDate).getTime() > oneDayAgo)
+        .slice(0, 8)
+        .map((item, i) => {
+          const pubDate = new Date(item.pubDate);
+          const source = (item.author || '').replace(/<[^>]*>/g, '').trim() || 'Google News';
+          return {
+            id: 'auto_' + Date.now() + '_' + i,
+            title: (item.title || '').replace(/ - .*$/, '').trim(),
+            excerpt: (item.description || '').replace(/<[^>]*>/g, '').substring(0, 180).trim() + '...',
+            content: '',
+            category: 'Noticias',
+            date: pubDate.toISOString().split('T')[0],
+            thumbnail: item.thumbnail || item.enclosure?.link || '',
+            externalLink: item.link || '',
+            source: source,
+            autoNews: true
+          };
+        });
+
+      if (autoNews.length === 0) return;
+
+      // Remove old auto news and add fresh ones
+      siteData.news = (siteData.news || []).filter(n => !n.autoNews);
+      siteData.news = [...autoNews, ...siteData.news];
+      renderNews();
+      renderHomeNews();
+    } catch(e) { console.error('Auto news error:', e); }
+  }
   function filterNewsCategory(btn, cat) {
     currentNewsCategory = cat;
     document.querySelectorAll('#newsTabs .lib-tab').forEach(t => t.classList.remove('active'));
