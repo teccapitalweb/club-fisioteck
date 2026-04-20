@@ -2120,8 +2120,14 @@
     }
     userProgress['c_' + courseId] = progress;
     await saveUserProgress();
+    const course = siteData.courses.find(c => c.id === courseId);
+    const totalLessons = course?.lessons?.length || 0;
     openCourseDetail(courseId);
-    showToast('Clase completada. ¡Sigue así!');
+    if (progress.completed.length >= totalLessons && totalLessons > 0) {
+      showToast('🎉 ¡Felicidades! Has completado todo el curso.');
+    } else {
+      showToast('Clase completada. ¡Sigue así!');
+    }
   }
   function openCourseDetail(courseId) {
     const course = siteData.courses.find(c => c.id === courseId);
@@ -2209,7 +2215,7 @@
           <div style="font-size:2rem;margin-bottom:8px;">🎉</div>
           <div style="font-size:1rem;font-weight:600;color:#6BA023;">¡Curso completado!</div>
           <div style="font-size:.85rem;color:var(--text-muted);margin-top:4px;">Has terminado todas las clases de este curso.</div>
-        </div>` : ''}`;
+        </div><script>setTimeout(()=>launchConfetti(),300);</script>` : ''}`;
     } else {
       document.getElementById('courseDetailLessons').innerHTML = '';
     }
@@ -2234,6 +2240,58 @@
     document.getElementById('page-course-detail').style.display = 'none';
     document.getElementById('page-library').style.display = 'block';
     currentCourseId = null;
+    renderCourseGrid(siteData.courses);
+  }
+
+  function launchConfetti() {
+    const canvas = document.createElement('canvas');
+    canvas.id = 'confettiCanvas';
+    canvas.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;';
+    document.body.appendChild(canvas);
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const ctx = canvas.getContext('2d');
+    const colors = ['#8DC63F','#1B3F6B','#1565C0','#FFD600','#EF4444','#F59E0B','#22C55E','#A855F7'];
+    const pieces = [];
+    for (let i = 0; i < 150; i++) {
+      pieces.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        w: Math.random() * 10 + 5,
+        h: Math.random() * 6 + 3,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        vx: (Math.random() - 0.5) * 4,
+        vy: Math.random() * 4 + 2,
+        rot: Math.random() * 360,
+        rotV: (Math.random() - 0.5) * 10,
+        opacity: 1
+      });
+    }
+    let frame = 0;
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let alive = false;
+      pieces.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.08;
+        p.rot += p.rotV;
+        if (frame > 60) p.opacity -= 0.008;
+        if (p.opacity <= 0) return;
+        alive = true;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot * Math.PI / 180);
+        ctx.globalAlpha = Math.max(0, p.opacity);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        ctx.restore();
+      });
+      frame++;
+      if (alive && frame < 200) requestAnimationFrame(animate);
+      else canvas.remove();
+    }
+    animate();
   }
   function toggleTemario() {
     const el = document.getElementById('temarioSection');
