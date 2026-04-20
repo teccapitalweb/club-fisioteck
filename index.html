@@ -1978,49 +1978,52 @@
   // ===== AUTO NEWS FROM GOOGLE NEWS =====
   async function fetchAutoNews() {
     try {
-      const rssUrl = encodeURIComponent('https://news.google.com/rss/search?q=fisioterapia+OR+rehabilitación+OR+terapia+física&hl=es-419&gl=MX&ceid=MX:es-419');
-      const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + rssUrl + '&count=15');
+      const rssUrl = 'https://news.google.com/rss/search?q=fisioterapia+OR+rehabilitaci%C3%B3n+OR+terapia+f%C3%ADsica&hl=es-419&gl=MX&ceid=MX:es-419';
+      const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(rssUrl);
+      const res = await fetch(proxyUrl);
       if (!res.ok) return;
-      const data = await res.json();
-      if (!data.items || data.items.length === 0) return;
+      const xmlText = await res.text();
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(xmlText, 'text/xml');
+      const items = xml.querySelectorAll('item');
+      if (!items.length) return;
 
-      function extractImage(item) {
-        if (item.thumbnail && item.thumbnail.startsWith('http')) return item.thumbnail;
-        if (item.enclosure?.link && item.enclosure.link.startsWith('http')) return item.enclosure.link;
-        const desc = item.description || '';
-        const imgMatch = desc.match(/<img[^>]+src=["']([^"']+)["']/i);
-        if (imgMatch && imgMatch[1] && imgMatch[1].startsWith('http')) return imgMatch[1];
-        const content = item.content || '';
-        const imgMatch2 = content.match(/<img[^>]+src=["']([^"']+)["']/i);
-        if (imgMatch2 && imgMatch2[1] && imgMatch2[1].startsWith('http')) return imgMatch2[1];
-        return '';
+      function extractImage(descHtml) {
+        const match = descHtml.match(/<img[^>]+src=["']([^"']+)["']/i);
+        return match ? match[1] : '';
       }
 
       const threeDaysAgo = Date.now() - (3 * 24 * 60 * 60 * 1000);
-      let filtered = data.items.filter(item => new Date(item.pubDate).getTime() > threeDaysAgo);
-      if (filtered.length === 0) filtered = data.items.slice(0, 6);
-      const autoNews = filtered
-        .slice(0, 10)
-        .map((item, i) => {
-          const pubDate = new Date(item.pubDate);
-          const source = (item.author || '').replace(/<[^>]*>/g, '').trim() || 'Google News';
-          return {
+      const parsed = [];
+      items.forEach((item, i) => {
+        if (parsed.length >= 10) return;
+        const title = (item.querySelector('title')?.textContent || '').replace(/ - .*$/, '').trim();
+        const link = item.querySelector('link')?.textContent || '';
+        const pubDate = new Date(item.querySelector('pubDate')?.textContent || '');
+        const desc = item.querySelector('description')?.textContent || '';
+        const source = item.querySelector('source')?.textContent || 'Google News';
+        const thumb = extractImage(desc);
+        const cleanDesc = desc.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+
+        if (pubDate.getTime() > threeDaysAgo || parsed.length < 6) {
+          parsed.push({
             id: 'auto_' + Date.now() + '_' + i,
-            title: (item.title || '').replace(/ - .*$/, '').trim(),
-            excerpt: (item.description || '').replace(/<[^>]*>/g, '').replace(/\s+/g,' ').substring(0, 180).trim() + '...',
+            title: title,
+            excerpt: cleanDesc.substring(0, 180) + (cleanDesc.length > 180 ? '...' : ''),
             content: '',
             category: 'Noticias',
             date: pubDate.toISOString().split('T')[0],
-            thumbnail: extractImage(item),
-            externalLink: item.link || '',
+            thumbnail: thumb,
+            externalLink: link,
             source: source,
             autoNews: true
-          };
-        });
+          });
+        }
+      });
 
-      if (autoNews.length === 0) return;
+      if (parsed.length === 0) return;
       siteData.news = (siteData.news || []).filter(n => !n.autoNews);
-      siteData.news = [...autoNews, ...siteData.news];
+      siteData.news = [...parsed, ...siteData.news];
       renderNews();
       renderHomeNews();
     } catch(e) { console.error('Auto news error:', e); }
