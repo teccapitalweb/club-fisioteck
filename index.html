@@ -1625,6 +1625,7 @@
       const doc = await db.collection('members').doc(user.uid).get();
       if (doc.exists) userData = { ...userData, ...doc.data() };
     } catch(e) {}
+    await loadUserProgress();
     const initial = (userData.name || userData.email || 'S')[0].toUpperCase();
     document.getElementById('sidebarAvatar').textContent = initial;
     document.getElementById('sidebarName').textContent = userData.name || 'Socio';
@@ -2067,6 +2068,16 @@
           <div class="course-info">
             <h4>${c.title}</h4>
             <p>${c.desc || ''}</p>
+            ${(() => {
+              if (isLocked) return '';
+              const prog = getCourseProgress(c.id);
+              const compCount = (prog.completed || []).length;
+              if (lessonCount > 0 && compCount > 0) {
+                const pct = Math.round((compCount / lessonCount) * 100);
+                return `<div style="height:4px;background:var(--border);border-radius:2px;margin-bottom:8px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:${pct===100?'#8DC63F':'var(--primary)'};border-radius:2px;"></div></div><div style="font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">${compCount}/${lessonCount} · ${pct}%</div>`;
+              }
+              return '';
+            })()}
             <div class="course-meta">
               <span>${c.category ? c.category.charAt(0).toUpperCase()+c.category.slice(1) : ''}</span>
               <span>${isLocked ? '🔒 Próximamente' : (lessonCount > 0 ? lessonCount+' clases' : (c.duration || ''))}</span>
@@ -2076,6 +2087,42 @@
     }).join('');
   }
   let currentCourseId = null;
+  let userProgress = {}; // { courseId: { completed: [0, 1, 2], current: 3 } }
+
+  async function loadUserProgress() {
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
+      const doc = await db.collection('members').doc(user.uid).collection('progress').doc('courses').get();
+      if (doc.exists) userProgress = doc.data() || {};
+    } catch(e) { console.error('Progress load error:', e); }
+  }
+
+  async function saveUserProgress() {
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
+      await db.collection('members').doc(user.uid).collection('progress').doc('courses').set(userProgress);
+    } catch(e) { console.error('Progress save error:', e); }
+  }
+
+  function getCourseProgress(courseId) {
+    const key = 'c_' + courseId;
+    if (!userProgress[key]) userProgress[key] = { completed: [] };
+    return userProgress[key];
+  }
+
+  async function markLessonComplete(courseId, lessonIndex) {
+    const progress = getCourseProgress(courseId);
+    if (!progress.completed.includes(lessonIndex)) {
+      progress.completed.push(lessonIndex);
+      progress.completed.sort((a,b) => a - b);
+    }
+    userProgress['c_' + courseId] = progress;
+    await saveUserProgress();
+    openCourseDetail(courseId);
+    showToast('Clase completada. ¡Sigue así!');
+  }
   function openCourseDetail(courseId) {
     const course = siteData.courses.find(c => c.id === courseId);
     if (!course) return;
@@ -2098,32 +2145,71 @@
             <span>📚 ${totalLessons} clase${totalLessons!==1?'s':''}</span>
             <span>📂 ${course.category ? course.category.charAt(0).toUpperCase()+course.category.slice(1) : ''}</span>
           </div>
-          ${totalLessons > 0 ? `<div style="display:flex;gap:12px;flex-wrap:wrap;">
-            <button class="course-btn" onclick="playLesson(0)" style="font-size:.9rem;padding:10px 24px;">▶ Comenzar curso</button>
+          ${totalLessons > 0 ? (() => {
+            const prog = getCourseProgress(courseId);
+            const compSet = new Set(prog.completed || []);
+            let nextLesson = 0;
+            for (let i = 0; i < totalLessons; i++) { if (!compSet.has(i)) { nextLesson = i; break; } if (i === totalLessons - 1) nextLesson = i; }
+            const btnLabel = compSet.size > 0 ? (compSet.size >= totalLessons ? '▶ Volver a ver' : '▶ Continuar curso') : '▶ Comenzar curso';
+            return `<div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <button class="course-btn" onclick="playLesson(${nextLesson})" style="font-size:.9rem;padding:10px 24px;">${btnLabel}</button>
             ${course.temarioImg ? `<button onclick="toggleTemario()" style="padding:10px 24px;border-radius:var(--radius-sm);font-size:.9rem;font-weight:500;background:rgba(27,63,107,.1);color:var(--primary);border:1px solid var(--primary);cursor:pointer;transition:var(--transition);">📋 Ver temario</button>` : ''}
-          </div>` : '<p style="color:var(--text-muted);font-size:.85rem;">Próximamente se agregarán las clases.</p>'}
+          </div>`;
+          })() : '<p style="color:var(--text-muted);font-size:.85rem;">Próximamente se agregarán las clases.</p>'}
           ${course.temarioImg ? `<div id="temarioSection" style="display:none;margin-top:20px;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);"><img src="${driveImageUrl(course.temarioImg)}" alt="Temario" style="width:100%;display:block;"></div>` : ''}
         </div>
       </div>`;
 
     // Lessons
     if (totalLessons > 0) {
+      const progress = getCourseProgress(courseId);
+      const completedSet = new Set(progress.completed || []);
+      const completedCount = completedSet.size;
+      const progressPct = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
+
       document.getElementById('courseDetailLessons').innerHTML = `
-        <h3 style="font-size:1.1rem;font-weight:600;margin-bottom:16px;">Contenido del curso (${totalLessons} clases)</h3>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h3 style="font-size:1.1rem;font-weight:600;">Contenido del curso (${totalLessons} clases)</h3>
+          <span style="font-size:.82rem;color:var(--primary);font-weight:500;">${completedCount}/${totalLessons} completadas · ${progressPct}%</span>
+        </div>
+        <div style="height:6px;background:var(--border);border-radius:3px;margin-bottom:20px;overflow:hidden;">
+          <div style="height:100%;width:${progressPct}%;background:var(--primary);border-radius:3px;transition:width .5s ease;"></div>
+        </div>
         <div class="lesson-list">
-          ${lessons.map((l, i) => `
+          ${lessons.map((l, i) => {
+            const isCompleted = completedSet.has(i);
+            const isUnlocked = i === 0 || completedSet.has(i - 1);
+            const statusIcon = isCompleted
+              ? '<div style="width:32px;height:32px;border-radius:50%;background:#8DC63F;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.9rem;">✓</div>'
+              : isUnlocked
+                ? `<div class="lesson-num">${i+1}</div>`
+                : '<div style="width:32px;height:32px;border-radius:50%;background:var(--border);color:var(--text-muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.85rem;">🔒</div>';
+            const playIcon = isUnlocked
+              ? `<svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" width="20" style="flex-shrink:0;cursor:pointer;"><polygon points="5 3 19 12 5 21 5 3"/></svg>`
+              : `<svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" width="20" style="flex-shrink:0;opacity:.4;"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
+            const rowStyle = !isUnlocked ? 'opacity:.5;cursor:not-allowed;' : '';
+            const clickAction = isUnlocked ? `onclick="playLesson(${i})"` : `onclick="showToast('Completa la clase anterior para desbloquear esta.')"`;
+            return `
             <div class="lesson-item-wrap">
-              <div class="lesson-item" id="lesson-${i}" onclick="playLesson(${i})">
-                <div class="lesson-num">${i+1}</div>
+              <div class="lesson-item" id="lesson-${i}" ${clickAction} style="${rowStyle}">
+                ${statusIcon}
                 <div class="lesson-title">${l.title}</div>
                 <div class="lesson-duration">${l.duration || ''}</div>
-                <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" width="20" style="flex-shrink:0;cursor:pointer;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                ${playIcon}
                 ${l.desc ? `<button onclick="event.stopPropagation();toggleLessonDesc(${i})" style="background:none;border:none;cursor:pointer;padding:4px;flex-shrink:0;font-size:1.2rem;color:var(--text-muted);line-height:1;">⋮</button>` : ''}
               </div>
+              ${isUnlocked && !isCompleted ? `<div style="padding:8px 18px 12px 60px;">
+                <button onclick="event.stopPropagation();markLessonComplete(${courseId},${i})" style="padding:8px 18px;border-radius:var(--radius-sm);font-size:.8rem;font-weight:500;background:rgba(141,198,63,.1);color:#6BA023;border:1px solid rgba(141,198,63,.3);cursor:pointer;transition:var(--transition);" onmouseover="this.style.background='#8DC63F';this.style.color='#fff'" onmouseout="this.style.background='rgba(141,198,63,.1)';this.style.color='#6BA023'">✓ Marcar como completada</button>
+              </div>` : ''}
               ${l.desc ? `<div id="lessonDesc-${i}" style="display:none;padding:10px 18px 14px 60px;font-size:.84rem;color:var(--text-light);line-height:1.6;background:var(--bg);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);margin-top:-1px;">${l.desc}</div>` : ''}
-            </div>
-          `).join('')}
-        </div>`;
+            </div>`;
+          }).join('')}
+        </div>
+        ${completedCount === totalLessons && totalLessons > 0 ? `<div style="text-align:center;padding:24px;margin-top:16px;background:rgba(141,198,63,.08);border-radius:var(--radius);border:1px solid rgba(141,198,63,.2);">
+          <div style="font-size:2rem;margin-bottom:8px;">🎉</div>
+          <div style="font-size:1rem;font-weight:600;color:#6BA023;">¡Curso completado!</div>
+          <div style="font-size:.85rem;color:var(--text-muted);margin-top:4px;">Has terminado todas las clases de este curso.</div>
+        </div>` : ''}`;
     } else {
       document.getElementById('courseDetailLessons').innerHTML = '';
     }
@@ -2135,6 +2221,10 @@
   function playLesson(index) {
     const course = siteData.courses.find(c => c.id === currentCourseId);
     if (!course || !course.lessons || !course.lessons[index]) return;
+    const progress = getCourseProgress(currentCourseId);
+    const completedSet = new Set(progress.completed || []);
+    const isUnlocked = index === 0 || completedSet.has(index - 1);
+    if (!isUnlocked) { showToast('Completa la clase anterior para desbloquear esta.'); return; }
     const lesson = course.lessons[index];
     document.querySelectorAll('.lesson-item').forEach(el => el.classList.remove('playing'));
     document.getElementById('lesson-'+index)?.classList.add('playing');
