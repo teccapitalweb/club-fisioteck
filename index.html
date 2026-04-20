@@ -1978,52 +1978,81 @@
   // ===== AUTO NEWS FROM GOOGLE NEWS =====
   async function fetchAutoNews() {
     try {
-      const rssUrl = 'https://news.google.com/rss/search?q=fisioterapia+OR+rehabilitaci%C3%B3n+OR+terapia+f%C3%ADsica&hl=es-419&gl=MX&ceid=MX:es-419';
-      const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(rssUrl);
-      const res = await fetch(proxyUrl);
-      if (!res.ok) return;
-      const xmlText = await res.text();
-      const parser = new DOMParser();
-      const xml = parser.parseFromString(xmlText, 'text/xml');
-      const items = xml.querySelectorAll('item');
-      if (!items.length) return;
+      let items = [];
+      const googleRssUrl = 'https://news.google.com/rss/search?q=fisioterapia+OR+rehabilitaci%C3%B3n+OR+terapia+f%C3%ADsica&hl=es-419&gl=MX&ceid=MX:es-419';
 
-      function extractImage(descHtml) {
-        const match = descHtml.match(/<img[^>]+src=["']([^"']+)["']/i);
+      // Try corsproxy first
+      try {
+        const res = await fetch('https://corsproxy.io/?' + encodeURIComponent(googleRssUrl));
+        if (res.ok) {
+          const xmlText = await res.text();
+          const parser = new DOMParser();
+          const xml = parser.parseFromString(xmlText, 'text/xml');
+          xml.querySelectorAll('item').forEach(item => {
+            items.push({
+              title: item.querySelector('title')?.textContent || '',
+              link: item.querySelector('link')?.textContent || '',
+              pubDate: item.querySelector('pubDate')?.textContent || '',
+              description: item.querySelector('description')?.textContent || '',
+              source: item.querySelector('source')?.textContent || ''
+            });
+          });
+        }
+      } catch(e) {}
+
+      // Fallback to rss2json
+      if (items.length === 0) {
+        try {
+          const res2 = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(googleRssUrl));
+          if (res2.ok) {
+            const data = await res2.json();
+            if (data.items) {
+              items = data.items.map(it => ({
+                title: it.title || '',
+                link: it.link || '',
+                pubDate: it.pubDate || '',
+                description: it.description || it.content || '',
+                source: (it.author || '').replace(/<[^>]*>/g, '').trim(),
+                thumbnail: it.thumbnail || it.enclosure?.link || ''
+              }));
+            }
+          }
+        } catch(e) {}
+      }
+
+      if (items.length === 0) return;
+
+      function extractImage(item) {
+        if (item.thumbnail && item.thumbnail.startsWith('http')) return item.thumbnail;
+        const desc = item.description || '';
+        const match = desc.match(/<img[^>]+src=["']([^"']+)["']/i);
         return match ? match[1] : '';
       }
 
       const threeDaysAgo = Date.now() - (3 * 24 * 60 * 60 * 1000);
-      const parsed = [];
-      items.forEach((item, i) => {
-        if (parsed.length >= 10) return;
-        const title = (item.querySelector('title')?.textContent || '').replace(/ - .*$/, '').trim();
-        const link = item.querySelector('link')?.textContent || '';
-        const pubDate = new Date(item.querySelector('pubDate')?.textContent || '');
-        const desc = item.querySelector('description')?.textContent || '';
-        const source = item.querySelector('source')?.textContent || 'Google News';
-        const thumb = extractImage(desc);
-        const cleanDesc = desc.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+      let filtered = items.filter(it => new Date(it.pubDate).getTime() > threeDaysAgo);
+      if (filtered.length === 0) filtered = items.slice(0, 8);
 
-        if (pubDate.getTime() > threeDaysAgo || parsed.length < 6) {
-          parsed.push({
-            id: 'auto_' + Date.now() + '_' + i,
-            title: title,
-            excerpt: cleanDesc.substring(0, 180) + (cleanDesc.length > 180 ? '...' : ''),
-            content: '',
-            category: 'Noticias',
-            date: pubDate.toISOString().split('T')[0],
-            thumbnail: thumb,
-            externalLink: link,
-            source: source,
-            autoNews: true
-          });
-        }
+      const autoNews = filtered.slice(0, 10).map((item, i) => {
+        const pubDate = new Date(item.pubDate);
+        const cleanDesc = (item.description || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+        return {
+          id: 'auto_' + Date.now() + '_' + i,
+          title: (item.title || '').replace(/ - .*$/, '').trim(),
+          excerpt: cleanDesc.substring(0, 180) + (cleanDesc.length > 180 ? '...' : ''),
+          content: '',
+          category: 'Noticias',
+          date: isNaN(pubDate) ? new Date().toISOString().split('T')[0] : pubDate.toISOString().split('T')[0],
+          thumbnail: extractImage(item),
+          externalLink: item.link || '',
+          source: item.source || 'Google News',
+          autoNews: true
+        };
       });
 
-      if (parsed.length === 0) return;
+      if (autoNews.length === 0) return;
       siteData.news = (siteData.news || []).filter(n => !n.autoNews);
-      siteData.news = [...parsed, ...siteData.news];
+      siteData.news = [...autoNews, ...siteData.news];
       renderNews();
       renderHomeNews();
     } catch(e) { console.error('Auto news error:', e); }
