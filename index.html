@@ -1978,27 +1978,67 @@
   // ===== AUTO NEWS FROM GOOGLE NEWS =====
   async function fetchAutoNews() {
     try {
-      const rssUrl = encodeURIComponent('https://news.google.com/rss/search?q=fisioterapia+OR+rehabilitación+física+OR+terapia+física&hl=es-419&gl=MX&ceid=MX:es-419');
-      const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + rssUrl);
-      if (!res.ok) return;
-      const data = await res.json();
-      if (!data.items || data.items.length === 0) return;
+      // Multiple queries for better coverage from reliable sources
+      const queries = [
+        'fisioterapia+rehabilitación',
+        'terapia+física+salud',
+        'medicina+deportiva+rehabilitación'
+      ];
+      const allItems = [];
+      for (const q of queries) {
+        try {
+          const rssUrl = encodeURIComponent('https://news.google.com/rss/search?q=' + q + '+when:1d&hl=es-419&gl=MX&ceid=MX:es-419');
+          const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + rssUrl + '&count=12');
+          if (res.ok) {
+            const data = await res.json();
+            if (data.items) allItems.push(...data.items);
+          }
+        } catch(e) {}
+      }
+      if (allItems.length === 0) return;
+
+      // Extract image from description HTML
+      function extractImage(item) {
+        // 1. Direct thumbnail
+        if (item.thumbnail && item.thumbnail.startsWith('http')) return item.thumbnail;
+        // 2. Enclosure
+        if (item.enclosure?.link && item.enclosure.link.startsWith('http')) return item.enclosure.link;
+        // 3. Extract from description HTML (Google News embeds images here)
+        const desc = item.description || '';
+        const imgMatch = desc.match(/<img[^>]+src=["']([^"']+)["']/i);
+        if (imgMatch && imgMatch[1] && imgMatch[1].startsWith('http')) return imgMatch[1];
+        // 4. Extract from content
+        const content = item.content || '';
+        const imgMatch2 = content.match(/<img[^>]+src=["']([^"']+)["']/i);
+        if (imgMatch2 && imgMatch2[1] && imgMatch2[1].startsWith('http')) return imgMatch2[1];
+        return '';
+      }
+
+      // Deduplicate by title
+      const seen = new Set();
+      const unique = allItems.filter(item => {
+        const key = (item.title || '').replace(/ - .*$/, '').trim().toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
 
       const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
-      const autoNews = data.items
+      const autoNews = unique
         .filter(item => new Date(item.pubDate).getTime() > oneDayAgo)
-        .slice(0, 8)
+        .slice(0, 10)
         .map((item, i) => {
           const pubDate = new Date(item.pubDate);
           const source = (item.author || '').replace(/<[^>]*>/g, '').trim() || 'Google News';
+          const thumb = extractImage(item);
           return {
             id: 'auto_' + Date.now() + '_' + i,
             title: (item.title || '').replace(/ - .*$/, '').trim(),
-            excerpt: (item.description || '').replace(/<[^>]*>/g, '').substring(0, 180).trim() + '...',
+            excerpt: (item.description || '').replace(/<[^>]*>/g, '').replace(/\s+/g,' ').substring(0, 180).trim() + '...',
             content: '',
             category: 'Noticias',
             date: pubDate.toISOString().split('T')[0],
-            thumbnail: item.thumbnail || item.enclosure?.link || '',
+            thumbnail: thumb,
             externalLink: item.link || '',
             source: source,
             autoNews: true
@@ -2007,7 +2047,6 @@
 
       if (autoNews.length === 0) return;
 
-      // Remove old auto news and add fresh ones
       siteData.news = (siteData.news || []).filter(n => !n.autoNews);
       siteData.news = [...autoNews, ...siteData.news];
       renderNews();
