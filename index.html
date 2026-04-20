@@ -2125,6 +2125,7 @@
     openCourseDetail(courseId);
     if (progress.completed.length >= totalLessons && totalLessons > 0) {
       showToast('🎉 ¡Felicidades! Has completado todo el curso.');
+      setTimeout(() => launchConfetti(), 500);
     } else {
       showToast('Clase completada. ¡Sigue así!');
     }
@@ -2211,11 +2212,11 @@
             </div>`;
           }).join('')}
         </div>
-        ${completedCount === totalLessons && totalLessons > 0 ? `<div style="text-align:center;padding:24px;margin-top:16px;background:rgba(141,198,63,.08);border-radius:var(--radius);border:1px solid rgba(141,198,63,.2);">
+        ${completedCount === totalLessons && totalLessons > 0 ? `<div id="courseCompleteBanner" style="text-align:center;padding:24px;margin-top:16px;background:rgba(141,198,63,.08);border-radius:var(--radius);border:1px solid rgba(141,198,63,.2);">
           <div style="font-size:2rem;margin-bottom:8px;">🎉</div>
           <div style="font-size:1rem;font-weight:600;color:#6BA023;">¡Curso completado!</div>
           <div style="font-size:.85rem;color:var(--text-muted);margin-top:4px;">Has terminado todas las clases de este curso.</div>
-        </div><script>setTimeout(()=>launchConfetti(),300);</script>` : ''}`;
+        </div>` : ''}`;
     } else {
       document.getElementById('courseDetailLessons').innerHTML = '';
     }
