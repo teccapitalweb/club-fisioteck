@@ -1268,6 +1268,26 @@
   </main>
 </div>
 
+<!-- CERTIFICATE VERIFICATION SCREEN -->
+<div id="certVerifyScreen" style="display:none;position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0B1520 0%,#1B3F6B 100%);align-items:center;justify-content:center;padding:20px;">
+  <div style="text-align:center;color:#fff;max-width:480px;animation:fadeUp .6s ease;">
+    <div style="width:80px;height:80px;border-radius:50%;background:rgba(141,198,63,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.5rem;">✅</div>
+    <h2 style="font-size:1.6rem;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:2px;">Certificado Verificado</h2>
+    <p style="color:rgba(255,255,255,.5);font-size:.9rem;margin-bottom:24px;">Este certificado ha sido emitido oficialmente por</p>
+    <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:20px;margin-bottom:24px;">
+      <div style="font-size:1.2rem;font-weight:700;text-transform:uppercase;letter-spacing:3px;margin-bottom:4px;">CLUB FISIOTECK</div>
+      <div style="font-size:.8rem;color:rgba(255,255,255,.4);margin-bottom:16px;">Institución de Formación Profesional en Fisioterapia</div>
+      <div style="height:1px;background:rgba(255,255,255,.1);margin-bottom:16px;"></div>
+      <div style="font-size:.82rem;color:rgba(255,255,255,.6);margin-bottom:6px;">Folio del certificado:</div>
+      <div id="certVerifyId" style="font-size:1.1rem;font-weight:700;color:#8DC63F;letter-spacing:1px;margin-bottom:16px;"></div>
+      <div style="height:1px;background:rgba(255,255,255,.1);margin-bottom:16px;"></div>
+      <div style="font-size:.78rem;color:rgba(255,255,255,.4);">Verificado por</div>
+      <div style="font-size:1rem;font-weight:600;color:#1565C0;margin-top:4px;">IPCI LATINOAMERICANO</div>
+    </div>
+    <a href="https://club.fisioteck.com" style="display:inline-block;padding:12px 28px;border-radius:8px;background:rgba(255,255,255,.1);color:#fff;text-decoration:none;font-size:.88rem;font-weight:500;border:1px solid rgba(255,255,255,.15);transition:all .25s ease;" onmouseover="this.style.background='rgba(255,255,255,.18)'" onmouseout="this.style.background='rgba(255,255,255,.1)'">Ir al Club FisioTeck</a>
+  </div>
+</div>
+
 <!-- VIDEO MODAL -->
 <div class="video-modal" id="videoModal">
   <div class="video-modal-content">
@@ -3280,6 +3300,15 @@
 
   // ===== BOOT =====
   document.addEventListener('DOMContentLoaded', () => {
+    // Check for certificate verification
+    const urlParams = new URLSearchParams(window.location.search);
+    const certParam = urlParams.get('cert');
+    if (certParam && certParam.startsWith('FTCK-')) {
+      document.getElementById('certVerifyId').textContent = certParam;
+      document.getElementById('certVerifyScreen').style.display = 'flex';
+      document.getElementById('splash-screen').classList.add('hidden');
+      return;
+    }
     init(); // Load content data
     // Firebase auth state listener
     auth.onAuthStateChanged(async user => {
