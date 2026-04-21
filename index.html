@@ -3306,7 +3306,8 @@
     if (certParam && certParam.startsWith('FTCK-')) {
       document.getElementById('certVerifyId').textContent = certParam;
       document.getElementById('certVerifyScreen').style.display = 'flex';
-      document.getElementById('splash-screen').classList.add('hidden');
+      document.getElementById('splash-screen').style.display = 'none';
+      document.querySelector('.app-wrapper').style.display = 'none';
       return;
     }
     init(); // Load content data
