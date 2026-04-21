@@ -537,6 +537,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyD_0EUrUpGl0YinXQBb0FjOuVX3-MEc_MM",
@@ -2375,7 +2376,7 @@
     container.innerHTML = html;
   }
   // ===== CERTIFICATE GENERATION =====
-  function generateCertificate(courseId) {
+  async function generateCertificate(courseId) {
     try {
       const course = siteData.courses.find(c => c.id === courseId);
       if (!course) { showToast('Curso no encontrado'); return; }
@@ -2390,6 +2391,13 @@
       const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
       const dateStr = today.getDate() + ' de ' + months[today.getMonth()] + ' de ' + today.getFullYear();
       const certId = 'FTCK-' + today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + String(today.getDate()).padStart(2,'0') + '-' + String(courseId).slice(-5);
+      const verifyUrl = 'https://club.fisioteck.com/?cert=' + certId;
+
+      // Generate QR code
+      let qrDataUrl = '';
+      try {
+        qrDataUrl = await QRCode.toDataURL(verifyUrl, { width: 200, margin: 1, color: { dark: '#1B3F6B', light: '#FFFFFF' } });
+      } catch(qe) {}
 
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
@@ -2440,18 +2448,10 @@
       doc.setTextColor(27, 63, 107);
       doc.text('CERTIFICADO DE ACREDITACIÓN', w/2, 58, { align: 'center' });
 
-      // Decorative lines around title
+      // Simple green line under title
       doc.setDrawColor(141, 198, 63);
       doc.setLineWidth(0.8);
-      doc.line(w/2 - 70, 62, w/2 - 15, 62);
-      doc.line(w/2 + 15, 62, w/2 + 70, 62);
-      // Center diamond
-      doc.setFillColor(141, 198, 63);
-      const cx = w/2, cy = 62;
-      doc.line(cx-3, cy, cx, cy-3);
-      doc.line(cx, cy-3, cx+3, cy);
-      doc.line(cx+3, cy, cx, cy+3);
-      doc.line(cx, cy+3, cx-3, cy);
+      doc.line(w/2 - 60, 62, w/2 + 60, 62);
 
       // "Se otorga la presente constancia a"
       doc.setFont('helvetica', 'normal');
@@ -2459,24 +2459,20 @@
       doc.setTextColor(120, 120, 120);
       doc.text('Se otorga la presente constancia a', w/2, 76, { align: 'center' });
 
-      // User name - big and bold
+      // User name
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(28);
       doc.setTextColor(27, 63, 107);
       doc.text(userName.toUpperCase(), w/2, 92, { align: 'center' });
 
-      // Name decorative underline
+      // Simple name underline
       const nameWidth = doc.getTextWidth(userName.toUpperCase());
       const lineHalf = Math.max(nameWidth/2 + 10, 50);
       doc.setDrawColor(21, 101, 192);
-      doc.setLineWidth(0.6);
+      doc.setLineWidth(0.5);
       doc.line(w/2 - lineHalf, 96, w/2 + lineHalf, 96);
-      // Small accent dots on the line
-      doc.setFillColor(141, 198, 63);
-      doc.circle(w/2 - lineHalf, 96, 1, 'F');
-      doc.circle(w/2 + lineHalf, 96, 1, 'F');
 
-      // "Por haber acreditado satisfactoriamente..."
+      // "Por haber acreditado..."
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(10.5);
       doc.setTextColor(100, 100, 100);
@@ -2492,24 +2488,24 @@
 
       const yAfterTitle = 120 + (splitTitle.length - 1) * 7;
 
-      // Course details - academic load
+      // Academic load
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9.5);
       doc.setTextColor(130, 130, 130);
       doc.text('Carga académica: ' + lessonCount + ' sesiones  |  Área de formación: ' + catLabel, w/2, yAfterTitle + 10, { align: 'center' });
 
-      // Emission date
+      // Date
       doc.setFont('helvetica', 'italic');
       doc.setFontSize(10);
       doc.setTextColor(90, 90, 90);
       doc.text('Emitido el ' + dateStr, w/2, yAfterTitle + 22, { align: 'center' });
 
-      // Signature section
+      // Signatures
       const sigY = h - 50;
-
-      // Left signature
       doc.setDrawColor(27, 63, 107);
       doc.setLineWidth(0.4);
+
+      // Left signature
       doc.line(50, sigY, 135, sigY);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(8.5);
@@ -2531,17 +2527,27 @@
       doc.setTextColor(120, 120, 120);
       doc.text('IPCI Latinoamericano', 204.5, sigY + 10, { align: 'center' });
 
+      // QR Code - bottom left
+      if (qrDataUrl) {
+        doc.addImage(qrDataUrl, 'PNG', 20, h-48, 22, 22);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(5.5);
+        doc.setTextColor(140, 140, 140);
+        doc.text('Escanea para', 31, h-24, { align: 'center' });
+        doc.text('verificar', 31, h-21, { align: 'center' });
+      }
+
       // Bottom bar
       doc.setFillColor(27, 63, 107);
       doc.rect(14, h-26, w-28, 12, 'F');
 
-      // Certificate ID and footer
+      // Footer
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(6.5);
       doc.setTextColor(180, 200, 220);
       doc.text('Folio: ' + certId + '   |   club.fisioteck.com   |   Certificado emitido digitalmente por Club FisioTeck / IPCI Latinoamericano', w/2, h-19, { align: 'center' });
 
-      // Green accent at very bottom
+      // Green accent bottom
       doc.setFillColor(141, 198, 63);
       doc.rect(14, h-14.5, w-28, 1.5, 'F');
 
