@@ -537,7 +537,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyD_0EUrUpGl0YinXQBb0FjOuVX3-MEc_MM",
@@ -2393,11 +2392,17 @@
       const certId = 'FTCK-' + today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + String(today.getDate()).padStart(2,'0') + '-' + String(courseId).slice(-5);
       const verifyUrl = 'https://club.fisioteck.com/?cert=' + certId;
 
-      // Generate QR code
+      // Generate QR code via API
       let qrDataUrl = '';
       try {
-        qrDataUrl = await QRCode.toDataURL(verifyUrl, { width: 200, margin: 1, color: { dark: '#1B3F6B', light: '#FFFFFF' } });
-      } catch(qe) {}
+        const qrImg = await fetch('https://api.qrserver.com/v1/create-qr-code/?size=200x200&color=1B3F6B&data=' + encodeURIComponent(verifyUrl));
+        const blob = await qrImg.blob();
+        qrDataUrl = await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(blob);
+        });
+      } catch(qe) { console.error('QR error:', qe); }
 
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
