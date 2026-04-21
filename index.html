@@ -699,6 +699,10 @@
         Notificaciones
         <span id="bellBadgeSidebar" style="display:none;background:var(--danger);color:#fff;font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:auto;">0</span>
       </div>
+      <div class="nav-item" data-page="achievements" onclick="showPage('achievements')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+        Logros
+      </div>
     </div>
     <div class="sidebar-footer" onclick="showLogoutPopup()" style="position:relative;">
       <div class="sidebar-avatar" id="sidebarAvatar">S</div>
@@ -764,6 +768,22 @@
         <div class="stat-card"><div class="stat-number" id="statPdfs">0</div><div class="stat-label">PDFs y Materiales</div></div>
         <div class="stat-card"><div class="stat-number" id="statLive">0</div><div class="stat-label">Clases en Línea</div></div>
         <div class="stat-card"><div class="stat-number" id="statMembers">0</div><div class="stat-label">Socios Activos</div></div>
+      </div>
+      <!-- MINI XP WIDGET -->
+      <div id="xpWidget" onclick="showPage('achievements')" style="display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 20px;margin-bottom:24px;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)'">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span id="xpLevelIcon" style="font-size:1.4rem;">🎓</span>
+            <div>
+              <div id="xpLevelName" style="font-size:.85rem;font-weight:600;color:var(--text);"></div>
+              <div id="xpPoints" style="font-size:.72rem;color:var(--text-muted);"></div>
+            </div>
+          </div>
+          <div style="font-size:.75rem;color:var(--primary);font-weight:500;">Ver logros →</div>
+        </div>
+        <div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden;">
+          <div id="xpBar" style="height:100%;background:var(--primary);border-radius:3px;transition:width .6s ease;width:0%;"></div>
+        </div>
       </div>
       <div class="recent-section">
         <h3>Contenido reciente</h3>
@@ -1233,6 +1253,17 @@
       </div>
     </section>
 
+    <!-- ACHIEVEMENTS / LOGROS -->
+    <section class="section" id="page-achievements">
+      <div class="page-header">
+        <h1 class="page-title">Logros</h1>
+        <p class="page-subtitle">Completa retos y sube de nivel</p>
+      </div>
+      <div id="achievementsContent">
+        <div style="text-align:center;padding:40px;color:var(--text-muted);">Cargando logros...</div>
+      </div>
+    </section>
+
   </main>
 </div>
 
@@ -1626,6 +1657,7 @@
       if (doc.exists) userData = { ...userData, ...doc.data() };
     } catch(e) {}
     await loadUserProgress();
+    await loadAchievements();
     const initial = (userData.name || userData.email || 'S')[0].toUpperCase();
     document.getElementById('sidebarAvatar').textContent = initial;
     document.getElementById('sidebarName').textContent = userData.name || 'Socio';
@@ -2172,6 +2204,174 @@
     } else {
       showToast('Clase completada. ¡Sigue así!');
     }
+    checkAchievements();
+  }
+
+  // ===== ACHIEVEMENTS / LOGROS SYSTEM =====
+  const LEVELS = [
+    { name: 'Estudiante', icon: '🎓', min: 0, max: 500 },
+    { name: 'Profesional', icon: '💼', min: 501, max: 1500 },
+    { name: 'Especialista', icon: '🔬', min: 1501, max: 3000 },
+    { name: 'Experto', icon: '🏅', min: 3001, max: 5000 },
+    { name: 'Maestro FisioTeck', icon: '👑', min: 5001, max: 99999 }
+  ];
+
+  const BADGES = [
+    { id:'first_class', name:'Primera Clase', desc:'Completa tu primera clase', icon:'📖', xp:50, cat:'cursos', check: s => s.totalLessons >= 1 },
+    { id:'first_course', name:'Primer Curso', desc:'Termina un curso completo', icon:'🎯', xp:150, cat:'cursos', check: s => s.completedCourses >= 1 },
+    { id:'tri', name:'Tricampeón', desc:'Completa 3 cursos', icon:'🏆', xp:300, cat:'cursos', check: s => s.completedCourses >= 3 },
+    { id:'half_dozen', name:'Media Docena', desc:'Completa 6 cursos', icon:'⭐', xp:500, cat:'cursos', check: s => s.completedCourses >= 6 },
+    { id:'dominator', name:'Dominador', desc:'Completa 10 cursos', icon:'🔥', xp:800, cat:'cursos', check: s => s.completedCourses >= 10 },
+    { id:'legend', name:'Leyenda FisioTeck', desc:'Completa los 15 cursos', icon:'👑', xp:1500, cat:'cursos', check: s => s.completedCourses >= 15 },
+    { id:'streak3', name:'Racha de 3', desc:'Entra al Club 3 días seguidos', icon:'🔥', xp:100, cat:'constancia', check: s => s.streak >= 3 },
+    { id:'streak7', name:'Racha de 7', desc:'Entra 7 días seguidos', icon:'💪', xp:250, cat:'constancia', check: s => s.streak >= 7 },
+    { id:'streak30', name:'Racha de 30', desc:'Entra 30 días seguidos', icon:'🏅', xp:700, cat:'constancia', check: s => s.streak >= 30 },
+    { id:'early_bird', name:'Madrugador', desc:'Entra antes de las 7am', icon:'🌅', xp:75, cat:'especial', check: s => s.earlyBird },
+    { id:'night_owl', name:'Noctámbulo', desc:'Entra después de las 11pm', icon:'🌙', xp:75, cat:'especial', check: s => s.nightOwl },
+    { id:'explorer', name:'Explorador', desc:'Visita todas las secciones', icon:'🧭', xp:100, cat:'especial', check: s => s.sectionsVisited >= 7 },
+    { id:'reader', name:'Lector Ávido', desc:'Lee 5 noticias', icon:'📰', xp:100, cat:'especial', check: s => s.newsRead >= 5 },
+    { id:'pdf_collector', name:'Coleccionista PDF', desc:'Descarga 10 PDFs', icon:'📚', xp:200, cat:'especial', check: s => s.pdfsDownloaded >= 10 },
+    { id:'live_fan', name:'En Vivo', desc:'Asiste a un webinar', icon:'📡', xp:150, cat:'especial', check: s => s.webinarsAttended >= 1 },
+    { id:'founder', name:'Socio Fundador', desc:'Ser de los primeros 50 miembros', icon:'💎', xp:500, cat:'especial', check: s => s.isFounder }
+  ];
+
+  let achievementData = { unlocked: [], stats: {}, streak: 0, lastVisit: '' };
+
+  async function loadAchievements() {
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
+      const doc = await db.collection('members').doc(user.uid).collection('progress').doc('achievements').get();
+      if (doc.exists) achievementData = { ...achievementData, ...doc.data() };
+      const today = new Date().toISOString().split('T')[0];
+      if (achievementData.lastVisit !== today) {
+        const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+        if (achievementData.lastVisit === yesterday) {
+          achievementData.streak = (achievementData.streak || 0) + 1;
+        } else {
+          achievementData.streak = 1;
+        }
+        achievementData.lastVisit = today;
+        const hour = new Date().getHours();
+        if (!achievementData.stats) achievementData.stats = {};
+        if (hour < 7) achievementData.stats.earlyBird = true;
+        if (hour >= 23) achievementData.stats.nightOwl = true;
+        await saveAchievements();
+      }
+      checkAchievements();
+      updateXpWidget();
+    } catch(e) { console.error('Achievement load error:', e); }
+  }
+
+  async function saveAchievements() {
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
+      await db.collection('members').doc(user.uid).collection('progress').doc('achievements').set(achievementData);
+    } catch(e) {}
+  }
+
+  function getPlayerStats() {
+    let totalLessons = 0, completedCourses = 0;
+    (siteData.courses || []).forEach(c => {
+      const p = getCourseProgress(c.id);
+      totalLessons += (p.completed || []).length;
+      const total = (c.lessons || []).length;
+      if (total > 0 && (p.completed || []).length >= total) completedCourses++;
+    });
+    const s = achievementData.stats || {};
+    return { totalLessons, completedCourses, streak: achievementData.streak || 0, earlyBird: s.earlyBird || false, nightOwl: s.nightOwl || false, sectionsVisited: s.sectionsVisited || 0, newsRead: s.newsRead || 0, pdfsDownloaded: s.pdfsDownloaded || 0, webinarsAttended: s.webinarsAttended || 0, isFounder: s.isFounder || false };
+  }
+
+  function getTotalXP() {
+    let xp = 0;
+    (achievementData.unlocked || []).forEach(id => { const b = BADGES.find(x => x.id === id); if (b) xp += b.xp; });
+    return xp;
+  }
+
+  function getLevel(xp) {
+    for (let i = LEVELS.length - 1; i >= 0; i--) { if (xp >= LEVELS[i].min) return LEVELS[i]; }
+    return LEVELS[0];
+  }
+
+  function checkAchievements() {
+    const stats = getPlayerStats();
+    let newUnlocks = [];
+    BADGES.forEach(badge => {
+      if (!(achievementData.unlocked || []).includes(badge.id) && badge.check(stats)) {
+        if (!achievementData.unlocked) achievementData.unlocked = [];
+        achievementData.unlocked.push(badge.id);
+        newUnlocks.push(badge);
+      }
+    });
+    if (newUnlocks.length > 0) {
+      saveAchievements();
+      newUnlocks.forEach(b => showToast(b.icon + ' ¡Insignia desbloqueada! ' + b.name + ' (+' + b.xp + ' XP)'));
+      updateXpWidget();
+    }
+  }
+
+  function updateXpWidget() {
+    const xp = getTotalXP();
+    const level = getLevel(xp);
+    const nextLevel = LEVELS[LEVELS.indexOf(level) + 1];
+    const w = document.getElementById('xpWidget');
+    if (!w) return;
+    w.style.display = 'block';
+    document.getElementById('xpLevelIcon').textContent = level.icon;
+    document.getElementById('xpLevelName').textContent = level.name;
+    document.getElementById('xpPoints').textContent = xp + ' XP' + (nextLevel ? ' · Siguiente: ' + nextLevel.name + ' (' + nextLevel.min + ' XP)' : ' · Nivel máximo');
+    const pct = nextLevel ? Math.min(100, ((xp - level.min) / (nextLevel.min - level.min)) * 100) : 100;
+    document.getElementById('xpBar').style.width = Math.round(pct) + '%';
+  }
+
+  function renderAchievements() {
+    const container = document.getElementById('achievementsContent');
+    const xp = getTotalXP(), level = getLevel(xp), nextLevel = LEVELS[LEVELS.indexOf(level) + 1];
+    const pct = nextLevel ? Math.min(100, ((xp - level.min) / (nextLevel.min - level.min)) * 100) : 100;
+    const unlockedSet = new Set(achievementData.unlocked || []);
+    const stats = getPlayerStats();
+    const cats = [{ id:'cursos', label:'Cursos', icon:'📚' }, { id:'constancia', label:'Constancia', icon:'🔥' }, { id:'especial', label:'Especiales', icon:'✨' }];
+
+    let html = `<div style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:var(--radius);padding:28px;color:#fff;margin-bottom:24px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-30%;right:-5%;width:200px;height:200px;background:rgba(255,255,255,.05);border-radius:50%;"></div>
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;position:relative;z-index:1;">
+        <div style="font-size:3rem;">${level.icon}</div>
+        <div><div style="font-size:1.3rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;">${level.name}</div>
+        <div style="font-size:.85rem;opacity:.7;">${xp} XP · ${unlockedSet.size}/${BADGES.length} insignias</div></div>
+      </div>
+      <div style="position:relative;z-index:1;">
+        <div style="display:flex;justify-content:space-between;font-size:.75rem;opacity:.6;margin-bottom:4px;"><span>${level.name}</span><span>${nextLevel ? nextLevel.name + ' (' + nextLevel.min + ' XP)' : 'Nivel máximo'}</span></div>
+        <div style="height:8px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden;"><div style="height:100%;width:${Math.round(pct)}%;background:#8DC63F;border-radius:4px;transition:width .6s;"></div></div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px;">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center;"><div style="font-size:1.3rem;font-weight:700;color:var(--primary);">${stats.completedCourses}</div><div style="font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">Cursos</div></div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center;"><div style="font-size:1.3rem;font-weight:700;color:var(--primary);">${stats.totalLessons}</div><div style="font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">Clases</div></div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center;"><div style="font-size:1.3rem;font-weight:700;color:var(--primary);">${achievementData.streak||0}</div><div style="font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">Racha</div></div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center;"><div style="font-size:1.3rem;font-weight:700;color:var(--primary);">${unlockedSet.size}</div><div style="font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">Insignias</div></div>
+    </div>`;
+
+    cats.forEach(cat => {
+      const cb = BADGES.filter(b => b.cat === cat.id);
+      html += `<div style="margin-bottom:24px;"><h3 style="font-size:.95rem;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;">${cat.icon} ${cat.label}</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;">`;
+      cb.forEach(badge => {
+        const u = unlockedSet.has(badge.id);
+        html += `<div style="background:var(--bg-card);border:1px solid ${u?'var(--primary)':'var(--border)'};border-radius:var(--radius);padding:16px;display:flex;align-items:center;gap:14px;${u?'':'opacity:.5;filter:grayscale(100%);'}">
+          <div style="width:48px;height:48px;border-radius:50%;background:${u?'rgba(27,63,107,.1)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">${badge.icon}</div>
+          <div style="flex:1;min-width:0;"><div style="font-size:.88rem;font-weight:600;">${badge.name}</div><div style="font-size:.75rem;color:var(--text-muted);margin-top:2px;">${badge.desc}</div>
+          <div style="font-size:.7rem;font-weight:600;color:${u?'#8DC63F':'var(--text-muted)'};margin-top:4px;">${u?'✓ Desbloqueada':'+'+badge.xp+' XP'}</div></div></div>`;
+      });
+      html += '</div></div>';
+    });
+
+    html += `<div style="margin-top:8px;"><h3 style="font-size:.95rem;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;">🗺️ Niveles</h3><div style="display:flex;gap:8px;flex-wrap:wrap;">`;
+    LEVELS.forEach(lv => {
+      const a = lv.name===level.name, r = xp>=lv.min;
+      html += `<div style="flex:1;min-width:100px;background:${a?'var(--primary)':r?'rgba(27,63,107,.08)':'var(--bg-card)'};color:${a?'#fff':'var(--text)'};border:1px solid ${a?'var(--primary)':'var(--border)'};border-radius:var(--radius);padding:12px;text-align:center;${r||a?'':'opacity:.4;'}"><div style="font-size:1.4rem;">${lv.icon}</div><div style="font-size:.75rem;font-weight:600;margin-top:4px;">${lv.name}</div><div style="font-size:.65rem;${a?'opacity:.7;':'color:var(--text-muted);'}margin-top:2px;">${lv.min}+ XP</div></div>`;
+    });
+    html += '</div></div>';
+    container.innerHTML = html;
   }
   function openCourseDetail(courseId) {
     const course = siteData.courses.find(c => c.id === courseId);
@@ -2607,6 +2807,13 @@
     if (navItem) navItem.classList.add('active');
     if (window.innerWidth <= 768 && document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
     window.scrollTo(0,0);
+    // Track section visits for achievements
+    if (achievementData.stats) {
+      if (!achievementData._visited) achievementData._visited = [];
+      if (!achievementData._visited.includes(page)) achievementData._visited.push(page);
+      achievementData.stats.sectionsVisited = achievementData._visited.length;
+    }
+    if (page === 'achievements') renderAchievements();
   }
   function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('open');
