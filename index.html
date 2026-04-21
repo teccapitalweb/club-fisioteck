@@ -536,7 +536,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyD_0EUrUpGl0YinXQBb0FjOuVX3-MEc_MM",
@@ -2376,12 +2376,14 @@
   }
   // ===== CERTIFICATE GENERATION =====
   function generateCertificate(courseId) {
-    const course = siteData.courses.find(c => c.id === courseId);
-    if (!course) return;
-    const user = auth.currentUser;
-    if (!user) return;
-    const userName = user.displayName || 'Estudiante';
-    const courseName = course.title || 'Curso';
+    try {
+      const course = siteData.courses.find(c => c.id === courseId);
+      if (!course) { showToast('Curso no encontrado'); return; }
+      const user = auth.currentUser;
+      if (!user) { showToast('Inicia sesión para descargar tu certificado'); return; }
+      if (!window.jspdf) { showToast('Cargando... intenta de nuevo en unos segundos'); return; }
+      const userName = user.displayName || 'Estudiante';
+      const courseName = course.title || 'Curso';
     const lessonCount = (course.lessons || []).length;
     const today = new Date();
     const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
@@ -2526,6 +2528,10 @@
     const fileName = 'Certificado_' + courseName.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]/g, '').replace(/\s+/g, '_') + '.pdf';
     doc.save(fileName);
     showToast('📜 Certificado descargado');
+    } catch(e) {
+      console.error('Certificate error:', e);
+      showToast('Error al generar el certificado. Recarga la página e intenta de nuevo.');
+    }
   }
 
   function openCourseDetail(courseId) {
