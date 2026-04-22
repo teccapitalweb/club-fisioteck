@@ -2032,37 +2032,63 @@
   // ===== AUTO NEWS FROM GOOGLE NEWS =====
   async function fetchAutoNews() {
     try {
-      const apiKey = 'edc9eadf2e0c44020e7675fd1d6d2088';
-      const gnewsUrl = 'https://gnews.io/api/v4/search?q=fisioterapia&lang=es&max=10&token=' + apiKey;
-      const url = 'https://corsproxy.io/?' + encodeURIComponent(gnewsUrl);
+      const rssUrl = 'https://news.google.com/rss/search?q=fisioterapia+OR+rehabilitaci%C3%B3n+OR+terapia+f%C3%ADsica&hl=es-419&gl=MX&ceid=MX:es-419';
+      const res = await fetch('https://corsproxy.io/?' + encodeURIComponent(rssUrl));
+      if (!res.ok) return;
+      const xmlText = await res.text();
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(xmlText, 'text/xml');
+      const xmlItems = xml.querySelectorAll('item');
+      if (!xmlItems.length) return;
 
-      const res = await fetch(url);
-      if (!res.ok) { console.error('GNews API error:', res.status, res.statusText); return; }
-      const data = await res.json();
-      console.log('GNews results:', data.totalArticles, 'articles');
-      if (!data.articles || data.articles.length === 0) return;
+      // Stock physiotherapy images from Unsplash
+      const stockImages = [
+        'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=250&fit=crop',
+        'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=250&fit=crop',
+        'https://images.unsplash.com/photo-1559757175-7cb057fba93c?w=400&h=250&fit=crop',
+        'https://images.unsplash.com/photo-1598257006458-087169a1f08d?w=400&h=250&fit=crop',
+        'https://images.unsplash.com/photo-1609220136736-443140cffec6?w=400&h=250&fit=crop',
+        'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=400&h=250&fit=crop',
+        'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400&h=250&fit=crop',
+        'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=250&fit=crop',
+        'https://images.unsplash.com/photo-1612531386530-97d3f3c36e27?w=400&h=250&fit=crop',
+        'https://images.unsplash.com/photo-1666214280557-f1b5022eb634?w=400&h=250&fit=crop'
+      ];
 
-      const autoNews = data.articles
-        .slice(0, 10)
-        .map((a, i) => {
-          const pubDate = new Date(a.publishedAt);
-          return {
-            id: 'auto_' + Date.now() + '_' + i,
-            title: (a.title || '').replace(/ - .*$/, '').trim(),
-            excerpt: (a.description || '').substring(0, 180) + ((a.description || '').length > 180 ? '...' : ''),
-            content: a.content || '',
-            category: 'Noticias',
-            date: isNaN(pubDate) ? new Date().toISOString().split('T')[0] : pubDate.toISOString().split('T')[0],
-            thumbnail: a.image || '',
-            externalLink: a.url || '',
-            source: a.source?.name || 'Google News',
-            autoNews: true
-          };
+      const parsed = [];
+      xmlItems.forEach((item, i) => {
+        if (parsed.length >= 10) return;
+        const title = (item.querySelector('title')?.textContent || '').replace(/ - .*$/, '').trim();
+        const link = item.querySelector('link')?.textContent || '';
+        const pubDate = new Date(item.querySelector('pubDate')?.textContent || '');
+        const desc = item.querySelector('description')?.textContent || '';
+        const source = item.querySelector('source')?.textContent || 'Google News';
+        const cleanDesc = desc.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+
+        // Try to extract image from description first
+        let thumb = '';
+        const imgMatch = desc.match(/<img[^>]+src=["']([^"']+)["']/i);
+        if (imgMatch) thumb = imgMatch[1];
+        // Fallback to stock image
+        if (!thumb) thumb = stockImages[i % stockImages.length];
+
+        parsed.push({
+          id: 'auto_' + Date.now() + '_' + i,
+          title: title,
+          excerpt: cleanDesc.substring(0, 180) + (cleanDesc.length > 180 ? '...' : ''),
+          content: '',
+          category: 'Noticias',
+          date: isNaN(pubDate) ? new Date().toISOString().split('T')[0] : pubDate.toISOString().split('T')[0],
+          thumbnail: thumb,
+          externalLink: link,
+          source: source,
+          autoNews: true
         });
+      });
 
-      if (autoNews.length === 0) return;
+      if (parsed.length === 0) return;
       siteData.news = (siteData.news || []).filter(n => !n.autoNews);
-      siteData.news = [...autoNews, ...siteData.news];
+      siteData.news = [...parsed, ...siteData.news];
       renderNews();
       renderHomeNews();
     } catch(e) { console.error('Auto news error:', e); }
