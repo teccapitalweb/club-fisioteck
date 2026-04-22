@@ -2455,17 +2455,19 @@
       doc.setFillColor(141, 198, 63);
       doc.rect(14, 42, w-28, 1.5, 'F');
 
-      // CLUB FISIOTECK
+      // Logo + CLUB FISIOTECK
+      const logoWhite = 'data:image/png;base64,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';
+      try { doc.addImage(logoWhite, 'PNG', w/2 - 65, 17, 45, 9); } catch(e){}
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(18);
       doc.setTextColor(255, 255, 255);
-      doc.text('CLUB FISIOTECK', w/2, 27, { align: 'center' });
+      doc.text('CLUB FISIOTECK', w/2 + 15, 27, { align: 'center' });
 
       // Institution subtitle
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(8.5);
       doc.setTextColor(180, 200, 230);
-      doc.text('Institución de Formación Profesional en Fisioterapia', w/2, 34, { align: 'center' });
+      doc.text('Institución de Formación Profesional en Fisioterapia', w/2, 37, { align: 'center' });
 
       // CERTIFICADO DE ACREDITACIÓN
       doc.setFont('helvetica', 'bold');
