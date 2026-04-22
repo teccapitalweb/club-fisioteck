@@ -2033,18 +2033,15 @@
   async function fetchAutoNews() {
     try {
       const apiKey = 'edc9eadf2e0c44020e7675fd1d6d2088';
-      const queries = ['fisioterapia', 'rehabilitación física', 'terapia física'];
-      const q = queries.join(' OR ');
-      const url = 'https://gnews.io/api/v4/search?q=' + encodeURIComponent(q) + '&lang=es&country=mx&max=10&token=' + apiKey;
+      const url = 'https://gnews.io/api/v4/search?q=fisioterapia&lang=es&max=10&token=' + apiKey;
 
       const res = await fetch(url);
-      if (!res.ok) return;
+      if (!res.ok) { console.error('GNews API error:', res.status, res.statusText); return; }
       const data = await res.json();
+      console.log('GNews results:', data.totalArticles, 'articles');
       if (!data.articles || data.articles.length === 0) return;
 
-      const threeDaysAgo = Date.now() - (3 * 24 * 60 * 60 * 1000);
       const autoNews = data.articles
-        .filter(a => new Date(a.publishedAt).getTime() > threeDaysAgo || data.articles.length < 4)
         .slice(0, 10)
         .map((a, i) => {
           const pubDate = new Date(a.publishedAt);
