@@ -2043,12 +2043,26 @@
           const parser = new DOMParser();
           const xml = parser.parseFromString(xmlText, 'text/xml');
           xml.querySelectorAll('item').forEach(item => {
+            // Extract image from media:content namespace
+            let thumb = '';
+            const mediaEl = item.getElementsByTagNameNS('http://search.yahoo.com/mrss/', 'content');
+            if (mediaEl.length > 0) thumb = mediaEl[0].getAttribute('url') || '';
+            if (!thumb) {
+              const enclosure = item.querySelector('enclosure');
+              if (enclosure) thumb = enclosure.getAttribute('url') || '';
+            }
+            if (!thumb) {
+              const desc = item.querySelector('description')?.textContent || '';
+              const imgMatch = desc.match(/<img[^>]+src=["']([^"']+)["']/i);
+              if (imgMatch) thumb = imgMatch[1];
+            }
             items.push({
               title: item.querySelector('title')?.textContent || '',
               link: item.querySelector('link')?.textContent || '',
               pubDate: item.querySelector('pubDate')?.textContent || '',
               description: item.querySelector('description')?.textContent || '',
-              source: item.querySelector('source')?.textContent || ''
+              source: item.querySelector('source')?.textContent || '',
+              thumbnail: thumb
             });
           });
         }
@@ -2076,13 +2090,6 @@
 
       if (items.length === 0) return;
 
-      function extractImage(item) {
-        if (item.thumbnail && item.thumbnail.startsWith('http')) return item.thumbnail;
-        const desc = item.description || '';
-        const match = desc.match(/<img[^>]+src=["']([^"']+)["']/i);
-        return match ? match[1] : '';
-      }
-
       const threeDaysAgo = Date.now() - (3 * 24 * 60 * 60 * 1000);
       let filtered = items.filter(it => new Date(it.pubDate).getTime() > threeDaysAgo);
       if (filtered.length === 0) filtered = items.slice(0, 8);
@@ -2097,7 +2104,7 @@
           content: '',
           category: 'Noticias',
           date: isNaN(pubDate) ? new Date().toISOString().split('T')[0] : pubDate.toISOString().split('T')[0],
-          thumbnail: extractImage(item),
+          thumbnail: item.thumbnail || '',
           externalLink: item.link || '',
           source: item.source || 'Google News',
           autoNews: true
@@ -2109,6 +2116,23 @@
       siteData.news = [...autoNews, ...siteData.news];
       renderNews();
       renderHomeNews();
+
+      // Fetch og:image for articles missing thumbnails (background)
+      autoNews.forEach(async (n, i) => {
+        if (n.thumbnail || !n.externalLink) return;
+        try {
+          const pgRes = await fetch('https://corsproxy.io/?' + encodeURIComponent(n.externalLink));
+          if (!pgRes.ok) return;
+          const html = await pgRes.text();
+          const ogMatch = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i) ||
+                          html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i);
+          if (ogMatch && ogMatch[1]) {
+            n.thumbnail = ogMatch[1];
+            renderNews();
+            renderHomeNews();
+          }
+        } catch(e) {}
+      });
     } catch(e) { console.error('Auto news error:', e); }
   }
   function filterNewsCategory(btn, cat) {
