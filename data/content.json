@@ -1,11 +1,221 @@
 {
   "stats": {
-    "courses": 13,
+    "courses": 16,
     "pdfs": 5,
     "live": 3,
     "members": 87
   },
   "courses": [
+    {
+      "id": 1776871496822,
+      "title": "Manejo del dolor en terapia física ",
+      "desc": "Capacitación enfocada en el manejo del dolor en terapia física, orientada a reducir la sintomatología dolorosa, mejorar la funcionalidad y favorecer la recuperación del paciente mediante estrategias terapéuticas actualizadas.",
+      "category": "ortopedia",
+      "date": "2026-04-22",
+      "badge": "Próximamente",
+      "thumbnail": "",
+      "temarioImg": "",
+      "availableDate": "2026-10-09",
+      "lessons": [
+        {
+          "id": 1776871496822,
+          "title": "Clase 1, 2 y 3",
+          "desc": "",
+          "duration": "3 Horas",
+          "videoUrl": "https://drive.google.com/file/d/1EBsIwDLAMsSl5xo_tjKu-EwSMbmuwSUq/view?usp=drive_link"
+        },
+        {
+          "id": 1776871496823,
+          "title": "Clase 4 y 5",
+          "desc": "",
+          "duration": "2 Horas",
+          "videoUrl": "https://drive.google.com/file/d/1NSUtDnK4lTnzkizs543aw6bP9NLnfH0H/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "id": 1776871335616,
+      "title": "Manejo del dolor lumbar crónico ",
+      "desc": "Programa orientado al abordaje integral del dolor lumbar crónico, con enfoque en la evaluación clínica, la intervención terapéutica y la recuperación funcional para mejorar la calidad de vida del paciente.",
+      "category": "traumatología",
+      "date": "2026-04-22",
+      "badge": "Próximamente",
+      "thumbnail": "",
+      "temarioImg": "",
+      "availableDate": "2026-05-22",
+      "lessons": [
+        {
+          "id": 1776871335616,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/19hnfZDKFGivn3elPR6blEWCHOwijTItR/view?usp=drive_link"
+        },
+        {
+          "id": 1776871335617,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1NHsjV8csVdxEEn699ogA3eNfNn9pw_BZ/view?usp=drive_link"
+        },
+        {
+          "id": 1776871335618,
+          "title": "Clase 3",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1AQ2qv818SeX2eGWI4VGRU_94NiT5EFDQ/view?usp=drive_link"
+        },
+        {
+          "id": 1776871335619,
+          "title": "Clase 4",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1uQOrK4LWLIzL8Dpxfpe7sV0_yA75d4zc/view?usp=drive_link"
+        },
+        {
+          "id": 1776871335620,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1CT4CycgPBbcRIJN0iH1xSMaHNZ7fwBdh/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "id": 1776871017081,
+      "title": "Rehabilitación y ejercicios en quiropráctica ",
+      "desc": "Programa orientado a la aplicación de rehabilitación y ejercicio terapéutico en quiropráctica, con enfoque en la restauración del movimiento, la estabilidad funcional y la mejora del desempeño físico del paciente.",
+      "category": "rehabilitacion",
+      "date": "2026-04-22",
+      "badge": "Próximamente",
+      "thumbnail": "",
+      "temarioImg": "",
+      "availableDate": "2026-09-05",
+      "lessons": [
+        {
+          "id": 1776871017081,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1txS5UogBWcPhB-SzIg1zkxl0OhwpPbpU/view?usp=drive_link"
+        },
+        {
+          "id": 1776871017082,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1Qul3fhsw_2JP2JLdDYnUrB4_Dmxe65gz/view?usp=drive_link"
+        },
+        {
+          "id": 1776871017083,
+          "title": "Clase 3",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/11ECDGgKpMgdVMXbeXDk1Xxg7EuCOYq1h/view?usp=drive_link"
+        },
+        {
+          "id": 1776871017084,
+          "title": "Clase 4",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1uzCcb0oZavy5OkGyVwwS2X1dj1jeZbkH/view?usp=drive_link"
+        },
+        {
+          "id": 1776871017085,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1BqjiPV8KSSOKoniL5zjPBwbxcsdjund9/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "id": 1776870729460,
+      "title": "Terapia manual ortopédica funcional ",
+      "desc": "Programa orientado a la aplicación de terapia manual ortopédica funcional para el abordaje de disfunciones musculoesqueléticas, con enfoque en la recuperación del movimiento, la funcionalidad y el rendimiento terapéutico del paciente.",
+      "category": "ortopedia",
+      "date": "2026-04-22",
+      "badge": "Próximamente",
+      "thumbnail": "",
+      "temarioImg": "",
+      "availableDate": "2026-08-19",
+      "lessons": [
+        {
+          "id": 1776870729460,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1OnHi_KaOHQf8MRJb9B-XT9hj9-EwIJ-v/view?usp=drive_link"
+        },
+        {
+          "id": 1776870729461,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1Y2ENDJavpJKupnmPaSgdor8NbceUKMec/view?usp=drive_link"
+        },
+        {
+          "id": 1776870729462,
+          "title": "Clase 3 y 4",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1M3HvitxwQsCOCqb1R_bc3pkqEmzU2_3x/view?usp=drive_link"
+        },
+        {
+          "id": 1776870729463,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1nV_fSfVMF9_ubsUQ8bAV-NEubYI8uaEb/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "id": 1776870490084,
+      "title": "Vendaje neuromuscular avanzado en ortopedia ",
+      "desc": "Capacitación enfocada en la aplicación avanzada del vendaje neuromuscular en ortopedia, orientada a optimizar la función musculoesquelética, mejorar la estabilidad articular y complementar el manejo terapéutico del paciente.",
+      "category": "ortopedia",
+      "date": "2026-04-22",
+      "badge": "Próximamente",
+      "thumbnail": "",
+      "temarioImg": "",
+      "availableDate": "2026-08-02",
+      "lessons": [
+        {
+          "id": 1776870490084,
+          "title": "Clase 1 y 2",
+          "desc": "",
+          "duration": "2 Horas",
+          "videoUrl": "https://drive.google.com/file/d/1zBh7oYOKPOJpx9nr0BacK9CzlhP9OkcD/view?usp=drive_link"
+        },
+        {
+          "id": 1776870490085,
+          "title": "Clase 3",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1U4X6RzMUOf53KSTpRM1rireV1hSHvqbH/view?usp=drive_link"
+        },
+        {
+          "id": 1776870490086,
+          "title": "Clase 4",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1VvOC36mnVjYqX_P6-iM8_vx3K4IRHXiC/view?usp=drive_link"
+        },
+        {
+          "id": 1776870490087,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1y6xW8ZhCL3t-9QzPQSgH6_xmzxrRKi9O/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
     {
       "id": 1776826150224,
       "title": "Estimulación neuroplástica en rehabilitación neurológica    ",
@@ -280,55 +490,6 @@
       "type": "video"
     },
     {
-      "id": 1776396508901,
-      "title": "Entrenamiento hipopresivo ",
-      "desc": "New Program ",
-      "category": "especializacion",
-      "date": "2026-04-17",
-      "badge": "Próximamente",
-      "thumbnail": "https://drive.google.com/file/d/1DvcA2GXv0oqiQHe-AUV7TOqC-tNS4ZGn/view?usp=drive_link",
-      "temarioImg": "",
-      "availableDate": "2026-04-19",
-      "lessons": [
-        {
-          "id": 1776396850347,
-          "title": "Clase 1",
-          "desc": "Super clase para iniciar :)",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/19SRAXPHjXajIWLlRt5p1Qm-kH_hMtd4H/view?usp=drive_link"
-        },
-        {
-          "id": 1776396850348,
-          "title": "Clase 2",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/16JEBUdHAyOy8mMhZf45g1M69yRgdpXHz/view?usp=drive_link"
-        },
-        {
-          "id": 1776396850349,
-          "title": "Clase 3",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/13-R3pvVRxPdqA9UpFdWMDD6CWu64tyGF/view?usp=drive_link"
-        },
-        {
-          "id": 1776396850350,
-          "title": "Clase 4",
-          "desc": "Cuarta clase, lo mejor :)",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1dE9gD0AzIgb3JHfDUFfflZLrv2qaryqU/view?usp=drive_link"
-        },
-        {
-          "id": 1776396850351,
-          "title": "Clase 5",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1cICH4mDans8nJNvMo3qHZ6oWs49Uu_vi/view?usp=drive_link"
-        }
-      ],
-      "type": "video"
-    },
-    {
       "id": 1,
       "title": "Fundamentos de Fisioterapia Deportiva",
       "desc": "Aprende las bases del tratamiento deportivo profesional",
@@ -384,18 +545,6 @@
       "duration": "1h 50min",
       "date": "2026-03-10",
       "badge": "",
-      "videoUrl": "",
-      "thumbnail": "",
-      "type": "video"
-    },
-    {
-      "id": 6,
-      "title": "Pilates Terapéutico",
-      "desc": "Método Pilates aplicado a la rehabilitación",
-      "category": "rehabilitacion",
-      "duration": "2h 20min",
-      "date": "2026-03-05",
-      "badge": "Nuevo",
       "videoUrl": "",
       "thumbnail": "",
       "type": "video"
