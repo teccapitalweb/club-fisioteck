@@ -2032,107 +2032,41 @@
   // ===== AUTO NEWS FROM GOOGLE NEWS =====
   async function fetchAutoNews() {
     try {
-      let items = [];
-      const googleRssUrl = 'https://news.google.com/rss/search?q=fisioterapia+OR+rehabilitaci%C3%B3n+OR+terapia+f%C3%ADsica&hl=es-419&gl=MX&ceid=MX:es-419';
+      const apiKey = 'edc9eadf2e0c44020e7675fd1d6d2088';
+      const queries = ['fisioterapia', 'rehabilitación física', 'terapia física'];
+      const q = queries.join(' OR ');
+      const url = 'https://gnews.io/api/v4/search?q=' + encodeURIComponent(q) + '&lang=es&country=mx&max=10&token=' + apiKey;
 
-      // Try corsproxy first
-      try {
-        const res = await fetch('https://corsproxy.io/?' + encodeURIComponent(googleRssUrl));
-        if (res.ok) {
-          const xmlText = await res.text();
-          const parser = new DOMParser();
-          const xml = parser.parseFromString(xmlText, 'text/xml');
-          xml.querySelectorAll('item').forEach(item => {
-            // Extract image from media:content namespace
-            let thumb = '';
-            const mediaEl = item.getElementsByTagNameNS('http://search.yahoo.com/mrss/', 'content');
-            if (mediaEl.length > 0) thumb = mediaEl[0].getAttribute('url') || '';
-            if (!thumb) {
-              const enclosure = item.querySelector('enclosure');
-              if (enclosure) thumb = enclosure.getAttribute('url') || '';
-            }
-            if (!thumb) {
-              const desc = item.querySelector('description')?.textContent || '';
-              const imgMatch = desc.match(/<img[^>]+src=["']([^"']+)["']/i);
-              if (imgMatch) thumb = imgMatch[1];
-            }
-            items.push({
-              title: item.querySelector('title')?.textContent || '',
-              link: item.querySelector('link')?.textContent || '',
-              pubDate: item.querySelector('pubDate')?.textContent || '',
-              description: item.querySelector('description')?.textContent || '',
-              source: item.querySelector('source')?.textContent || '',
-              thumbnail: thumb
-            });
-          });
-        }
-      } catch(e) {}
-
-      // Fallback to rss2json
-      if (items.length === 0) {
-        try {
-          const res2 = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(googleRssUrl));
-          if (res2.ok) {
-            const data = await res2.json();
-            if (data.items) {
-              items = data.items.map(it => ({
-                title: it.title || '',
-                link: it.link || '',
-                pubDate: it.pubDate || '',
-                description: it.description || it.content || '',
-                source: (it.author || '').replace(/<[^>]*>/g, '').trim(),
-                thumbnail: it.thumbnail || it.enclosure?.link || ''
-              }));
-            }
-          }
-        } catch(e) {}
-      }
-
-      if (items.length === 0) return;
+      const res = await fetch(url);
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data.articles || data.articles.length === 0) return;
 
       const threeDaysAgo = Date.now() - (3 * 24 * 60 * 60 * 1000);
-      let filtered = items.filter(it => new Date(it.pubDate).getTime() > threeDaysAgo);
-      if (filtered.length === 0) filtered = items.slice(0, 8);
-
-      const autoNews = filtered.slice(0, 10).map((item, i) => {
-        const pubDate = new Date(item.pubDate);
-        const cleanDesc = (item.description || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
-        return {
-          id: 'auto_' + Date.now() + '_' + i,
-          title: (item.title || '').replace(/ - .*$/, '').trim(),
-          excerpt: cleanDesc.substring(0, 180) + (cleanDesc.length > 180 ? '...' : ''),
-          content: '',
-          category: 'Noticias',
-          date: isNaN(pubDate) ? new Date().toISOString().split('T')[0] : pubDate.toISOString().split('T')[0],
-          thumbnail: item.thumbnail || '',
-          externalLink: item.link || '',
-          source: item.source || 'Google News',
-          autoNews: true
-        };
-      });
+      const autoNews = data.articles
+        .filter(a => new Date(a.publishedAt).getTime() > threeDaysAgo || data.articles.length < 4)
+        .slice(0, 10)
+        .map((a, i) => {
+          const pubDate = new Date(a.publishedAt);
+          return {
+            id: 'auto_' + Date.now() + '_' + i,
+            title: (a.title || '').replace(/ - .*$/, '').trim(),
+            excerpt: (a.description || '').substring(0, 180) + ((a.description || '').length > 180 ? '...' : ''),
+            content: a.content || '',
+            category: 'Noticias',
+            date: isNaN(pubDate) ? new Date().toISOString().split('T')[0] : pubDate.toISOString().split('T')[0],
+            thumbnail: a.image || '',
+            externalLink: a.url || '',
+            source: a.source?.name || 'Google News',
+            autoNews: true
+          };
+        });
 
       if (autoNews.length === 0) return;
       siteData.news = (siteData.news || []).filter(n => !n.autoNews);
       siteData.news = [...autoNews, ...siteData.news];
       renderNews();
       renderHomeNews();
-
-      // Fetch og:image for articles missing thumbnails (background)
-      autoNews.forEach(async (n, i) => {
-        if (n.thumbnail || !n.externalLink) return;
-        try {
-          const pgRes = await fetch('https://corsproxy.io/?' + encodeURIComponent(n.externalLink));
-          if (!pgRes.ok) return;
-          const html = await pgRes.text();
-          const ogMatch = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i) ||
-                          html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i);
-          if (ogMatch && ogMatch[1]) {
-            n.thumbnail = ogMatch[1];
-            renderNews();
-            renderHomeNews();
-          }
-        } catch(e) {}
-      });
     } catch(e) { console.error('Auto news error:', e); }
   }
   function filterNewsCategory(btn, cat) {
