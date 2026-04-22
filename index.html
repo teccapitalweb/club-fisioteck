@@ -2033,7 +2033,8 @@
   async function fetchAutoNews() {
     try {
       const apiKey = 'edc9eadf2e0c44020e7675fd1d6d2088';
-      const url = 'https://gnews.io/api/v4/search?q=fisioterapia&lang=es&max=10&token=' + apiKey;
+      const gnewsUrl = 'https://gnews.io/api/v4/search?q=fisioterapia&lang=es&max=10&token=' + apiKey;
+      const url = 'https://corsproxy.io/?' + encodeURIComponent(gnewsUrl);
 
       const res = await fetch(url);
       if (!res.ok) { console.error('GNews API error:', res.status, res.statusText); return; }
