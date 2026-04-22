@@ -2157,7 +2157,16 @@
       return;
     }
     const today = new Date().toISOString().split('T')[0];
-    container.innerHTML = courses.map(c => {
+    // Sort: unlocked first (by date desc), then locked (by availableDate asc)
+    const sorted = [...courses].sort((a, b) => {
+      const aLocked = a.availableDate && a.availableDate > today;
+      const bLocked = b.availableDate && b.availableDate > today;
+      if (aLocked && !bLocked) return 1;
+      if (!aLocked && bLocked) return -1;
+      if (!aLocked && !bLocked) return new Date(b.date) - new Date(a.date);
+      return new Date(a.availableDate) - new Date(b.availableDate);
+    });
+    container.innerHTML = sorted.map(c => {
       const thumbUrl = c.thumbnail ? driveImageUrl(c.thumbnail) : '';
       const lessonCount = (c.lessons && c.lessons.length) || 0;
       const isLocked = c.availableDate && c.availableDate > today;
