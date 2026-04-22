@@ -1,11 +1,284 @@
 {
   "stats": {
-    "courses": 7,
+    "courses": 13,
     "pdfs": 5,
     "live": 3,
     "members": 87
   },
   "courses": [
+    {
+      "id": 1776826150224,
+      "title": "Estimulación neuroplástica en rehabilitación neurológica    ",
+      "desc": "Programa orientado a la estimulación neuroplástica en rehabilitación neurológica, con enfoque en potenciar la recuperación funcional, la adaptación neurológica y el rendimiento motor del paciente.",
+      "category": "rehabilitacion",
+      "date": "2026-04-22",
+      "badge": "Próximamente",
+      "thumbnail": "",
+      "temarioImg": "",
+      "availableDate": "2026-07-16",
+      "lessons": [
+        {
+          "id": 1776826272252,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1qknx72HehMNt0P6XXRn6jQjs89FgabPQ/view?usp=drive_link"
+        },
+        {
+          "id": 1776826272253,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1M29ZFkWn7rGhilv_CY-nIF8QU9bVrzpl/view?usp=drive_link"
+        },
+        {
+          "id": 1776826272254,
+          "title": "Clase 3",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1z0IHISnJbElSpFPJG7j6hJTc7Apz93-5/view?usp=drive_link"
+        },
+        {
+          "id": 1776826272255,
+          "title": "Clase 4 y 5",
+          "desc": "",
+          "duration": "2 Horas",
+          "videoUrl": "https://drive.google.com/file/d/1SZANthFXL1dSltgSjaE9_Lyq5QcOPey9/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "id": 1776825965865,
+      "title": "Neuro plasticidad y rehabilitación funcional ",
+      "desc": "Programa orientado al estudio de la neuro plasticidad aplicada a la rehabilitación funcional, con enfoque en la recuperación del movimiento, la reorganización neurológica y la optimización de la funcionalidad del paciente.",
+      "category": "rehabilitacion",
+      "date": "2026-04-22",
+      "badge": "Próximamente",
+      "thumbnail": "",
+      "temarioImg": "",
+      "availableDate": "2026-06-29",
+      "lessons": [
+        {
+          "id": 1776825965865,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1LBKCj03p6WWv8_uydSyzbvCs-oQCZQO4/view?usp=drive_link"
+        },
+        {
+          "id": 1776825965866,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1gSXLNHLtKNxYIWMYh1xP7x4HVOpVfvGj/view?usp=drive_link"
+        },
+        {
+          "id": 1776825965867,
+          "title": "Clase 3",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1EmBl4VcWtWU7fYbCW6CiFALGblXU6v_Z/view?usp=drive_link"
+        },
+        {
+          "id": 1776825965868,
+          "title": "Clase 4",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1IXeDZmrHDG_kg0VoEkzDDqbd6KoFTjGp/view?usp=drive_link"
+        },
+        {
+          "id": 1776825965869,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1HYQUDPjB_95yROzcyq1ctk61ABjkc3Me/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "id": 1776825757225,
+      "title": "Tratamiento fisioterapéutico en parálisis cerebral infantil ",
+      "desc": "Capacitación enfocada en el tratamiento fisioterapéutico de la parálisis cerebral infantil, orientada a mejorar la función motora, la movilidad, el control postural y la calidad de vida del paciente mediante un abordaje terapéutico integral y actualizado.",
+      "category": "fisioterapia",
+      "date": "2026-04-22",
+      "badge": "Próximamente",
+      "thumbnail": "",
+      "temarioImg": "",
+      "availableDate": "2026-06-12",
+      "lessons": [
+        {
+          "id": 1776825757225,
+          "title": "Clase 1 y 2",
+          "desc": "",
+          "duration": "2 Horas",
+          "videoUrl": "https://drive.google.com/file/d/1xV_MVMGfvVYTUypbSbKDBV4-VnuZ6zW7/view?usp=drive_link"
+        },
+        {
+          "id": 1776825757226,
+          "title": "Clase 3 y 4",
+          "desc": "",
+          "duration": "2 Horas",
+          "videoUrl": "https://drive.google.com/file/d/1wXAfokDMOd2PnfkFC1RPdPeyacIeccTT/view?usp=drive_link"
+        },
+        {
+          "id": 1776825757227,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1JKv-hYdQVYygKo3mqYaZBy5xWmM2m9Je/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "id": 1776825590464,
+      "title": "Fisioterapia pulmonar: Hipoxemia ventilación ",
+      "desc": "Capacitación enfocada en el abordaje fisioterapéutico de la hipoxemia y el soporte ventilatorio, orientada a optimizar la función respiratoria, mejorar la oxigenación y favorecer la recuperación pulmonar mediante estrategias clínicas actualizadas.",
+      "category": "fisioterapia",
+      "date": "2026-04-22",
+      "badge": "Próximamente",
+      "thumbnail": "",
+      "temarioImg": "",
+      "availableDate": "2026-05-26",
+      "lessons": [
+        {
+          "id": 1776825590464,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1_SzD6ByOTIJ1roRt5UzK79lSygMiQHhD/view?usp=drive_link"
+        },
+        {
+          "id": 1776825590465,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/17RkUSF89qU8ioAN2h8-gM7mBk80qcV9B/view?usp=drive_link"
+        },
+        {
+          "id": 1776825590466,
+          "title": "Clase 3",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1SuEbNIKU-0HM5qXLRV0FvG2puZ1phZ-d/view?usp=drive_link"
+        },
+        {
+          "id": 1776825590467,
+          "title": "Clase 4",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1XETzXthhoO42cmSDxySQp6l8XFPFFOWY/view?usp=drive_link"
+        },
+        {
+          "id": 1776825590468,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/15lYNcL_t3MI1QCOD1B9RBYhoZFx4WoJs/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "id": 1776825398023,
+      "title": "Fisioterapia respiratoria en pacientes geriátricos ",
+      "desc": "Capacitación enfocada en la fisioterapia respiratoria en pacientes geriátricos, orientada a mejorar la función pulmonar, la mecánica ventilatoria y la calidad de vida mediante intervenciones seguras y clínicamente actualizadas.",
+      "category": "fisioterapia",
+      "date": "2026-04-22",
+      "badge": "Próximamente",
+      "thumbnail": "",
+      "temarioImg": "",
+      "availableDate": "2026-05-09",
+      "lessons": [
+        {
+          "id": 1776825398023,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1mEAwC0lrJ28alqXre1qbyZSRd9OVLKzJ/view?usp=drive_link"
+        },
+        {
+          "id": 1776825398024,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1yxdoDIWzI8cNj3ZUPGI8ftLuKrcS4SMG/view?usp=drive_link"
+        },
+        {
+          "id": 1776825398025,
+          "title": "Clase 3",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/19TMfUkEOlKk4746whTfYNWJX84Wvkel_/view?usp=drive_link"
+        },
+        {
+          "id": 1776825398026,
+          "title": "Clase 4",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1XJSbOjNG-UU0kHcFj6iOKvuRd4xV8fH1/view?usp=drive_link"
+        },
+        {
+          "id": 1776825398027,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1rfjG3k4XOzkFfXXCl-h_ysC5p3uExC0U/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "id": 1776825183576,
+      "title": "Rehabilitación en hipertensión pulmonar y enfermedades vasculares pulmonares ",
+      "desc": "Programa enfocado en la rehabilitación integral de pacientes con hipertensión pulmonar y enfermedades vasculares pulmonares, orientado a optimizar la capacidad física, la respuesta cardiorrespiratoria y la calidad de vida con base en criterios clínicos actualizados.",
+      "category": "rehabilitacion",
+      "date": "2026-04-22",
+      "badge": "Próximamente ",
+      "thumbnail": "",
+      "temarioImg": "",
+      "availableDate": "2026-04-23",
+      "lessons": [
+        {
+          "id": 1776825183576,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/13e6pHdxCRncZdzEGTRwVVcIIgAogNaSR/view?usp=drive_link"
+        },
+        {
+          "id": 1776825183577,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1-mlJkfu7otEA0gTfeMfuN0Q2VRzmeczC/view?usp=drive_link"
+        },
+        {
+          "id": 1776825183578,
+          "title": "Clase 3",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1kP-OSphv88glHR1ZY75P6jpPGKMdBFBd/view?usp=drive_link"
+        },
+        {
+          "id": 1776825183579,
+          "title": "Clase 4",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1Q5j9HKRaDTItTwjAIxMdpfJ3ge3sNEvI/view?usp=drive_link"
+        },
+        {
+          "id": 1776825183580,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1Jh7z6mpiisie4g2BXJCud74-lg3Zr1FX/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
     {
       "id": 1776396508901,
       "title": "Entrenamiento hipopresivo ",
