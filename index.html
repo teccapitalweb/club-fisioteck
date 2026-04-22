@@ -2032,16 +2032,9 @@
   // ===== AUTO NEWS FROM GOOGLE NEWS =====
   async function fetchAutoNews() {
     try {
-      const rssUrl = 'https://news.google.com/rss/search?q=fisioterapia+OR+rehabilitaci%C3%B3n+OR+terapia+f%C3%ADsica&hl=es-419&gl=MX&ceid=MX:es-419';
-      const res = await fetch('https://corsproxy.io/?' + encodeURIComponent(rssUrl));
-      if (!res.ok) return;
-      const xmlText = await res.text();
-      const parser = new DOMParser();
-      const xml = parser.parseFromString(xmlText, 'text/xml');
-      const xmlItems = xml.querySelectorAll('item');
-      if (!xmlItems.length) return;
+      const rssUrl = encodeURIComponent('https://news.google.com/rss/search?q=fisioterapia+OR+rehabilitación+OR+terapia+física&hl=es-419&gl=MX&ceid=MX:es-419');
 
-      // Stock physiotherapy images from Unsplash
+      // Stock physiotherapy images
       const stockImages = [
         'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=250&fit=crop',
         'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=250&fit=crop',
@@ -2055,40 +2048,79 @@
         'https://images.unsplash.com/photo-1666214280557-f1b5022eb634?w=400&h=250&fit=crop'
       ];
 
-      const parsed = [];
-      xmlItems.forEach((item, i) => {
-        if (parsed.length >= 10) return;
-        const title = (item.querySelector('title')?.textContent || '').replace(/ - .*$/, '').trim();
-        const link = item.querySelector('link')?.textContent || '';
-        const pubDate = new Date(item.querySelector('pubDate')?.textContent || '');
-        const desc = item.querySelector('description')?.textContent || '';
-        const source = item.querySelector('source')?.textContent || 'Google News';
-        const cleanDesc = desc.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+      // Try multiple proxies
+      let data = null;
+      const proxies = [
+        'https://api.rss2json.com/v1/api.json?rss_url=' + rssUrl,
+        'https://corsproxy.io/?' + encodeURIComponent('https://news.google.com/rss/search?q=fisioterapia+OR+rehabilitaci%C3%B3n+OR+terapia+f%C3%ADsica&hl=es-419&gl=MX&ceid=MX:es-419')
+      ];
 
-        // Try to extract image from description first
-        let thumb = '';
-        const imgMatch = desc.match(/<img[^>]+src=["']([^"']+)["']/i);
-        if (imgMatch) thumb = imgMatch[1];
-        // Fallback to stock image
-        if (!thumb) thumb = stockImages[i % stockImages.length];
+      // Try rss2json first
+      try {
+        const res = await fetch(proxies[0]);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.items && json.items.length > 0) {
+            data = json.items.map((it, i) => ({
+              title: (it.title || '').replace(/ - .*$/, '').trim(),
+              link: it.link || '',
+              pubDate: it.pubDate || '',
+              description: (it.description || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim(),
+              source: (it.author || '').replace(/<[^>]*>/g, '').trim() || 'Google News',
+              thumbnail: it.thumbnail || it.enclosure?.link || stockImages[i % stockImages.length]
+            }));
+          }
+        }
+      } catch(e) {}
 
-        parsed.push({
+      // Fallback: try corsproxy
+      if (!data) {
+        try {
+          const res2 = await fetch(proxies[1]);
+          if (res2.ok) {
+            const xmlText = await res2.text();
+            const parser = new DOMParser();
+            const xml = parser.parseFromString(xmlText, 'text/xml');
+            const items = xml.querySelectorAll('item');
+            if (items.length > 0) {
+              data = [];
+              items.forEach((item, i) => {
+                if (data.length >= 10) return;
+                data.push({
+                  title: (item.querySelector('title')?.textContent || '').replace(/ - .*$/, '').trim(),
+                  link: item.querySelector('link')?.textContent || '',
+                  pubDate: item.querySelector('pubDate')?.textContent || '',
+                  description: (item.querySelector('description')?.textContent || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim(),
+                  source: item.querySelector('source')?.textContent || 'Google News',
+                  thumbnail: stockImages[i % stockImages.length]
+                });
+              });
+            }
+          }
+        } catch(e) {}
+      }
+
+      if (!data || data.length === 0) return;
+
+      const autoNews = data.slice(0, 10).map((item, i) => {
+        const pubDate = new Date(item.pubDate);
+        return {
           id: 'auto_' + Date.now() + '_' + i,
-          title: title,
-          excerpt: cleanDesc.substring(0, 180) + (cleanDesc.length > 180 ? '...' : ''),
+          title: item.title,
+          excerpt: item.description.substring(0, 180) + (item.description.length > 180 ? '...' : ''),
           content: '',
           category: 'Noticias',
           date: isNaN(pubDate) ? new Date().toISOString().split('T')[0] : pubDate.toISOString().split('T')[0],
-          thumbnail: thumb,
-          externalLink: link,
-          source: source,
+          thumbnail: item.thumbnail,
+          externalLink: item.link,
+          source: item.source,
           autoNews: true
-        });
+        };
       });
 
-      if (parsed.length === 0) return;
+      if (autoNews.length === 0) return;
       siteData.news = (siteData.news || []).filter(n => !n.autoNews);
-      siteData.news = [...parsed, ...siteData.news];
+      siteData.news = [...autoNews, ...siteData.news];
       renderNews();
       renderHomeNews();
     } catch(e) { console.error('Auto news error:', e); }
