@@ -1,7 +1,7 @@
 {
   "stats": {
-    "courses": 20,
-    "pdfs": 5,
+    "courses": 15,
+    "pdfs": 0,
     "live": 3,
     "members": 87
   },
@@ -656,66 +656,6 @@
         }
       ],
       "type": "video"
-    },
-    {
-      "id": 1,
-      "title": "Fundamentos de Fisioterapia Deportiva",
-      "desc": "Aprende las bases del tratamiento deportivo profesional",
-      "category": "fisioterapia",
-      "duration": "2h 30min",
-      "date": "2026-04-01",
-      "badge": "Nuevo",
-      "videoUrl": "",
-      "thumbnail": "",
-      "type": "video"
-    },
-    {
-      "id": 2,
-      "title": "Anatomía Funcional del Miembro Superior",
-      "desc": "Estudio detallado de la anatomía aplicada",
-      "category": "anatomia",
-      "duration": "1h 45min",
-      "date": "2026-03-28",
-      "badge": "",
-      "videoUrl": "",
-      "thumbnail": "",
-      "type": "video"
-    },
-    {
-      "id": 3,
-      "title": "Rehabilitación Post-Quirúrgica de Rodilla",
-      "desc": "Protocolos actualizados de recuperación",
-      "category": "rehabilitacion",
-      "duration": "3h 10min",
-      "date": "2026-03-20",
-      "badge": "Popular",
-      "videoUrl": "",
-      "thumbnail": "",
-      "type": "video"
-    },
-    {
-      "id": 4,
-      "title": "Vendaje Neuromuscular Avanzado",
-      "desc": "Técnicas de kinesiotaping para profesionales",
-      "category": "especializacion",
-      "duration": "2h 00min",
-      "date": "2026-03-15",
-      "badge": "",
-      "videoUrl": "",
-      "thumbnail": "",
-      "type": "video"
-    },
-    {
-      "id": 5,
-      "title": "Electroterapia Clínica",
-      "desc": "Uso correcto de equipos de electroterapia",
-      "category": "fisioterapia",
-      "duration": "1h 50min",
-      "date": "2026-03-10",
-      "badge": "",
-      "videoUrl": "",
-      "thumbnail": "",
-      "type": "video"
     }
   ],
   "live": [
@@ -753,58 +693,7 @@
       "type": "live"
     }
   ],
-  "pdfs": [
-    {
-      "id": 201,
-      "title": "Guía de Evaluación Postural",
-      "desc": "Manual completo — 42 páginas",
-      "category": "fisioterapia",
-      "size": "3.2 MB",
-      "date": "2026-04-01",
-      "fileUrl": "",
-      "type": "pdf"
-    },
-    {
-      "id": 202,
-      "title": "Protocolo de Rehabilitación de Hombro",
-      "desc": "Fases de tratamiento",
-      "category": "rehabilitacion",
-      "size": "1.8 MB",
-      "date": "2026-03-28",
-      "fileUrl": "",
-      "type": "pdf"
-    },
-    {
-      "id": 203,
-      "title": "Atlas de Anatomía Palpatoria",
-      "desc": "Referencia visual",
-      "category": "anatomia",
-      "size": "8.5 MB",
-      "date": "2026-03-20",
-      "fileUrl": "",
-      "type": "pdf"
-    },
-    {
-      "id": 204,
-      "title": "Ejercicios Terapéuticos para Cervicalgia",
-      "desc": "Programa con ilustraciones",
-      "category": "rehabilitacion",
-      "size": "2.1 MB",
-      "date": "2026-03-15",
-      "fileUrl": "",
-      "type": "pdf"
-    },
-    {
-      "id": 205,
-      "title": "Guía de Vendaje Funcional",
-      "desc": "Técnicas paso a paso",
-      "category": "especializacion",
-      "size": "4.7 MB",
-      "date": "2026-03-10",
-      "fileUrl": "",
-      "type": "pdf"
-    }
-  ],
+  "pdfs": [],
   "news": [],
   "members": []
 }
