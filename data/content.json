@@ -1,11 +1,179 @@
 {
   "stats": {
-    "courses": 16,
+    "courses": 20,
     "pdfs": 5,
     "live": 3,
     "members": 87
   },
   "courses": [
+    {
+      "id": 1776872365434,
+      "title": "Fisiopatología \"lesiones deportivas mas comunes\"",
+      "desc": "Capacitación enfocada en la fisiopatología de las lesiones deportivas más comunes, orientada a comprender sus mecanismos de aparición, manifestaciones clínicas y bases para una intervención terapéutica oportuna y eficaz.",
+      "category": "rehabilitacion",
+      "date": "2026-04-22",
+      "badge": "Próximamente",
+      "thumbnail": "",
+      "temarioImg": "",
+      "availableDate": "2026-12-16",
+      "lessons": [
+        {
+          "id": 1776872365434,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1XAO7qW_P5alFoyOqUPVab9KgnxP4ziCF/view?usp=drive_link"
+        },
+        {
+          "id": 1776872365435,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1IBVwn9c2GBj5BU2J_LnW4lWFfE2MEElV/view?usp=drive_link"
+        },
+        {
+          "id": 1776872365436,
+          "title": "Clase 3",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1-6U2SrZbJCNG20bSAP0PNCMysNlnHjXF/view?usp=drive_link"
+        },
+        {
+          "id": 1776872365437,
+          "title": "Clase 4",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/18JLHuENoooL6UuliT7hgtjWEK2ST7CTN/view?usp=drive_link"
+        },
+        {
+          "id": 1776872365438,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1ROTa_2vQdeJ_CzAPI91uKjXpEBOXVL-4/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "id": 1776872151595,
+      "title": "Rehabilitación deportiva  ",
+      "desc": "Capacitación enfocada en la rehabilitación deportiva, orientada a prevenir lesiones, optimizar la recuperación funcional y favorecer el retorno seguro a la actividad física mediante estrategias terapéuticas actualizadas.",
+      "category": "rehabilitacion",
+      "date": "2026-04-22",
+      "badge": "Próximamente",
+      "thumbnail": "",
+      "temarioImg": "",
+      "availableDate": "2026-11-29",
+      "lessons": [
+        {
+          "id": 1776872151595,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1NmqNcGbKfygKc1CcsjLUtz82VFkbxidv/view?usp=drive_link"
+        },
+        {
+          "id": 1776872151596,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1Bii3xTWv5e7iGKc6iKPQpAA2a4PZ3Gu1/view?usp=drive_link"
+        },
+        {
+          "id": 1776872151597,
+          "title": "Clase 3 y 4",
+          "desc": "",
+          "duration": "2 Horas",
+          "videoUrl": "https://drive.google.com/file/d/1itaYTr1hm21vV3NsdR7f1yMkw1EetED8/view?usp=drive_link"
+        },
+        {
+          "id": 1776872151598,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1wPkGdMKNLi5mPTU9Zt355zUQLfhL6QiJ/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "id": 1776871989780,
+      "title": "Mejora de la movilidad y la función motora en pacientes geriátricos ",
+      "desc": "Capacitación enfocada en la mejora de la movilidad y la función motora en pacientes geriátricos, orientada a preservar la independencia, optimizar el desempeño físico y favorecer la calidad de vida mediante estrategias terapéuticas seguras y actualizadas.",
+      "category": "rehabilitacion",
+      "date": "2026-04-22",
+      "badge": "Próximamente",
+      "thumbnail": "",
+      "temarioImg": "",
+      "availableDate": "2026-11-12",
+      "lessons": [
+        {
+          "id": 1776871989780,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/14pbI2Pri4eBQVUqbs7ZuL46GpNt6YcEg/view?usp=drive_link"
+        },
+        {
+          "id": 1776871989781,
+          "title": "Clase 2 y 3",
+          "desc": "",
+          "duration": "2 Horas",
+          "videoUrl": "https://drive.google.com/file/d/1WMzfpWGFcx1qIGXSdIEdYtXu07wA92fW/view?usp=drive_link"
+        },
+        {
+          "id": 1776871989782,
+          "title": "Clase 4 y 5",
+          "desc": "",
+          "duration": "2 Horas",
+          "videoUrl": "https://drive.google.com/file/d/1QGut_DIbQLIfN_0L2UFIcYAgN2KngEjI/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "id": 1776871724549,
+      "title": "Liberación miofascial estética: Facial y corporal ",
+      "desc": "Capacitación enfocada en la liberación miofascial estética facial y corporal, orientada a mejorar la movilidad tisular, favorecer la circulación, optimizar la apariencia de la piel y complementar protocolos estéticos mediante técnicas manuales especializadas.",
+      "category": "estética",
+      "date": "2026-04-22",
+      "badge": "Próximamente",
+      "thumbnail": "",
+      "temarioImg": "",
+      "availableDate": "2026-10-26",
+      "lessons": [
+        {
+          "id": 1776871724549,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/10bf25syWIs7oNMZT53bfZICltFWfMN60/view?usp=drive_link"
+        },
+        {
+          "id": 1776871724550,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1r4GonkjWzLk9S4EsB5dj-DhnEzPb4vjV/view?usp=drive_link"
+        },
+        {
+          "id": 1776871724551,
+          "title": "Clase 3",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1vVkVOHSCEHhTOwTH98XYgcazNQfpbHKz/view?usp=drive_link"
+        },
+        {
+          "id": 1776871724552,
+          "title": "Clase 4 y 5",
+          "desc": "",
+          "duration": "2 Horas",
+          "videoUrl": "https://drive.google.com/file/d/1JjuYfyNq7XjwaclsYhJksHWBmCcploED/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
     {
       "id": 1776871496822,
       "title": "Manejo del dolor en terapia física ",
