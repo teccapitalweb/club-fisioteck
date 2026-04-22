@@ -1890,7 +1890,7 @@
       if (isLocked) {
         const unlockDate = new Date(regDate.getTime() + c._unlockDays * 24 * 60 * 60 * 1000);
         const dateLabel = unlockDate.getDate() + ' ' + months[unlockDate.getMonth()] + ' ' + unlockDate.getFullYear();
-        lockHTML = `<div class="course-lock-overlay"><div class="course-lock-icon">🔒</div><div class="course-lock-date">Disponible el ${dateLabel}</div></div>`;
+        lockHTML = `<div class="course-lock-overlay"><div class="course-lock-icon">🔒</div></div>`;
       }
       return `
       <div class="course-card${isLocked?' locked':''}" ${isLocked?'':'onclick="showPage(\'library\');setTimeout(()=>openCourseDetail('+c.id+'),100)"'}>
@@ -2208,7 +2208,7 @@
         const unlockDate = new Date(regDate.getTime() + c._unlockDays * 24 * 60 * 60 * 1000);
         const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
         const dateLabel = unlockDate.getDate() + ' ' + months[unlockDate.getMonth()] + ' ' + unlockDate.getFullYear();
-        lockHTML = `<div class="course-lock-overlay"><div class="course-lock-icon">🔒</div><div class="course-lock-date">Disponible el ${dateLabel}</div></div>`;
+        lockHTML = `<div class="course-lock-overlay"><div class="course-lock-icon">🔒</div></div>`;
       }
       return `
         <div class="course-card${isLocked?' locked':''}" ${isLocked?'':'onclick="openCourseDetail('+c.id+')"'} data-category="${c.category||'all'}" data-title="${c.title.toLowerCase()}">
