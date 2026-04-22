@@ -8,45 +8,45 @@
   "courses": [
     {
       "id": 1776872365434,
-      "title": "Fisiopatología \"lesiones deportivas mas comunes\"",
+      "title": "Fisiopatología ",
       "desc": "Capacitación enfocada en la fisiopatología de las lesiones deportivas más comunes, orientada a comprender sus mecanismos de aparición, manifestaciones clínicas y bases para una intervención terapéutica oportuna y eficaz.",
       "category": "rehabilitacion",
       "date": "2026-04-22",
       "badge": "Próximamente",
-      "thumbnail": "",
+      "thumbnail": "https://drive.google.com/file/d/1eSuk5lgRba1vzVmZfos0GedkS5h3j1PW/view?usp=drive_link",
       "temarioImg": "",
       "availableDate": "2026-12-16",
       "lessons": [
         {
-          "id": 1776872365434,
+          "id": 1776877375273,
           "title": "Clase 1",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1XAO7qW_P5alFoyOqUPVab9KgnxP4ziCF/view?usp=drive_link"
         },
         {
-          "id": 1776872365435,
+          "id": 1776877375274,
           "title": "Clase 2",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1IBVwn9c2GBj5BU2J_LnW4lWFfE2MEElV/view?usp=drive_link"
         },
         {
-          "id": 1776872365436,
+          "id": 1776877375275,
           "title": "Clase 3",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1-6U2SrZbJCNG20bSAP0PNCMysNlnHjXF/view?usp=drive_link"
         },
         {
-          "id": 1776872365437,
+          "id": 1776877375276,
           "title": "Clase 4",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/18JLHuENoooL6UuliT7hgtjWEK2ST7CTN/view?usp=drive_link"
         },
         {
-          "id": 1776872365438,
+          "id": 1776877375277,
           "title": "Clase 5",
           "desc": "",
           "duration": "1 Hora",
@@ -62,33 +62,33 @@
       "category": "rehabilitacion",
       "date": "2026-04-22",
       "badge": "Próximamente",
-      "thumbnail": "",
+      "thumbnail": "https://drive.google.com/file/d/1xP6umvAWeBUOrcBeUn14-k4HDhpTiTF7/view?usp=drive_link",
       "temarioImg": "",
       "availableDate": "2026-11-29",
       "lessons": [
         {
-          "id": 1776872151595,
+          "id": 1776877349153,
           "title": "Clase 1",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1NmqNcGbKfygKc1CcsjLUtz82VFkbxidv/view?usp=drive_link"
         },
         {
-          "id": 1776872151596,
+          "id": 1776877349154,
           "title": "Clase 2",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1Bii3xTWv5e7iGKc6iKPQpAA2a4PZ3Gu1/view?usp=drive_link"
         },
         {
-          "id": 1776872151597,
+          "id": 1776877349155,
           "title": "Clase 3 y 4",
           "desc": "",
           "duration": "2 Horas",
           "videoUrl": "https://drive.google.com/file/d/1itaYTr1hm21vV3NsdR7f1yMkw1EetED8/view?usp=drive_link"
         },
         {
-          "id": 1776872151598,
+          "id": 1776877349156,
           "title": "Clase 5",
           "desc": "",
           "duration": "1 Hora",
@@ -104,26 +104,26 @@
       "category": "rehabilitacion",
       "date": "2026-04-22",
       "badge": "Próximamente",
-      "thumbnail": "",
+      "thumbnail": "https://drive.google.com/file/d/1LkeNppElZE5KYW2HYl8tRazWBC8gwLqs/view?usp=drive_link",
       "temarioImg": "",
       "availableDate": "2026-11-12",
       "lessons": [
         {
-          "id": 1776871989780,
+          "id": 1776877314337,
           "title": "Clase 1",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/14pbI2Pri4eBQVUqbs7ZuL46GpNt6YcEg/view?usp=drive_link"
         },
         {
-          "id": 1776871989781,
+          "id": 1776877314338,
           "title": "Clase 2 y 3",
           "desc": "",
           "duration": "2 Horas",
           "videoUrl": "https://drive.google.com/file/d/1WMzfpWGFcx1qIGXSdIEdYtXu07wA92fW/view?usp=drive_link"
         },
         {
-          "id": 1776871989782,
+          "id": 1776877314339,
           "title": "Clase 4 y 5",
           "desc": "",
           "duration": "2 Horas",
@@ -139,33 +139,33 @@
       "category": "estética",
       "date": "2026-04-22",
       "badge": "Próximamente",
-      "thumbnail": "",
+      "thumbnail": "https://drive.google.com/file/d/1fRd0pAzwqjQ21LRFjyp0MkH537IdK7MJ/view?usp=drive_link",
       "temarioImg": "",
       "availableDate": "2026-10-26",
       "lessons": [
         {
-          "id": 1776871724549,
+          "id": 1776877294345,
           "title": "Clase 1",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/10bf25syWIs7oNMZT53bfZICltFWfMN60/view?usp=drive_link"
         },
         {
-          "id": 1776871724550,
+          "id": 1776877294346,
           "title": "Clase 2",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1r4GonkjWzLk9S4EsB5dj-DhnEzPb4vjV/view?usp=drive_link"
         },
         {
-          "id": 1776871724551,
+          "id": 1776877294347,
           "title": "Clase 3",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1vVkVOHSCEHhTOwTH98XYgcazNQfpbHKz/view?usp=drive_link"
         },
         {
-          "id": 1776871724552,
+          "id": 1776877294348,
           "title": "Clase 4 y 5",
           "desc": "",
           "duration": "2 Horas",
@@ -181,19 +181,19 @@
       "category": "ortopedia",
       "date": "2026-04-22",
       "badge": "Próximamente",
-      "thumbnail": "",
+      "thumbnail": "https://drive.google.com/file/d/1V1pvTDUXN78HgNFKM5OjGKtCBSFTpuNE/view?usp=drive_link",
       "temarioImg": "",
       "availableDate": "2026-10-09",
       "lessons": [
         {
-          "id": 1776871496822,
+          "id": 1776877271785,
           "title": "Clase 1, 2 y 3",
           "desc": "",
           "duration": "3 Horas",
           "videoUrl": "https://drive.google.com/file/d/1EBsIwDLAMsSl5xo_tjKu-EwSMbmuwSUq/view?usp=drive_link"
         },
         {
-          "id": 1776871496823,
+          "id": 1776877271786,
           "title": "Clase 4 y 5",
           "desc": "",
           "duration": "2 Horas",
@@ -209,40 +209,40 @@
       "category": "traumatología",
       "date": "2026-04-22",
       "badge": "Próximamente",
-      "thumbnail": "",
+      "thumbnail": "https://drive.google.com/file/d/1jK9TaSOBoBsZUDU7MlvgzcJVJwQy8c3m/view?usp=drive_link",
       "temarioImg": "",
       "availableDate": "2026-05-22",
       "lessons": [
         {
-          "id": 1776871335616,
+          "id": 1776877235618,
           "title": "Clase 1",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/19hnfZDKFGivn3elPR6blEWCHOwijTItR/view?usp=drive_link"
         },
         {
-          "id": 1776871335617,
+          "id": 1776877235619,
           "title": "Clase 2",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1NHsjV8csVdxEEn699ogA3eNfNn9pw_BZ/view?usp=drive_link"
         },
         {
-          "id": 1776871335618,
+          "id": 1776877235620,
           "title": "Clase 3",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1AQ2qv818SeX2eGWI4VGRU_94NiT5EFDQ/view?usp=drive_link"
         },
         {
-          "id": 1776871335619,
+          "id": 1776877235621,
           "title": "Clase 4",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1uQOrK4LWLIzL8Dpxfpe7sV0_yA75d4zc/view?usp=drive_link"
         },
         {
-          "id": 1776871335620,
+          "id": 1776877235622,
           "title": "Clase 5",
           "desc": "",
           "duration": "1 Hora",
@@ -258,40 +258,40 @@
       "category": "rehabilitacion",
       "date": "2026-04-22",
       "badge": "Próximamente",
-      "thumbnail": "",
+      "thumbnail": "https://drive.google.com/file/d/1yB1zBYPoXMxkGhnV9TqKCsSme7JS62YT/view?usp=drive_link",
       "temarioImg": "",
       "availableDate": "2026-09-05",
       "lessons": [
         {
-          "id": 1776871017081,
+          "id": 1776877208722,
           "title": "Clase 1",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1txS5UogBWcPhB-SzIg1zkxl0OhwpPbpU/view?usp=drive_link"
         },
         {
-          "id": 1776871017082,
+          "id": 1776877208723,
           "title": "Clase 2",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1Qul3fhsw_2JP2JLdDYnUrB4_Dmxe65gz/view?usp=drive_link"
         },
         {
-          "id": 1776871017083,
+          "id": 1776877208724,
           "title": "Clase 3",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/11ECDGgKpMgdVMXbeXDk1Xxg7EuCOYq1h/view?usp=drive_link"
         },
         {
-          "id": 1776871017084,
+          "id": 1776877208725,
           "title": "Clase 4",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1uzCcb0oZavy5OkGyVwwS2X1dj1jeZbkH/view?usp=drive_link"
         },
         {
-          "id": 1776871017085,
+          "id": 1776877208726,
           "title": "Clase 5",
           "desc": "",
           "duration": "1 Hora",
@@ -307,33 +307,33 @@
       "category": "ortopedia",
       "date": "2026-04-22",
       "badge": "Próximamente",
-      "thumbnail": "",
+      "thumbnail": "https://drive.google.com/file/d/1E9vOyARMufJdFzDjBWP3W4Cm4QJEqsdZ/view?usp=drive_link",
       "temarioImg": "",
       "availableDate": "2026-08-19",
       "lessons": [
         {
-          "id": 1776870729460,
+          "id": 1776877155802,
           "title": "Clase 1",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1OnHi_KaOHQf8MRJb9B-XT9hj9-EwIJ-v/view?usp=drive_link"
         },
         {
-          "id": 1776870729461,
+          "id": 1776877155803,
           "title": "Clase 2",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1Y2ENDJavpJKupnmPaSgdor8NbceUKMec/view?usp=drive_link"
         },
         {
-          "id": 1776870729462,
+          "id": 1776877155804,
           "title": "Clase 3 y 4",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1M3HvitxwQsCOCqb1R_bc3pkqEmzU2_3x/view?usp=drive_link"
         },
         {
-          "id": 1776870729463,
+          "id": 1776877155805,
           "title": "Clase 5",
           "desc": "",
           "duration": "1 Hora",
@@ -349,33 +349,33 @@
       "category": "ortopedia",
       "date": "2026-04-22",
       "badge": "Próximamente",
-      "thumbnail": "",
+      "thumbnail": "https://drive.google.com/file/d/18pD3_Sm72HU0t3CNHnI8Ky0XoQE_Kscp/view?usp=drive_link",
       "temarioImg": "",
       "availableDate": "2026-08-02",
       "lessons": [
         {
-          "id": 1776870490084,
+          "id": 1776877129099,
           "title": "Clase 1 y 2",
           "desc": "",
           "duration": "2 Horas",
           "videoUrl": "https://drive.google.com/file/d/1zBh7oYOKPOJpx9nr0BacK9CzlhP9OkcD/view?usp=drive_link"
         },
         {
-          "id": 1776870490085,
+          "id": 1776877129100,
           "title": "Clase 3",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1U4X6RzMUOf53KSTpRM1rireV1hSHvqbH/view?usp=drive_link"
         },
         {
-          "id": 1776870490086,
+          "id": 1776877129101,
           "title": "Clase 4",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1VvOC36mnVjYqX_P6-iM8_vx3K4IRHXiC/view?usp=drive_link"
         },
         {
-          "id": 1776870490087,
+          "id": 1776877129102,
           "title": "Clase 5",
           "desc": "",
           "duration": "1 Hora",
@@ -391,33 +391,33 @@
       "category": "rehabilitacion",
       "date": "2026-04-22",
       "badge": "Próximamente",
-      "thumbnail": "",
+      "thumbnail": "https://drive.google.com/file/d/1IX76YB8jbAmBb_ukz7Nj7RMJ1OUqN-Aa/view?usp=drive_link",
       "temarioImg": "",
       "availableDate": "2026-07-16",
       "lessons": [
         {
-          "id": 1776826272252,
+          "id": 1776877103778,
           "title": "Clase 1",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1qknx72HehMNt0P6XXRn6jQjs89FgabPQ/view?usp=drive_link"
         },
         {
-          "id": 1776826272253,
+          "id": 1776877103779,
           "title": "Clase 2",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1M29ZFkWn7rGhilv_CY-nIF8QU9bVrzpl/view?usp=drive_link"
         },
         {
-          "id": 1776826272254,
+          "id": 1776877103780,
           "title": "Clase 3",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1z0IHISnJbElSpFPJG7j6hJTc7Apz93-5/view?usp=drive_link"
         },
         {
-          "id": 1776826272255,
+          "id": 1776877103781,
           "title": "Clase 4 y 5",
           "desc": "",
           "duration": "2 Horas",
@@ -433,40 +433,40 @@
       "category": "rehabilitacion",
       "date": "2026-04-22",
       "badge": "Próximamente",
-      "thumbnail": "",
+      "thumbnail": "https://drive.google.com/file/d/1m617KTI8ymup_5ghyPix2Jt7jyFQnFvK/view?usp=drive_link",
       "temarioImg": "",
       "availableDate": "2026-06-29",
       "lessons": [
         {
-          "id": 1776825965865,
+          "id": 1776877047411,
           "title": "Clase 1",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1LBKCj03p6WWv8_uydSyzbvCs-oQCZQO4/view?usp=drive_link"
         },
         {
-          "id": 1776825965866,
+          "id": 1776877047412,
           "title": "Clase 2",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1gSXLNHLtKNxYIWMYh1xP7x4HVOpVfvGj/view?usp=drive_link"
         },
         {
-          "id": 1776825965867,
+          "id": 1776877047413,
           "title": "Clase 3",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1EmBl4VcWtWU7fYbCW6CiFALGblXU6v_Z/view?usp=drive_link"
         },
         {
-          "id": 1776825965868,
+          "id": 1776877047414,
           "title": "Clase 4",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1IXeDZmrHDG_kg0VoEkzDDqbd6KoFTjGp/view?usp=drive_link"
         },
         {
-          "id": 1776825965869,
+          "id": 1776877047415,
           "title": "Clase 5",
           "desc": "",
           "duration": "1 Hora",
@@ -482,26 +482,26 @@
       "category": "fisioterapia",
       "date": "2026-04-22",
       "badge": "Próximamente",
-      "thumbnail": "",
+      "thumbnail": "https://drive.google.com/file/d/1IDNcfU56TOr8KAJv4b45-FmqcL3d7X4E/view?usp=drive_link",
       "temarioImg": "",
       "availableDate": "2026-06-12",
       "lessons": [
         {
-          "id": 1776825757225,
+          "id": 1776877018195,
           "title": "Clase 1 y 2",
           "desc": "",
           "duration": "2 Horas",
           "videoUrl": "https://drive.google.com/file/d/1xV_MVMGfvVYTUypbSbKDBV4-VnuZ6zW7/view?usp=drive_link"
         },
         {
-          "id": 1776825757226,
+          "id": 1776877018196,
           "title": "Clase 3 y 4",
           "desc": "",
           "duration": "2 Horas",
           "videoUrl": "https://drive.google.com/file/d/1wXAfokDMOd2PnfkFC1RPdPeyacIeccTT/view?usp=drive_link"
         },
         {
-          "id": 1776825757227,
+          "id": 1776877018197,
           "title": "Clase 5",
           "desc": "",
           "duration": "1 Hora",
@@ -517,40 +517,40 @@
       "category": "fisioterapia",
       "date": "2026-04-22",
       "badge": "Próximamente",
-      "thumbnail": "",
+      "thumbnail": "https://drive.google.com/file/d/1Oh_pvVAx6E0WYL_xtsovKp2lTz45yWbj/view?usp=drive_link",
       "temarioImg": "",
       "availableDate": "2026-05-26",
       "lessons": [
         {
-          "id": 1776825590464,
+          "id": 1776876978915,
           "title": "Clase 1",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1_SzD6ByOTIJ1roRt5UzK79lSygMiQHhD/view?usp=drive_link"
         },
         {
-          "id": 1776825590465,
+          "id": 1776876978916,
           "title": "Clase 2",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/17RkUSF89qU8ioAN2h8-gM7mBk80qcV9B/view?usp=drive_link"
         },
         {
-          "id": 1776825590466,
+          "id": 1776876978917,
           "title": "Clase 3",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1SuEbNIKU-0HM5qXLRV0FvG2puZ1phZ-d/view?usp=drive_link"
         },
         {
-          "id": 1776825590467,
+          "id": 1776876978918,
           "title": "Clase 4",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1XETzXthhoO42cmSDxySQp6l8XFPFFOWY/view?usp=drive_link"
         },
         {
-          "id": 1776825590468,
+          "id": 1776876978919,
           "title": "Clase 5",
           "desc": "",
           "duration": "1 Hora",
@@ -566,40 +566,40 @@
       "category": "fisioterapia",
       "date": "2026-04-22",
       "badge": "Próximamente",
-      "thumbnail": "",
+      "thumbnail": "https://drive.google.com/file/d/1dOENqa1bFiHviOVwQPwlk9jYmJ2T20M_/view?usp=drive_link",
       "temarioImg": "",
       "availableDate": "2026-05-09",
       "lessons": [
         {
-          "id": 1776825398023,
+          "id": 1776876919859,
           "title": "Clase 1",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1mEAwC0lrJ28alqXre1qbyZSRd9OVLKzJ/view?usp=drive_link"
         },
         {
-          "id": 1776825398024,
+          "id": 1776876919860,
           "title": "Clase 2",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1yxdoDIWzI8cNj3ZUPGI8ftLuKrcS4SMG/view?usp=drive_link"
         },
         {
-          "id": 1776825398025,
+          "id": 1776876919861,
           "title": "Clase 3",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/19TMfUkEOlKk4746whTfYNWJX84Wvkel_/view?usp=drive_link"
         },
         {
-          "id": 1776825398026,
+          "id": 1776876919862,
           "title": "Clase 4",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1XJSbOjNG-UU0kHcFj6iOKvuRd4xV8fH1/view?usp=drive_link"
         },
         {
-          "id": 1776825398027,
+          "id": 1776876919863,
           "title": "Clase 5",
           "desc": "",
           "duration": "1 Hora",
@@ -615,40 +615,40 @@
       "category": "rehabilitacion",
       "date": "2026-04-22",
       "badge": "Próximamente ",
-      "thumbnail": "",
+      "thumbnail": "https://drive.google.com/file/d/1siCvSrjbIiUQLjuzOcutwiwHjejEhjOT/view?usp=drive_link",
       "temarioImg": "",
       "availableDate": "2026-04-23",
       "lessons": [
         {
-          "id": 1776825183576,
+          "id": 1776876893581,
           "title": "Clase 1",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/13e6pHdxCRncZdzEGTRwVVcIIgAogNaSR/view?usp=drive_link"
         },
         {
-          "id": 1776825183577,
+          "id": 1776876893582,
           "title": "Clase 2",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1-mlJkfu7otEA0gTfeMfuN0Q2VRzmeczC/view?usp=drive_link"
         },
         {
-          "id": 1776825183578,
+          "id": 1776876893583,
           "title": "Clase 3",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1kP-OSphv88glHR1ZY75P6jpPGKMdBFBd/view?usp=drive_link"
         },
         {
-          "id": 1776825183579,
+          "id": 1776876893584,
           "title": "Clase 4",
           "desc": "",
           "duration": "1 Hora",
           "videoUrl": "https://drive.google.com/file/d/1Q5j9HKRaDTItTwjAIxMdpfJ3ge3sNEvI/view?usp=drive_link"
         },
         {
-          "id": 1776825183580,
+          "id": 1776876893585,
           "title": "Clase 5",
           "desc": "",
           "duration": "1 Hora",
