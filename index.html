@@ -132,6 +132,11 @@
       .sidebar.open { transform:translateX(0); }
       .sidebar-overlay.open { display:block; }
       .main-content { margin-left:0 !important; padding-top:76px !important; }
+      /* FIX 1: Cronómetro ajustado en móvil */
+      #timerDisplay { font-size:2.8rem !important; letter-spacing:2px !important; }
+      #page-timer .card, #page-timer > div > div:first-child { padding:20px !important; }
+      /* FIX 2: Bloques Zona/Patología/Severidad parejos en móvil */
+      #rehabFilters { grid-template-columns:1fr !important; gap:14px !important; }
     }
 
     /* ===== MAIN CONTENT ===== */
@@ -1445,7 +1450,7 @@
         <h1 class="page-title">Calculadora de Rehabilitación</h1>
         <p class="page-subtitle">Consulta planes sugeridos según la patología y severidad</p>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;">
+      <div id="rehabFilters" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;">
         <div>
           <label style="font-size:.78rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">Zona del cuerpo</label>
           <select id="rehabZone" onchange="updateRehabPathologies()" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:.9rem;background:var(--bg-card);color:var(--text);">
