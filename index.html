@@ -181,6 +181,12 @@
     .hero-banner p { opacity:.7; font-size:.95rem; max-width:500px; position:relative; z-index:1; }
     .hero-badge { display:inline-block; background:rgba(141,198,63,.2); border:1px solid rgba(141,198,63,.3); color:#8DC63F; font-size:.7rem; font-weight:600; padding:4px 12px; border-radius:20px; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:12px; position:relative; z-index:1; }
 
+    /* DASHBOARD GRID */
+    .dash-grid { display:grid; grid-template-columns:1fr 320px; gap:20px; }
+    .dash-main { min-width:0; }
+    .dash-side { min-width:0; }
+    @media(max-width:900px) { .dash-grid { grid-template-columns:1fr; } }
+
     /* ENTRANCE ANIMATIONS */
     @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
     .anim-in { animation: slideUp .6s ease forwards; opacity:0; }
@@ -213,7 +219,7 @@
       .countdown-title { font-size:.85rem; }
     }
 
-    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
+    .stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:0; }
     .stat-card {
       background:var(--bg-card); border-radius:var(--radius); padding:18px 12px; border:1px solid var(--border);
       text-align:center; transition:all .3s ease; position:relative; overflow:hidden;
@@ -767,106 +773,155 @@
     <!-- HOME -->
     <section class="section active" id="page-home">
       <!-- GREETING -->
-      <div class="anim-in" style="margin-bottom:20px;">
-        <h1 id="homeGreeting" style="font-size:1.6rem;font-weight:700;color:var(--text);margin-bottom:2px;"></h1>
-        <p id="homeGreetingSub" style="font-size:.88rem;color:var(--text-muted);"></p>
-      </div>
-
-      <div class="hero-banner anim-in">
-        <div class="hero-badge">🎓 Membresía Activa</div>
-        <h2>Tu membresía profesional en fisioterapia</h2>
-        <p>Cursos grabados, clases en línea, material PDF, foro y mucho más</p>
-      </div>
-
-      <!-- COUNTDOWN -->
-      <div class="countdown-banner anim-in anim-d1" id="countdownBanner" onclick="showPage('courses-live')">
-        <div class="countdown-top">
-          <div class="countdown-pulse"></div>
-          <span class="countdown-label">Próxima clase en vivo</span>
+      <div class="anim-in" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+        <div>
+          <h1 id="homeGreeting" style="font-size:1.5rem;font-weight:700;color:var(--text);margin-bottom:2px;"></h1>
+          <p id="homeGreetingSub" style="font-size:.82rem;color:var(--text-muted);"></p>
         </div>
-        <div class="countdown-title" id="countdownTitle"></div>
-        <div class="countdown-numbers" style="margin-top:12px;">
-          <div class="countdown-unit"><div class="countdown-value" id="cdDays">00</div><div class="countdown-unit-label">Días</div></div>
-          <div class="countdown-sep">:</div>
-          <div class="countdown-unit"><div class="countdown-value" id="cdHours">00</div><div class="countdown-unit-label">Horas</div></div>
-          <div class="countdown-sep">:</div>
-          <div class="countdown-unit"><div class="countdown-value" id="cdMins">00</div><div class="countdown-unit-label">Min</div></div>
-          <div class="countdown-sep">:</div>
-          <div class="countdown-unit"><div class="countdown-value" id="cdSecs">00</div><div class="countdown-unit-label">Seg</div></div>
-        </div>
-        <div class="countdown-footer" id="countdownFooter"></div>
       </div>
 
-      <div class="stats-grid anim-in anim-d2" id="homeStats">
-        <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-number" id="statCourses">0</div><div class="stat-label">Cursos Disponibles</div></div>
-        <div class="stat-card"><div class="stat-icon">📄</div><div class="stat-number" id="statPdfs">0</div><div class="stat-label">PDFs y Materiales</div></div>
-        <div class="stat-card"><div class="stat-icon">📡</div><div class="stat-number" id="statLive">0</div><div class="stat-label">Clases en Línea</div></div>
-        <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-number" id="statMembers">0</div><div class="stat-label">Socios Activos</div></div>
-      </div>
-      <!-- MINI XP WIDGET -->
-      <div id="xpWidget" onclick="showPage('achievements')" class="anim-in anim-d3" style="display:none;background:linear-gradient(135deg,var(--bg-card),rgba(27,63,107,.03));border:1px solid var(--border);border-radius:var(--radius);padding:16px 22px;margin-bottom:24px;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.transform='translateY(-2px)';this.style.boxShadow='0 0 15px rgba(21,101,192,.15)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)';this.style.boxShadow='none'">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <span id="xpLevelIcon" style="font-size:1.4rem;">🎓</span>
-            <div>
-              <div id="xpLevelName" style="font-size:.85rem;font-weight:600;color:var(--text);"></div>
-              <div id="xpPoints" style="font-size:.72rem;color:var(--text-muted);"></div>
+      <!-- TWO COLUMN LAYOUT -->
+      <div class="dash-grid">
+        <!-- LEFT COLUMN -->
+        <div class="dash-main">
+
+          <!-- XP LEVEL BANNER -->
+          <div id="xpWidget" onclick="showPage('achievements')" class="anim-in" style="display:none;background:linear-gradient(135deg,var(--primary),#0F6E56);border-radius:var(--radius);padding:20px 24px;margin-bottom:16px;cursor:pointer;transition:all .3s ease;position:relative;overflow:hidden;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 25px rgba(27,63,107,.3)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+            <div style="position:absolute;top:-30%;right:-5%;width:180px;height:180px;background:rgba(255,255,255,.04);border-radius:50%;"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:14px;">
+                <span id="xpLevelIcon" style="font-size:2.5rem;filter:drop-shadow(0 2px 4px rgba(0,0,0,.2));">🎓</span>
+                <div>
+                  <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.5);margin-bottom:2px;">NIVEL</div>
+                  <div id="xpLevelName" style="font-size:1.15rem;font-weight:700;color:#fff;"></div>
+                  <div id="xpPoints" style="font-size:.78rem;color:rgba(255,255,255,.6);margin-top:2px;"></div>
+                </div>
+              </div>
+              <div style="font-size:.75rem;color:rgba(255,255,255,.5);font-weight:500;">Ver logros →</div>
+            </div>
+            <div style="height:6px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden;margin-top:14px;">
+              <div id="xpBar" style="height:100%;background:#8DC63F;border-radius:3px;transition:width .6s ease;width:0%;"></div>
             </div>
           </div>
-          <div style="font-size:.75rem;color:var(--primary);font-weight:500;">Ver logros →</div>
-        </div>
-        <div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden;">
-          <div id="xpBar" style="height:100%;background:var(--primary);border-radius:3px;transition:width .6s ease;width:0%;"></div>
-        </div>
-      </div>
 
-      <!-- QUICK ACCESS -->
-      <div class="anim-in anim-d3" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;">
-        <div onclick="showPage('library')" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 10px;text-align:center;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 0 15px rgba(21,101,192,.15)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)';this.style.boxShadow='none'">
-          <div style="width:44px;height:44px;border-radius:50%;background:rgba(27,63,107,.08);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:1.3rem;">📚</div>
-          <div style="font-size:.75rem;font-weight:600;color:var(--text);">Mis Cursos</div>
-        </div>
-        <div onclick="showPage('forum')" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 10px;text-align:center;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 0 15px rgba(21,101,192,.15)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)';this.style.boxShadow='none'">
-          <div style="width:44px;height:44px;border-radius:50%;background:rgba(15,110,86,.08);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:1.3rem;">💬</div>
-          <div style="font-size:.75rem;font-weight:600;color:var(--text);">Foro</div>
-        </div>
-        <div onclick="showPage('pdfs')" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 10px;text-align:center;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 0 15px rgba(21,101,192,.15)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)';this.style.boxShadow='none'">
-          <div style="width:44px;height:44px;border-radius:50%;background:rgba(21,101,192,.08);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:1.3rem;">📄</div>
-          <div style="font-size:.75rem;font-weight:600;color:var(--text);">PDFs</div>
-        </div>
-        <div onclick="showPage('achievements')" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 10px;text-align:center;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 0 15px rgba(21,101,192,.15)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)';this.style.boxShadow='none'">
-          <div style="width:44px;height:44px;border-radius:50%;background:rgba(141,198,63,.08);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:1.3rem;">🏆</div>
-          <div style="font-size:.75rem;font-weight:600;color:var(--text);">Logros</div>
-        </div>
-      </div>
+          <!-- FEATURED COURSE -->
+          <div id="featuredCourse" class="anim-in anim-d1" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:16px;display:flex;align-items:center;gap:16px;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.boxShadow='0 0 15px rgba(21,101,192,.15)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+            <div style="width:48px;height:48px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);font-weight:600;margin-bottom:2px;" id="featuredLabel">CONTINÚA APRENDIENDO</div>
+              <div style="font-size:.95rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="featuredTitle"></div>
+              <div style="font-size:.75rem;color:var(--text-muted);margin-top:2px;" id="featuredMeta"></div>
+            </div>
+            <button style="padding:8px 18px;border-radius:var(--radius-sm);background:rgba(27,63,107,.08);color:var(--primary);border:1px solid rgba(27,63,107,.15);font-family:inherit;font-size:.8rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;" onmouseover="this.style.background='var(--primary)';this.style.color='#fff'" onmouseout="this.style.background='rgba(27,63,107,.08)';this.style.color='var(--primary)'">Ver curso</button>
+          </div>
 
-      <!-- PROGRESS CARD -->
-      <div id="progressCard" class="anim-in anim-d4" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 22px;margin-bottom:24px;transition:all .3s ease;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--primary),#8DC63F);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#fff;font-weight:700;" id="progressIcon">📊</div>
-            <div>
-              <div style="font-size:.88rem;font-weight:600;color:var(--text);">Tu progreso general</div>
-              <div id="progressText" style="font-size:.75rem;color:var(--text-muted);"></div>
+          <!-- DISCOUNT BANNER -->
+          <div class="anim-in anim-d1" onclick="showPage('discount')" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 20px;margin-bottom:16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='#8DC63F';this.style.boxShadow='0 0 12px rgba(141,198,63,.15)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+            <div style="font-size:1.5rem;">🎁</div>
+            <div style="flex:1;">
+              <div style="font-size:.88rem;font-weight:600;color:var(--text);">¿Quieres los nuevos cursos de FisioTeck?</div>
+              <div style="font-size:.75rem;color:var(--text-muted);">Como miembro del Club recibes beneficios exclusivos</div>
+            </div>
+            <span style="background:#8DC63F;color:#fff;font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:12px;">20% OFF</span>
+          </div>
+
+          <!-- NEWS -->
+          <div class="anim-in anim-d2" style="margin-top:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+              <h3 style="font-size:1rem;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;">📰 Noticias y novedades</h3>
+              <button onclick="showPage('news')" style="background:none;border:none;color:var(--primary);font-size:.8rem;font-weight:500;cursor:pointer;">Ver todas →</button>
+            </div>
+            <div id="homeNews" style="display:flex;flex-direction:column;gap:12px;"></div>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR -->
+        <div class="dash-side">
+
+          <!-- MI PROGRESO -->
+          <div class="anim-in anim-d2" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:16px;">
+            <h4 style="font-size:.78rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);font-weight:600;margin-bottom:14px;text-align:center;">Mi Progreso</h4>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="homeStats">
+              <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-number" id="statCourses">0</div><div class="stat-label">Cursos</div></div>
+              <div class="stat-card"><div class="stat-icon">📡</div><div class="stat-number" id="statLive">0</div><div class="stat-label">Clases en Línea</div></div>
+              <div class="stat-card"><div class="stat-icon">📄</div><div class="stat-number" id="statPdfs">0</div><div class="stat-label">PDFs</div></div>
+              <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-number" id="statMembers">0</div><div class="stat-label">Socios</div></div>
+            </div>
+            <!-- Progress bar -->
+            <div id="progressCard" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <span style="font-size:.75rem;color:var(--text-muted);" id="progressText"></span>
+                <span style="font-size:.85rem;font-weight:700;color:var(--primary);" id="progressPct"></span>
+              </div>
+              <div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden;">
+                <div id="progressBar" style="height:100%;background:linear-gradient(90deg,var(--primary),#8DC63F);border-radius:3px;transition:width 1s ease;width:0%;"></div>
+              </div>
+            </div>
+            <div id="progressIcon" style="display:none;"></div>
+          </div>
+
+          <!-- COUNTDOWN WEBINAR -->
+          <div class="countdown-banner anim-in anim-d3" id="countdownBanner" onclick="showPage('courses-live')" style="margin-bottom:16px;">
+            <div class="countdown-top">
+              <div class="countdown-pulse"></div>
+              <span class="countdown-label">Próximo Webinar</span>
+            </div>
+            <div class="countdown-title" id="countdownTitle"></div>
+            <div class="countdown-footer" id="countdownFooter" style="margin-bottom:10px;margin-top:6px;"></div>
+            <div class="countdown-numbers" style="margin-top:8px;">
+              <div class="countdown-unit"><div class="countdown-value" id="cdDays">00</div><div class="countdown-unit-label">Días</div></div>
+              <div class="countdown-sep">:</div>
+              <div class="countdown-unit"><div class="countdown-value" id="cdHours">00</div><div class="countdown-unit-label">Horas</div></div>
+              <div class="countdown-sep">:</div>
+              <div class="countdown-unit"><div class="countdown-value" id="cdMins">00</div><div class="countdown-unit-label">Min</div></div>
+              <div class="countdown-sep">:</div>
+              <div class="countdown-unit"><div class="countdown-value" id="cdSecs">00</div><div class="countdown-unit-label">Seg</div></div>
+            </div>
+            <div style="text-align:center;margin-top:12px;">
+              <span style="font-size:.78rem;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.15);padding:6px 16px;border-radius:20px;">Ver webinar →</span>
             </div>
           </div>
-          <div id="progressPct" style="font-size:1.3rem;font-weight:700;color:var(--primary);"></div>
-        </div>
-        <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
-          <div id="progressBar" style="height:100%;background:linear-gradient(90deg,var(--primary),#8DC63F);border-radius:3px;transition:width 1s ease;width:0%;"></div>
+
+          <!-- QUICK ACCESS -->
+          <div class="anim-in anim-d3" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+            <div onclick="showPage('library')" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 8px;text-align:center;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)'">
+              <div style="font-size:1.2rem;margin-bottom:4px;">📚</div>
+              <div style="font-size:.72rem;font-weight:600;color:var(--text);">Mis Cursos</div>
+            </div>
+            <div onclick="showPage('forum')" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 8px;text-align:center;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)'">
+              <div style="font-size:1.2rem;margin-bottom:4px;">💬</div>
+              <div style="font-size:.72rem;font-weight:600;color:var(--text);">Foro</div>
+            </div>
+            <div onclick="showPage('pdfs')" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 8px;text-align:center;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)'">
+              <div style="font-size:1.2rem;margin-bottom:4px;">📄</div>
+              <div style="font-size:.72rem;font-weight:600;color:var(--text);">PDFs</div>
+            </div>
+            <div onclick="showPage('achievements')" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 8px;text-align:center;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)'">
+              <div style="font-size:1.2rem;margin-bottom:4px;">🏆</div>
+              <div style="font-size:.72rem;font-weight:600;color:var(--text);">Logros</div>
+            </div>
+          </div>
+
+          <!-- CANAL -->
+          <div class="anim-in anim-d4" onclick="showPage('community')" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='#25D366'" onmouseout="this.style.borderColor='var(--border)'">
+            <div style="width:38px;height:38px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+            </div>
+            <div>
+              <div style="font-size:.85rem;font-weight:600;color:var(--text);">Canal FisioTeck</div>
+              <div style="font-size:.72rem;color:var(--text-muted);">Novedades oficiales</div>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <div class="recent-section anim-in anim-d4">
+      <!-- RECENT COURSES (full width below) -->
+      <div class="recent-section anim-in anim-d4" style="margin-top:24px;">
         <h3>Contenido reciente</h3>
         <div class="course-grid" id="recentCourses"></div>
-      </div>
-      <div class="recent-section anim-in anim-d5" style="margin-top:32px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-          <h3>Noticias y Blog</h3>
-          <button onclick="showPage('news')" style="background:none;border:none;color:var(--primary);font-size:.85rem;font-weight:500;cursor:pointer;">Ver todas →</button>
-        </div>
-        <div class="news-grid" id="homeNews"></div>
       </div>
     </section>
 
@@ -2064,6 +2119,32 @@
     document.getElementById('progressText').textContent = completedCourses + ' de ' + totalCourses + ' cursos completados';
     document.getElementById('progressPct').textContent = pct + '%';
     setTimeout(() => { document.getElementById('progressBar').style.width = pct + '%'; }, 300);
+
+    // Featured course - find first unlocked course with incomplete progress
+    const featEl = document.getElementById('featuredCourse');
+    const allC = siteData.courses || [];
+    let featCourse = null;
+    for (const c of allC) {
+      const prog = getCourseProgress(c.id);
+      const total = (c.lessons || []).length;
+      const comp = (prog.completed || []).length;
+      if (total > 0 && comp < total) { featCourse = c; break; }
+    }
+    if (!featCourse && allC.length > 0) featCourse = allC[0];
+    if (featCourse) {
+      const prog = getCourseProgress(featCourse.id);
+      const total = (featCourse.lessons || []).length;
+      const comp = (prog.completed || []).length;
+      const label = comp > 0 ? 'CONTINÚA APRENDIENDO' : 'EMPIEZA CON TU PRIMER CURSO';
+      document.getElementById('featuredLabel').textContent = label;
+      document.getElementById('featuredTitle').textContent = featCourse.title;
+      document.getElementById('featuredMeta').textContent = (featCourse.category || '') + (total > 0 ? ' · ' + total + ' clases' : '') + (comp > 0 ? ' · ' + comp + '/' + total + ' completadas' : '');
+      featEl.onclick = () => { showPage('library'); setTimeout(() => openCourseDetail(featCourse.id), 100); };
+      featEl.style.display = 'flex';
+    } else {
+      featEl.style.display = 'none';
+    }
+
     const container = document.getElementById('recentCourses');
     const today = new Date().toISOString().split('T')[0];
     const regDate = userStartDate ? new Date(userStartDate + 'T00:00:00') : new Date();
@@ -2420,10 +2501,23 @@
     const container = document.getElementById('homeNews');
     const news = (siteData.news || []).sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0,3);
     if (news.length === 0) {
-      container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);grid-column:1/-1;">Próximamente noticias y artículos</div>';
+      container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);">Próximamente noticias y artículos</div>';
       return;
     }
-    container.innerHTML = news.map(n => newsCardHTML(n)).join('');
+    container.innerHTML = news.map(n => {
+      const thumbUrl = n.thumbnail ? (n.autoNews ? n.thumbnail : driveImageUrl(n.thumbnail)) : '';
+      const d = new Date(n.date + 'T12:00:00');
+      const timeAgo = getTimeAgo(d);
+      const clickAction = n.autoNews && n.externalLink ? `window.open('${n.externalLink}','_blank')` : `openArticle('${n.id}')`;
+      return `<div onclick="${clickAction}" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;display:flex;gap:14px;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.boxShadow='0 0 12px rgba(21,101,192,.12)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+        ${thumbUrl ? `<img src="${thumbUrl}" style="width:100px;height:75px;object-fit:cover;border-radius:8px;flex-shrink:0;" onerror="this.style.display='none'">` : ''}
+        <div style="flex:1;min-width:0;">
+          ${n.source ? `<div style="font-size:.65rem;font-weight:600;color:var(--primary);margin-bottom:2px;">${n.source}</div>` : ''}
+          <div style="font-size:.88rem;font-weight:600;color:var(--text);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${n.title}</div>
+          <div style="font-size:.72rem;color:var(--text-muted);margin-top:4px;display:flex;align-items:center;gap:8px;">${timeAgo} ${n.externalLink ? '<span style="margin-left:auto;color:var(--primary);">Leer ↗</span>' : ''}</div>
+        </div>
+      </div>`;
+    }).join('');
   }
   function renderNews() {
     const news = siteData.news || [];
