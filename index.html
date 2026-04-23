@@ -696,6 +696,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         Canal
       </div>
+      <div class="nav-item" data-page="forum" onclick="showPage('forum')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Foro
+      </div>
       <div class="nav-item" data-page="notifications" onclick="showPage('notifications')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         Notificaciones
@@ -1266,7 +1270,61 @@
       </div>
     </section>
 
+    <!-- FORO -->
+    <section class="section" id="page-forum">
+      <div class="page-header">
+        <h1 class="page-title">Foro</h1>
+        <p class="page-subtitle">Comparte, pregunta y aprende con la comunidad</p>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
+        <button onclick="openNewPostModal()" style="padding:10px 20px;border-radius:var(--radius-sm);background:var(--primary);color:#fff;border:none;font-family:inherit;font-size:.88rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .25s ease;" onmouseover="this.style.background='var(--primary-dark)'" onmouseout="this.style.background='var(--primary)'">+ Nuevo tema</button>
+      </div>
+      <div id="forumPosts">
+        <div style="text-align:center;padding:40px;color:var(--text-muted);">Cargando foro...</div>
+      </div>
+    </section>
+
   </main>
+</div>
+
+<!-- FORUM NEW POST MODAL -->
+<div id="newPostModal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.5);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--bg-card);border-radius:var(--radius);max-width:520px;width:100%;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.3);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <h3 style="font-size:1.1rem;font-weight:700;color:var(--text);">Nuevo tema</h3>
+      <button onclick="closeNewPostModal()" style="background:none;border:none;font-size:1.3rem;color:var(--text-muted);cursor:pointer;">×</button>
+    </div>
+    <input id="postTitle" placeholder="Título del tema" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:.9rem;margin-bottom:12px;background:var(--bg);color:var(--text);box-sizing:border-box;">
+    <select id="postCategory" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:.9rem;margin-bottom:12px;background:var(--bg);color:var(--text);">
+      <option value="general">General</option>
+      <option value="dudas">Dudas</option>
+      <option value="casos">Casos clínicos</option>
+      <option value="tips">Tips y técnicas</option>
+      <option value="recursos">Recursos</option>
+    </select>
+    <textarea id="postBody" rows="5" placeholder="Escribe tu mensaje..." style="width:100%;padding:12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:.9rem;margin-bottom:16px;resize:vertical;background:var(--bg);color:var(--text);box-sizing:border-box;"></textarea>
+    <button onclick="submitForumPost()" style="width:100%;padding:12px;border-radius:var(--radius-sm);background:var(--primary);color:#fff;border:none;font-family:inherit;font-size:.95rem;font-weight:600;cursor:pointer;">Publicar</button>
+  </div>
+</div>
+
+<!-- FORUM THREAD MODAL -->
+<div id="threadModal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.5);align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;">
+  <div style="background:var(--bg-card);border-radius:var(--radius);max-width:600px;width:100%;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.3);margin:40px 0;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
+      <div style="flex:1;">
+        <div id="threadCategory" style="font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--primary);font-weight:600;margin-bottom:4px;"></div>
+        <h3 id="threadTitle" style="font-size:1.15rem;font-weight:700;color:var(--text);"></h3>
+      </div>
+      <button onclick="closeThreadModal()" style="background:none;border:none;font-size:1.3rem;color:var(--text-muted);cursor:pointer;flex-shrink:0;margin-left:12px;">×</button>
+    </div>
+    <div id="threadOriginal" style="padding:16px;background:var(--bg);border-radius:var(--radius-sm);margin-bottom:20px;"></div>
+    <h4 style="font-size:.85rem;font-weight:600;color:var(--text-muted);margin-bottom:12px;" id="replyCount">Respuestas</h4>
+    <div id="threadReplies"></div>
+    <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:16px;">
+      <textarea id="replyBody" rows="3" placeholder="Escribe una respuesta..." style="width:100%;padding:12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:.9rem;margin-bottom:10px;resize:vertical;background:var(--bg);color:var(--text);box-sizing:border-box;"></textarea>
+      <button onclick="submitReply()" style="padding:10px 20px;border-radius:var(--radius-sm);background:var(--primary);color:#fff;border:none;font-family:inherit;font-size:.88rem;font-weight:600;cursor:pointer;">Responder</button>
+    </div>
+  </div>
 </div>
 
 <!-- WEBINAR POPUP -->
@@ -2032,6 +2090,177 @@
     const wId = popup.dataset.webinarId;
     if (wId) localStorage.setItem('wp_dismissed_' + wId, '1');
     popup.style.display = 'none';
+  }
+
+  // ===== FORO =====
+  let forumPosts = [];
+  let currentThreadId = null;
+
+  async function loadForumPosts() {
+    try {
+      const snap = await db.collection('forum_posts').orderBy('createdAt', 'desc').limit(50).get();
+      forumPosts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderForumPosts();
+    } catch(e) { console.error('Forum load error:', e); }
+  }
+
+  function renderForumPosts() {
+    const container = document.getElementById('forumPosts');
+    if (forumPosts.length === 0) {
+      container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);">No hay temas aún. ¡Sé el primero en publicar!</div>';
+      return;
+    }
+    const catColors = { general:'#1B3F6B', dudas:'#1565C0', casos:'#0F6E56', tips:'#8DC63F', recursos:'#E67E22' };
+    const catLabels = { general:'General', dudas:'Dudas', casos:'Casos clínicos', tips:'Tips', recursos:'Recursos' };
+    container.innerHTML = forumPosts.map(p => {
+      const date = p.createdAt ? new Date(p.createdAt.seconds * 1000) : new Date();
+      const timeAgo = getTimeAgo(date);
+      const cat = p.category || 'general';
+      const replies = p.replyCount || 0;
+      return `<div onclick="openThread('${p.id}')" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:10px;cursor:pointer;transition:all .3s ease;display:flex;gap:14px;align-items:flex-start;" onmouseover="this.style.borderColor='var(--primary)';this.style.boxShadow='0 0 12px rgba(21,101,192,.15)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+        <div style="width:42px;height:42px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem;flex-shrink:0;">${(p.authorName || 'S')[0].toUpperCase()}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;">
+            <span style="font-size:.65rem;padding:2px 8px;border-radius:10px;background:${catColors[cat]||catColors.general};color:#fff;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">${catLabels[cat]||cat}</span>
+            <span style="font-size:.72rem;color:var(--text-muted);">${timeAgo}</span>
+          </div>
+          <div style="font-size:.95rem;font-weight:600;color:var(--text);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.title || 'Sin título'}</div>
+          <div style="font-size:.8rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${(p.body || '').substring(0, 120)}${(p.body||'').length > 120 ? '...' : ''}</div>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:8px;font-size:.75rem;color:var(--text-muted);">
+            <span>👤 ${p.authorName || 'Anónimo'}</span>
+            <span>💬 ${replies} respuesta${replies !== 1 ? 's' : ''}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function getTimeAgo(date) {
+    const now = new Date();
+    const diff = now - date;
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'Ahora';
+    if (mins < 60) return 'Hace ' + mins + ' min';
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return 'Hace ' + hours + 'h';
+    const days = Math.floor(hours / 24);
+    if (days < 30) return 'Hace ' + days + 'd';
+    return date.toLocaleDateString('es-MX', { day:'numeric', month:'short' });
+  }
+
+  function openNewPostModal() {
+    document.getElementById('postTitle').value = '';
+    document.getElementById('postBody').value = '';
+    document.getElementById('postCategory').value = 'general';
+    document.getElementById('newPostModal').style.display = 'flex';
+  }
+  function closeNewPostModal() { document.getElementById('newPostModal').style.display = 'none'; }
+
+  async function submitForumPost() {
+    const user = auth.currentUser;
+    if (!user) { showToast('Inicia sesión para publicar'); return; }
+    const title = document.getElementById('postTitle').value.trim();
+    const body = document.getElementById('postBody').value.trim();
+    const category = document.getElementById('postCategory').value;
+    if (!title || !body) { showToast('Completa el título y el mensaje'); return; }
+
+    try {
+      await db.collection('forum_posts').add({
+        title, body, category,
+        authorId: user.uid,
+        authorName: user.displayName || user.email || 'Socio',
+        replyCount: 0,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      closeNewPostModal();
+      showToast('✅ Tema publicado');
+      loadForumPosts();
+    } catch(e) {
+      console.error('Post error:', e);
+      showToast('Error al publicar');
+    }
+  }
+
+  async function openThread(postId) {
+    currentThreadId = postId;
+    const post = forumPosts.find(p => p.id === postId);
+    if (!post) return;
+
+    const catLabels = { general:'General', dudas:'Dudas', casos:'Casos clínicos', tips:'Tips', recursos:'Recursos' };
+    document.getElementById('threadCategory').textContent = catLabels[post.category] || post.category;
+    document.getElementById('threadTitle').textContent = post.title;
+    const postDate = post.createdAt ? new Date(post.createdAt.seconds * 1000) : new Date();
+    document.getElementById('threadOriginal').innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="width:34px;height:34px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;">${(post.authorName||'S')[0].toUpperCase()}</div>
+        <div><div style="font-size:.85rem;font-weight:600;color:var(--text);">${post.authorName || 'Socio'}</div>
+        <div style="font-size:.7rem;color:var(--text-muted);">${getTimeAgo(postDate)}</div></div>
+      </div>
+      <div style="font-size:.9rem;color:var(--text);line-height:1.6;white-space:pre-wrap;">${post.body}</div>`;
+
+    // Load replies
+    const repliesContainer = document.getElementById('threadReplies');
+    repliesContainer.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:.85rem;">Cargando respuestas...</div>';
+    document.getElementById('threadModal').style.display = 'flex';
+    document.getElementById('replyBody').value = '';
+
+    try {
+      const snap = await db.collection('forum_posts').doc(postId).collection('replies').orderBy('createdAt', 'asc').get();
+      const replies = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      document.getElementById('replyCount').textContent = replies.length + ' respuesta' + (replies.length !== 1 ? 's' : '');
+      if (replies.length === 0) {
+        repliesContainer.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:.85rem;">Sin respuestas aún. ¡Sé el primero!</div>';
+      } else {
+        repliesContainer.innerHTML = replies.map(r => {
+          const rDate = r.createdAt ? new Date(r.createdAt.seconds * 1000) : new Date();
+          return `<div style="padding:12px;background:var(--bg);border-radius:var(--radius-sm);margin-bottom:8px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--border);color:var(--text);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;">${(r.authorName||'S')[0].toUpperCase()}</div>
+              <span style="font-size:.82rem;font-weight:600;color:var(--text);">${r.authorName || 'Socio'}</span>
+              <span style="font-size:.7rem;color:var(--text-muted);">${getTimeAgo(rDate)}</span>
+            </div>
+            <div style="font-size:.85rem;color:var(--text);line-height:1.5;white-space:pre-wrap;padding-left:36px;">${r.body}</div>
+          </div>`;
+        }).join('');
+      }
+    } catch(e) {
+      repliesContainer.innerHTML = '<div style="padding:16px;color:var(--text-muted);">Error al cargar respuestas</div>';
+    }
+  }
+
+  function closeThreadModal() {
+    document.getElementById('threadModal').style.display = 'none';
+    currentThreadId = null;
+  }
+
+  async function submitReply() {
+    const user = auth.currentUser;
+    if (!user) { showToast('Inicia sesión para responder'); return; }
+    const body = document.getElementById('replyBody').value.trim();
+    if (!body) { showToast('Escribe una respuesta'); return; }
+    if (!currentThreadId) return;
+
+    try {
+      await db.collection('forum_posts').doc(currentThreadId).collection('replies').add({
+        body,
+        authorId: user.uid,
+        authorName: user.displayName || user.email || 'Socio',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      // Update reply count
+      const postRef = db.collection('forum_posts').doc(currentThreadId);
+      await postRef.update({ replyCount: firebase.firestore.FieldValue.increment(1) });
+      // Update local data
+      const localPost = forumPosts.find(p => p.id === currentThreadId);
+      if (localPost) localPost.replyCount = (localPost.replyCount || 0) + 1;
+
+      showToast('✅ Respuesta publicada');
+      openThread(currentThreadId);
+      renderForumPosts();
+    } catch(e) {
+      console.error('Reply error:', e);
+      showToast('Error al responder');
+    }
   }
 
   function renderHomeNews() {
@@ -3174,6 +3403,7 @@
       achievementData.stats.sectionsVisited = achievementData._visited.length;
     }
     if (page === 'achievements') renderAchievements();
+    if (page === 'forum') loadForumPosts();
   }
   function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('open');
