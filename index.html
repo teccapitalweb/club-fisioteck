@@ -552,6 +552,7 @@
       .hero-banner { padding:28px 20px; }
       .hero-banner h2 { font-size:1.3rem; letter-spacing:1.5px; }
       .hero-badge { font-size:.65rem; }
+      #homeGreeting { font-size:1.3rem !important; }
       .stats-grid { grid-template-columns:repeat(2,1fr); }
       .course-grid { grid-template-columns:1fr; }
       .sub-price { font-size:2rem; }
@@ -765,6 +766,12 @@
 
     <!-- HOME -->
     <section class="section active" id="page-home">
+      <!-- GREETING -->
+      <div class="anim-in" style="margin-bottom:20px;">
+        <h1 id="homeGreeting" style="font-size:1.6rem;font-weight:700;color:var(--text);margin-bottom:2px;"></h1>
+        <p id="homeGreetingSub" style="font-size:.88rem;color:var(--text-muted);"></p>
+      </div>
+
       <div class="hero-banner anim-in">
         <div class="hero-badge">🎓 Membresía Activa</div>
         <h2>Tu membresía profesional en fisioterapia</h2>
@@ -797,7 +804,7 @@
         <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-number" id="statMembers">0</div><div class="stat-label">Socios Activos</div></div>
       </div>
       <!-- MINI XP WIDGET -->
-      <div id="xpWidget" onclick="showPage('achievements')" class="anim-in anim-d3" style="display:none;background:linear-gradient(135deg,var(--bg-card),rgba(27,63,107,.03));border:1px solid var(--border);border-radius:var(--radius);padding:16px 22px;margin-bottom:24px;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.transform='translateY(-2px)';this.style.boxShadow='0 0 15px rgba(21,101,192,.15)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)';this.style.boxShadow='none'">>
+      <div id="xpWidget" onclick="showPage('achievements')" class="anim-in anim-d3" style="display:none;background:linear-gradient(135deg,var(--bg-card),rgba(27,63,107,.03));border:1px solid var(--border);border-radius:var(--radius);padding:16px 22px;margin-bottom:24px;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.transform='translateY(-2px)';this.style.boxShadow='0 0 15px rgba(21,101,192,.15)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)';this.style.boxShadow='none'">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
           <div style="display:flex;align-items:center;gap:10px;">
             <span id="xpLevelIcon" style="font-size:1.4rem;">🎓</span>
@@ -812,6 +819,44 @@
           <div id="xpBar" style="height:100%;background:var(--primary);border-radius:3px;transition:width .6s ease;width:0%;"></div>
         </div>
       </div>
+
+      <!-- QUICK ACCESS -->
+      <div class="anim-in anim-d3" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;">
+        <div onclick="showPage('library')" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 10px;text-align:center;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 0 15px rgba(21,101,192,.15)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)';this.style.boxShadow='none'">
+          <div style="width:44px;height:44px;border-radius:50%;background:rgba(27,63,107,.08);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:1.3rem;">📚</div>
+          <div style="font-size:.75rem;font-weight:600;color:var(--text);">Mis Cursos</div>
+        </div>
+        <div onclick="showPage('forum')" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 10px;text-align:center;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 0 15px rgba(21,101,192,.15)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)';this.style.boxShadow='none'">
+          <div style="width:44px;height:44px;border-radius:50%;background:rgba(15,110,86,.08);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:1.3rem;">💬</div>
+          <div style="font-size:.75rem;font-weight:600;color:var(--text);">Foro</div>
+        </div>
+        <div onclick="showPage('pdfs')" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 10px;text-align:center;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 0 15px rgba(21,101,192,.15)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)';this.style.boxShadow='none'">
+          <div style="width:44px;height:44px;border-radius:50%;background:rgba(21,101,192,.08);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:1.3rem;">📄</div>
+          <div style="font-size:.75rem;font-weight:600;color:var(--text);">PDFs</div>
+        </div>
+        <div onclick="showPage('achievements')" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 10px;text-align:center;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 0 15px rgba(21,101,192,.15)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)';this.style.boxShadow='none'">
+          <div style="width:44px;height:44px;border-radius:50%;background:rgba(141,198,63,.08);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:1.3rem;">🏆</div>
+          <div style="font-size:.75rem;font-weight:600;color:var(--text);">Logros</div>
+        </div>
+      </div>
+
+      <!-- PROGRESS CARD -->
+      <div id="progressCard" class="anim-in anim-d4" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 22px;margin-bottom:24px;transition:all .3s ease;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--primary),#8DC63F);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#fff;font-weight:700;" id="progressIcon">📊</div>
+            <div>
+              <div style="font-size:.88rem;font-weight:600;color:var(--text);">Tu progreso general</div>
+              <div id="progressText" style="font-size:.75rem;color:var(--text-muted);"></div>
+            </div>
+          </div>
+          <div id="progressPct" style="font-size:1.3rem;font-weight:700;color:var(--primary);"></div>
+        </div>
+        <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
+          <div id="progressBar" style="height:100%;background:linear-gradient(90deg,var(--primary),#8DC63F);border-radius:3px;transition:width 1s ease;width:0%;"></div>
+        </div>
+      </div>
+
       <div class="recent-section anim-in anim-d4">
         <h3>Contenido reciente</h3>
         <div class="course-grid" id="recentCourses"></div>
@@ -1989,10 +2034,36 @@
   }
 
   function renderHome() {
+    // Greeting
+    const hour = new Date().getHours();
+    const greetUser = auth.currentUser?.displayName || 'Socio';
+    const firstName = greetUser.split(' ')[0];
+    let greetText = 'Buenas noches';
+    let greetEmoji = '🌙';
+    if (hour >= 5 && hour < 12) { greetText = 'Buenos días'; greetEmoji = '☀️'; }
+    else if (hour >= 12 && hour < 19) { greetText = 'Buenas tardes'; greetEmoji = '🌤️'; }
+    document.getElementById('homeGreeting').textContent = greetEmoji + ' ' + greetText + ', ' + firstName;
+    const msgs = ['¿Listo para aprender hoy?', 'Tu progreso te espera', 'Sigamos avanzando juntos', 'Cada clase cuenta'];
+    document.getElementById('homeGreetingSub').textContent = msgs[Math.floor(Math.random() * msgs.length)];
+
+    // Stats with animated counters
     animateCounter('statCourses', siteData.courses.length);
     animateCounter('statPdfs', siteData.pdfs.length);
     animateCounter('statLive', siteData.live.length);
     animateCounter('statMembers', parseInt(siteData.stats.members) || 0);
+
+    // Progress card
+    let totalCourses = siteData.courses.length;
+    let completedCourses = 0;
+    (siteData.courses || []).forEach(c => {
+      const p = getCourseProgress(c.id);
+      const total = (c.lessons || []).length;
+      if (total > 0 && (p.completed || []).length >= total) completedCourses++;
+    });
+    const pct = totalCourses > 0 ? Math.round((completedCourses / totalCourses) * 100) : 0;
+    document.getElementById('progressText').textContent = completedCourses + ' de ' + totalCourses + ' cursos completados';
+    document.getElementById('progressPct').textContent = pct + '%';
+    setTimeout(() => { document.getElementById('progressBar').style.width = pct + '%'; }, 300);
     const container = document.getElementById('recentCourses');
     const today = new Date().toISOString().split('T')[0];
     const regDate = userStartDate ? new Date(userStartDate + 'T00:00:00') : new Date();
