@@ -560,6 +560,7 @@
       .hero-badge { font-size:.65rem; }
       #homeGreeting { font-size:1.3rem !important; }
       #atlasGrid { grid-template-columns:1fr !important; }
+      #evaGrid { grid-template-columns:1fr !important; }
       .stats-grid { grid-template-columns:repeat(2,1fr); }
       .course-grid { grid-template-columns:1fr; }
       .sub-price { font-size:2rem; }
@@ -717,6 +718,18 @@
       <div class="nav-item" data-page="glossary" onclick="showPage('glossary')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
         Glosario
+      </div>
+      <div class="nav-item" data-page="rom" onclick="showPage('rom')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Rangos ROM
+      </div>
+      <div class="nav-item" data-page="eva" onclick="showPage('eva')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Escala EVA
+      </div>
+      <div class="nav-item" data-page="timer" onclick="showPage('timer')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3L2 6"/><path d="M22 6l-3-3"/></svg>
+        Cronómetro
       </div>
 
       <div class="nav-section">Mi Cuenta</div>
@@ -1504,6 +1517,91 @@
         <input type="text" id="glossarySearch" placeholder="Buscar término..." oninput="filterGlossary()">
       </div>
       <div id="glossaryList"></div>
+    </section>
+
+    <!-- RANGOS ROM -->
+    <section class="section" id="page-rom">
+      <div class="page-header">
+        <h1 class="page-title">Rangos de Movimiento</h1>
+        <p class="page-subtitle">Valores normales de goniometría por articulación</p>
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="font-size:.78rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">Articulación</label>
+        <select id="romJoint" onchange="showROM()" style="width:100%;max-width:400px;padding:12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:.9rem;background:var(--bg-card);color:var(--text);">
+          <option value="">Seleccionar articulación...</option>
+          <option value="hombro">Hombro</option>
+          <option value="codo">Codo</option>
+          <option value="muñeca">Muñeca</option>
+          <option value="cadera">Cadera</option>
+          <option value="rodilla">Rodilla</option>
+          <option value="tobillo">Tobillo</option>
+          <option value="cervical">Columna Cervical</option>
+          <option value="lumbar">Columna Lumbar</option>
+          <option value="torax">Columna Torácica</option>
+        </select>
+      </div>
+      <div id="romResult"></div>
+    </section>
+
+    <!-- ESCALA EVA -->
+    <section class="section" id="page-eva">
+      <div class="page-header">
+        <h1 class="page-title">Escala EVA de Dolor</h1>
+        <p class="page-subtitle">Registro y seguimiento del nivel de dolor</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;" id="evaGrid">
+        <div>
+          <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;">
+            <h4 style="font-size:.85rem;font-weight:600;color:var(--primary);margin-bottom:12px;">Nuevo registro</h4>
+            <input id="evaPatient" placeholder="Nombre del paciente" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:.88rem;background:var(--bg);color:var(--text);margin-bottom:10px;box-sizing:border-box;">
+            <select id="evaZone" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:.88rem;background:var(--bg);color:var(--text);margin-bottom:14px;">
+              <option value="cervical">Cervical</option><option value="hombro">Hombro</option><option value="codo">Codo</option><option value="muñeca">Muñeca</option><option value="espalda">Espalda</option><option value="cadera">Cadera</option><option value="rodilla">Rodilla</option><option value="tobillo">Tobillo</option><option value="otro">Otro</option>
+            </select>
+            <div style="text-align:center;margin-bottom:8px;">
+              <div id="evaValue" style="font-size:3rem;font-weight:700;color:var(--primary);line-height:1;">0</div>
+              <div id="evaLabel" style="font-size:.82rem;color:var(--text-muted);">Sin dolor</div>
+            </div>
+            <input type="range" id="evaSlider" min="0" max="10" value="0" oninput="updateEVA()" style="width:100%;margin-bottom:6px;accent-color:var(--primary);">
+            <div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--text-muted);margin-bottom:14px;"><span>0 - Sin dolor</span><span>10 - Peor dolor</span></div>
+            <div style="height:8px;border-radius:4px;background:linear-gradient(90deg,#8DC63F,#F39C12,#E74C3C);margin-bottom:14px;"></div>
+            <textarea id="evaNote" placeholder="Notas (opcional)" rows="2" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:.85rem;background:var(--bg);color:var(--text);resize:none;margin-bottom:12px;box-sizing:border-box;"></textarea>
+            <button onclick="saveEVA()" style="width:100%;padding:12px;border-radius:var(--radius-sm);background:var(--primary);color:#fff;border:none;font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;">Guardar registro</button>
+          </div>
+        </div>
+        <div>
+          <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;">
+            <h4 style="font-size:.85rem;font-weight:600;color:var(--primary);margin-bottom:12px;">Historial de registros</h4>
+            <div id="evaHistory"><div style="text-align:center;padding:20px;color:var(--text-muted);font-size:.85rem;">No hay registros aún</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CRONÓMETRO -->
+    <section class="section" id="page-timer">
+      <div class="page-header">
+        <h1 class="page-title">Cronómetro de Sesión</h1>
+        <p class="page-subtitle">Timer profesional para técnicas de fisioterapia</p>
+      </div>
+      <div style="max-width:500px;margin:0 auto;">
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:30px;text-align:center;margin-bottom:20px;">
+          <div id="timerDisplay" style="font-size:4rem;font-weight:700;color:var(--primary);font-family:monospace;letter-spacing:4px;margin-bottom:6px;">20:00</div>
+          <div id="timerTechnique" style="font-size:.85rem;color:var(--text-muted);margin-bottom:20px;">TENS - Estimulación eléctrica</div>
+          <div style="display:flex;gap:10px;justify-content:center;">
+            <button onclick="startTimer()" id="timerStartBtn" style="padding:12px 28px;border-radius:var(--radius-sm);background:var(--primary);color:#fff;border:none;font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;">▶ Iniciar</button>
+            <button onclick="pauseTimer()" style="padding:12px 28px;border-radius:var(--radius-sm);background:var(--bg);color:var(--text);border:1px solid var(--border);font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;">⏸ Pausar</button>
+            <button onclick="resetTimer()" style="padding:12px 28px;border-radius:var(--radius-sm);background:var(--bg);color:var(--text);border:1px solid var(--border);font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;">↺ Reset</button>
+          </div>
+        </div>
+        <h4 style="font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:12px;">Presets de técnicas</h4>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;" id="timerPresets"></div>
+        <h4 style="font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:8px;">Tiempo personalizado</h4>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input type="number" id="customMinutes" min="1" max="60" value="10" style="width:80px;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:.9rem;background:var(--bg-card);color:var(--text);text-align:center;">
+          <span style="font-size:.85rem;color:var(--text-muted);">minutos</span>
+          <button onclick="setCustomTimer()" style="padding:10px 18px;border-radius:var(--radius-sm);background:var(--primary);color:#fff;border:none;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;">Aplicar</button>
+        </div>
+      </div>
     </section>
 
   </main>
@@ -3017,6 +3115,242 @@
       </div>`).join('');
   }
 
+  // ===== RANGOS DE MOVIMIENTO (ROM) =====
+  const ROM_DATA = {
+    hombro: { name:'Hombro', movements:[
+      {m:'Flexión',n:'0-180°',bar:180,max:180},{m:'Extensión',n:'0-60°',bar:60,max:180},{m:'Abducción',n:'0-180°',bar:180,max:180},{m:'Aducción',n:'0-45°',bar:45,max:180},{m:'Rotación externa',n:'0-90°',bar:90,max:180},{m:'Rotación interna',n:'0-70°',bar:70,max:180},{m:'Abducción horizontal',n:'0-130°',bar:130,max:180},{m:'Aducción horizontal',n:'0-30°',bar:30,max:180}
+    ]},
+    codo: { name:'Codo', movements:[
+      {m:'Flexión',n:'0-145°',bar:145,max:180},{m:'Extensión',n:'145-0°',bar:145,max:180},{m:'Supinación',n:'0-85°',bar:85,max:180},{m:'Pronación',n:'0-80°',bar:80,max:180}
+    ]},
+    muñeca: { name:'Muñeca', movements:[
+      {m:'Flexión (palmar)',n:'0-80°',bar:80,max:180},{m:'Extensión (dorsal)',n:'0-70°',bar:70,max:180},{m:'Desviación radial',n:'0-20°',bar:20,max:180},{m:'Desviación cubital',n:'0-35°',bar:35,max:180}
+    ]},
+    cadera: { name:'Cadera', movements:[
+      {m:'Flexión',n:'0-125°',bar:125,max:180},{m:'Extensión',n:'0-30°',bar:30,max:180},{m:'Abducción',n:'0-45°',bar:45,max:180},{m:'Aducción',n:'0-20°',bar:20,max:180},{m:'Rotación externa',n:'0-45°',bar:45,max:180},{m:'Rotación interna',n:'0-45°',bar:45,max:180}
+    ]},
+    rodilla: { name:'Rodilla', movements:[
+      {m:'Flexión',n:'0-140°',bar:140,max:180},{m:'Extensión',n:'140-0°',bar:140,max:180},{m:'Rotación interna (con flexión 90°)',n:'0-10°',bar:10,max:180},{m:'Rotación externa (con flexión 90°)',n:'0-10°',bar:10,max:180}
+    ]},
+    tobillo: { name:'Tobillo', movements:[
+      {m:'Dorsiflexión',n:'0-20°',bar:20,max:180},{m:'Flexión plantar',n:'0-50°',bar:50,max:180},{m:'Inversión',n:'0-35°',bar:35,max:180},{m:'Eversión',n:'0-20°',bar:20,max:180}
+    ]},
+    cervical: { name:'Columna Cervical', movements:[
+      {m:'Flexión',n:'0-50°',bar:50,max:180},{m:'Extensión',n:'0-60°',bar:60,max:180},{m:'Rotación derecha',n:'0-80°',bar:80,max:180},{m:'Rotación izquierda',n:'0-80°',bar:80,max:180},{m:'Inclinación lateral derecha',n:'0-45°',bar:45,max:180},{m:'Inclinación lateral izquierda',n:'0-45°',bar:45,max:180}
+    ]},
+    lumbar: { name:'Columna Lumbar', movements:[
+      {m:'Flexión',n:'0-60°',bar:60,max:180},{m:'Extensión',n:'0-25°',bar:25,max:180},{m:'Rotación derecha',n:'0-30°',bar:30,max:180},{m:'Rotación izquierda',n:'0-30°',bar:30,max:180},{m:'Inclinación lateral derecha',n:'0-25°',bar:25,max:180},{m:'Inclinación lateral izquierda',n:'0-25°',bar:25,max:180}
+    ]},
+    torax: { name:'Columna Torácica', movements:[
+      {m:'Flexión',n:'0-40°',bar:40,max:180},{m:'Extensión',n:'0-25°',bar:25,max:180},{m:'Rotación derecha',n:'0-35°',bar:35,max:180},{m:'Rotación izquierda',n:'0-35°',bar:35,max:180},{m:'Inclinación lateral',n:'0-20°',bar:20,max:180}
+    ]}
+  };
+
+  function showROM() {
+    const joint = document.getElementById('romJoint').value;
+    const container = document.getElementById('romResult');
+    if (!joint || !ROM_DATA[joint]) { container.innerHTML = ''; return; }
+    const data = ROM_DATA[joint];
+    container.innerHTML = `
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+        <div style="background:linear-gradient(135deg,var(--primary),#0F6E56);padding:16px 20px;color:#fff;">
+          <div style="font-size:1.1rem;font-weight:700;">${data.name}</div>
+          <div style="font-size:.75rem;opacity:.6;">Valores normales de referencia</div>
+        </div>
+        <div style="padding:16px 20px;">
+          ${data.movements.map(mv => {
+            const pct = Math.round((mv.bar / mv.max) * 100);
+            return `<div style="margin-bottom:14px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                <span style="font-size:.88rem;font-weight:600;color:var(--text);">${mv.m}</span>
+                <span style="font-size:.85rem;font-weight:700;color:var(--primary);">${mv.n}</span>
+              </div>
+              <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden;">
+                <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--primary),#8DC63F);border-radius:4px;transition:width .6s;"></div>
+              </div>
+            </div>`;
+          }).join('')}
+          <p style="font-size:.72rem;color:var(--text-muted);margin-top:8px;font-style:italic;">📐 Valores basados en la American Academy of Orthopaedic Surgeons (AAOS). Los rangos pueden variar según edad, sexo y constitución del paciente.</p>
+        </div>
+      </div>`;
+  }
+
+  // ===== ESCALA EVA DE DOLOR =====
+  function updateEVA() {
+    const val = parseInt(document.getElementById('evaSlider').value);
+    document.getElementById('evaValue').textContent = val;
+    const labels = ['Sin dolor','Dolor mínimo','Dolor leve','Dolor leve-moderado','Dolor moderado','Dolor moderado','Dolor moderado-severo','Dolor severo','Dolor muy severo','Dolor extremo','Peor dolor imaginable'];
+    document.getElementById('evaLabel').textContent = labels[val];
+    const colors = ['#8DC63F','#A4D65E','#BDE077','#D4E157','#F9E44C','#F9C846','#F39C12','#E67E22','#E74C3C','#C0392B','#96281B'];
+    document.getElementById('evaValue').style.color = colors[val];
+  }
+
+  async function saveEVA() {
+    const user = auth.currentUser;
+    if (!user) { showToast('Inicia sesión'); return; }
+    const patient = document.getElementById('evaPatient').value.trim();
+    if (!patient) { showToast('Ingresa el nombre del paciente'); return; }
+    const val = parseInt(document.getElementById('evaSlider').value);
+    const zone = document.getElementById('evaZone').value;
+    const note = document.getElementById('evaNote').value.trim();
+    try {
+      await db.collection('members').doc(user.uid).collection('eva_records').add({
+        patient, value: val, zone, note,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      showToast('✅ Registro guardado');
+      document.getElementById('evaSlider').value = 0;
+      updateEVA();
+      document.getElementById('evaNote').value = '';
+      loadEVAHistory();
+    } catch(e) { showToast('Error al guardar'); console.error(e); }
+  }
+
+  async function loadEVAHistory() {
+    const user = auth.currentUser;
+    if (!user) return;
+    try {
+      const snap = await db.collection('members').doc(user.uid).collection('eva_records').orderBy('createdAt','desc').limit(20).get();
+      const records = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const container = document.getElementById('evaHistory');
+      if (records.length === 0) {
+        container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:.85rem;">No hay registros aún</div>';
+        return;
+      }
+      // Group by patient
+      const patients = {};
+      records.forEach(r => {
+        if (!patients[r.patient]) patients[r.patient] = [];
+        patients[r.patient].push(r);
+      });
+      const colors = ['#8DC63F','#A4D65E','#BDE077','#D4E157','#F9E44C','#F9C846','#F39C12','#E67E22','#E74C3C','#C0392B','#96281B'];
+      container.innerHTML = Object.entries(patients).map(([name, recs]) => {
+        return `<div style="margin-bottom:16px;">
+          <div style="font-size:.88rem;font-weight:600;color:var(--text);margin-bottom:8px;">👤 ${name}</div>
+          ${recs.map(r => {
+            const date = r.createdAt ? new Date(r.createdAt.seconds*1000).toLocaleDateString('es-MX',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
+            return `<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg);border-radius:var(--radius-sm);margin-bottom:4px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:${colors[r.value]};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;">${r.value}</div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:.78rem;color:var(--text);">${r.zone} ${r.note ? '· '+r.note : ''}</div>
+                <div style="font-size:.68rem;color:var(--text-muted);">${date}</div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>`;
+      }).join('');
+    } catch(e) { console.error('EVA history error:', e); }
+  }
+
+  // ===== CRONÓMETRO DE SESIÓN =====
+  const TIMER_PRESETS = [
+    { name:'TENS', desc:'Estimulación eléctrica', mins:20, color:'#3498DB' },
+    { name:'Ultrasonido', desc:'Terapia ultrasónica', mins:7, color:'#2ECC71' },
+    { name:'Crioterapia', desc:'Aplicación de frío', mins:15, color:'#1ABC9C' },
+    { name:'Termoterapia', desc:'Aplicación de calor', mins:20, color:'#E67E22' },
+    { name:'Interferenciales', desc:'Corrientes interferenciales', mins:15, color:'#9B59B6' },
+    { name:'Magnetoterapia', desc:'Campos magnéticos', mins:20, color:'#34495E' },
+    { name:'Láser', desc:'Laserterapia', mins:5, color:'#E74C3C' },
+    { name:'Compresa', desc:'Compresa húmeda caliente', mins:20, color:'#F39C12' },
+    { name:'Parafina', desc:'Baño de parafina', mins:15, color:'#D35400' },
+    { name:'Tracción', desc:'Tracción cervical/lumbar', mins:15, color:'#2980B9' }
+  ];
+
+  let timerSeconds = 1200;
+  let timerTotal = 1200;
+  let timerInterval = null;
+  let timerRunning = false;
+
+  function renderTimerPresets() {
+    document.getElementById('timerPresets').innerHTML = TIMER_PRESETS.map(p =>
+      `<div onclick="setPreset('${p.name}',${p.mins})" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:10px;" onmouseover="this.style.borderColor='${p.color}';this.style.boxShadow='0 0 10px ${p.color}22'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+        <div style="width:8px;height:8px;border-radius:50%;background:${p.color};flex-shrink:0;"></div>
+        <div>
+          <div style="font-size:.82rem;font-weight:600;color:var(--text);">${p.name}</div>
+          <div style="font-size:.68rem;color:var(--text-muted);">${p.mins} min · ${p.desc}</div>
+        </div>
+      </div>`
+    ).join('');
+  }
+
+  function setPreset(name, mins) {
+    resetTimer();
+    timerSeconds = mins * 60;
+    timerTotal = timerSeconds;
+    const p = TIMER_PRESETS.find(x => x.name === name);
+    document.getElementById('timerTechnique').textContent = name + ' - ' + (p?.desc || '');
+    updateTimerDisplay();
+  }
+
+  function setCustomTimer() {
+    const mins = parseInt(document.getElementById('customMinutes').value) || 10;
+    resetTimer();
+    timerSeconds = mins * 60;
+    timerTotal = timerSeconds;
+    document.getElementById('timerTechnique').textContent = 'Timer personalizado - ' + mins + ' minutos';
+    updateTimerDisplay();
+  }
+
+  function updateTimerDisplay() {
+    const m = Math.floor(timerSeconds / 60);
+    const s = timerSeconds % 60;
+    document.getElementById('timerDisplay').textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    // Color based on remaining time
+    const pct = timerSeconds / timerTotal;
+    if (pct > 0.5) document.getElementById('timerDisplay').style.color = 'var(--primary)';
+    else if (pct > 0.2) document.getElementById('timerDisplay').style.color = '#F39C12';
+    else document.getElementById('timerDisplay').style.color = '#E74C3C';
+  }
+
+  function startTimer() {
+    if (timerRunning || timerSeconds <= 0) return;
+    timerRunning = true;
+    document.getElementById('timerStartBtn').textContent = '⏵ Corriendo...';
+    document.getElementById('timerStartBtn').style.opacity = '.6';
+    timerInterval = setInterval(() => {
+      timerSeconds--;
+      updateTimerDisplay();
+      if (timerSeconds <= 0) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        document.getElementById('timerStartBtn').textContent = '▶ Iniciar';
+        document.getElementById('timerStartBtn').style.opacity = '1';
+        document.getElementById('timerDisplay').textContent = '00:00';
+        // Alarm
+        showToast('⏰ ¡Tiempo completado!');
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          [0,200,400].forEach(delay => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.frequency.value = 880;
+            gain.gain.value = 0.3;
+            osc.start(ctx.currentTime + delay/1000);
+            osc.stop(ctx.currentTime + delay/1000 + 0.15);
+          });
+        } catch(e){}
+      }
+    }, 1000);
+  }
+
+  function pauseTimer() {
+    if (!timerRunning) return;
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('timerStartBtn').textContent = '▶ Continuar';
+    document.getElementById('timerStartBtn').style.opacity = '1';
+  }
+
+  function resetTimer() {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    timerSeconds = timerTotal;
+    document.getElementById('timerStartBtn').textContent = '▶ Iniciar';
+    document.getElementById('timerStartBtn').style.opacity = '1';
+    updateTimerDisplay();
+  }
+
   function renderHomeNews() {
     const container = document.getElementById('homeNews');
     const news = (siteData.news || []).sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0,3);
@@ -4173,6 +4507,8 @@
     if (page === 'forum') loadForumPosts();
     if (page === 'atlas') renderAtlas();
     if (page === 'glossary') renderGlossary();
+    if (page === 'eva') loadEVAHistory();
+    if (page === 'timer') renderTimerPresets();
   }
   function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('open');
