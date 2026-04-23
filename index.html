@@ -2129,6 +2129,7 @@
           <div style="display:flex;align-items:center;gap:12px;margin-top:8px;font-size:.75rem;color:var(--text-muted);">
             <span>👤 ${p.authorName || 'Anónimo'}</span>
             <span>💬 ${replies} respuesta${replies !== 1 ? 's' : ''}</span>
+            <span style="color:${(p.likes||[]).includes(auth.currentUser?.uid) ? '#e74c3c' : 'var(--text-muted)'};">❤️ ${(p.likes||[]).length}</span>
           </div>
         </div>
       </div>`;
@@ -2196,7 +2197,10 @@
         <div><div style="font-size:.85rem;font-weight:600;color:var(--text);">${post.authorName || 'Socio'}</div>
         <div style="font-size:.7rem;color:var(--text-muted);">${getTimeAgo(postDate)}</div></div>
       </div>
-      <div style="font-size:.9rem;color:var(--text);line-height:1.6;white-space:pre-wrap;">${post.body}</div>`;
+      <div style="font-size:.9rem;color:var(--text);line-height:1.6;white-space:pre-wrap;">${post.body}</div>
+      <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);">
+        <button onclick="event.stopPropagation();toggleLikePost('${post.id}')" style="background:none;border:none;cursor:pointer;font-size:.85rem;padding:4px 10px;border-radius:16px;transition:all .2s;color:${(post.likes||[]).includes(auth.currentUser?.uid)?'#e74c3c':'var(--text-muted)'};" onmouseover="this.style.background='rgba(231,76,60,.08)'" onmouseout="this.style.background='none'">${(post.likes||[]).includes(auth.currentUser?.uid)?'❤️':'🤍'} ${(post.likes||[]).length} me gusta</button>
+      </div>`;
 
     // Load replies
     const repliesContainer = document.getElementById('threadReplies');
@@ -2220,6 +2224,9 @@
               <span style="font-size:.7rem;color:var(--text-muted);">${getTimeAgo(rDate)}</span>
             </div>
             <div style="font-size:.85rem;color:var(--text);line-height:1.5;white-space:pre-wrap;padding-left:36px;">${r.body}</div>
+            <div style="padding-left:36px;margin-top:6px;">
+              <button onclick="event.stopPropagation();toggleLikeReply('${postId}','${r.id}')" style="background:none;border:none;cursor:pointer;font-size:.78rem;padding:2px 8px;border-radius:12px;transition:all .2s;color:${(r.likes||[]).includes(auth.currentUser?.uid)?'#e74c3c':'var(--text-muted)'};" onmouseover="this.style.background='rgba(231,76,60,.08)'" onmouseout="this.style.background='none'">${(r.likes||[]).includes(auth.currentUser?.uid)?'❤️':'🤍'} ${(r.likes||[]).length}</button>
+            </div>
           </div>`;
         }).join('');
       }
@@ -2231,6 +2238,44 @@
   function closeThreadModal() {
     document.getElementById('threadModal').style.display = 'none';
     currentThreadId = null;
+  }
+
+  async function toggleLikePost(postId) {
+    const user = auth.currentUser;
+    if (!user) { showToast('Inicia sesión'); return; }
+    const ref = db.collection('forum_posts').doc(postId);
+    const doc = await ref.get();
+    if (!doc.exists) return;
+    const likes = doc.data().likes || [];
+    if (likes.includes(user.uid)) {
+      await ref.update({ likes: firebase.firestore.FieldValue.arrayRemove(user.uid) });
+    } else {
+      await ref.update({ likes: firebase.firestore.FieldValue.arrayUnion(user.uid) });
+    }
+    // Update local data and re-render
+    const local = forumPosts.find(p => p.id === postId);
+    if (local) {
+      if (!local.likes) local.likes = [];
+      if (local.likes.includes(user.uid)) local.likes = local.likes.filter(id => id !== user.uid);
+      else local.likes.push(user.uid);
+    }
+    renderForumPosts();
+    if (currentThreadId === postId) openThread(postId);
+  }
+
+  async function toggleLikeReply(postId, replyId) {
+    const user = auth.currentUser;
+    if (!user) { showToast('Inicia sesión'); return; }
+    const ref = db.collection('forum_posts').doc(postId).collection('replies').doc(replyId);
+    const doc = await ref.get();
+    if (!doc.exists) return;
+    const likes = doc.data().likes || [];
+    if (likes.includes(user.uid)) {
+      await ref.update({ likes: firebase.firestore.FieldValue.arrayRemove(user.uid) });
+    } else {
+      await ref.update({ likes: firebase.firestore.FieldValue.arrayUnion(user.uid) });
+    }
+    openThread(postId);
   }
 
   async function submitReply() {
