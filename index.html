@@ -2820,6 +2820,8 @@
         <p style="font-size:.85rem;color:var(--text-muted);line-height:1.5;margin:0;">${g.d}</p>
       </div>`).join('');
   }
+
+  function renderHomeNews() {
     const container = document.getElementById('homeNews');
     const news = (siteData.news || []).sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0,3);
     if (news.length === 0) {
