@@ -159,16 +159,36 @@
 
     /* === HOME === */
     .hero-banner {
-      background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
-      border-radius:var(--radius); padding:48px 40px; color:#fff; position:relative; overflow:hidden;
-      margin-bottom:32px;
+      background: linear-gradient(135deg, #0B1A30 0%, var(--primary) 50%, #0F6E56 100%);
+      background-size: 200% 200%;
+      animation: gradientShift 8s ease infinite;
+      border-radius:var(--radius); padding:52px 44px; color:#fff; position:relative; overflow:hidden;
+      margin-bottom:28px;
+    }
+    @keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+    .hero-banner::before {
+      content:''; position:absolute; top:-50%; right:-15%; width:500px; height:500px;
+      background:radial-gradient(circle, rgba(141,198,63,.12) 0%, transparent 70%); border-radius:50%;
+      animation: float 6s ease-in-out infinite;
     }
     .hero-banner::after {
-      content:''; position:absolute; top:-40%; right:-10%; width:400px; height:400px;
-      background:rgba(255,255,255,.06); border-radius:50%;
+      content:''; position:absolute; bottom:-30%; left:-10%; width:350px; height:350px;
+      background:radial-gradient(circle, rgba(21,101,192,.1) 0%, transparent 70%); border-radius:50%;
+      animation: float 8s ease-in-out infinite reverse;
     }
-    .hero-banner h2 { font-family:inherit; font-size:2rem; margin-bottom:8px; position:relative; z-index:1; text-transform:uppercase; letter-spacing:3px; }
-    .hero-banner p { opacity:.85; font-size:1rem; max-width:500px; position:relative; z-index:1; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-20px)} }
+    .hero-banner h2 { font-family:inherit; font-size:1.8rem; margin-bottom:8px; position:relative; z-index:1; text-transform:uppercase; letter-spacing:3px; }
+    .hero-banner p { opacity:.7; font-size:.95rem; max-width:500px; position:relative; z-index:1; }
+    .hero-badge { display:inline-block; background:rgba(141,198,63,.2); border:1px solid rgba(141,198,63,.3); color:#8DC63F; font-size:.7rem; font-weight:600; padding:4px 12px; border-radius:20px; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:12px; position:relative; z-index:1; }
+
+    /* ENTRANCE ANIMATIONS */
+    @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+    .anim-in { animation: slideUp .6s ease forwards; opacity:0; }
+    .anim-d1 { animation-delay:.1s; }
+    .anim-d2 { animation-delay:.2s; }
+    .anim-d3 { animation-delay:.3s; }
+    .anim-d4 { animation-delay:.4s; }
+    .anim-d5 { animation-delay:.5s; }
 
     /* COUNTDOWN BANNER */
     .countdown-banner {
@@ -193,13 +213,16 @@
       .countdown-title { font-size:.85rem; }
     }
 
-    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:24px; }
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
     .stat-card {
-      background:var(--bg-card); border-radius:var(--radius); padding:12px 8px; border:1px solid var(--border);
-      text-align:center; transition:all .3s ease;
+      background:var(--bg-card); border-radius:var(--radius); padding:18px 12px; border:1px solid var(--border);
+      text-align:center; transition:all .3s ease; position:relative; overflow:hidden;
     }
-    .stat-card:hover { border-color:var(--primary); box-shadow:0 0 12px rgba(21,101,192,.2); }
-    .stat-number { font-size:1.4rem; font-weight:700; color:var(--primary); }
+    .stat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--primary),#8DC63F); opacity:0; transition:opacity .3s; }
+    .stat-card:hover { border-color:var(--primary); box-shadow:0 0 15px rgba(21,101,192,.2); transform:translateY(-3px); }
+    .stat-card:hover::before { opacity:1; }
+    .stat-icon { font-size:1.5rem; margin-bottom:6px; }
+    .stat-number { font-size:1.6rem; font-weight:700; color:var(--primary); }
     .stat-label { font-size:.68rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-top:2px; }
     .recent-section h3 { font-size:1.1rem; font-weight:600; margin-bottom:16px; }
     .course-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:24px; }
@@ -527,7 +550,8 @@
     @media(max-width:600px) {
       .main-content { padding:16px 16px 48px; }
       .hero-banner { padding:28px 20px; }
-      .hero-banner h2 { font-size:1.4rem; }
+      .hero-banner h2 { font-size:1.3rem; letter-spacing:1.5px; }
+      .hero-badge { font-size:.65rem; }
       .stats-grid { grid-template-columns:repeat(2,1fr); }
       .course-grid { grid-template-columns:1fr; }
       .sub-price { font-size:2rem; }
@@ -741,17 +765,14 @@
 
     <!-- HOME -->
     <section class="section active" id="page-home">
-      <div class="page-header" style="text-align:center;">
-        <h1 class="page-title">Bienvenido al Club</h1>
-        <p class="page-subtitle">Accede a todo el contenido exclusivo de FisioTeck</p>
-      </div>
-      <div class="hero-banner">
+      <div class="hero-banner anim-in">
+        <div class="hero-badge">🎓 Membresía Activa</div>
         <h2>Tu membresía profesional en fisioterapia</h2>
-        <p>Cursos grabados, clases en línea, material PDF y mucho más</p>
+        <p>Cursos grabados, clases en línea, material PDF, foro y mucho más</p>
       </div>
 
       <!-- COUNTDOWN -->
-      <div class="countdown-banner" id="countdownBanner" onclick="showPage('courses-live')">
+      <div class="countdown-banner anim-in anim-d1" id="countdownBanner" onclick="showPage('courses-live')">
         <div class="countdown-top">
           <div class="countdown-pulse"></div>
           <span class="countdown-label">Próxima clase en vivo</span>
@@ -769,14 +790,14 @@
         <div class="countdown-footer" id="countdownFooter"></div>
       </div>
 
-      <div class="stats-grid" id="homeStats">
-        <div class="stat-card"><div class="stat-number" id="statCourses">0</div><div class="stat-label">Cursos Disponibles</div></div>
-        <div class="stat-card"><div class="stat-number" id="statPdfs">0</div><div class="stat-label">PDFs y Materiales</div></div>
-        <div class="stat-card"><div class="stat-number" id="statLive">0</div><div class="stat-label">Clases en Línea</div></div>
-        <div class="stat-card"><div class="stat-number" id="statMembers">0</div><div class="stat-label">Socios Activos</div></div>
+      <div class="stats-grid anim-in anim-d2" id="homeStats">
+        <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-number" id="statCourses">0</div><div class="stat-label">Cursos Disponibles</div></div>
+        <div class="stat-card"><div class="stat-icon">📄</div><div class="stat-number" id="statPdfs">0</div><div class="stat-label">PDFs y Materiales</div></div>
+        <div class="stat-card"><div class="stat-icon">📡</div><div class="stat-number" id="statLive">0</div><div class="stat-label">Clases en Línea</div></div>
+        <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-number" id="statMembers">0</div><div class="stat-label">Socios Activos</div></div>
       </div>
       <!-- MINI XP WIDGET -->
-      <div id="xpWidget" onclick="showPage('achievements')" style="display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 20px;margin-bottom:24px;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)'">
+      <div id="xpWidget" onclick="showPage('achievements')" class="anim-in anim-d3" style="display:none;background:linear-gradient(135deg,var(--bg-card),rgba(27,63,107,.03));border:1px solid var(--border);border-radius:var(--radius);padding:16px 22px;margin-bottom:24px;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.transform='translateY(-2px)';this.style.boxShadow='0 0 15px rgba(21,101,192,.15)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)';this.style.boxShadow='none'">>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
           <div style="display:flex;align-items:center;gap:10px;">
             <span id="xpLevelIcon" style="font-size:1.4rem;">🎓</span>
@@ -791,11 +812,11 @@
           <div id="xpBar" style="height:100%;background:var(--primary);border-radius:3px;transition:width .6s ease;width:0%;"></div>
         </div>
       </div>
-      <div class="recent-section">
+      <div class="recent-section anim-in anim-d4">
         <h3>Contenido reciente</h3>
         <div class="course-grid" id="recentCourses"></div>
       </div>
-      <div class="recent-section" style="margin-top:32px;">
+      <div class="recent-section anim-in anim-d5" style="margin-top:32px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
           <h3>Noticias y Blog</h3>
           <button onclick="showPage('news')" style="background:none;border:none;color:var(--primary);font-size:.85rem;font-weight:500;cursor:pointer;">Ver todas →</button>
@@ -1951,11 +1972,27 @@
   }
 
   // ===== RENDER =====
+  function animateCounter(id, target) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const duration = 1200;
+    const start = parseInt(el.textContent) || 0;
+    if (start === target) { el.textContent = target; return; }
+    const startTime = performance.now();
+    function tick(now) {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(start + (target - start) * eased);
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
   function renderHome() {
-    document.getElementById('statCourses').textContent = siteData.courses.length;
-    document.getElementById('statPdfs').textContent = siteData.pdfs.length;
-    document.getElementById('statLive').textContent = siteData.live.length;
-    document.getElementById('statMembers').textContent = siteData.stats.members || '0';
+    animateCounter('statCourses', siteData.courses.length);
+    animateCounter('statPdfs', siteData.pdfs.length);
+    animateCounter('statLive', siteData.live.length);
+    animateCounter('statMembers', parseInt(siteData.stats.members) || 0);
     const container = document.getElementById('recentCourses');
     const today = new Date().toISOString().split('T')[0];
     const regDate = userStartDate ? new Date(userStartDate + 'T00:00:00') : new Date();
