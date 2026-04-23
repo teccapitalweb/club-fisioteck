@@ -2700,60 +2700,79 @@
 
   // ===== ATLAS MUSCULAR =====
   const ATLAS_MUSCLES = [
-    { id:'head', name:'Cabeza y Cuello', y:8, muscles:'Trapecio superior, Esternocleidomastoideo, Escalenos, Esplenio', function:'Flexión, extensión y rotación cervical. Estabilización de cabeza.', injuries:'Cervicalgia, latigazo cervical, cefalea tensional, tortícolis', color:'#E74C3C' },
-    { id:'shoulders', name:'Hombros', y:20, muscles:'Deltoides, Manguito rotador (supraespinoso, infraespinoso, subescapular, redondo menor)', function:'Abducción, flexión, rotación del brazo. Estabilización glenohumeral.', injuries:'Tendinitis del manguito rotador, capsulitis adhesiva, bursitis subacromial', color:'#3498DB' },
-    { id:'chest', name:'Pecho', y:30, muscles:'Pectoral mayor, Pectoral menor, Serrato anterior', function:'Aducción horizontal, flexión de hombro, protracción escapular.', injuries:'Distensión pectoral, síndrome de salida torácica', color:'#2ECC71' },
-    { id:'arms', name:'Brazos', y:38, muscles:'Bíceps braquial, Tríceps, Braquial, Braquiorradial', function:'Flexión y extensión de codo, supinación de antebrazo.', injuries:'Epicondilitis, epitrocleítis, tendinitis bicipital', color:'#9B59B6' },
-    { id:'core', name:'Core / Abdomen', y:45, muscles:'Recto abdominal, Oblicuos, Transverso, Multífidos, Diafragma', function:'Estabilización espinal, flexión y rotación de tronco, respiración.', injuries:'Lumbalgia, hernia discal, diástasis de rectos', color:'#F39C12' },
-    { id:'back', name:'Espalda', y:45, muscles:'Dorsal ancho, Trapecio, Romboides, Erectores espinales, Cuadrado lumbar', function:'Extensión de columna, retracción escapular, extensión de hombro.', injuries:'Dorsalgia, lumbalgia, ciática, contracturas paravertebrales', color:'#1ABC9C' },
-    { id:'hip', name:'Cadera / Glúteos', y:58, muscles:'Glúteo mayor, Glúteo medio, Psoas ilíaco, Piriforme, Aductores', function:'Extensión, abducción, flexión y rotación de cadera. Estabilización pélvica.', injuries:'Bursitis trocantérea, síndrome piriforme, tendinitis de psoas', color:'#E67E22' },
-    { id:'thigh', name:'Muslo', y:68, muscles:'Cuádriceps, Isquiotibiales, Tensor de fascia lata, Sartorio', function:'Extensión y flexión de rodilla, flexión de cadera.', injuries:'Distensión de isquiotibiales, síndrome de banda iliotibial, condromalacia', color:'#2980B9' },
-    { id:'knee', name:'Rodilla', y:75, muscles:'Ligamentos cruzados, Meniscos, Ligamentos colaterales, VMO', function:'Estabilización articular, absorción de impacto, control rotacional.', injuries:'Esguince de LCA/LCM, meniscopatía, tendinitis rotuliana', color:'#C0392B' },
-    { id:'leg', name:'Pierna / Pantorrilla', y:82, muscles:'Gastrocnemio, Sóleo, Tibial anterior, Peroneos', function:'Flexión plantar, dorsiflexión, inversión y eversión del pie.', injuries:'Tendinitis aquílea, síndrome compartimental, periostitis tibial', color:'#8E44AD' },
-    { id:'foot', name:'Tobillo / Pie', y:92, muscles:'Intrínsecos del pie, Fascia plantar, Tibial posterior', function:'Soporte del arco, propulsión, equilibrio y propiocepción.', injuries:'Esguince de tobillo, fascitis plantar, hallux valgus', color:'#16A085' }
+    { id:'head', name:'Cabeza y Cuello', muscles:'Trapecio superior, Esternocleidomastoideo (ECM), Escalenos (anterior, medio, posterior), Esplenio de la cabeza, Semiespinoso, Largo del cuello', function:'Flexión, extensión, inclinación lateral y rotación cervical. Estabilización de la cabeza durante el movimiento. Los escalenos también actúan como músculos respiratorios accesorios.', injuries:'Cervicalgia mecánica, latigazo cervical (whiplash), cefalea tensional, tortícolis, radiculopatía cervical, síndrome de salida torácica', tests:'Test de Spurling, Test de distracción cervical, Test de compresión de Jackson', color:'#E74C3C' },
+    { id:'shoulders', name:'Hombros', muscles:'Deltoides (anterior, medio, posterior), Supraespinoso, Infraespinoso, Subescapular, Redondo menor, Redondo mayor, Trapecio medio e inferior', function:'Abducción (deltoides medio + supraespinoso), flexión anterior (deltoides anterior), rotación externa (infraespinoso + redondo menor), rotación interna (subescapular). Estabilización dinámica glenohumeral.', injuries:'Tendinitis del manguito rotador, bursitis subacromial, capsulitis adhesiva (hombro congelado), síndrome de pinzamiento (impingement), luxación/subluxación glenohumeral, SLAP lesion', tests:'Test de Neer, Test de Hawkins, Test de Jobe (Empty can), Test de Gerber (Lift-off)', color:'#3498DB' },
+    { id:'chest', name:'Pecho', muscles:'Pectoral mayor (porción clavicular y esternal), Pectoral menor, Serrato anterior, Subclavio, Intercostales', function:'Aducción horizontal del brazo, flexión y rotación interna de hombro (pectoral mayor). Protracción y estabilización escapular (serrato anterior). Depresión de la escápula (pectoral menor). Mecánica respiratoria (intercostales).', injuries:'Distensión/desgarro pectoral, síndrome de salida torácica, escápula alada (debilidad del serrato anterior), dolor costal, neuralgia intercostal', tests:'Test de Adams, evaluación escapular dinámica', color:'#2ECC71' },
+    { id:'arms', name:'Brazos y Antebrazos', muscles:'Bíceps braquial (cabeza larga y corta), Tríceps braquial, Braquial, Braquiorradial, Pronador redondo, Supinador, Extensores de muñeca (ECRB, ECRL, ED), Flexores de muñeca (FCR, FCU, FDS)', function:'Flexión de codo (bíceps, braquial), extensión de codo (tríceps), supinación (bíceps, supinador), pronación (pronador redondo). Extensión de muñeca y dedos. Flexión de muñeca y dedos. Agarre y pinza.', injuries:'Epicondilitis lateral (codo de tenista), epitrocleítis (codo de golfista), tendinitis bicipital, síndrome del túnel carpiano, tendinitis de De Quervain, dedo en gatillo', tests:'Test de Mill, Test de Cozen, Test de Phalen, Test de Tinel, Test de Finkelstein', color:'#9B59B6' },
+    { id:'core', name:'Core / Abdomen', muscles:'Recto abdominal, Oblicuo externo, Oblicuo interno, Transverso del abdomen, Multífidos lumbares, Diafragma, Piso pélvico (elevador del ano, coccígeo)', function:'Estabilización espinal (transverso + multífidos). Flexión de tronco (recto abdominal). Rotación (oblicuos). Regulación de presión intraabdominal. Respiración (diafragma). Soporte de órganos pélvicos (piso pélvico).', injuries:'Lumbalgia por inestabilidad, diástasis de rectos, hernia discal, hernia inguinal, disfunción del piso pélvico, incontinencia urinaria de esfuerzo', tests:'Test de estabilización (drawing-in), Test de control motor, Evaluación de diástasis, Biering-Sorensen test', color:'#F39C12' },
+    { id:'back', name:'Espalda', muscles:'Dorsal ancho, Trapecio (superior, medio, inferior), Romboides mayor y menor, Erectores espinales (iliocostal, longísimo, espinoso), Cuadrado lumbar, Infraespinoso, Multífidos', function:'Extensión de columna (erectores espinales). Retracción y depresión escapular (romboides, trapecio medio/inferior). Extensión, aducción y rotación interna de hombro (dorsal ancho). Inclinación lateral del tronco (cuadrado lumbar).', injuries:'Dorsalgia, lumbalgia mecánica, ciática (radiculopatía L4-S1), contractura paravertebral, síndrome facetario, espondilolistesis, estenosis lumbar', tests:'Test de Lasègue (elevación pierna recta), Slump test, Test de Schober, Test de extensión lumbar', color:'#1ABC9C' },
+    { id:'hip', name:'Cadera y Glúteos', muscles:'Glúteo mayor, Glúteo medio, Glúteo menor, Psoas ilíaco, Ilíaco, Piriforme, Obturadores (interno y externo), Aductores (largo, corto, mayor, grácil, pectíneo), Tensor de fascia lata (TFL)', function:'Extensión de cadera (glúteo mayor). Abducción y estabilización pélvica en apoyo unipodal (glúteo medio). Flexión de cadera (psoas ilíaco). Rotación externa profunda (piriforme, obturadores). Aducción (aductores). Estabilización lateral (TFL).', injuries:'Bursitis trocantérea, síndrome del piriforme, tendinitis del psoas, pubalgia (dolor inguinal), artrosis de cadera (coxartrosis), pinzamiento femoroacetabular (FAI), cadera en resorte', tests:'Test de Thomas, Test de Patrick (FABER), Test de Trendelenburg, Test de Ober, FADIR test', color:'#E67E22' },
+    { id:'thigh', name:'Muslo', muscles:'Cuádriceps (recto femoral, vasto lateral, vasto medial/VMO, vasto intermedio), Isquiotibiales (bíceps femoral, semitendinoso, semimembranoso), Tensor de fascia lata, Sartorio, Banda iliotibial', function:'Extensión de rodilla (cuádriceps). Flexión de rodilla y extensión de cadera (isquiotibiales). Estabilización lateral de rodilla (banda iliotibial). El sartorio flexiona, abduce y rota externamente la cadera.', injuries:'Distensión de isquiotibiales, síndrome de banda iliotibial, tendinitis rotuliana (rodilla del saltador), contusión muscular (cuádriceps), rotura fibrilar, condromalacia rotuliana', tests:'Test de Ely, Test de Noble, Evaluación VMO, Test de extensión activa de rodilla', color:'#2980B9' },
+    { id:'knee', name:'Rodilla', muscles:'Ligamento cruzado anterior (LCA), Ligamento cruzado posterior (LCP), Ligamentos colaterales (medial/LCM y lateral/LCL), Meniscos (medial y lateral), Cápsula articular, Tendón rotuliano', function:'Estabilización anteroposterior (LCA/LCP). Estabilización mediolateral (colaterales). Absorción de impacto y distribución de cargas (meniscos). Transmisión de fuerza del cuádriceps (tendón rotuliano).', injuries:'Rotura de LCA, lesión de meniscos, esguince de LCM/LCL, tendinitis rotuliana, síndrome patelofemoral, bursitis de la pata de ganso, quiste de Baker, artrosis de rodilla (gonartrosis)', tests:'Test de Lachman, Cajón anterior/posterior, Test de McMurray, Test de Apley, Test de varo/valgo forzado', color:'#C0392B' },
+    { id:'leg', name:'Pierna / Pantorrilla', muscles:'Gastrocnemio (gemelos medial y lateral), Sóleo, Plantar delgado, Tibial anterior, Tibial posterior, Peroneos (largo, corto, tercero), Extensor largo de los dedos, Flexor largo de los dedos', function:'Flexión plantar potente (gastrocnemio + sóleo = tríceps sural). Dorsiflexión (tibial anterior). Inversión (tibial posterior). Eversión (peroneos). Propulsión durante la marcha. Estabilización dinámica del tobillo.', injuries:'Tendinitis aquílea/tendinopatía, rotura del tendón de Aquiles, síndrome compartimental, periostitis tibial (shin splints), calambres musculares, trombosis venosa profunda, insuficiencia del tibial posterior', tests:'Test de Thompson, Squeeze test, Evaluación de dorsiflexión en carga', color:'#8E44AD' },
+    { id:'foot', name:'Tobillo y Pie', muscles:'Intrínsecos del pie (flexor corto de los dedos, abductor del hallux, aductor del hallux, interóseos, lumbricales), Fascia plantar, Ligamentos del tobillo (peroneoastragalino anterior, calcáneoperóneo, deltoideo)', function:'Soporte del arco longitudinal y transverso (intrínsecos + fascia plantar). Propulsión en la fase final del paso. Equilibrio y propiocepción. Absorción de impacto. Adaptación a superficies irregulares.', injuries:'Esguince de tobillo (grados I-III), fascitis plantar, hallux valgus (juanete), neuroma de Morton, metatarsalgia, espolón calcáneo, pie plano/cavo, inestabilidad crónica de tobillo, fractura por estrés', tests:'Test de cajón anterior de tobillo, Test de inversión forzada, Test de Windlass, Evaluación del arco plantar', color:'#16A085' }
   ];
 
   function renderAtlas() {
     const container = document.getElementById('atlasBody');
-    let svg = `<svg viewBox="0 0 100 100" style="width:100%;max-width:250px;">`;
-    svg += `<ellipse cx="50" cy="8" rx="8" ry="7" fill="none" stroke="var(--text-muted)" stroke-width=".5"/>`;
-    svg += `<line x1="50" y1="15" x2="50" y2="55" stroke="var(--text-muted)" stroke-width=".5"/>`;
-    svg += `<line x1="30" y1="22" x2="70" y2="22" stroke="var(--text-muted)" stroke-width=".5"/>`;
-    svg += `<line x1="30" y1="22" x2="22" y2="45" stroke="var(--text-muted)" stroke-width=".5"/>`;
-    svg += `<line x1="70" y1="22" x2="78" y2="45" stroke="var(--text-muted)" stroke-width=".5"/>`;
-    svg += `<line x1="50" y1="55" x2="38" y2="80" stroke="var(--text-muted)" stroke-width=".5"/>`;
-    svg += `<line x1="50" y1="55" x2="62" y2="80" stroke="var(--text-muted)" stroke-width=".5"/>`;
-    svg += `<line x1="38" y1="80" x2="35" y2="97" stroke="var(--text-muted)" stroke-width=".5"/>`;
-    svg += `<line x1="62" y1="80" x2="65" y2="97" stroke="var(--text-muted)" stroke-width=".5"/>`;
-    svg += `</svg>`;
-    // Muscle zone buttons
-    let btns = '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;justify-content:center;">';
-    ATLAS_MUSCLES.forEach(m => {
-      btns += `<button onclick="showMuscle('${m.id}')" style="padding:5px 10px;border-radius:16px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:.72rem;font-family:inherit;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='${m.color}';this.style.color='#fff';this.style.borderColor='${m.color}'" onmouseout="this.style.background='var(--bg)';this.style.color='var(--text)';this.style.borderColor='var(--border)'">${m.name}</button>`;
-    });
-    btns += '</div>';
-    container.innerHTML = svg + btns;
+    // Improved SVG body
+    let svg = `<svg viewBox="0 0 120 260" style="width:100%;max-width:220px;" xmlns="http://www.w3.org/2000/svg">
+      <!-- Head -->
+      <ellipse cx="60" cy="22" rx="14" ry="16" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" data-zone="head" onclick="showMuscle('head')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(231,76,60,.15)';this.style.stroke='#E74C3C'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <!-- Neck -->
+      <rect x="52" y="38" width="16" height="12" rx="4" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" data-zone="head" onclick="showMuscle('head')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(231,76,60,.15)';this.style.stroke='#E74C3C'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <!-- Shoulders -->
+      <ellipse cx="30" cy="56" rx="16" ry="8" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('shoulders')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(52,152,219,.15)';this.style.stroke='#3498DB'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <ellipse cx="90" cy="56" rx="16" ry="8" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('shoulders')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(52,152,219,.15)';this.style.stroke='#3498DB'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <!-- Chest -->
+      <rect x="38" y="52" width="44" height="28" rx="6" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('chest')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(46,204,113,.15)';this.style.stroke='#2ECC71'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <!-- Arms -->
+      <rect x="8" y="60" width="18" height="50" rx="8" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('arms')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(155,89,182,.15)';this.style.stroke='#9B59B6'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <rect x="94" y="60" width="18" height="50" rx="8" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('arms')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(155,89,182,.15)';this.style.stroke='#9B59B6'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <!-- Core -->
+      <rect x="40" y="80" width="40" height="30" rx="4" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('core')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(243,156,18,.15)';this.style.stroke='#F39C12'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <!-- Hip -->
+      <ellipse cx="60" cy="120" rx="26" ry="14" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('hip')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(230,126,34,.15)';this.style.stroke='#E67E22'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <!-- Thighs -->
+      <rect x="36" y="132" width="18" height="45" rx="8" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('thigh')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(41,128,185,.15)';this.style.stroke='#2980B9'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <rect x="66" y="132" width="18" height="45" rx="8" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('thigh')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(41,128,185,.15)';this.style.stroke='#2980B9'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <!-- Knees -->
+      <circle cx="45" cy="180" r="7" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('knee')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(192,57,43,.15)';this.style.stroke='#C0392B'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <circle cx="75" cy="180" r="7" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('knee')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(192,57,43,.15)';this.style.stroke='#C0392B'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <!-- Lower legs -->
+      <rect x="38" y="188" width="14" height="40" rx="6" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('leg')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(142,68,173,.15)';this.style.stroke='#8E44AD'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <rect x="68" y="188" width="14" height="40" rx="6" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('leg')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(142,68,173,.15)';this.style.stroke='#8E44AD'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <!-- Feet -->
+      <ellipse cx="45" cy="235" rx="10" ry="5" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('foot')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(22,160,133,.15)';this.style.stroke='#16A085'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <ellipse cx="75" cy="235" rx="10" ry="5" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('foot')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(22,160,133,.15)';this.style.stroke='#16A085'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+    </svg>
+    <p style="font-size:.72rem;color:var(--text-muted);margin-top:8px;">Pasa el cursor o haz clic en una zona</p>`;
+    container.innerHTML = svg;
   }
 
   function showMuscle(id) {
     const m = ATLAS_MUSCLES.find(x => x.id === id);
     if (!m) return;
     document.getElementById('atlasInfo').innerHTML = `
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-        <div style="width:10px;height:10px;border-radius:50%;background:${m.color};flex-shrink:0;"></div>
-        <h3 style="font-size:1.1rem;font-weight:700;color:var(--text);">${m.name}</h3>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+        <div style="width:12px;height:12px;border-radius:50%;background:${m.color};flex-shrink:0;"></div>
+        <h3 style="font-size:1.15rem;font-weight:700;color:var(--text);">${m.name}</h3>
       </div>
-      <div style="margin-bottom:16px;">
-        <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--primary);font-weight:600;margin-bottom:6px;">Músculos principales</div>
-        <p style="font-size:.88rem;color:var(--text);line-height:1.5;">${m.muscles}</p>
+      <div style="margin-bottom:18px;">
+        <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--primary);font-weight:600;margin-bottom:8px;">🔬 Músculos principales</div>
+        <p style="font-size:.86rem;color:var(--text);line-height:1.6;background:var(--bg);padding:12px;border-radius:var(--radius-sm);">${m.muscles}</p>
       </div>
-      <div style="margin-bottom:16px;">
-        <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:#0F6E56;font-weight:600;margin-bottom:6px;">Función</div>
-        <p style="font-size:.88rem;color:var(--text);line-height:1.5;">${m.function}</p>
+      <div style="margin-bottom:18px;">
+        <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:#0F6E56;font-weight:600;margin-bottom:8px;">⚡ Función</div>
+        <p style="font-size:.86rem;color:var(--text);line-height:1.6;background:var(--bg);padding:12px;border-radius:var(--radius-sm);">${m.function}</p>
+      </div>
+      <div style="margin-bottom:18px;">
+        <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:#E74C3C;font-weight:600;margin-bottom:8px;">🩹 Lesiones comunes</div>
+        <p style="font-size:.86rem;color:var(--text);line-height:1.6;background:var(--bg);padding:12px;border-radius:var(--radius-sm);">${m.injuries}</p>
       </div>
       <div>
-        <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:#E74C3C;font-weight:600;margin-bottom:6px;">Lesiones comunes</div>
-        <p style="font-size:.88rem;color:var(--text);line-height:1.5;">${m.injuries}</p>
+        <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:#8E44AD;font-weight:600;margin-bottom:8px;">📋 Tests de evaluación</div>
+        <p style="font-size:.86rem;color:var(--text);line-height:1.6;background:var(--bg);padding:12px;border-radius:var(--radius-sm);">${m.tests}</p>
       </div>`;
   }
 
@@ -2761,42 +2780,96 @@
   const GLOSSARY = [
     {t:'Abducción',d:'Movimiento que aleja una extremidad de la línea media del cuerpo.',c:'Anatomía'},
     {t:'Aducción',d:'Movimiento que acerca una extremidad hacia la línea media del cuerpo.',c:'Anatomía'},
+    {t:'Agonista',d:'Músculo principal responsable de ejecutar un movimiento articular específico.',c:'Biomecánica'},
+    {t:'Amplitud articular',d:'Rango máximo de movimiento que permite una articulación en un plano determinado.',c:'Evaluación'},
+    {t:'Antagonista',d:'Músculo que se opone al movimiento del agonista y lo controla excéntricamente.',c:'Biomecánica'},
     {t:'Artroplastia',d:'Cirugía de reemplazo articular, comúnmente de cadera o rodilla.',c:'Cirugía'},
+    {t:'Artroscopia',d:'Procedimiento quirúrgico mínimamente invasivo para visualizar y tratar patologías intraarticulares.',c:'Cirugía'},
+    {t:'Atrofia muscular',d:'Disminución del tamaño y fuerza de un músculo por desuso, denervación o enfermedad.',c:'Patología'},
+    {t:'Bipedestación',d:'Posición de pie sobre ambos pies, postura fundamental evaluada en rehabilitación.',c:'Evaluación'},
+    {t:'Bobath',d:'Concepto neurorrehabilitador que facilita patrones normales de movimiento en pacientes con lesión del SNC.',c:'Técnica'},
     {t:'Bursitis',d:'Inflamación de la bursa sinovial, generalmente por sobreuso o trauma.',c:'Patología'},
-    {t:'Cadena cinética',d:'Concepto que describe cómo las articulaciones y segmentos corporales se afectan mutuamente durante el movimiento.',c:'Biomecánica'},
+    {t:'Cadena cinética',d:'Concepto que describe cómo las articulaciones y segmentos se afectan mutuamente durante el movimiento.',c:'Biomecánica'},
     {t:'Capsulitis adhesiva',d:'Condición que causa rigidez y dolor en el hombro por inflamación y fibrosis de la cápsula articular.',c:'Patología'},
+    {t:'Cifosis',d:'Curvatura exagerada de la columna torácica que produce postura encorvada o joroba.',c:'Patología'},
+    {t:'Circumducción',d:'Movimiento circular de una extremidad que combina flexión, extensión, abducción y aducción.',c:'Anatomía'},
+    {t:'Concéntrico',d:'Contracción muscular donde el músculo se acorta generando movimiento articular.',c:'Técnica'},
     {t:'Condromalacia',d:'Reblandecimiento y degeneración del cartílago articular, frecuente en la rótula.',c:'Patología'},
+    {t:'Contractura',d:'Acortamiento patológico de un músculo que limita el rango de movimiento articular.',c:'Patología'},
     {t:'Core',d:'Grupo de músculos del tronco que estabilizan la columna: transverso, multífidos, diafragma y piso pélvico.',c:'Anatomía'},
     {t:'Crioterapia',d:'Aplicación terapéutica de frío para reducir dolor, inflamación y espasmo muscular.',c:'Técnica'},
+    {t:'Decúbito',d:'Posición del cuerpo acostado. Puede ser supino (boca arriba), prono (boca abajo) o lateral.',c:'Evaluación'},
     {t:'Dermatoma',d:'Área de piel inervada por una raíz nerviosa espinal específica.',c:'Neurología'},
+    {t:'Diatermia',d:'Uso de corrientes electromagnéticas de alta frecuencia para generar calor profundo en tejidos.',c:'Técnica'},
+    {t:'Discopatía',d:'Enfermedad del disco intervertebral que incluye degeneración, protrusión o herniación.',c:'Patología'},
     {t:'Dorsiflexión',d:'Movimiento que lleva el dorso del pie hacia la tibia, reduciendo el ángulo del tobillo.',c:'Anatomía'},
+    {t:'Edema',d:'Acumulación anormal de líquido en los tejidos que causa hinchazón.',c:'Patología'},
     {t:'Electroestimulación',d:'Uso de corrientes eléctricas para estimular nervios y músculos con fines terapéuticos.',c:'Técnica'},
     {t:'Epicondilitis',d:'Inflamación de los tendones epicondíleos laterales del codo (codo de tenista).',c:'Patología'},
     {t:'Ergonomía',d:'Ciencia de adaptar el entorno laboral al trabajador para prevenir lesiones musculoesqueléticas.',c:'Prevención'},
+    {t:'Escoliosis',d:'Desviación lateral anormal de la columna vertebral con componente rotacional.',c:'Patología'},
+    {t:'Espasticidad',d:'Aumento del tono muscular dependiente de velocidad, característico de lesiones de motoneurona superior.',c:'Neurología'},
+    {t:'Espondilitis',d:'Inflamación de las vértebras que puede causar rigidez y fusión de la columna.',c:'Patología'},
+    {t:'Estenosis espinal',d:'Estrechamiento del canal vertebral que comprime la médula espinal o raíces nerviosas.',c:'Patología'},
     {t:'Eversión',d:'Movimiento del pie que gira la planta hacia afuera.',c:'Anatomía'},
     {t:'Excéntrico',d:'Contracción muscular donde el músculo se alarga bajo tensión, clave en rehabilitación de tendinopatías.',c:'Técnica'},
     {t:'Fascitis plantar',d:'Inflamación de la fascia plantar que causa dolor en el talón, especialmente al dar los primeros pasos.',c:'Patología'},
     {t:'FES',d:'Estimulación Eléctrica Funcional: corrientes que producen contracción muscular para reentrenar movimientos funcionales.',c:'Técnica'},
+    {t:'Fibrosis',d:'Formación excesiva de tejido cicatrizal fibroso que reemplaza tejido normal y limita función.',c:'Patología'},
+    {t:'Flexión',d:'Movimiento que disminuye el ángulo entre dos segmentos corporales.',c:'Anatomía'},
     {t:'Goniometría',d:'Medición del rango de movimiento articular usando un goniómetro.',c:'Evaluación'},
+    {t:'Hemiparesia',d:'Debilidad muscular que afecta un lado del cuerpo, generalmente por ACV.',c:'Neurología'},
+    {t:'Hemiplejia',d:'Parálisis de un lado del cuerpo causada por lesión cerebral contralateral.',c:'Neurología'},
     {t:'Hidroterapia',d:'Uso terapéutico del agua para rehabilitación, aprovechando flotación, resistencia y temperatura.',c:'Técnica'},
+    {t:'Hiperextensión',d:'Extensión más allá de la posición anatómica normal de una articulación.',c:'Anatomía'},
     {t:'Hipertonía',d:'Aumento anormal del tono muscular, frecuente en lesiones neurológicas.',c:'Neurología'},
+    {t:'Hipotonía',d:'Disminución del tono muscular que resulta en músculos flácidos y poca resistencia al movimiento.',c:'Neurología'},
+    {t:'Infiltración',d:'Inyección de medicamento directamente en una articulación o tejido para reducir inflamación.',c:'Técnica'},
     {t:'Inversión',d:'Movimiento del pie que gira la planta hacia adentro.',c:'Anatomía'},
     {t:'Isométrico',d:'Contracción muscular sin cambio en la longitud del músculo ni movimiento articular.',c:'Técnica'},
     {t:'Kinesiotaping',d:'Vendaje neuromuscular elástico que facilita función muscular y circulación.',c:'Técnica'},
     {t:'Laserterapia',d:'Uso de luz láser de baja intensidad para estimular reparación tisular y reducir dolor.',c:'Técnica'},
     {t:'Latigazo cervical',d:'Lesión por aceleración-desaceleración brusca del cuello, común en accidentes vehiculares.',c:'Patología'},
+    {t:'Ligamento',d:'Banda de tejido conectivo fibroso que une hueso con hueso y estabiliza articulaciones.',c:'Anatomía'},
+    {t:'Lordosis',d:'Curvatura anterior fisiológica de la columna cervical y lumbar. Hiperlordosis es su acentuación patológica.',c:'Anatomía'},
+    {t:'Luxación',d:'Pérdida completa del contacto entre las superficies articulares de una articulación.',c:'Patología'},
+    {t:'Magnetoterapia',d:'Aplicación de campos magnéticos pulsantes para estimular regeneración ósea y tisular.',c:'Técnica'},
+    {t:'Marcha',d:'Patrón de locomoción bípeda que comprende fases de apoyo y balanceo.',c:'Evaluación'},
     {t:'McKenzie',d:'Método de evaluación y tratamiento mecánico de la columna basado en movimientos direccionales repetidos.',c:'Técnica'},
     {t:'Menisco',d:'Cartílago fibroso en forma de C ubicado entre fémur y tibia que amortigua y estabiliza la rodilla.',c:'Anatomía'},
+    {t:'Mesoterapia',d:'Técnica de microinyecciones intradérmicas de fármacos en la zona afectada.',c:'Técnica'},
+    {t:'Miotoma',d:'Grupo de músculos inervados por una raíz nerviosa espinal específica.',c:'Neurología'},
     {t:'Movilización articular',d:'Técnica manual de movimientos pasivos oscilatorios aplicados a una articulación para mejorar movilidad.',c:'Técnica'},
     {t:'Neurodinamia',d:'Técnicas que movilizan el sistema nervioso periférico para mejorar su mecánica y reducir dolor neural.',c:'Técnica'},
+    {t:'Neuropatía',d:'Daño o disfunción de uno o más nervios periféricos que causa debilidad, entumecimiento o dolor.',c:'Neurología'},
+    {t:'Órtesis',d:'Dispositivo externo que soporta, alinea o corrige una extremidad o el tronco.',c:'Dispositivos'},
+    {t:'Osteoporosis',d:'Pérdida de densidad ósea que debilita los huesos y aumenta el riesgo de fracturas.',c:'Patología'},
+    {t:'Parafina',d:'Baño de cera caliente usado como agente termoterapéutico para manos y pies.',c:'Técnica'},
+    {t:'Periostitis',d:'Inflamación del periostio (membrana que recubre el hueso), frecuente en la tibia de corredores.',c:'Patología'},
+    {t:'PNF',d:'Facilitación Neuromuscular Propioceptiva: técnica que usa patrones diagonales y espirales para facilitar movimiento.',c:'Técnica'},
+    {t:'Presoterapia',d:'Uso de compresión neumática intermitente para mejorar circulación y drenaje linfático.',c:'Técnica'},
+    {t:'Pronación',d:'Rotación del antebrazo que lleva la palma hacia abajo, o del pie que aplana el arco.',c:'Anatomía'},
     {t:'Propiocepción',d:'Capacidad del cuerpo de percibir su posición y movimiento en el espacio sin depender de la vista.',c:'Neurofisiología'},
+    {t:'Prótesis',d:'Dispositivo artificial que reemplaza una parte del cuerpo ausente o dañada.',c:'Dispositivos'},
     {t:'Punto gatillo',d:'Nódulo hiperirritable en una banda tensa muscular que produce dolor referido.',c:'Patología'},
     {t:'Punción seca',d:'Inserción de aguja en puntos gatillo miofasciales para desactivarlos y aliviar dolor.',c:'Técnica'},
+    {t:'Radiculopatía',d:'Compresión o irritación de una raíz nerviosa espinal que causa dolor, debilidad o entumecimiento.',c:'Neurología'},
+    {t:'Rango de movimiento',d:'Amplitud de movimiento disponible en una articulación, medida en grados.',c:'Evaluación'},
     {t:'RPG',d:'Reeducación Postural Global: método que trabaja cadenas musculares completas para corregir alteraciones posturales.',c:'Técnica'},
+    {t:'Subluxación',d:'Pérdida parcial del contacto entre superficies articulares sin desplazamiento completo.',c:'Patología'},
     {t:'Supinación',d:'Rotación del antebrazo que lleva la palma hacia arriba, o del pie que eleva el borde medial.',c:'Anatomía'},
+    {t:'Tendinitis',d:'Inflamación aguda de un tendón, generalmente por sobreuso repetitivo.',c:'Patología'},
+    {t:'Tendinopatía',d:'Término general para cualquier condición patológica del tendón, incluyendo degeneración y dolor.',c:'Patología'},
+    {t:'Tendón',d:'Estructura de tejido conectivo denso que une músculo con hueso, transmitiendo la fuerza de contracción.',c:'Anatomía'},
     {t:'TENS',d:'Estimulación Nerviosa Eléctrica Transcutánea: corrientes para control del dolor por mecanismo de compuerta.',c:'Técnica'},
     {t:'Termoterapia',d:'Aplicación terapéutica de calor para aumentar flujo sanguíneo, relajar músculo y reducir dolor.',c:'Técnica'},
+    {t:'Test de Lasègue',d:'Prueba de elevación de pierna recta para evaluar irritación del nervio ciático.',c:'Evaluación'},
+    {t:'Test de Phalen',d:'Prueba de flexión sostenida de muñeca para diagnosticar síndrome del túnel carpiano.',c:'Evaluación'},
+    {t:'Test de Thomas',d:'Prueba que evalúa contractura en flexión de cadera por acortamiento del psoas ilíaco.',c:'Evaluación'},
+    {t:'Tracción',d:'Fuerza de separación aplicada a segmentos articulares o espinales para descomprimir estructuras.',c:'Técnica'},
     {t:'Ultrasonido terapéutico',d:'Ondas sonoras de alta frecuencia que producen efectos térmicos y mecánicos en tejidos profundos.',c:'Técnica'},
+    {t:'Valgus',d:'Desviación lateral distal de un segmento, como en genu valgum (rodillas en X).',c:'Anatomía'},
+    {t:'Varus',d:'Desviación medial distal de un segmento, como en genu varum (piernas arqueadas).',c:'Anatomía'},
     {t:'VMO',d:'Vasto Medial Oblicuo: porción del cuádriceps crucial para la estabilización de la rótula.',c:'Anatomía'},
   ];
 
