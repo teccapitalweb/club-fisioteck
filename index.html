@@ -1430,27 +1430,38 @@
     <section class="section" id="page-rehab-calc">
       <div class="page-header">
         <h1 class="page-title">Calculadora de Rehabilitación</h1>
-        <p class="page-subtitle">Consulta planes sugeridos según la patología</p>
+        <p class="page-subtitle">Consulta planes sugeridos según la patología y severidad</p>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;">
         <div>
           <label style="font-size:.78rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">Zona del cuerpo</label>
           <select id="rehabZone" onchange="updateRehabPathologies()" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:.9rem;background:var(--bg-card);color:var(--text);">
             <option value="">Seleccionar...</option>
-            <option value="hombro">Hombro</option>
-            <option value="rodilla">Rodilla</option>
-            <option value="espalda">Espalda baja</option>
-            <option value="tobillo">Tobillo</option>
             <option value="cuello">Cuello / Cervical</option>
-            <option value="cadera">Cadera</option>
-            <option value="muñeca">Muñeca / Mano</option>
+            <option value="hombro">Hombro</option>
             <option value="codo">Codo</option>
+            <option value="muñeca">Muñeca / Mano</option>
+            <option value="dedos">Dedos</option>
+            <option value="toracica">Columna Torácica</option>
+            <option value="espalda">Espalda Baja / Lumbar</option>
+            <option value="cadera">Cadera</option>
+            <option value="rodilla">Rodilla</option>
+            <option value="tobillo">Tobillo</option>
+            <option value="atm">ATM / Mandíbula</option>
           </select>
         </div>
         <div>
           <label style="font-size:.78rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">Patología</label>
           <select id="rehabPathology" onchange="showRehabPlan()" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:.9rem;background:var(--bg-card);color:var(--text);">
             <option value="">Primero selecciona zona...</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:.78rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">Severidad</label>
+          <select id="rehabSeverity" onchange="showRehabPlan()" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:.9rem;background:var(--bg-card);color:var(--text);">
+            <option value="leve">Leve</option>
+            <option value="moderado" selected>Moderado</option>
+            <option value="severo">Severo</option>
           </select>
         </div>
       </div>
@@ -1463,8 +1474,19 @@
         <h1 class="page-title">Atlas Muscular</h1>
         <p class="page-subtitle">Explora los grupos musculares del cuerpo humano</p>
       </div>
+      <div class="search-bar" style="margin-bottom:16px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="atlasSearch" placeholder="Buscar músculo o zona..." oninput="searchAtlas()">
+      </div>
+      <div id="atlasSearchResults" style="display:none;margin-bottom:16px;"></div>
       <div style="display:grid;grid-template-columns:300px 1fr;gap:24px;" id="atlasGrid">
-        <div id="atlasBody" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;"></div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;">
+          <div style="display:flex;gap:6px;margin-bottom:14px;justify-content:center;">
+            <button onclick="switchAtlasView('front')" id="atlasTabFront" style="padding:6px 14px;border-radius:16px;border:1px solid var(--primary);background:var(--primary);color:#fff;font-size:.72rem;font-family:inherit;cursor:pointer;font-weight:600;">Frontal</button>
+            <button onclick="switchAtlasView('back')" id="atlasTabBack" style="padding:6px 14px;border-radius:16px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:.72rem;font-family:inherit;cursor:pointer;font-weight:600;">Posterior</button>
+          </div>
+          <div id="atlasBody" style="text-align:center;"></div>
+        </div>
         <div id="atlasInfo" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
           <div style="text-align:center;padding:40px;color:var(--text-muted);font-size:.9rem;">👈 Selecciona una zona del cuerpo para ver detalles</div>
         </div>
@@ -2654,7 +2676,23 @@
     },
     codo: {
       'Epicondilitis (codo de tenista)': { sessions:'10-16', duration:'40 min', phases:['Fase 1: Descarga, crioterapia, US','Fase 2: Excéntricos de extensores, stretching','Fase 3: Fortalecimiento progresivo, ergonomía'], exercises:['Excéntricos de extensores','Stretching de epicondíleos','Supinación con peso','Agarre con toalla'] },
-      'Epitrocleítis (codo de golfista)': { sessions:'10-14', duration:'40 min', phases:['Fase 1: Reposo relativo, antiinflamatorio local','Fase 2: Excéntricos de flexores/pronadores','Fase 3: Retorno a actividad con control biomecánico'], exercises:['Excéntricos de flexores','Stretching pronadores','Curl de muñeca','Fortalecimiento de agarre'] }
+      'Epitrocleítis (codo de golfista)': { sessions:'10-14', duration:'40 min', phases:['Fase 1: Reposo relativo, antiinflamatorio local','Fase 2: Excéntricos de flexores/pronadores','Fase 3: Retorno a actividad con control biomecánico'], exercises:['Excéntricos de flexores','Stretching pronadores','Curl de muñeca','Fortalecimiento de agarre'], contra:'Infiltraciones recientes (<72h), fractura no consolidada' },
+      'Bursitis olecraniana': { sessions:'6-10', duration:'35 min', phases:['Fase 1: Protección, crioterapia, compresión','Fase 2: Movilización activa, fortalecimiento suave','Fase 3: Retorno a actividades'], exercises:['Flexo-extensión activa','Isométricos de bíceps/tríceps','Stretching suave','Fortalecimiento progresivo'], contra:'Bursitis séptica (requiere antibióticos), punción sin indicación médica' }
+    },
+    dedos: {
+      'Dedo en gatillo': { sessions:'6-10', duration:'30 min', phases:['Fase 1: Férula, antiinflamatorio, US','Fase 2: Deslizamiento tendinoso, movilización activa','Fase 3: Fortalecimiento de agarre progresivo'], exercises:['Deslizamiento de tendones flexores','Extensión activa de dedos','Ejercicios con masilla terapéutica','Grip con pelota suave'], contra:'Infección activa, rotura tendinosa, post-infiltración inmediata' },
+      'Rizartrosis (artrosis del pulgar)': { sessions:'10-14', duration:'30 min', phases:['Fase 1: Férula de reposo, termoterapia, parafina','Fase 2: Movilización articular CMC, fortalecimiento pinza','Fase 3: Adaptación funcional, órtesis de actividad'], exercises:['Oposición del pulgar','Pinza con resistencia','Abducción con banda','Movilización CMC'], contra:'Inflamación aguda severa, luxación CMC no reducida' },
+      'Lesión de ligamentos colaterales': { sessions:'8-14', duration:'30 min', phases:['Fase 1: Inmovilización con buddy-taping, crioterapia','Fase 2: Movilización activa, propiocepción','Fase 3: Fortalecimiento, retorno funcional'], exercises:['Flexo-extensión activa protegida','Desviación lateral suave','Ejercicios de prensión','Buddy-taping funcional'], contra:'Fractura asociada no diagnosticada, inestabilidad grado III sin valoración quirúrgica' }
+    },
+    toracica: {
+      'Dorsalgia mecánica': { sessions:'8-12', duration:'40 min', phases:['Fase 1: Termoterapia, TENS, movilización costovertebral','Fase 2: Fortalecimiento de extensores torácicos, stretching pectoral','Fase 3: Corrección postural, ergonomía laboral'], exercises:['Extensión torácica con foam roller','Retracción escapular','Stretching pectoral en esquina','Remo con banda elástica'], contra:'Fractura vertebral, osteoporosis severa, tumor espinal' },
+      'Síndrome de T4': { sessions:'8-14', duration:'40 min', phases:['Fase 1: Movilización T3-T5, técnicas de tejido blando','Fase 2: Estabilización escapulotorácica','Fase 3: Ejercicios posturales, mantenimiento'], exercises:['Movilización en extensión T4','Chin tucks con extensión torácica','Remo horizontal','Ángel de pared'], contra:'Mielopatía torácica, hernia discal torácica con síntomas neurológicos' },
+      'Costocondritis': { sessions:'6-10', duration:'35 min', phases:['Fase 1: Reposo relativo, crioterapia, respiración diafragmática','Fase 2: Movilización costal suave, stretching intercostal','Fase 3: Fortalecimiento respiratorio, retorno progresivo'], exercises:['Respiración diafragmática','Stretching intercostal','Expansión costal con banda','Movilización de costillas'], contra:'Descartarr patología cardíaca, fractura costal, neumotórax' }
+    },
+    atm: {
+      'Disfunción temporomandibular (DTM)': { sessions:'10-16', duration:'35 min', phases:['Fase 1: Termoterapia local, relajación maseterina, educación','Fase 2: Movilización articular, ejercicios de apertura controlada','Fase 3: Coordinación neuromuscular, manejo del estrés'], exercises:['Apertura controlada con lengua en paladar','Movimientos laterales guiados','Automasaje masetero/temporal','Relajación mandibular con calor'], contra:'Fractura mandibular, luxación ATM no reducida, infección articular' },
+      'Bruxismo': { sessions:'8-12', duration:'30 min', phases:['Fase 1: Concientización, relajación muscular, férula oclusal','Fase 2: Stretching masticatorio, técnicas de relajación','Fase 3: Manejo del estrés, ejercicios de mantenimiento'], exercises:['Relajación progresiva de músculos faciales','Stretching de pterigoideos','Automasaje temporal','Ejercicios de posición de reposo mandibular'], contra:'Fractura dental, problema oclusal no tratado por odontólogo' },
+      'Limitación de apertura oral': { sessions:'10-14', duration:'35 min', phases:['Fase 1: Termoterapia, movilización pasiva suave','Fase 2: Stretching progresivo, movilización activa-asistida','Fase 3: Fortalecimiento, mantenimiento de rango'], exercises:['Depresores linguales progresivos','Apertura activa-asistida','Movimientos de protrusión/retrusión','Lateralidad mandibular'], contra:'Anquilosis ósea (requiere cirugía), fractura condilar reciente' }
     }
   };
 
@@ -2672,28 +2710,52 @@
   function showRehabPlan() {
     const zone = document.getElementById('rehabZone').value;
     const path = document.getElementById('rehabPathology').value;
+    const severity = document.getElementById('rehabSeverity').value;
     const container = document.getElementById('rehabResult');
     if (!zone || !path || !REHAB_DATA[zone]?.[path]) { container.style.display = 'none'; return; }
     const plan = REHAB_DATA[zone][path];
+
+    // Adjust sessions by severity
+    const sevMultiplier = severity === 'leve' ? 0.7 : severity === 'severo' ? 1.4 : 1;
+    const sevLabel = severity === 'leve' ? '🟢 Leve' : severity === 'severo' ? '🔴 Severo' : '🟡 Moderado';
+    const sessParts = plan.sessions.split('-');
+    const sessMin = Math.round(parseInt(sessParts[0]) * sevMultiplier);
+    const sessMax = Math.round(parseInt(sessParts[1] || sessParts[0]) * sevMultiplier);
+    const adjSessions = sessMin + '-' + sessMax;
+
+    // Duration may increase for severe
+    const durMin = parseInt(plan.duration);
+    const adjDuration = severity === 'severo' ? (durMin + 10) + ' min' : severity === 'leve' ? (durMin - 5) + ' min' : plan.duration;
+
     container.style.display = 'block';
     container.innerHTML = `
       <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
         <div style="background:linear-gradient(135deg,var(--primary),#0F6E56);padding:20px 24px;color:#fff;">
-          <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:1.5px;opacity:.6;margin-bottom:4px;">Plan sugerido</div>
-          <div style="font-size:1.1rem;font-weight:700;">${path}</div>
-          <div style="display:flex;gap:20px;margin-top:12px;">
-            <div><div style="font-size:1.2rem;font-weight:700;">${plan.sessions}</div><div style="font-size:.7rem;opacity:.6;">Sesiones</div></div>
-            <div><div style="font-size:1.2rem;font-weight:700;">${plan.duration}</div><div style="font-size:.7rem;opacity:.6;">Por sesión</div></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:1.5px;opacity:.6;margin-bottom:4px;">Plan sugerido</div>
+              <div style="font-size:1.1rem;font-weight:700;">${path}</div>
+            </div>
+            <div style="background:rgba(255,255,255,.15);padding:6px 14px;border-radius:16px;font-size:.78rem;font-weight:600;">${sevLabel}</div>
+          </div>
+          <div style="display:flex;gap:20px;margin-top:14px;">
+            <div><div style="font-size:1.3rem;font-weight:700;">${adjSessions}</div><div style="font-size:.7rem;opacity:.6;">Sesiones</div></div>
+            <div><div style="font-size:1.3rem;font-weight:700;">${adjDuration}</div><div style="font-size:.7rem;opacity:.6;">Por sesión</div></div>
+            <div><div style="font-size:1.3rem;font-weight:700;">${Math.round(sessMax / 2.5)}</div><div style="font-size:.7rem;opacity:.6;">Semanas est.</div></div>
           </div>
         </div>
         <div style="padding:20px 24px;">
-          <h4 style="font-size:.85rem;font-weight:600;color:var(--primary);margin-bottom:12px;">Fases de rehabilitación</h4>
-          ${plan.phases.map(p => `<div style="padding:10px 14px;background:var(--bg);border-radius:var(--radius-sm);margin-bottom:8px;font-size:.85rem;color:var(--text);line-height:1.5;">${p}</div>`).join('')}
-          <h4 style="font-size:.85rem;font-weight:600;color:var(--primary);margin-top:16px;margin-bottom:12px;">Ejercicios recomendados</h4>
+          <h4 style="font-size:.85rem;font-weight:600;color:var(--primary);margin-bottom:12px;">📋 Fases de rehabilitación</h4>
+          ${plan.phases.map((p,i) => `<div style="padding:10px 14px;background:var(--bg);border-radius:var(--radius-sm);margin-bottom:8px;font-size:.85rem;color:var(--text);line-height:1.5;border-left:3px solid ${i===0?'#E74C3C':i===1?'#F39C12':'#8DC63F'};">${p}</div>`).join('')}
+          <h4 style="font-size:.85rem;font-weight:600;color:var(--primary);margin-top:16px;margin-bottom:12px;">💪 Ejercicios recomendados</h4>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             ${plan.exercises.map(e => `<div style="padding:10px 14px;background:var(--bg);border-radius:var(--radius-sm);font-size:.83rem;color:var(--text);display:flex;align-items:center;gap:8px;"><span style="color:#8DC63F;">✓</span> ${e}</div>`).join('')}
           </div>
-          <p style="font-size:.72rem;color:var(--text-muted);margin-top:16px;font-style:italic;">⚠️ Este plan es una referencia general. Cada paciente requiere evaluación individual y adaptación del protocolo.</p>
+          ${plan.contra ? `<div style="margin-top:16px;padding:12px 14px;background:rgba(231,76,60,.06);border:1px solid rgba(231,76,60,.15);border-radius:var(--radius-sm);">
+            <div style="font-size:.78rem;font-weight:600;color:#E74C3C;margin-bottom:4px;">⚠️ Contraindicaciones</div>
+            <div style="font-size:.82rem;color:var(--text);line-height:1.5;">${plan.contra}</div>
+          </div>` : ''}
+          <p style="font-size:.72rem;color:var(--text-muted);margin-top:16px;font-style:italic;">⚠️ Este plan es una referencia general. Cada paciente requiere evaluación individual. ${severity === 'severo' ? 'En casos severos, considerar derivación a especialista.' : ''}</p>
         </div>
       </div>`;
   }
@@ -2715,36 +2777,42 @@
 
   function renderAtlas() {
     const container = document.getElementById('atlasBody');
-    // Improved SVG body
+    const v = atlasView;
+    const frontLabel = v === 'front' ? 'Vista Frontal' : 'Vista Posterior';
     let svg = `<svg viewBox="0 0 120 260" style="width:100%;max-width:220px;" xmlns="http://www.w3.org/2000/svg">
+      <text x="60" y="258" text-anchor="middle" font-size="7" fill="var(--text-muted)">${frontLabel}</text>
       <!-- Head -->
-      <ellipse cx="60" cy="22" rx="14" ry="16" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" data-zone="head" onclick="showMuscle('head')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(231,76,60,.15)';this.style.stroke='#E74C3C'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
-      <!-- Neck -->
-      <rect x="52" y="38" width="16" height="12" rx="4" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" data-zone="head" onclick="showMuscle('head')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(231,76,60,.15)';this.style.stroke='#E74C3C'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <ellipse cx="60" cy="22" rx="14" ry="16" fill="none" stroke="var(--border)" stroke-width="1.5" onclick="showMuscle('head')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(231,76,60,.15)';this.style.stroke='#E74C3C'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <rect x="52" y="38" width="16" height="12" rx="4" fill="none" stroke="var(--border)" stroke-width="1.5" onclick="showMuscle('head')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(231,76,60,.15)';this.style.stroke='#E74C3C'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
       <!-- Shoulders -->
-      <ellipse cx="30" cy="56" rx="16" ry="8" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('shoulders')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(52,152,219,.15)';this.style.stroke='#3498DB'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
-      <ellipse cx="90" cy="56" rx="16" ry="8" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('shoulders')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(52,152,219,.15)';this.style.stroke='#3498DB'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
-      <!-- Chest -->
-      <rect x="38" y="52" width="44" height="28" rx="6" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('chest')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(46,204,113,.15)';this.style.stroke='#2ECC71'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <ellipse cx="30" cy="56" rx="16" ry="8" fill="none" stroke="var(--border)" stroke-width="1.5" onclick="showMuscle('shoulders')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(52,152,219,.15)';this.style.stroke='#3498DB'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <ellipse cx="90" cy="56" rx="16" ry="8" fill="none" stroke="var(--border)" stroke-width="1.5" onclick="showMuscle('shoulders')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(52,152,219,.15)';this.style.stroke='#3498DB'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <!-- Torso -->
+      <rect x="38" y="52" width="44" height="28" rx="6" fill="none" stroke="var(--border)" stroke-width="1.5" onclick="showMuscle('${v==='front'?'chest':'back'}')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='${v==='front'?'rgba(46,204,113,.15)':'rgba(26,188,156,.15)'}';this.style.stroke='${v==='front'?'#2ECC71':'#1ABC9C'}'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <text x="60" y="70" text-anchor="middle" font-size="6" fill="var(--text-muted)" pointer-events="none">${v==='front'?'Pecho':'Espalda'}</text>
       <!-- Arms -->
-      <rect x="8" y="60" width="18" height="50" rx="8" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('arms')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(155,89,182,.15)';this.style.stroke='#9B59B6'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
-      <rect x="94" y="60" width="18" height="50" rx="8" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('arms')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(155,89,182,.15)';this.style.stroke='#9B59B6'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <rect x="8" y="60" width="18" height="50" rx="8" fill="none" stroke="var(--border)" stroke-width="1.5" onclick="showMuscle('arms')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(155,89,182,.15)';this.style.stroke='#9B59B6'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <rect x="94" y="60" width="18" height="50" rx="8" fill="none" stroke="var(--border)" stroke-width="1.5" onclick="showMuscle('arms')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(155,89,182,.15)';this.style.stroke='#9B59B6'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
       <!-- Core -->
-      <rect x="40" y="80" width="40" height="30" rx="4" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('core')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(243,156,18,.15)';this.style.stroke='#F39C12'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <rect x="40" y="80" width="40" height="30" rx="4" fill="none" stroke="var(--border)" stroke-width="1.5" onclick="showMuscle('core')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(243,156,18,.15)';this.style.stroke='#F39C12'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <text x="60" y="98" text-anchor="middle" font-size="6" fill="var(--text-muted)" pointer-events="none">${v==='front'?'Abdomen':'Core'}</text>
       <!-- Hip -->
-      <ellipse cx="60" cy="120" rx="26" ry="14" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('hip')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(230,126,34,.15)';this.style.stroke='#E67E22'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <ellipse cx="60" cy="120" rx="26" ry="14" fill="none" stroke="var(--border)" stroke-width="1.5" onclick="showMuscle('hip')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(230,126,34,.15)';this.style.stroke='#E67E22'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <text x="60" y="123" text-anchor="middle" font-size="6" fill="var(--text-muted)" pointer-events="none">${v==='front'?'Cadera':'Glúteos'}</text>
       <!-- Thighs -->
-      <rect x="36" y="132" width="18" height="45" rx="8" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('thigh')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(41,128,185,.15)';this.style.stroke='#2980B9'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
-      <rect x="66" y="132" width="18" height="45" rx="8" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('thigh')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(41,128,185,.15)';this.style.stroke='#2980B9'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <rect x="36" y="132" width="18" height="45" rx="8" fill="none" stroke="var(--border)" stroke-width="1.5" onclick="showMuscle('thigh')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(41,128,185,.15)';this.style.stroke='#2980B9'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <rect x="66" y="132" width="18" height="45" rx="8" fill="none" stroke="var(--border)" stroke-width="1.5" onclick="showMuscle('thigh')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(41,128,185,.15)';this.style.stroke='#2980B9'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <text x="60" y="158" text-anchor="middle" font-size="6" fill="var(--text-muted)" pointer-events="none">${v==='front'?'Cuádriceps':'Isquiotibiales'}</text>
       <!-- Knees -->
-      <circle cx="45" cy="180" r="7" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('knee')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(192,57,43,.15)';this.style.stroke='#C0392B'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
-      <circle cx="75" cy="180" r="7" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('knee')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(192,57,43,.15)';this.style.stroke='#C0392B'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <circle cx="45" cy="180" r="7" fill="none" stroke="var(--border)" stroke-width="1.5" onclick="showMuscle('knee')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(192,57,43,.15)';this.style.stroke='#C0392B'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <circle cx="75" cy="180" r="7" fill="none" stroke="var(--border)" stroke-width="1.5" onclick="showMuscle('knee')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(192,57,43,.15)';this.style.stroke='#C0392B'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
       <!-- Lower legs -->
-      <rect x="38" y="188" width="14" height="40" rx="6" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('leg')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(142,68,173,.15)';this.style.stroke='#8E44AD'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
-      <rect x="68" y="188" width="14" height="40" rx="6" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('leg')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(142,68,173,.15)';this.style.stroke='#8E44AD'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <rect x="38" y="188" width="14" height="40" rx="6" fill="none" stroke="var(--border)" stroke-width="1.5" onclick="showMuscle('leg')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(142,68,173,.15)';this.style.stroke='#8E44AD'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <rect x="68" y="188" width="14" height="40" rx="6" fill="none" stroke="var(--border)" stroke-width="1.5" onclick="showMuscle('leg')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(142,68,173,.15)';this.style.stroke='#8E44AD'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <text x="60" y="212" text-anchor="middle" font-size="6" fill="var(--text-muted)" pointer-events="none">${v==='front'?'Tibiales':'Gemelos'}</text>
       <!-- Feet -->
-      <ellipse cx="45" cy="235" rx="10" ry="5" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('foot')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(22,160,133,.15)';this.style.stroke='#16A085'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
-      <ellipse cx="75" cy="235" rx="10" ry="5" fill="none" stroke="var(--border)" stroke-width="1.5" class="atlas-zone" onclick="showMuscle('foot')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(22,160,133,.15)';this.style.stroke='#16A085'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <ellipse cx="45" cy="235" rx="10" ry="5" fill="none" stroke="var(--border)" stroke-width="1.5" onclick="showMuscle('foot')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(22,160,133,.15)';this.style.stroke='#16A085'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
+      <ellipse cx="75" cy="235" rx="10" ry="5" fill="none" stroke="var(--border)" stroke-width="1.5" onclick="showMuscle('foot')" style="cursor:pointer;transition:all .3s;" onmouseover="this.style.fill='rgba(22,160,133,.15)';this.style.stroke='#16A085'" onmouseout="this.style.fill='none';this.style.stroke='var(--border)'"/>
     </svg>
     <p style="font-size:.72rem;color:var(--text-muted);margin-top:8px;">Pasa el cursor o haz clic en una zona</p>`;
     container.innerHTML = svg;
@@ -2753,6 +2821,21 @@
   function showMuscle(id) {
     const m = ATLAS_MUSCLES.find(x => x.id === id);
     if (!m) return;
+    // Exercises per zone
+    const EXERCISES = {
+      head: ['Flexión craneocervical (chin tucks)','Retracción cervical','Stretching de trapecio superior','Isométricos multidireccionales','Rotación cervical activa','Estabilización con theraband'],
+      shoulders: ['Péndulos de Codman','Rotación externa con banda','Elevación frontal/lateral','Press militar ligero','Ejercicios de estabilización escapular','Face pulls con banda'],
+      chest: ['Push-ups (variaciones)','Aperturas con banda/mancuernas','Press de pecho','Stretching pectoral en puerta','Protracción escapular','Serratus punches'],
+      arms: ['Curl de bíceps','Extensión de tríceps','Pronación/supinación con peso','Flexión de muñeca','Extensión de muñeca','Agarre con dinamómetro'],
+      core: ['Plancha frontal y lateral','Bird-dog','Dead bug','Puente glúteo','Pallof press','Respiración diafragmática'],
+      back: ['Remo con banda','Superman','Cat-camel','Extensión lumbar en prono','Pull-apart con banda','Retracción escapular'],
+      hip: ['Clamshell','Puente glúteo unilateral','Monster walks con banda','Sentadilla profunda','Hip hinge','Stretching de psoas'],
+      thigh: ['Sentadilla','Peso muerto rumano','Nordic hamstring curl','Step-ups','Extensión de rodilla','Curl de pierna'],
+      knee: ['Mini sentadillas controladas','Equilibrio unipodal','Step-down excéntrico','Prensa de pierna','Deslizamientos en pared','Propiocepción en bosu'],
+      leg: ['Elevación de talones','Excéntricos de Alfredson','Dorsiflexión con banda','Caminata en puntas/talones','Equilibrio en superficie inestable','Towel scrunches'],
+      foot: ['Towel curls con los dedos','Short foot exercise','Equilibrio descalzo','Rodillo bajo fascia plantar','Inversión/eversión con banda','Marcha en superficies irregulares']
+    };
+    const exList = EXERCISES[id] || [];
     document.getElementById('atlasInfo').innerHTML = `
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
         <div style="width:12px;height:12px;border-radius:50%;background:${m.color};flex-shrink:0;"></div>
@@ -2770,10 +2853,50 @@
         <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:#E74C3C;font-weight:600;margin-bottom:8px;">🩹 Lesiones comunes</div>
         <p style="font-size:.86rem;color:var(--text);line-height:1.6;background:var(--bg);padding:12px;border-radius:var(--radius-sm);">${m.injuries}</p>
       </div>
-      <div>
+      <div style="margin-bottom:18px;">
         <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:#8E44AD;font-weight:600;margin-bottom:8px;">📋 Tests de evaluación</div>
         <p style="font-size:.86rem;color:var(--text);line-height:1.6;background:var(--bg);padding:12px;border-radius:var(--radius-sm);">${m.tests}</p>
+      </div>
+      <div>
+        <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:#F39C12;font-weight:600;margin-bottom:8px;">💪 Ejercicios recomendados</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          ${exList.map(e => `<div style="font-size:.82rem;color:var(--text);background:var(--bg);padding:8px 12px;border-radius:var(--radius-sm);display:flex;align-items:center;gap:6px;"><span style="color:#8DC63F;flex-shrink:0;">✓</span>${e}</div>`).join('')}
+        </div>
       </div>`;
+  }
+
+  // Atlas search
+  function searchAtlas() {
+    const q = (document.getElementById('atlasSearch')?.value || '').toLowerCase();
+    const container = document.getElementById('atlasSearchResults');
+    if (!q || q.length < 2) { container.style.display = 'none'; return; }
+    const results = ATLAS_MUSCLES.filter(m =>
+      m.name.toLowerCase().includes(q) || m.muscles.toLowerCase().includes(q) || m.injuries.toLowerCase().includes(q)
+    );
+    if (results.length === 0) {
+      container.style.display = 'block';
+      container.innerHTML = '<div style="padding:12px;color:var(--text-muted);font-size:.85rem;">No se encontraron resultados</div>';
+      return;
+    }
+    container.style.display = 'block';
+    container.innerHTML = results.map(m => `
+      <div onclick="showMuscle('${m.id}');document.getElementById('atlasSearch').value='';document.getElementById('atlasSearchResults').style.display='none';" style="padding:10px 14px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:6px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .2s;" onmouseover="this.style.borderColor='${m.color}'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="width:10px;height:10px;border-radius:50%;background:${m.color};flex-shrink:0;"></div>
+        <div><div style="font-size:.88rem;font-weight:600;color:var(--text);">${m.name}</div><div style="font-size:.72rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px;">${m.muscles.substring(0,60)}...</div></div>
+      </div>`).join('');
+  }
+
+  // Atlas view tabs
+  let atlasView = 'front';
+  function switchAtlasView(view) {
+    atlasView = view;
+    document.getElementById('atlasTabFront').style.background = view === 'front' ? 'var(--primary)' : 'var(--bg)';
+    document.getElementById('atlasTabFront').style.color = view === 'front' ? '#fff' : 'var(--text)';
+    document.getElementById('atlasTabFront').style.borderColor = view === 'front' ? 'var(--primary)' : 'var(--border)';
+    document.getElementById('atlasTabBack').style.background = view === 'back' ? 'var(--primary)' : 'var(--bg)';
+    document.getElementById('atlasTabBack').style.color = view === 'back' ? '#fff' : 'var(--text)';
+    document.getElementById('atlasTabBack').style.borderColor = view === 'back' ? 'var(--primary)' : 'var(--border)';
+    renderAtlas();
   }
 
   // ===== GLOSARIO =====
