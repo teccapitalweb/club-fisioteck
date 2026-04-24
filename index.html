@@ -31,6 +31,12 @@
     }
 
     * { margin:0; padding:0; box-sizing:border-box; }
+    /* Scrollbar */
+    ::-webkit-scrollbar { width:8px; }
+    ::-webkit-scrollbar-track { background:#0B1A30; }
+    ::-webkit-scrollbar-thumb { background:#1565C0; border-radius:4px; }
+    ::-webkit-scrollbar-thumb:hover { background:#1E88E5; }
+    html { scrollbar-color:#1565C0 #0B1A30; }
     body {
       font-family: 'Outfit', sans-serif;
       background: var(--bg);
@@ -2370,7 +2376,22 @@
       const comp = (prog.completed || []).length;
       if (total > 0 && comp < total) { featCourse = c; break; }
     }
-    if (!featCourse && allC.length > 0) featCourse = allC[0];
+    if (!featCourse && allC.length > 0) {
+      // Pick first UNLOCKED course
+      const today2 = new Date().toISOString().split('T')[0];
+      const regDate2 = userStartDate ? new Date(userStartDate + 'T00:00:00') : new Date();
+      const daysSince2 = Math.floor((new Date() - regDate2) / (1000 * 60 * 60 * 24));
+      const userBased2 = allC.filter(c => !c.availableDate).sort((a,b) => (a.date||'').localeCompare(b.date||''));
+      for (const c of allC) {
+        if (c.availableDate && c.availableDate > today2) continue;
+        if (!c.availableDate) {
+          const idx2 = userBased2.findIndex(ub => ub.id === c.id);
+          if (idx2 >= 0 && daysSince2 < idx2 * 15) continue;
+        }
+        featCourse = c;
+        break;
+      }
+    }
     if (featCourse) {
       const prog = getCourseProgress(featCourse.id);
       const total = (featCourse.lessons || []).length;
@@ -4117,6 +4138,29 @@
   function openCourseDetail(courseId) {
     if (!memberIsPaid) { showPaywallOverlay(); return; }
     const course = siteData.courses.find(c => c.id === courseId);
+    if (!course) return;
+
+    // Check if course is locked by date
+    const today = new Date().toISOString().split('T')[0];
+    const now = new Date();
+    if (course.availableDate && course.availableDate > today) {
+      const daysLeft = Math.ceil((new Date(course.availableDate+'T00:00:00') - now)/(1000*60*60*24));
+      showToast('🔒 Este curso se abre en ' + daysLeft + ' días');
+      return;
+    }
+    // Check user-based unlock
+    if (!course.availableDate) {
+      const regDate = userStartDate ? new Date(userStartDate + 'T00:00:00') : new Date();
+      const daysSinceReg = Math.floor((now - regDate) / (1000 * 60 * 60 * 24));
+      const allUserBased = siteData.courses.filter(c => !c.availableDate).sort((a,b) => (a.date||'').localeCompare(b.date||''));
+      const idx = allUserBased.findIndex(c => c.id === courseId);
+      const unlockDays = idx * 15;
+      if (daysSinceReg < unlockDays) {
+        const daysLeft = unlockDays - daysSinceReg;
+        showToast('🔒 Este curso se abre en ' + daysLeft + ' días');
+        return;
+      }
+    }
     if (!course) return;
     currentCourseId = courseId;
     const thumbUrl = course.thumbnail ? driveImageUrl(course.thumbnail) : '';
