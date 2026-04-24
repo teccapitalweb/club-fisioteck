@@ -1,7 +1,7 @@
 {
   "stats": {
     "courses": 6,
-    "pdfs": 6,
+    "pdfs": 7,
     "live": 3,
     "members": 87
   },
@@ -115,6 +115,17 @@
     }
   ],
   "pdfs": [
+    {
+      "id": 1777069032391,
+      "title": "FISIOTERAPIA ",
+      "desc": "PILATES ",
+      "category": "fisioterapia",
+      "size": "3.2 MB",
+      "date": "2026-04-24",
+      "fileUrl": "file:///C:/Users/Lenovo/Downloads/Formulario%20de%20evaluacio%CC%81n%20para%20cli%CC%81nica%20(2)%20(1).pdf",
+      "thumbnail": "",
+      "type": "pdf"
+    },
     {
       "id": 1777068798406,
       "title": "FISIOTERAPIA ",
