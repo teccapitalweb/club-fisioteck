@@ -2277,6 +2277,7 @@
       });
   }
   async function cancelSubscription() {
+    if (!memberIsPaid) { showPaywallOverlay(); return; }
     const user = auth.currentUser;
     if (!user) return;
     if(!confirm('¿Estás seguro de que quieres cancelar tu suscripción? Perderás acceso a todo el contenido exclusivo al finalizar tu período actual.')) return;
@@ -2578,6 +2579,7 @@
   }
 
   function openNewPostModal() {
+    if (!memberIsPaid) { showPaywallOverlay(); return; }
     document.getElementById('postTitle').value = '';
     document.getElementById('postBody').value = '';
     document.getElementById('postCategory').value = 'general';
@@ -2612,6 +2614,7 @@
   }
 
   async function openThread(postId) {
+    if (!memberIsPaid) { showPaywallOverlay(); return; }
     currentThreadId = postId;
     const post = forumPosts.find(p => p.id === postId);
     if (!post) return;
@@ -2708,6 +2711,7 @@
   }
 
   async function submitReply() {
+    if (!memberIsPaid) { showPaywallOverlay(); return; }
     const user = auth.currentUser;
     if (!user) { showToast('Inicia sesión para responder'); return; }
     const body = document.getElementById('replyBody').value.trim();
@@ -2845,6 +2849,7 @@
   }
 
   function showRehabPlan() {
+    if (!memberIsPaid) { showPaywallOverlay(); return; }
     const zone = document.getElementById('rehabZone').value;
     const path = document.getElementById('rehabPathology').value;
     const severity = document.getElementById('rehabSeverity').value;
@@ -2956,6 +2961,7 @@
   }
 
   function showMuscle(id) {
+    if (!memberIsPaid) { showPaywallOverlay(); return; }
     const m = ATLAS_MUSCLES.find(x => x.id === id);
     if (!m) return;
     // Exercises per zone
@@ -3186,6 +3192,7 @@
   };
 
   function showROM() {
+    if (!memberIsPaid) { showPaywallOverlay(); return; }
     const joint = document.getElementById('romJoint').value;
     const container = document.getElementById('romResult');
     if (!joint || !ROM_DATA[joint]) { container.innerHTML = ''; return; }
@@ -3225,6 +3232,7 @@
   }
 
   async function saveEVA() {
+    if (!memberIsPaid) { showPaywallOverlay(); return; }
     const user = auth.currentUser;
     if (!user) { showToast('Inicia sesión'); return; }
     const patient = document.getElementById('evaPatient').value.trim();
@@ -3322,6 +3330,7 @@
   }
 
   function setCustomTimer() {
+    if (!memberIsPaid) { showPaywallOverlay(); return; }
     const mins = parseInt(document.getElementById('customMinutes').value) || 10;
     resetTimer();
     timerSeconds = mins * 60;
@@ -3342,6 +3351,7 @@
   }
 
   function startTimer() {
+    if (!memberIsPaid) { showPaywallOverlay(); return; }
     if (timerRunning || timerSeconds <= 0) return;
     timerRunning = true;
     document.getElementById('timerStartBtn').textContent = '⏵ Corriendo...';
@@ -3449,6 +3459,7 @@
       </div>`;
   }
   function openArticle(id) {
+    if (!memberIsPaid) { showPaywallOverlay(); return; }
     const article = (siteData.news || []).find(n => String(n.id) === String(id));
     if (!article) return;
 
@@ -3719,6 +3730,7 @@
   }
 
   async function markLessonComplete(courseId, lessonIndex) {
+    if (!memberIsPaid) { showPaywallOverlay(); return; }
     const progress = getCourseProgress(courseId);
     if (!progress.completed.includes(lessonIndex)) {
       progress.completed.push(lessonIndex);
@@ -3906,6 +3918,7 @@
   }
   // ===== CERTIFICATE GENERATION =====
   async function generateCertificate(courseId) {
+    if (!memberIsPaid) { showPaywallOverlay(); return; }
     try {
       const course = siteData.courses.find(c => c.id === courseId);
       if (!course) { showToast('Curso no encontrado'); return; }
