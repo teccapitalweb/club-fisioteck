@@ -799,6 +799,18 @@
   <!-- ===== MAIN ===== -->
   <main class="main-content">
 
+    <!-- EXPLORATION MODE BANNER -->
+    <div id="explorationBanner" style="display:none;background:linear-gradient(135deg,#1565C0,#0D47A1);border-radius:12px;padding:14px 24px;margin-bottom:20px;display:none;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;animation:fadeIn .4s ease;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:1.1rem;">🔒</div>
+        <div>
+          <div style="color:#fff;font-weight:600;font-size:.9rem;">Modo exploración · Suscríbete para desbloquear todo</div>
+          <div style="color:rgba(255,255,255,.6);font-size:.78rem;">Puedes navegar pero no acceder a cursos, webinars, foro y herramientas sin membresía.</div>
+        </div>
+      </div>
+      <button onclick="showPaywallOverlay()" style="padding:10px 24px;border-radius:8px;background:#fff;color:#1565C0;border:none;font-family:inherit;font-size:.85rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .25s ease;" onmouseover="this.style.background='#E3F2FD'" onmouseout="this.style.background='#fff'">Suscribirme</button>
+    </div>
+
     <!-- HOME -->
     <section class="section active" id="page-home">
       <!-- GREETING -->
@@ -1867,6 +1879,7 @@
         document.getElementById('splash-screen').classList.add('hidden');
         memberIsPaid = false;
         loadUserProfile();
+        showExplorationBanner();
         showToast('¡Cuenta creada! Explora el club y elige tu plan para desbloquear todo el contenido.');
       })
       .catch(err => {
@@ -1958,6 +1971,7 @@
           document.getElementById('splash-screen').classList.add('hidden');
           memberIsPaid = false;
           loadUserProfile();
+          showExplorationBanner();
           showToast('¡Cuenta creada! Explora el club y elige tu plan para desbloquear todo el contenido.');
         } else {
           // Existing user — check status
@@ -1966,11 +1980,13 @@
           document.getElementById('splash-screen').classList.add('hidden');
           if (st === 'active' || st === 'paid') {
             memberIsPaid = true;
+            hideExplorationBanner();
             loadUserProfile();
             showToast('¡Bienvenido, ' + (user.displayName || '').split(' ')[0] + '!');
           } else if (st === 'registered') {
             memberIsPaid = false;
             loadUserProfile();
+            showExplorationBanner();
           } else {
             document.getElementById('inactiveScreen').style.display = 'flex';
           }
@@ -4511,8 +4527,6 @@
   // ===== NAVIGATION =====
   // ===== PAYWALL STATE =====
   let memberIsPaid = false;
-  const FREE_PAGES = ['home', 'account', 'settings'];
-  const BLOCKED_PAGES = ['library', 'courses-live', 'pdfs', 'news', 'rehab-calc', 'atlas', 'glossary', 'rom', 'eva', 'timer', 'community', 'forum', 'discount', 'achievements', 'subscription', 'notifications', 'course-detail'];
 
   function showPaywallOverlay() {
     document.getElementById('paywallOverlay').style.display = 'flex';
@@ -4520,14 +4534,16 @@
   function closePaywallOverlay() {
     document.getElementById('paywallOverlay').style.display = 'none';
   }
+  function showExplorationBanner() {
+    const banner = document.getElementById('explorationBanner');
+    if (banner) banner.style.display = 'flex';
+  }
+  function hideExplorationBanner() {
+    const banner = document.getElementById('explorationBanner');
+    if (banner) banner.style.display = 'none';
+  }
 
   function showPage(page) {
-    // If user hasn't paid and tries to access a blocked page, show paywall overlay
-    if (!memberIsPaid && BLOCKED_PAGES.includes(page)) {
-      showPaywallOverlay();
-      return;
-    }
-
     // Reset course detail if navigating away
     document.getElementById('page-course-detail').style.display = 'none';
     document.getElementById('page-library').style.display = '';
@@ -4915,29 +4931,30 @@
             memberIsPaid = true;
             document.getElementById('splash-screen').classList.add('hidden');
             document.getElementById('inactiveScreen').style.display = 'none';
+            hideExplorationBanner();
             loadUserProfile();
           } else if (memberData && status === 'inactive') {
             document.getElementById('splash-screen').classList.add('hidden');
             document.getElementById('inactiveScreen').style.display = 'flex';
           } else if (memberData && status === 'registered') {
-            // Registered but hasn't paid — let them in but with paywall on sections
             memberIsPaid = false;
             document.getElementById('splash-screen').classList.add('hidden');
             document.getElementById('inactiveScreen').style.display = 'none';
             loadUserProfile();
+            showExplorationBanner();
           } else {
-            // No status or unknown — let them in but with paywall on sections
             memberIsPaid = false;
             document.getElementById('splash-screen').classList.add('hidden');
             document.getElementById('inactiveScreen').style.display = 'none';
             loadUserProfile();
+            showExplorationBanner();
           }
         } catch(e) {
-          // Firestore error — show paywall as safe fallback
           console.error('Auth state error:', e);
           memberIsPaid = false;
           document.getElementById('splash-screen').classList.add('hidden');
           loadUserProfile();
+          showExplorationBanner();
         }
       } else {
         document.getElementById('splash-screen').classList.remove('hidden');
