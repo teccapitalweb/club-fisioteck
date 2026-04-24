@@ -4666,6 +4666,11 @@
     const tbody = document.getElementById('paymentHistory');
     let rows = '';
 
+    if (!memberIsPaid) {
+      tbody.innerHTML = '<tr><td colspan="4" style="padding:20px;text-align:center;color:var(--text-muted);">Aún no tienes pagos registrados. Suscríbete para acceder al contenido.</td></tr>';
+      return;
+    }
+
     if (payments && payments.length > 0) {
       // Pagos reales desde Firebase
       const sorted = [...payments].sort((a,b) => new Date(b.date) - new Date(a.date));
@@ -4681,20 +4686,6 @@
           <td style="padding:10px 12px;"><span style="background:${statusBg};color:${statusColor};padding:3px 10px;border-radius:10px;font-size:.78rem;">${statusLabel}</span></td>
         </tr>`;
       });
-    } else {
-      // Fallback: generar historial estimado basado en startDate
-      const start = new Date(startDate);
-      const now = new Date();
-      let d = new Date(start);
-      while (d <= now) {
-        rows += `<tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:10px 12px;">${formatDate(d.toISOString().split('T')[0])}</td>
-          <td style="padding:10px 12px;">Membresía mensual</td>
-          <td style="padding:10px 12px;">$249.00 MXN</td>
-          <td style="padding:10px 12px;"><span style="background:rgba(34,197,94,.1);color:var(--success);padding:3px 10px;border-radius:10px;font-size:.78rem;">Pagado</span></td>
-        </tr>`;
-        d.setMonth(d.getMonth() + 1);
-      }
     }
     tbody.innerHTML = rows || '<tr><td colspan="4" style="padding:20px;text-align:center;color:var(--text-muted);">Sin historial de pagos</td></tr>';
   }
