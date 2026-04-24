@@ -2570,6 +2570,7 @@
   function closeNewPostModal() { document.getElementById('newPostModal').style.display = 'none'; }
 
   async function submitForumPost() {
+    if (!memberIsPaid) { showPaywallOverlay(); return; }
     const user = auth.currentUser;
     if (!user) { showToast('Inicia sesión para publicar'); return; }
     const title = document.getElementById('postTitle').value.trim();
@@ -4085,6 +4086,7 @@
   }
 
   function openCourseDetail(courseId) {
+    if (!memberIsPaid) { showPaywallOverlay(); return; }
     const course = siteData.courses.find(c => c.id === courseId);
     if (!course) return;
     currentCourseId = courseId;
@@ -4181,6 +4183,7 @@
     document.getElementById('page-course-detail').style.display = 'block';
   }
   function playLesson(index) {
+    if (!memberIsPaid) { showPaywallOverlay(); return; }
     const course = siteData.courses.find(c => c.id === currentCourseId);
     if (!course || !course.lessons || !course.lessons[index]) return;
     const progress = getCourseProgress(currentCourseId);
@@ -4473,6 +4476,7 @@
 
   // ===== ACTIONS =====
   function openVideo(title, url) {
+    if (!memberIsPaid) { showPaywallOverlay(); return; }
     document.getElementById('videoTitle').textContent = title;
     const container = document.getElementById('videoContainer');
     if (url) {
@@ -4488,6 +4492,7 @@
     document.getElementById('videoContainer').innerHTML = '';
   }
   function downloadPdf(url, title) {
+    if (!memberIsPaid) { showPaywallOverlay(); return; }
     if (url) {
       window.open(drivePdfUrl(url), '_blank');
     } else {
@@ -4495,6 +4500,7 @@
     }
   }
   function joinLive(link) {
+    if (!memberIsPaid) { showPaywallOverlay(); return; }
     if (link) {
       window.open(link, '_blank');
     } else {
