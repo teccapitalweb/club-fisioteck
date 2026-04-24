@@ -56,6 +56,7 @@
       animation: fadeUp .8s ease;
     }
     @keyframes fadeUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
     .splash-logo {
       font-family:inherit; font-size:2.8rem; font-weight:700; text-transform:uppercase; letter-spacing:4px;
       margin-bottom:8px; letter-spacing:-1px;
@@ -132,11 +133,6 @@
       .sidebar.open { transform:translateX(0); }
       .sidebar-overlay.open { display:block; }
       .main-content { margin-left:0 !important; padding-top:76px !important; }
-      /* FIX 1: Cronómetro ajustado en móvil */
-      #timerDisplay { font-size:2.8rem !important; letter-spacing:2px !important; }
-      #page-timer .card, #page-timer > div > div:first-child { padding:20px !important; }
-      /* FIX 2: Bloques Zona/Patología/Severidad parejos en móvil */
-      #rehabFilters { grid-template-columns:1fr !important; gap:14px !important; }
     }
 
     /* ===== MAIN CONTENT ===== */
@@ -1450,7 +1446,7 @@
         <h1 class="page-title">Calculadora de Rehabilitación</h1>
         <p class="page-subtitle">Consulta planes sugeridos según la patología y severidad</p>
       </div>
-      <div id="rehabFilters" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;">
         <div>
           <label style="font-size:.78rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">Zona del cuerpo</label>
           <select id="rehabZone" onchange="updateRehabPathologies()" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:.9rem;background:var(--bg-card);color:var(--text);">
@@ -1711,17 +1707,12 @@
   </div>
 </div>
 
-<!-- INACTIVE MEMBERSHIP SCREEN -->
-<!-- PAYWALL SCREEN — Registered but not paid -->
-<div id="paywallScreen" style="display:none;position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,var(--bg-dark) 0%,#0F2540 100%);align-items:center;justify-content:center;padding:20px;overflow-y:auto;">
-  <div style="text-align:center;color:#fff;max-width:520px;animation:fadeUp .6s ease;padding:40px 0;">
+<!-- PAYWALL OVERLAY — Appears over blocked sections -->
+<div id="paywallOverlay" style="display:none;position:fixed;inset:0;z-index:9997;background:rgba(15,26,42,.92);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px;overflow-y:auto;">
+  <div style="text-align:center;color:#fff;max-width:520px;animation:fadeUp .4s ease;padding:40px 0;">
     <div style="width:80px;height:80px;border-radius:50%;background:rgba(21,101,192,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.2rem;">🔒</div>
-    <h2 style="font-size:1.8rem;margin-bottom:6px;text-transform:uppercase;letter-spacing:3px;">¡Bienvenido, <span id="paywall-name">!</span>!</h2>
-    <p style="color:rgba(255,255,255,.55);font-size:.92rem;line-height:1.6;margin-bottom:28px;">Tu cuenta está lista. Elige un plan para activar tu membresía y acceder a todo el contenido exclusivo del Club FisioTeck.</p>
-    
-    <p style="color:#1565C0;font-size:.8rem;margin-bottom:18px;background:rgba(21,101,192,.1);padding:10px 16px;border-radius:8px;border:1px solid rgba(21,101,192,.2);display:inline-block;">
-      ⚠️ <strong>Importante:</strong> Al pagar en Shopify, usa el mismo correo: <strong id="paywall-email"></strong>
-    </p>
+    <h2 style="font-size:1.5rem;margin-bottom:6px;text-transform:uppercase;letter-spacing:3px;">Contenido exclusivo</h2>
+    <p style="color:rgba(255,255,255,.55);font-size:.92rem;line-height:1.6;margin-bottom:28px;">Suscríbete para desbloquear todos los cursos, herramientas clínicas, foro profesional, webinars y más.</p>
 
     <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;">
       <!-- PLAN MENSUAL -->
@@ -1729,9 +1720,9 @@
         <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.45);margin-bottom:8px;">Mensual</div>
         <div style="font-size:2.2rem;font-weight:700;color:#fff;margin-bottom:4px;letter-spacing:2px;">$249</div>
         <div style="font-size:.8rem;color:rgba(255,255,255,.4);margin-bottom:20px;">MXN / mes</div>
-        <a id="paywall-btn-mensual" href="#" onclick="event.preventDefault();openShopifyCheckout('45330898878518','2071691318',document.getElementById('paywall-email-hidden').value)" style="display:block;padding:12px;border-radius:10px;background:rgba(21,101,192,.15);color:#1565C0;font-family:inherit;font-size:.88rem;font-weight:600;text-decoration:none;border:1px solid rgba(21,101,192,.3);transition:all .25s ease;cursor:pointer;" onmouseover="this.style.background='#1565C0';this.style.color='#0F1A2A'" onmouseout="this.style.background='rgba(21,101,192,.15)';this.style.color='#1565C0'">
+        <button onclick="openStripeCheckout('mensual')" style="display:block;width:100%;padding:12px;border-radius:10px;background:rgba(21,101,192,.15);color:#1565C0;font-family:inherit;font-size:.88rem;font-weight:600;border:1px solid rgba(21,101,192,.3);cursor:pointer;transition:all .25s ease;" onmouseover="this.style.background='#1565C0';this.style.color='#0F1A2A'" onmouseout="this.style.background='rgba(21,101,192,.15)';this.style.color='#1565C0'">
           Elegir Mensual
-        </a>
+        </button>
       </div>
       <!-- PLAN ANUAL -->
       <div style="background:rgba(21,101,192,.08);border:2px solid #1565C0;border-radius:16px;padding:28px 24px;width:220px;text-align:center;position:relative;transition:all .3s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
@@ -1739,23 +1730,25 @@
         <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.45);margin-bottom:8px;">Anual</div>
         <div style="font-size:2.2rem;font-weight:700;color:#fff;margin-bottom:4px;letter-spacing:2px;">$1,999</div>
         <div style="font-size:.8rem;color:rgba(255,255,255,.4);margin-bottom:20px;">MXN / año</div>
-        <a id="paywall-btn-anual" href="#" onclick="event.preventDefault();openShopifyCheckout('45330971983926','2071724086',document.getElementById('paywall-email-hidden').value)" style="display:block;padding:12px;border-radius:10px;background:#1565C0;color:#0F1A2A;font-family:inherit;font-size:.88rem;font-weight:700;text-decoration:none;border:1px solid #1565C0;transition:all .25s ease;cursor:pointer;" onmouseover="this.style.background='#4285D6'" onmouseout="this.style.background='#1565C0'">
+        <button onclick="openStripeCheckout('anual')" style="display:block;width:100%;padding:12px;border-radius:10px;background:#1565C0;color:#0F1A2A;font-family:inherit;font-size:.88rem;font-weight:700;border:1px solid #1565C0;cursor:pointer;transition:all .25s ease;" onmouseover="this.style.background='#4285D6'" onmouseout="this.style.background='#1565C0'">
           Elegir Anual ⭐
-        </a>
+        </button>
       </div>
     </div>
 
-    <p style="color:rgba(255,255,255,.35);font-size:.78rem;margin-bottom:20px;">Después de pagar, regresa aquí y recarga la página. Tu acceso se activa automáticamente.</p>
-    <input type="hidden" id="paywall-email-hidden" value="">
-
-    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-      <button onclick="location.reload()" style="padding:10px 22px;border-radius:8px;background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.15);font-family:inherit;font-size:.85rem;cursor:pointer;transition:all .25s ease;" onmouseover="this.style.background='rgba(255,255,255,.15)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">🔄 Ya pagué, recargar</button>
-      <button onclick="auth.signOut().then(()=>location.reload())" style="padding:10px 22px;border-radius:8px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.1);font-family:inherit;font-size:.85rem;cursor:pointer;transition:all .25s ease;">Cerrar sesión</button>
-    </div>
+    <button onclick="closePaywallOverlay()" style="padding:10px 22px;border-radius:8px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.1);font-family:inherit;font-size:.85rem;cursor:pointer;transition:all .25s ease;" onmouseover="this.style.background='rgba(255,255,255,.15)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">← Seguir explorando</button>
   </div>
 </div>
 
-<!-- INACTIVE SCREEN -->
+<!-- STRIPE CHECKOUT MODAL -->
+<div id="stripeCheckoutModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:16px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;position:relative;">
+    <button onclick="closeStripeCheckout()" style="position:absolute;top:12px;right:16px;background:none;border:none;font-size:1.5rem;color:#666;cursor:pointer;z-index:2;">×</button>
+    <div id="stripeCheckoutContainer" style="padding:20px;min-height:400px;"></div>
+  </div>
+</div>
+
+<!-- INACTIVE MEMBERSHIP SCREEN (kept as-is) -->
 <div id="inactiveScreen" style="display:none;position:fixed;inset:0;z-index:9998;background:linear-gradient(135deg,var(--bg-dark) 0%,#0F2540 100%);align-items:center;justify-content:center;padding:20px;">
   <div style="text-align:center;color:#fff;max-width:440px;animation:fadeUp .6s ease;">
     <div style="width:80px;height:80px;border-radius:50%;background:rgba(239,68,68,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.2rem;">⚠️</div>
@@ -1872,8 +1865,9 @@
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         document.getElementById('splash-screen').classList.add('hidden');
-        showPaywall(name.split(' ')[0], email);
-        showToast('¡Cuenta creada! Ahora elige tu plan para activar tu membresía.');
+        memberIsPaid = false;
+        loadUserProfile();
+        showToast('¡Cuenta creada! Explora el club y elige tu plan para desbloquear todo el contenido.');
       })
       .catch(err => {
         let msg = 'Error al crear cuenta';
@@ -1888,34 +1882,54 @@
         toggleRegisterBtn();
       });
   }
-  function showPaywall(name, email) {
-    document.getElementById('paywall-name').textContent = name || '';
-    document.getElementById('paywall-email').textContent = email || '';
-    document.getElementById('paywall-email-hidden').value = email || '';
-    document.getElementById('paywallScreen').style.display = 'flex';
-    document.getElementById('inactiveScreen').style.display = 'none';
+  // ===== STRIPE EMBEDDED CHECKOUT =====
+  const WEBHOOK_URL = 'https://web-production-cd020.up.railway.app';
+  const STRIPE_PK = 'pk_test_51TMAchPBgqsOPfUYtBbalhoOLnnGz6LymFleli7OxTDbiK4FNYX0K82ispYDb39zKJQXevyMtIPetxVAvq9hhb5P005VGgxu99';
+  let stripeInstance = null;
+
+  async function openStripeCheckout(plan) {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    // Show checkout modal
+    document.getElementById('stripeCheckoutModal').style.display = 'flex';
+    document.getElementById('stripeCheckoutContainer').innerHTML = '<div style="text-align:center;padding:40px;"><div class="spinner" style="border:3px solid rgba(255,255,255,.1);border-top:3px solid #1565C0;border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite;margin:0 auto 16px;"></div><p style="color:rgba(255,255,255,.6);font-size:.9rem;">Preparando checkout...</p></div>';
+
+    try {
+      const res = await fetch(WEBHOOK_URL + '/api/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: plan, email: user.email, uid: user.uid })
+      });
+      const data = await res.json();
+      if (!data.clientSecret) throw new Error('No client secret');
+
+      // Load Stripe if not loaded
+      if (!stripeInstance) {
+        if (!window.Stripe) {
+          const s = document.createElement('script');
+          s.src = 'https://js.stripe.com/v3/';
+          document.head.appendChild(s);
+          await new Promise((resolve, reject) => { s.onload = resolve; s.onerror = reject; });
+        }
+        stripeInstance = Stripe(STRIPE_PK);
+      }
+
+      document.getElementById('stripeCheckoutContainer').innerHTML = '<div id="stripe-checkout-element" style="min-height:400px;"></div>';
+
+      const checkout = await stripeInstance.initEmbeddedCheckout({
+        clientSecret: data.clientSecret
+      });
+      checkout.mount('#stripe-checkout-element');
+    } catch(err) {
+      console.error('Stripe checkout error:', err);
+      document.getElementById('stripeCheckoutContainer').innerHTML = '<div style="text-align:center;padding:40px;"><p style="color:#EF4444;font-size:1rem;margin-bottom:16px;">Error al cargar el checkout</p><button onclick="closeStripeCheckout()" style="padding:10px 24px;border-radius:8px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);font-family:inherit;cursor:pointer;">Cerrar</button></div>';
+    }
   }
 
-  function openShopifyCheckout(variantId, sellingPlanId, email) {
-    var w = 520, h = 750;
-    var l = (screen.width - w) / 2, t = (screen.height - h) / 2;
-    var popup = window.open('about:blank', 'shopifyCheckout', 'width='+w+',height='+h+',left='+l+',top='+t+',scrollbars=yes,resizable=yes');
-    var returnTo = email ? '/checkout?checkout%5Bemail%5D=' + encodeURIComponent(email) : '/checkout';
-    if (popup) {
-      popup.document.write(
-        '<html><head><title>Procesando...</title></head><body style="display:flex;align-items:center;justify-content:center;height:100vh;margin:0;font-family:sans-serif;background:#f5f5f5;">' +
-        '<div style="text-align:center;"><p style="font-size:1.1rem;color:#333;">Redirigiendo al checkout...</p></div>' +
-        '<form id="shopifyForm" method="POST" action="https://pfueck-wm.myshopify.com/cart/add">' +
-        '<input type="hidden" name="id" value="' + variantId + '">' +
-        '<input type="hidden" name="quantity" value="1">' +
-        '<input type="hidden" name="selling_plan" value="' + sellingPlanId + '">' +
-        '<input type="hidden" name="return_to" value="' + returnTo + '">' +
-        '</form>' +
-        '<script>document.getElementById("shopifyForm").submit();<\/script>' +
-        '</body></html>'
-      );
-      popup.document.close();
-    }
+  function closeStripeCheckout() {
+    document.getElementById('stripeCheckoutModal').style.display = 'none';
+    document.getElementById('stripeCheckoutContainer').innerHTML = '';
   }
 
   function showRegError(msg) {
@@ -1942,18 +1956,21 @@
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           });
           document.getElementById('splash-screen').classList.add('hidden');
-          showPaywall((user.displayName || '').split(' ')[0], user.email);
-          showToast('¡Cuenta creada! Ahora elige tu plan para activar tu membresía.');
+          memberIsPaid = false;
+          loadUserProfile();
+          showToast('¡Cuenta creada! Explora el club y elige tu plan para desbloquear todo el contenido.');
         } else {
           // Existing user — check status
           const data = doc.data();
           const st = data.status || '';
           document.getElementById('splash-screen').classList.add('hidden');
           if (st === 'active' || st === 'paid') {
+            memberIsPaid = true;
             loadUserProfile();
             showToast('¡Bienvenido, ' + (user.displayName || '').split(' ')[0] + '!');
           } else if (st === 'registered') {
-            showPaywall((user.displayName || '').split(' ')[0], user.email);
+            memberIsPaid = false;
+            loadUserProfile();
           } else {
             document.getElementById('inactiveScreen').style.display = 'flex';
           }
@@ -2175,7 +2192,7 @@
     }
 
     const payMethod = userData.paymentMethod || 'Transferencia';
-    const payLabel = payMethod === 'shopify_payments' ? 'Shopify (Tarjeta)' : payMethod === 'manual' ? 'Transferencia' : payMethod;
+    const payLabel = payMethod === 'Stripe' ? 'Stripe (Tarjeta)' : payMethod === 'manual' ? 'Transferencia' : payMethod;
     document.getElementById('subPayment').textContent = payLabel;
 
     // Estado dinámico
@@ -4486,7 +4503,25 @@
   }
 
   // ===== NAVIGATION =====
+  // ===== PAYWALL STATE =====
+  let memberIsPaid = false;
+  const FREE_PAGES = ['home', 'account', 'settings'];
+  const BLOCKED_PAGES = ['library', 'courses-live', 'pdfs', 'news', 'rehab-calc', 'atlas', 'glossary', 'rom', 'eva', 'timer', 'community', 'forum', 'discount', 'achievements', 'subscription', 'notifications', 'course-detail'];
+
+  function showPaywallOverlay() {
+    document.getElementById('paywallOverlay').style.display = 'flex';
+  }
+  function closePaywallOverlay() {
+    document.getElementById('paywallOverlay').style.display = 'none';
+  }
+
   function showPage(page) {
+    // If user hasn't paid and tries to access a blocked page, show paywall overlay
+    if (!memberIsPaid && BLOCKED_PAGES.includes(page)) {
+      showPaywallOverlay();
+      return;
+    }
+
     // Reset course detail if navigating away
     document.getElementById('page-course-detail').style.display = 'none';
     document.getElementById('page-library').style.display = '';
@@ -4786,8 +4821,17 @@
 
   // ===== BOOT =====
   document.addEventListener('DOMContentLoaded', () => {
-    // Check for certificate verification
+    // Check for Stripe checkout return
     const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('session_id');
+    if (sessionId) {
+      // Clean URL
+      window.history.replaceState({}, '', window.location.pathname);
+      // Session completed — the webhook will update Firebase, just reload after a moment
+      setTimeout(() => location.reload(), 2000);
+    }
+
+    // Check for certificate verification
     const certParam = urlParams.get('cert');
     if (certParam && certParam.startsWith('FTCK-')) {
       document.getElementById('certVerifyId').textContent = certParam;
@@ -4853,43 +4897,45 @@
               await docRef.update({ status: 'inactive' });
               memberData.status = 'inactive';
               document.getElementById('splash-screen').classList.add('hidden');
-              document.getElementById('paywallScreen').style.display = 'none';
               document.getElementById('inactiveScreen').style.display = 'flex';
               return;
             }
             // Still within access period — allow
+            memberIsPaid = true;
             document.getElementById('splash-screen').classList.add('hidden');
             document.getElementById('inactiveScreen').style.display = 'none';
-            document.getElementById('paywallScreen').style.display = 'none';
             loadUserProfile();
           } else if (memberData && (status === 'active' || status === 'paid')) {
+            memberIsPaid = true;
             document.getElementById('splash-screen').classList.add('hidden');
             document.getElementById('inactiveScreen').style.display = 'none';
-            document.getElementById('paywallScreen').style.display = 'none';
             loadUserProfile();
           } else if (memberData && status === 'inactive') {
             document.getElementById('splash-screen').classList.add('hidden');
-            document.getElementById('paywallScreen').style.display = 'none';
             document.getElementById('inactiveScreen').style.display = 'flex';
           } else if (memberData && status === 'registered') {
-            // Registered but hasn't paid — show paywall
+            // Registered but hasn't paid — let them in but with paywall on sections
+            memberIsPaid = false;
             document.getElementById('splash-screen').classList.add('hidden');
-            showPaywall((memberData.name || user.displayName || '').split(' ')[0], memberData.email || user.email);
+            document.getElementById('inactiveScreen').style.display = 'none';
+            loadUserProfile();
           } else {
-            // No status or unknown — show paywall (block by default)
+            // No status or unknown — let them in but with paywall on sections
+            memberIsPaid = false;
             document.getElementById('splash-screen').classList.add('hidden');
-            showPaywall((user.displayName || '').split(' ')[0], user.email);
+            document.getElementById('inactiveScreen').style.display = 'none';
+            loadUserProfile();
           }
         } catch(e) {
           // Firestore error — show paywall as safe fallback
           console.error('Auth state error:', e);
+          memberIsPaid = false;
           document.getElementById('splash-screen').classList.add('hidden');
-          showPaywall((user.displayName || '').split(' ')[0], user.email);
+          loadUserProfile();
         }
       } else {
         document.getElementById('splash-screen').classList.remove('hidden');
         document.getElementById('inactiveScreen').style.display = 'none';
-        document.getElementById('paywallScreen').style.display = 'none';
       }
     });
     // Enter key on login
