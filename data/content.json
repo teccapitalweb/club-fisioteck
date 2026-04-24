@@ -1,7 +1,7 @@
 {
   "stats": {
     "courses": 6,
-    "pdfs": 7,
+    "pdfs": 8,
     "live": 3,
     "members": 87
   },
@@ -115,6 +115,17 @@
     }
   ],
   "pdfs": [
+    {
+      "id": 1777069511656,
+      "title": "Pediatria",
+      "desc": "Fisioterapia respiratoria",
+      "category": "fisioterapia",
+      "size": "3.2 Mb",
+      "date": "2026-04-24",
+      "fileUrl": "https://drive.google.com/file/d/1uVFW9OaYG0ADY3kmWn9GpzCShFa7eIys/view?usp=sharing",
+      "thumbnail": "",
+      "type": "pdf"
+    },
     {
       "id": 1777069032391,
       "title": "FISIOTERAPIA ",
