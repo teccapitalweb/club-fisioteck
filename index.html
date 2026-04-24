@@ -1758,6 +1758,44 @@
   </div>
 </div>
 
+<!-- CELEBRATION POPUP (after payment) -->
+<div id="celebrationPopup" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(11,26,48,.92);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px;overflow-y:auto;">
+  <canvas id="confettiCanvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:10001;"></canvas>
+  <div style="text-align:center;color:#fff;max-width:480px;animation:fadeUp .6s ease;position:relative;z-index:10002;padding:40px 0;">
+    <div style="font-size:3.5rem;margin-bottom:16px;">🎉</div>
+    <h2 style="font-size:1.8rem;margin-bottom:8px;letter-spacing:2px;">¡Felicidades!</h2>
+    <p style="color:#1565C0;font-size:1.1rem;font-weight:600;margin-bottom:20px;">Tu membresía está activa</p>
+    <p style="color:rgba(255,255,255,.6);font-size:.9rem;line-height:1.6;margin-bottom:28px;">Ahora tienes acceso completo a todo el Club FisioTeck</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left;margin-bottom:28px;">
+      <div style="background:rgba(21,101,192,.1);border:1px solid rgba(21,101,192,.2);border-radius:12px;padding:16px;">
+        <div style="font-size:1.4rem;margin-bottom:6px;">📚</div>
+        <div style="font-size:.85rem;font-weight:600;color:#fff;">Cursos Completos</div>
+        <div style="font-size:.75rem;color:rgba(255,255,255,.5);">Grabados y en vivo</div>
+      </div>
+      <div style="background:rgba(21,101,192,.1);border:1px solid rgba(21,101,192,.2);border-radius:12px;padding:16px;">
+        <div style="font-size:1.4rem;margin-bottom:6px;">🛠️</div>
+        <div style="font-size:.85rem;font-weight:600;color:#fff;">Herramientas Clínicas</div>
+        <div style="font-size:.75rem;color:rgba(255,255,255,.5);">Cronómetro, Atlas, EVA, ROM</div>
+      </div>
+      <div style="background:rgba(21,101,192,.1);border:1px solid rgba(21,101,192,.2);border-radius:12px;padding:16px;">
+        <div style="font-size:1.4rem;margin-bottom:6px;">💬</div>
+        <div style="font-size:.85rem;font-weight:600;color:#fff;">Foro Exclusivo</div>
+        <div style="font-size:.75rem;color:rgba(255,255,255,.5);">Comunidad profesional</div>
+      </div>
+      <div style="background:rgba(21,101,192,.1);border:1px solid rgba(21,101,192,.2);border-radius:12px;padding:16px;">
+        <div style="font-size:1.4rem;margin-bottom:6px;">🎓</div>
+        <div style="font-size:.85rem;font-weight:600;color:#fff;">Webinars + PDFs</div>
+        <div style="font-size:.75rem;color:rgba(255,255,255,.5);">Recursos exclusivos</div>
+      </div>
+    </div>
+
+    <button onclick="closeCelebration()" style="padding:14px 40px;border-radius:10px;background:#1565C0;color:#fff;border:none;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;transition:all .25s ease;letter-spacing:1px;" onmouseover="this.style.background='#1E88E5';this.style.transform='scale(1.05)'" onmouseout="this.style.background='#1565C0';this.style.transform='scale(1)'">
+      ¡Empezar a explorar! 🚀
+    </button>
+  </div>
+</div>
+
 <!-- STRIPE CHECKOUT MODAL -->
 <div id="stripeCheckoutModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px;">
   <div style="background:#fff;border-radius:16px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;position:relative;">
@@ -1949,6 +1987,69 @@
   function closeStripeCheckout() {
     document.getElementById('stripeCheckoutModal').style.display = 'none';
     document.getElementById('stripeCheckoutContainer').innerHTML = '';
+  }
+
+  // ===== CELEBRATION CONFETTI =====
+  function launchConfetti() {
+    const canvas = document.getElementById('confettiCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const colors = ['#1565C0', '#1E88E5', '#42A5F5', '#0D47A1', '#BBDEFB', '#fff', '#64B5F6', '#90CAF9'];
+    const confetti = [];
+    
+    for (let i = 0; i < 150; i++) {
+      confetti.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        w: Math.random() * 10 + 5,
+        h: Math.random() * 6 + 3,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        vx: (Math.random() - 0.5) * 4,
+        vy: Math.random() * 3 + 2,
+        rot: Math.random() * 360,
+        rotSpeed: (Math.random() - 0.5) * 8,
+        opacity: 1
+      });
+    }
+    
+    let frame = 0;
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let active = false;
+      confetti.forEach(c => {
+        if (c.opacity <= 0) return;
+        active = true;
+        c.x += c.vx;
+        c.y += c.vy;
+        c.rot += c.rotSpeed;
+        c.vy += 0.05;
+        if (frame > 120) c.opacity -= 0.008;
+        ctx.save();
+        ctx.translate(c.x, c.y);
+        ctx.rotate(c.rot * Math.PI / 180);
+        ctx.globalAlpha = c.opacity;
+        ctx.fillStyle = c.color;
+        ctx.fillRect(-c.w/2, -c.h/2, c.w, c.h);
+        ctx.restore();
+      });
+      frame++;
+      if (active) requestAnimationFrame(animate);
+    }
+    animate();
+  }
+
+  function showCelebration() {
+    document.getElementById('celebrationPopup').style.display = 'flex';
+    setTimeout(launchConfetti, 200);
+  }
+
+  function closeCelebration() {
+    document.getElementById('celebrationPopup').style.display = 'none';
+    const canvas = document.getElementById('confettiCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
   function showRegError(msg) {
@@ -4897,8 +4998,8 @@
     if (sessionId) {
       // Clean URL
       window.history.replaceState({}, '', window.location.pathname);
-      // Session completed — the webhook will update Firebase, just reload after a moment
-      setTimeout(() => location.reload(), 2000);
+      // Mark that we need to show celebration after auth loads
+      window._showCelebration = true;
     }
 
     // Check for certificate verification
@@ -4981,10 +5082,22 @@
             document.getElementById('inactiveScreen').style.display = 'none';
             hideExplorationBanner();
             loadUserProfile();
+            // Show celebration if returning from payment
+            if (window._showCelebration) {
+              window._showCelebration = false;
+              setTimeout(showCelebration, 800);
+            }
           } else if (memberData && status === 'inactive') {
             document.getElementById('splash-screen').classList.add('hidden');
             document.getElementById('inactiveScreen').style.display = 'flex';
           } else if (memberData && status === 'registered') {
+            // Check if returning from payment - webhook might not have processed yet
+            if (window._showCelebration) {
+              // Wait and retry
+              console.log('Payment may be processing, retrying in 3s...');
+              setTimeout(() => location.reload(), 3000);
+              return;
+            }
             memberIsPaid = false;
             document.getElementById('splash-screen').classList.add('hidden');
             document.getElementById('inactiveScreen').style.display = 'none';
