@@ -1,13 +1,220 @@
 {
   "stats": {
-    "courses": 0,
-    "pdfs": 0,
-    "live": 0,
+    "courses": 7,
+    "pdfs": 5,
+    "live": 3,
     "members": 87
   },
-  "courses": [],
-  "live": [],
-  "pdfs": [],
+  "courses": [
+    {
+      "id": 1776396508901,
+      "title": "Entrenamiento hipopresivo ",
+      "desc": "New Program ",
+      "category": "especializacion",
+      "date": "2026-04-17",
+      "badge": "Próximamente",
+      "thumbnail": "https://drive.google.com/file/d/1DvcA2GXv0oqiQHe-AUV7TOqC-tNS4ZGn/view?usp=drive_link",
+      "temarioImg": "",
+      "availableDate": "2026-04-19",
+      "lessons": [
+        {
+          "id": 1776396850347,
+          "title": "Clase 1",
+          "desc": "Super clase para iniciar :)",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/19SRAXPHjXajIWLlRt5p1Qm-kH_hMtd4H/view?usp=drive_link"
+        },
+        {
+          "id": 1776396850348,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/16JEBUdHAyOy8mMhZf45g1M69yRgdpXHz/view?usp=drive_link"
+        },
+        {
+          "id": 1776396850349,
+          "title": "Clase 3",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/13-R3pvVRxPdqA9UpFdWMDD6CWu64tyGF/view?usp=drive_link"
+        },
+        {
+          "id": 1776396850350,
+          "title": "Clase 4",
+          "desc": "Cuarta clase, lo mejor :)",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1dE9gD0AzIgb3JHfDUFfflZLrv2qaryqU/view?usp=drive_link"
+        },
+        {
+          "id": 1776396850351,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1cICH4mDans8nJNvMo3qHZ6oWs49Uu_vi/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "id": 1,
+      "title": "Fundamentos de Fisioterapia Deportiva",
+      "desc": "Aprende las bases del tratamiento deportivo profesional",
+      "category": "fisioterapia",
+      "duration": "2h 30min",
+      "date": "2026-04-01",
+      "badge": "Nuevo",
+      "videoUrl": "",
+      "thumbnail": "",
+      "type": "video"
+    },
+    {
+      "id": 2,
+      "title": "Anatomía Funcional del Miembro Superior",
+      "desc": "Estudio detallado de la anatomía aplicada",
+      "category": "anatomia",
+      "duration": "1h 45min",
+      "date": "2026-03-28",
+      "badge": "",
+      "videoUrl": "",
+      "thumbnail": "",
+      "type": "video"
+    },
+    {
+      "id": 3,
+      "title": "Rehabilitación Post-Quirúrgica de Rodilla",
+      "desc": "Protocolos actualizados de recuperación",
+      "category": "rehabilitacion",
+      "duration": "3h 10min",
+      "date": "2026-03-20",
+      "badge": "Popular",
+      "videoUrl": "",
+      "thumbnail": "",
+      "type": "video"
+    },
+    {
+      "id": 4,
+      "title": "Vendaje Neuromuscular Avanzado",
+      "desc": "Técnicas de kinesiotaping para profesionales",
+      "category": "especializacion",
+      "duration": "2h 00min",
+      "date": "2026-03-15",
+      "badge": "",
+      "videoUrl": "",
+      "thumbnail": "",
+      "type": "video"
+    },
+    {
+      "id": 5,
+      "title": "Electroterapia Clínica",
+      "desc": "Uso correcto de equipos de electroterapia",
+      "category": "fisioterapia",
+      "duration": "1h 50min",
+      "date": "2026-03-10",
+      "badge": "",
+      "videoUrl": "",
+      "thumbnail": "",
+      "type": "video"
+    },
+    {
+      "id": 6,
+      "title": "Pilates Terapéutico",
+      "desc": "Método Pilates aplicado a la rehabilitación",
+      "category": "rehabilitacion",
+      "duration": "2h 20min",
+      "date": "2026-03-05",
+      "badge": "Nuevo",
+      "videoUrl": "",
+      "thumbnail": "",
+      "type": "video"
+    }
+  ],
+  "live": [
+    {
+      "id": 101,
+      "title": "Masterclass: Punción Seca",
+      "desc": "Sesión en vivo con el Dr. García",
+      "category": "especializacion",
+      "date": "2026-04-15",
+      "time": "18:00",
+      "badge": "Próximamente",
+      "link": "",
+      "type": "live"
+    },
+    {
+      "id": 102,
+      "title": "Caso Clínico: Lumbalgia Crónica",
+      "desc": "Análisis en grupo",
+      "category": "rehabilitacion",
+      "date": "2026-04-20",
+      "time": "19:00",
+      "badge": "",
+      "link": "",
+      "type": "live"
+    },
+    {
+      "id": 103,
+      "title": "Q&A: Fisioterapia Pediátrica",
+      "desc": "Resuelve tus dudas",
+      "category": "fisioterapia",
+      "date": "2026-04-25",
+      "time": "17:00",
+      "badge": "",
+      "link": "",
+      "type": "live"
+    }
+  ],
+  "pdfs": [
+    {
+      "id": 201,
+      "title": "Guía de Evaluación Postural",
+      "desc": "Manual completo — 42 páginas",
+      "category": "fisioterapia",
+      "size": "3.2 MB",
+      "date": "2026-04-01",
+      "fileUrl": "",
+      "type": "pdf"
+    },
+    {
+      "id": 202,
+      "title": "Protocolo de Rehabilitación de Hombro",
+      "desc": "Fases de tratamiento",
+      "category": "rehabilitacion",
+      "size": "1.8 MB",
+      "date": "2026-03-28",
+      "fileUrl": "",
+      "type": "pdf"
+    },
+    {
+      "id": 203,
+      "title": "Atlas de Anatomía Palpatoria",
+      "desc": "Referencia visual",
+      "category": "anatomia",
+      "size": "8.5 MB",
+      "date": "2026-03-20",
+      "fileUrl": "",
+      "type": "pdf"
+    },
+    {
+      "id": 204,
+      "title": "Ejercicios Terapéuticos para Cervicalgia",
+      "desc": "Programa con ilustraciones",
+      "category": "rehabilitacion",
+      "size": "2.1 MB",
+      "date": "2026-03-15",
+      "fileUrl": "",
+      "type": "pdf"
+    },
+    {
+      "id": 205,
+      "title": "Guía de Vendaje Funcional",
+      "desc": "Técnicas paso a paso",
+      "category": "especializacion",
+      "size": "4.7 MB",
+      "date": "2026-03-10",
+      "fileUrl": "",
+      "type": "pdf"
+    }
+  ],
   "news": [],
   "members": []
 }
