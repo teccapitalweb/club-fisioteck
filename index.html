@@ -3617,17 +3617,11 @@
   }
   let currentNewsCategory = 'all';
 
-  // ===== AUTO NEWS FROM GNEWS API =====
-  const GNEWS_API_KEY = 'edc9eadf2e0c44020e7675fd1d6d2088';
-
+  // ===== AUTO NEWS FROM GNEWS API (via backend) =====
   async function fetchAutoNews() {
     try {
-      const queries = ['fisioterapia', 'rehabilitación física', 'terapia física'];
-      const query = queries.map(q => encodeURIComponent(q)).join('+OR+');
-      const url = `https://gnews.io/api/v4/search?q=${query}&lang=es&country=mx&max=10&apikey=${GNEWS_API_KEY}`;
-
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('GNews API error: ' + res.status);
+      const res = await fetch(WEBHOOK_URL + '/api/news');
+      if (!res.ok) throw new Error('News API error: ' + res.status);
       const json = await res.json();
 
       if (!json.articles || json.articles.length === 0) return;
