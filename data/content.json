@@ -1,130 +1,37 @@
 {
   "stats": {
-    "courses": 7,
-    "pdfs": 5,
+    "courses": 1,
+    "pdfs": 8,
     "live": 3,
     "members": 87
   },
   "courses": [
     {
-      "id": 1776396508901,
-      "title": "Entrenamiento hipopresivo ",
-      "desc": "New Program ",
-      "category": "especializacion",
-      "date": "2026-04-17",
-      "badge": "Próximamente",
-      "thumbnail": "https://drive.google.com/file/d/1DvcA2GXv0oqiQHe-AUV7TOqC-tNS4ZGn/view?usp=drive_link",
-      "temarioImg": "",
-      "availableDate": "2026-04-19",
+      "id": 1777581618134,
+      "title": "FISIOPATOLOGIA LESIONES DEPORTIVAS MAS COMUNES",
+      "desc": "Estudia los cambios en el cuerpo tras lesiones deportivas, como daño en músculos, ligamentos o tendones, y la respuesta inflamatoria que guía su recuperación.",
+      "category": "fisioterapia-deportiva",
+      "date": "2026-04-30",
+      "badge": "CERTIFICADO ",
+      "thumbnail": "",
+      "temarioImg": "https://drive.google.com/file/d/1DzRp2QBA4mxKtpy3coD2t0cFBL8374ML/view?usp=sharing",
+      "availableDate": "",
       "lessons": [
         {
-          "id": 1776396850347,
-          "title": "Clase 1",
-          "desc": "Super clase para iniciar :)",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/19SRAXPHjXajIWLlRt5p1Qm-kH_hMtd4H/view?usp=drive_link"
+          "id": 1777581618133,
+          "title": "CLASE NO. 1",
+          "desc": "...DDDFR",
+          "duration": "1 HORA",
+          "videoUrl": "https://drive.google.com/file/d/1XAO7qW_P5alFoyOqUPVab9KgnxP4ziCF/view?usp=sharing"
         },
         {
-          "id": 1776396850348,
-          "title": "Clase 2",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/16JEBUdHAyOy8mMhZf45g1M69yRgdpXHz/view?usp=drive_link"
-        },
-        {
-          "id": 1776396850349,
-          "title": "Clase 3",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/13-R3pvVRxPdqA9UpFdWMDD6CWu64tyGF/view?usp=drive_link"
-        },
-        {
-          "id": 1776396850350,
-          "title": "Clase 4",
-          "desc": "Cuarta clase, lo mejor :)",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1dE9gD0AzIgb3JHfDUFfflZLrv2qaryqU/view?usp=drive_link"
-        },
-        {
-          "id": 1776396850351,
-          "title": "Clase 5",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1cICH4mDans8nJNvMo3qHZ6oWs49Uu_vi/view?usp=drive_link"
+          "id": 1777581618135,
+          "title": "CLASE NO. 2",
+          "desc": "SEDNED",
+          "duration": "1 HORA",
+          "videoUrl": "https://drive.google.com/file/d/1IBVwn9c2GBj5BU2J_LnW4lWFfE2MEElV/view?usp=sharing"
         }
       ],
-      "type": "video"
-    },
-    {
-      "id": 1,
-      "title": "Fundamentos de Fisioterapia Deportiva",
-      "desc": "Aprende las bases del tratamiento deportivo profesional",
-      "category": "fisioterapia",
-      "duration": "2h 30min",
-      "date": "2026-04-01",
-      "badge": "Nuevo",
-      "videoUrl": "",
-      "thumbnail": "",
-      "type": "video"
-    },
-    {
-      "id": 2,
-      "title": "Anatomía Funcional del Miembro Superior",
-      "desc": "Estudio detallado de la anatomía aplicada",
-      "category": "anatomia",
-      "duration": "1h 45min",
-      "date": "2026-03-28",
-      "badge": "",
-      "videoUrl": "",
-      "thumbnail": "",
-      "type": "video"
-    },
-    {
-      "id": 3,
-      "title": "Rehabilitación Post-Quirúrgica de Rodilla",
-      "desc": "Protocolos actualizados de recuperación",
-      "category": "rehabilitacion",
-      "duration": "3h 10min",
-      "date": "2026-03-20",
-      "badge": "Popular",
-      "videoUrl": "",
-      "thumbnail": "",
-      "type": "video"
-    },
-    {
-      "id": 4,
-      "title": "Vendaje Neuromuscular Avanzado",
-      "desc": "Técnicas de kinesiotaping para profesionales",
-      "category": "especializacion",
-      "duration": "2h 00min",
-      "date": "2026-03-15",
-      "badge": "",
-      "videoUrl": "",
-      "thumbnail": "",
-      "type": "video"
-    },
-    {
-      "id": 5,
-      "title": "Electroterapia Clínica",
-      "desc": "Uso correcto de equipos de electroterapia",
-      "category": "fisioterapia",
-      "duration": "1h 50min",
-      "date": "2026-03-10",
-      "badge": "",
-      "videoUrl": "",
-      "thumbnail": "",
-      "type": "video"
-    },
-    {
-      "id": 6,
-      "title": "Pilates Terapéutico",
-      "desc": "Método Pilates aplicado a la rehabilitación",
-      "category": "rehabilitacion",
-      "duration": "2h 20min",
-      "date": "2026-03-05",
-      "badge": "Nuevo",
-      "videoUrl": "",
-      "thumbnail": "",
       "type": "video"
     }
   ],
@@ -164,6 +71,39 @@
     }
   ],
   "pdfs": [
+    {
+      "id": 1777069511656,
+      "title": "Pediatria",
+      "desc": "Fisioterapia respiratoria",
+      "category": "fisioterapia",
+      "size": "3.2 Mb",
+      "date": "2026-04-24",
+      "fileUrl": "https://drive.google.com/file/d/1uVFW9OaYG0ADY3kmWn9GpzCShFa7eIys/view?usp=sharing",
+      "thumbnail": "",
+      "type": "pdf"
+    },
+    {
+      "id": 1777069032391,
+      "title": "FISIOTERAPIA ",
+      "desc": "PILATES ",
+      "category": "fisioterapia",
+      "size": "3.2 MB",
+      "date": "2026-04-24",
+      "fileUrl": "file:///C:/Users/Lenovo/Downloads/Formulario%20de%20evaluacio%CC%81n%20para%20cli%CC%81nica%20(2)%20(1).pdf",
+      "thumbnail": "",
+      "type": "pdf"
+    },
+    {
+      "id": 1777068798406,
+      "title": "FISIOTERAPIA ",
+      "desc": "FISOTERAPIA GERIATRICA",
+      "category": "fisioterapia",
+      "size": "",
+      "date": "2026-04-24",
+      "fileUrl": "file:///C:/Users/Lenovo/Downloads/Walking%20Impairment%20Questionnaire%20(4)%20(1)%20(3)%20(1).pdf",
+      "thumbnail": "",
+      "type": "pdf"
+    },
     {
       "id": 201,
       "title": "Guía de Evaluación Postural",
