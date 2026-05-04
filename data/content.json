@@ -1,11 +1,60 @@
 {
   "stats": {
-    "courses": 5,
+    "courses": 6,
     "pdfs": 0,
     "live": 0,
     "members": 87
   },
   "courses": [
+    {
+      "id": 1777914182781,
+      "title": "Fisiopatología: lesiones deportivas mas comunes  ",
+      "desc": "La fisiopatología de las lesiones deportivas más comunes estudia los cambios estructurales y funcionales que ocurren en músculos, ligamentos y articulaciones tras un esfuerzo excesivo o trauma, como esguinces, desgarros y tendinitis, afectando el rendimiento y la función del tejido lesionado.",
+      "category": "anatomia",
+      "date": "2026-05-04",
+      "badge": "Certificado ",
+      "thumbnail": "https://drive.google.com/file/d/1eSuk5lgRba1vzVmZfos0GedkS5h3j1PW/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1DzRp2QBA4mxKtpy3coD2t0cFBL8374ML/view?usp=drive_link",
+      "availableDate": "",
+      "lessons": [
+        {
+          "id": 1777914182781,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1XAO7qW_P5alFoyOqUPVab9KgnxP4ziCF/view?usp=drive_link"
+        },
+        {
+          "id": 1777914182782,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1IBVwn9c2GBj5BU2J_LnW4lWFfE2MEElV/view?usp=drive_link"
+        },
+        {
+          "id": 1777914182783,
+          "title": "Clase 3",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1-6U2SrZbJCNG20bSAP0PNCMysNlnHjXF/view?usp=drive_link"
+        },
+        {
+          "id": 1777914182784,
+          "title": "Clase 4",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/18JLHuENoooL6UuliT7hgtjWEK2ST7CTN/view?usp=drive_link"
+        },
+        {
+          "id": 1777914182785,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1ROTa_2vQdeJ_CzAPI91uKjXpEBOXVL-4/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
     {
       "id": 1777913843887,
       "title": "Rehabilitación deportiva ",
