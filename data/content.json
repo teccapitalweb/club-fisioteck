@@ -1,11 +1,53 @@
 {
   "stats": {
-    "courses": 3,
+    "courses": 4,
     "pdfs": 0,
     "live": 0,
     "members": 87
   },
   "courses": [
+    {
+      "id": 1777913620168,
+      "title": "Liberación miofascial estética: facial y corporal ",
+      "desc": "La liberación miofascial estética (facial y corporal) es una técnica manual que actúa sobre la fascia para liberar tensiones y adherencias, mejorando la circulación, la elasticidad de los tejidos y la apariencia de la piel, favoreciendo un efecto tonificante, relajante y rejuvenecedor.",
+      "category": "especializacion",
+      "date": "2026-05-04",
+      "badge": "Certificado ",
+      "thumbnail": "https://drive.google.com/file/d/1fRd0pAzwqjQ21LRFjyp0MkH537IdK7MJ/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1Oo4im8FYKW3UvDBCRDuFVFoVafQeBBze/view?usp=drive_link",
+      "availableDate": "",
+      "lessons": [
+        {
+          "id": 1777913620168,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/10bf25syWIs7oNMZT53bfZICltFWfMN60/view?usp=drive_link"
+        },
+        {
+          "id": 1777913620169,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1r4GonkjWzLk9S4EsB5dj-DhnEzPb4vjV/view?usp=drive_link"
+        },
+        {
+          "id": 1777913620170,
+          "title": "Clase 3",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1vVkVOHSCEHhTOwTH98XYgcazNQfpbHKz/view?usp=drive_link"
+        },
+        {
+          "id": 1777913620171,
+          "title": "Clase 4 y 5",
+          "desc": "",
+          "duration": "2 Horas",
+          "videoUrl": "https://drive.google.com/file/d/1JjuYfyNq7XjwaclsYhJksHWBmCcploED/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
     {
       "id": 1777912590894,
       "title": "Neuroplasticidad y rehabilitación funcional ",
