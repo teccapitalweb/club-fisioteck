@@ -1,11 +1,60 @@
 {
   "stats": {
-    "courses": 7,
+    "courses": 8,
     "pdfs": 0,
     "live": 0,
     "members": 87
   },
   "courses": [
+    {
+      "id": 1777915087745,
+      "title": "Fisioterapia pulmonar: Hipoxemia Ventilación ",
+      "desc": "La fisioterapia pulmonar en hipoxemia y ventilación comprende técnicas terapéuticas orientadas a mejorar la oxigenación y la eficiencia ventilatoria, mediante ejercicios respiratorios, manejo de secreciones y apoyo ventilatorio, con el objetivo de optimizar la función pulmonar y la capacidad respiratoria del paciente.",
+      "category": "fisioterapia",
+      "date": "2026-05-04",
+      "badge": "Certificado ",
+      "thumbnail": "https://drive.google.com/file/d/1Oh_pvVAx6E0WYL_xtsovKp2lTz45yWbj/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1GqQq_0dOhP3uy6VhxAkq8kKMm1GcdIrE/view?usp=drive_link",
+      "availableDate": "",
+      "lessons": [
+        {
+          "id": 1777915087745,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1_SzD6ByOTIJ1roRt5UzK79lSygMiQHhD/view?usp=drive_link"
+        },
+        {
+          "id": 1777915087746,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/17RkUSF89qU8ioAN2h8-gM7mBk80qcV9B/view?usp=drive_link"
+        },
+        {
+          "id": 1777915087747,
+          "title": "Clase 3",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1SuEbNIKU-0HM5qXLRV0FvG2puZ1phZ-d/view?usp=drive_link"
+        },
+        {
+          "id": 1777915087748,
+          "title": "Clase 4",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1XETzXthhoO42cmSDxySQp6l8XFPFFOWY/view?usp=drive_link"
+        },
+        {
+          "id": 1777915087749,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/15lYNcL_t3MI1QCOD1B9RBYhoZFx4WoJs/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
     {
       "id": 1777914828962,
       "title": "Rehabilitación en hipertensión pulmonar y enfermedades vasculares pulmonares   ",
