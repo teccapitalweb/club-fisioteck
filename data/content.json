@@ -1,11 +1,60 @@
 {
   "stats": {
-    "courses": 6,
+    "courses": 7,
     "pdfs": 0,
     "live": 0,
     "members": 87
   },
   "courses": [
+    {
+      "id": 1777914828962,
+      "title": "Rehabilitación en hipertensión pulmonar y enfermedades vasculares pulmonares   ",
+      "desc": "La rehabilitación en hipertensión pulmonar y enfermedades vasculares pulmonares es un enfoque terapéutico integral que combina ejercicio supervisado, educación y técnicas respiratorias para mejorar la capacidad funcional, optimizar la oxigenación y favorecer la calidad de vida del paciente, siempre bajo control médico especializado.",
+      "category": "rehabilitacion",
+      "date": "2026-05-04",
+      "badge": "Certificado ",
+      "thumbnail": "https://drive.google.com/file/d/1siCvSrjbIiUQLjuzOcutwiwHjejEhjOT/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1E3VskAPNhqQsCHwiLPTLr9lWUUnPdTFv/view?usp=drive_link",
+      "availableDate": "",
+      "lessons": [
+        {
+          "id": 1777914828962,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/13e6pHdxCRncZdzEGTRwVVcIIgAogNaSR/view?usp=drive_link"
+        },
+        {
+          "id": 1777914828963,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1-mlJkfu7otEA0gTfeMfuN0Q2VRzmeczC/view?usp=drive_link"
+        },
+        {
+          "id": 1777914828964,
+          "title": "Clase 3",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1kP-OSphv88glHR1ZY75P6jpPGKMdBFBd/view?usp=drive_link"
+        },
+        {
+          "id": 1777914828965,
+          "title": "Clase 4",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1Q5j9HKRaDTItTwjAIxMdpfJ3ge3sNEvI/view?usp=drive_link"
+        },
+        {
+          "id": 1777914828966,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1Jh7z6mpiisie4g2BXJCud74-lg3Zr1FX/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
     {
       "id": 1777914182781,
       "title": "Fisiopatología: lesiones deportivas mas comunes  ",
