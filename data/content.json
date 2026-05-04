@@ -1,11 +1,60 @@
 {
   "stats": {
-    "courses": 10,
+    "courses": 11,
     "pdfs": 0,
     "live": 0,
     "members": 87
   },
   "courses": [
+    {
+      "id": 1777916001185,
+      "title": "Rehabilitación y ejercicios en quiropráctica ",
+      "desc": "La rehabilitación y ejercicios en quiropráctica integran técnicas manuales y programas de ejercicio terapéutico orientados a corregir disfunciones musculoesqueléticas, mejorar la movilidad y fortalecer estructuras, favoreciendo la recuperación funcional y la prevención de recaídas.",
+      "category": "rehabilitacion",
+      "date": "2026-05-04",
+      "badge": "Certificado ",
+      "thumbnail": "https://drive.google.com/file/d/1yB1zBYPoXMxkGhnV9TqKCsSme7JS62YT/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1sn4nbb4RJ3z8t-RD2OQUEzw5Zahldir8/view?usp=drive_link",
+      "availableDate": "",
+      "lessons": [
+        {
+          "id": 1777916001185,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1txS5UogBWcPhB-SzIg1zkxl0OhwpPbpU/view?usp=drive_link"
+        },
+        {
+          "id": 1777916001186,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1Qul3fhsw_2JP2JLdDYnUrB4_Dmxe65gz/view?usp=drive_link"
+        },
+        {
+          "id": 1777916001187,
+          "title": "Clase 3",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/11ECDGgKpMgdVMXbeXDk1Xxg7EuCOYq1h/view?usp=drive_link"
+        },
+        {
+          "id": 1777916001188,
+          "title": "Clase 4",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1uzCcb0oZavy5OkGyVwwS2X1dj1jeZbkH/view?usp=drive_link"
+        },
+        {
+          "id": 1777916001189,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1BqjiPV8KSSOKoniL5zjPBwbxcsdjund9/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
     {
       "id": 1777915750230,
       "title": "Vendaje neuromuscular avanzado en ortopedia ",
