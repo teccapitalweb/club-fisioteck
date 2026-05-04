@@ -1,11 +1,46 @@
 {
   "stats": {
-    "courses": 14,
+    "courses": 15,
     "pdfs": 0,
     "live": 0,
     "members": 87
   },
   "courses": [
+    {
+      "id": 1777916925112,
+      "title": "Mejora de la movilidad y la función motora en pacientes geriátricos  ",
+      "desc": "La mejora de la movilidad y la función motora en pacientes geriátricos es un enfoque terapéutico que emplea ejercicio físico, entrenamiento funcional y técnicas de rehabilitación para optimizar la fuerza, equilibrio y coordinación, promoviendo la autonomía y la calidad de vida del adulto mayor.",
+      "category": "rehabilitacion",
+      "date": "2026-05-04",
+      "badge": "Certificado ",
+      "thumbnail": "https://drive.google.com/file/d/1LkeNppElZE5KYW2HYl8tRazWBC8gwLqs/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1gnN81rhQ_cobwjmnvHmHFl9iGM4m-dp2/view?usp=drive_link",
+      "availableDate": "",
+      "lessons": [
+        {
+          "id": 1777916925112,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/14pbI2Pri4eBQVUqbs7ZuL46GpNt6YcEg/view?usp=drive_link"
+        },
+        {
+          "id": 1777916925113,
+          "title": "Clase 2 y 3",
+          "desc": "",
+          "duration": "2 Horas",
+          "videoUrl": "https://drive.google.com/file/d/1WMzfpWGFcx1qIGXSdIEdYtXu07wA92fW/view?usp=drive_link"
+        },
+        {
+          "id": 1777916925114,
+          "title": "Clase 4 y 5",
+          "desc": "",
+          "duration": "2 Horas",
+          "videoUrl": "https://drive.google.com/file/d/1QGut_DIbQLIfN_0L2UFIcYAgN2KngEjI/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
     {
       "id": 1777916731010,
       "title": "Manejo del dolor lumbar crónico ",
