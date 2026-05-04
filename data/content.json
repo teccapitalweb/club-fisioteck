@@ -1,11 +1,53 @@
 {
   "stats": {
-    "courses": 12,
+    "courses": 13,
     "pdfs": 0,
     "live": 0,
     "members": 87
   },
   "courses": [
+    {
+      "id": 1777916541882,
+      "title": "Terapia manual ortopédica funcional ",
+      "desc": "La terapia manual ortopédica funcional es un enfoque especializado que utiliza técnicas manuales para evaluar y tratar disfunciones musculoesqueléticas, mejorando la movilidad, reduciendo el dolor y restaurando la función mediante intervenciones basadas en el movimiento.",
+      "category": "ortopedia",
+      "date": "2026-05-04",
+      "badge": "Certificado ",
+      "thumbnail": "https://drive.google.com/file/d/1E9vOyARMufJdFzDjBWP3W4Cm4QJEqsdZ/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1LGdEhd1zee1tdbvMcJrTtHYLE-_IziTy/view?usp=drive_link",
+      "availableDate": "",
+      "lessons": [
+        {
+          "id": 1777916541881,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1OnHi_KaOHQf8MRJb9B-XT9hj9-EwIJ-v/view?usp=drive_link"
+        },
+        {
+          "id": 1777916541882,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1Y2ENDJavpJKupnmPaSgdor8NbceUKMec/view?usp=drive_link"
+        },
+        {
+          "id": 1777916541883,
+          "title": "Clase 3 y 4",
+          "desc": "",
+          "duration": "2 Horas",
+          "videoUrl": "https://drive.google.com/file/d/1M3HvitxwQsCOCqb1R_bc3pkqEmzU2_3x/view?usp=drive_link"
+        },
+        {
+          "id": 1777916541884,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1nV_fSfVMF9_ubsUQ8bAV-NEubYI8uaEb/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
     {
       "id": 1777916390491,
       "title": "Manejo del dolor en terapia física  ",
