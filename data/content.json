@@ -1,11 +1,60 @@
 {
   "stats": {
-    "courses": 8,
+    "courses": 9,
     "pdfs": 0,
     "live": 0,
     "members": 87
   },
   "courses": [
+    {
+      "id": 1777915302535,
+      "title": "Fisioterapia respiratoria en pacientes geriátricos ",
+      "desc": "La fisioterapia respiratoria en pacientes geriátricos es un enfoque terapéutico especializado que emplea ejercicios respiratorios, técnicas de higiene bronquial y entrenamiento ventilatorio para mejorar la función pulmonar, prevenir complicaciones y optimizar la calidad de vida en el adulto mayor.",
+      "category": "fisioterapia",
+      "date": "2026-05-04",
+      "badge": "Certificado ",
+      "thumbnail": "https://drive.google.com/file/d/1dOENqa1bFiHviOVwQPwlk9jYmJ2T20M_/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1TWA-wtq5XfXS-b4uWQ0T2T90dJuqhazD/view?usp=drive_link",
+      "availableDate": "",
+      "lessons": [
+        {
+          "id": 1777915302535,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1mEAwC0lrJ28alqXre1qbyZSRd9OVLKzJ/view?usp=drive_link"
+        },
+        {
+          "id": 1777915302536,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1yxdoDIWzI8cNj3ZUPGI8ftLuKrcS4SMG/view?usp=drive_link"
+        },
+        {
+          "id": 1777915302537,
+          "title": "Clase 3",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/19TMfUkEOlKk4746whTfYNWJX84Wvkel_/view?usp=drive_link"
+        },
+        {
+          "id": 1777915302538,
+          "title": "Clase 4",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1XJSbOjNG-UU0kHcFj6iOKvuRd4xV8fH1/view?usp=drive_link"
+        },
+        {
+          "id": 1777915302539,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1rfjG3k4XOzkFfXXCl-h_ysC5p3uExC0U/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
     {
       "id": 1777915087745,
       "title": "Fisioterapia pulmonar: Hipoxemia Ventilación ",
