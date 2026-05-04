@@ -1,100 +1,81 @@
 {
   "stats": {
-    "courses": 2,
-    "pdfs": 8,
+    "courses": 6,
+    "pdfs": 5,
     "live": 3,
     "members": 87
   },
   "courses": [
     {
-      "id": 1777911130480,
-      "title": "REHABILITACIÓN DEPORTIVA  ",
-      "desc": "La rehabilitación deportiva es el proceso de recuperación física después de una lesión, enfocado en restaurar la movilidad, fuerza y función del cuerpo. Incluye ejercicios terapéuticos, control del dolor y estrategias progresivas.",
-      "category": "fisioterapia-deportiva",
-      "date": "2026-05-04",
-      "badge": "CERTIFICADO",
-      "thumbnail": "https://drive.google.com/file/d/1xP6umvAWeBUOrcBeUn14-k4HDhpTiTF7/view?usp=drive_link",
-      "temarioImg": "https://drive.google.com/file/d/1Ykd5zOBP4anxUEcSAxnDzSDf3MzCtxkB/view?usp=drive_link",
-      "availableDate": "",
-      "lessons": [
-        {
-          "id": 1777911130480,
-          "title": "CLASE NO. 1",
-          "desc": "EVALUACIÓN FUNCIONAL Y BIOMECÁNICA DEL DEPORTISTA",
-          "duration": "1 HORA",
-          "videoUrl": "https://drive.google.com/file/d/1NmqNcGbKfygKc1CcsjLUtz82VFkbxidv/view?usp=drive_link"
-        },
-        {
-          "id": 1777911130481,
-          "title": "CLASE NO. 2",
-          "desc": "CONTROL DEL DOLOR Y FASES TEMPRANAS DE LA LESIÓN",
-          "duration": "1 HORA",
-          "videoUrl": "https://drive.google.com/file/d/1Bii3xTWv5e7iGKc6iKPQpAA2a4PZ3Gu1/view?usp=sharing"
-        },
-        {
-          "id": 1777911130482,
-          "title": "CLASE NO. 3 Y 4",
-          "desc": "FORTALECIMIENTO Y REEDUCACIÓN NEUROMUSCULAR",
-          "duration": "1 HORA",
-          "videoUrl": "https://drive.google.com/file/d/1itaYTr1hm21vV3NsdR7f1yMkw1EetED8/view?usp=drive_link"
-        },
-        {
-          "id": 1777911130483,
-          "title": "CLASE NO. 5",
-          "desc": "PREVENCIÓN SECUNDARIA Y DISEÑO DE PROGRAMAS DE MANTENIMIENTO",
-          "duration": "1 HORA",
-          "videoUrl": "https://drive.google.com/file/d/1wPkGdMKNLi5mPTU9Zt355zUQLfhL6QiJ/view?usp=drive_link"
-        }
-      ],
+      "id": 1,
+      "title": "Fundamentos de Fisioterapia Deportiva",
+      "desc": "Aprende las bases del tratamiento deportivo profesional",
+      "category": "fisioterapia",
+      "duration": "2h 30min",
+      "date": "2026-04-01",
+      "badge": "Nuevo",
+      "videoUrl": "",
+      "thumbnail": "",
       "type": "video"
     },
     {
-      "id": 1777581618134,
-      "title": "FISIOPATOLOGIA LESIONES DEPORTIVAS MAS COMUNES",
-      "desc": "Las lesiones deportivas más comunes ocurren cuando el cuerpo se sobre esfuerza o sufre un golpe. Esto provoca daño en músculos, ligamentos o huesos, generando inflamación, dolor e hinchazón. Si no se tratan bien, pueden volverse problemas crónicos.",
-      "category": "fisioterapia-deportiva",
-      "date": "2026-05-04",
-      "badge": "CERTIFICADO ",
-      "thumbnail": "https://drive.google.com/file/d/1xP6umvAWeBUOrcBeUn14-k4HDhpTiTF7/view?usp=drive_link",
-      "temarioImg": "https://drive.google.com/file/d/1DzRp2QBA4mxKtpy3coD2t0cFBL8374ML/view?usp=sharing",
-      "availableDate": "",
-      "lessons": [
-        {
-          "id": 1777910664496,
-          "title": "CLASE NO. 1",
-          "desc": "Principios Generales de Lesiones Deportivas",
-          "duration": "1 HORA",
-          "videoUrl": "https://drive.google.com/file/d/1XAO7qW_P5alFoyOqUPVab9KgnxP4ziCF/view?usp=sharing"
-        },
-        {
-          "id": 1777910664497,
-          "title": "CLASE NO. 2",
-          "desc": "Lesiones Musculares",
-          "duration": "1 HORA",
-          "videoUrl": "https://drive.google.com/file/d/1IBVwn9c2GBj5BU2J_LnW4lWFfE2MEElV/view?usp=sharing"
-        },
-        {
-          "id": 1777910664498,
-          "title": "CLASE NO. 3",
-          "desc": "Lesiones Tendinosas y Ligamentosas",
-          "duration": "1 HORA",
-          "videoUrl": "https://drive.google.com/file/d/1-6U2SrZbJCNG20bSAP0PNCMysNlnHjXF/view?usp=sharing"
-        },
-        {
-          "id": 1777910664499,
-          "title": "CLASE  NO. 4",
-          "desc": "Lesiones Articulares y Óseas en el Deporte",
-          "duration": "1 HORA",
-          "videoUrl": "https://drive.google.com/file/d/18JLHuENoooL6UuliT7hgtjWEK2ST7CTN/view?usp=drive_link"
-        },
-        {
-          "id": 1777910664500,
-          "title": "CLASE NO. 5",
-          "desc": "Implicaciones Terapéuticas y Prevención",
-          "duration": "1 HORA",
-          "videoUrl": "https://drive.google.com/file/d/1ROTa_2vQdeJ_CzAPI91uKjXpEBOXVL-4/view?usp=drive_link"
-        }
-      ],
+      "id": 2,
+      "title": "Anatomía Funcional del Miembro Superior",
+      "desc": "Estudio detallado de la anatomía aplicada",
+      "category": "anatomia",
+      "duration": "1h 45min",
+      "date": "2026-03-28",
+      "badge": "",
+      "videoUrl": "",
+      "thumbnail": "",
+      "type": "video"
+    },
+    {
+      "id": 3,
+      "title": "Rehabilitación Post-Quirúrgica de Rodilla",
+      "desc": "Protocolos actualizados de recuperación",
+      "category": "rehabilitacion",
+      "duration": "3h 10min",
+      "date": "2026-03-20",
+      "badge": "Popular",
+      "videoUrl": "",
+      "thumbnail": "",
+      "type": "video"
+    },
+    {
+      "id": 4,
+      "title": "Vendaje Neuromuscular Avanzado",
+      "desc": "Técnicas de kinesiotaping para profesionales",
+      "category": "especializacion",
+      "duration": "2h 00min",
+      "date": "2026-03-15",
+      "badge": "",
+      "videoUrl": "",
+      "thumbnail": "",
+      "type": "video"
+    },
+    {
+      "id": 5,
+      "title": "Electroterapia Clínica",
+      "desc": "Uso correcto de equipos de electroterapia",
+      "category": "fisioterapia",
+      "duration": "1h 50min",
+      "date": "2026-03-10",
+      "badge": "",
+      "videoUrl": "",
+      "thumbnail": "",
+      "type": "video"
+    },
+    {
+      "id": 6,
+      "title": "Pilates Terapéutico",
+      "desc": "Método Pilates aplicado a la rehabilitación",
+      "category": "rehabilitacion",
+      "duration": "2h 20min",
+      "date": "2026-03-05",
+      "badge": "Nuevo",
+      "videoUrl": "",
+      "thumbnail": "",
       "type": "video"
     }
   ],
@@ -134,39 +115,6 @@
     }
   ],
   "pdfs": [
-    {
-      "id": 1777069511656,
-      "title": "Pediatria",
-      "desc": "Fisioterapia respiratoria",
-      "category": "fisioterapia",
-      "size": "3.2 Mb",
-      "date": "2026-04-24",
-      "fileUrl": "https://drive.google.com/file/d/1uVFW9OaYG0ADY3kmWn9GpzCShFa7eIys/view?usp=sharing",
-      "thumbnail": "",
-      "type": "pdf"
-    },
-    {
-      "id": 1777069032391,
-      "title": "FISIOTERAPIA ",
-      "desc": "PILATES ",
-      "category": "fisioterapia",
-      "size": "3.2 MB",
-      "date": "2026-04-24",
-      "fileUrl": "file:///C:/Users/Lenovo/Downloads/Formulario%20de%20evaluacio%CC%81n%20para%20cli%CC%81nica%20(2)%20(1).pdf",
-      "thumbnail": "",
-      "type": "pdf"
-    },
-    {
-      "id": 1777068798406,
-      "title": "FISIOTERAPIA ",
-      "desc": "FISOTERAPIA GERIATRICA",
-      "category": "fisioterapia",
-      "size": "",
-      "date": "2026-04-24",
-      "fileUrl": "file:///C:/Users/Lenovo/Downloads/Walking%20Impairment%20Questionnaire%20(4)%20(1)%20(3)%20(1).pdf",
-      "thumbnail": "",
-      "type": "pdf"
-    },
     {
       "id": 201,
       "title": "Guía de Evaluación Postural",
