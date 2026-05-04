@@ -1,11 +1,53 @@
 {
   "stats": {
-    "courses": 1,
+    "courses": 2,
     "pdfs": 0,
     "live": 0,
     "members": 87
   },
   "courses": [
+    {
+      "id": 1777912123479,
+      "title": "Estimulación Neuroplástica en rehabilitación neurológica ",
+      "desc": "La estimulación neuroplástica en rehabilitación neurológica consiste en aplicar ejercicios y terapias que activan la capacidad del cerebro para reorganizarse y crear nuevas conexiones, con el objetivo de recuperar funciones afectadas y mejorar el desempeño motor y cognitivo.",
+      "category": "rehabilitacion",
+      "date": "2026-05-04",
+      "badge": "Certificado ",
+      "thumbnail": "https://drive.google.com/file/d/1IX76YB8jbAmBb_ukz7Nj7RMJ1OUqN-Aa/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1GmR6mrhhoaUX8WIRgeUiZJDGiKLRLZli/view?usp=drive_link",
+      "availableDate": "",
+      "lessons": [
+        {
+          "id": 1777912123479,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1qknx72HehMNt0P6XXRn6jQjs89FgabPQ/view?usp=drive_link"
+        },
+        {
+          "id": 1777912123480,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1M29ZFkWn7rGhilv_CY-nIF8QU9bVrzpl/view?usp=drive_link"
+        },
+        {
+          "id": 1777912123481,
+          "title": "Clase 3",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1z0IHISnJbElSpFPJG7j6hJTc7Apz93-5/view?usp=drive_link"
+        },
+        {
+          "id": 1777912123482,
+          "title": "Clase 4 y 5",
+          "desc": "",
+          "duration": "2 Horas",
+          "videoUrl": "https://drive.google.com/file/d/1SZANthFXL1dSltgSjaE9_Lyq5QcOPey9/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
     {
       "id": 1777911849560,
       "title": "Tratamiento fisioterapéutico en parálisis cerebral infantil ",
@@ -14,25 +56,25 @@
       "date": "2026-05-04",
       "badge": "Certificado ",
       "thumbnail": "https://drive.google.com/file/d/1IDNcfU56TOr8KAJv4b45-FmqcL3d7X4E/view?usp=drive_link",
-      "temarioImg": "",
+      "temarioImg": "https://drive.google.com/file/d/12s1sPztd0C4IM56XSNGsQkJ19fEJ-p3q/view?usp=drive_link",
       "availableDate": "",
       "lessons": [
         {
-          "id": 1777911849560,
+          "id": 1777912150239,
           "title": "Clase 1 y 2",
           "desc": "",
           "duration": "2 Horas",
           "videoUrl": "https://drive.google.com/file/d/1xV_MVMGfvVYTUypbSbKDBV4-VnuZ6zW7/view?usp=drive_link"
         },
         {
-          "id": 1777911849561,
+          "id": 1777912150240,
           "title": "Clase 3 y 4",
           "desc": "",
           "duration": "2 Horas",
           "videoUrl": "https://drive.google.com/file/d/1wXAfokDMOd2PnfkFC1RPdPeyacIeccTT/view?usp=drive_link"
         },
         {
-          "id": 1777911849562,
+          "id": 1777912150241,
           "title": "Clase 5",
           "desc": "",
           "duration": "1 Hora",
