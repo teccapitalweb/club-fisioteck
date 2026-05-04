@@ -9,27 +9,48 @@
     {
       "id": 1777581618134,
       "title": "FISIOPATOLOGIA LESIONES DEPORTIVAS MAS COMUNES",
-      "desc": "Estudia los cambios en el cuerpo tras lesiones deportivas, como daño en músculos, ligamentos o tendones, y la respuesta inflamatoria que guía su recuperación.",
+      "desc": "Las lesiones deportivas más comunes ocurren cuando el cuerpo se sobre esfuerza o sufre un golpe. Esto provoca daño en músculos, ligamentos o huesos, generando inflamación, dolor e hinchazón. Si no se tratan bien, pueden volverse problemas crónicos.",
       "category": "fisioterapia-deportiva",
-      "date": "2026-04-30",
+      "date": "2026-05-04",
       "badge": "CERTIFICADO ",
-      "thumbnail": "",
+      "thumbnail": "https://drive.google.com/file/d/1xP6umvAWeBUOrcBeUn14-k4HDhpTiTF7/view?usp=drive_link",
       "temarioImg": "https://drive.google.com/file/d/1DzRp2QBA4mxKtpy3coD2t0cFBL8374ML/view?usp=sharing",
       "availableDate": "",
       "lessons": [
         {
-          "id": 1777581618133,
+          "id": 1777910664496,
           "title": "CLASE NO. 1",
-          "desc": "...DDDFR",
+          "desc": "Principios Generales de Lesiones Deportivas",
           "duration": "1 HORA",
           "videoUrl": "https://drive.google.com/file/d/1XAO7qW_P5alFoyOqUPVab9KgnxP4ziCF/view?usp=sharing"
         },
         {
-          "id": 1777581618135,
+          "id": 1777910664497,
           "title": "CLASE NO. 2",
-          "desc": "SEDNED",
+          "desc": "Lesiones Musculares",
           "duration": "1 HORA",
           "videoUrl": "https://drive.google.com/file/d/1IBVwn9c2GBj5BU2J_LnW4lWFfE2MEElV/view?usp=sharing"
+        },
+        {
+          "id": 1777910664498,
+          "title": "CLASE NO. 3",
+          "desc": "Lesiones Tendinosas y Ligamentosas",
+          "duration": "1 HORA",
+          "videoUrl": "https://drive.google.com/file/d/1-6U2SrZbJCNG20bSAP0PNCMysNlnHjXF/view?usp=sharing"
+        },
+        {
+          "id": 1777910664499,
+          "title": "CLASE  NO. 4",
+          "desc": "Lesiones Articulares y Óseas en el Deporte",
+          "duration": "1 HORA",
+          "videoUrl": "https://drive.google.com/file/d/18JLHuENoooL6UuliT7hgtjWEK2ST7CTN/view?usp=drive_link"
+        },
+        {
+          "id": 1777910664500,
+          "title": "CLASE NO. 5",
+          "desc": "Implicaciones Terapéuticas y Prevención",
+          "duration": "1 HORA",
+          "videoUrl": "https://drive.google.com/file/d/1ROTa_2vQdeJ_CzAPI91uKjXpEBOXVL-4/view?usp=drive_link"
         }
       ],
       "type": "video"
