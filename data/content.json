@@ -1,11 +1,53 @@
 {
   "stats": {
-    "courses": 1,
+    "courses": 2,
     "pdfs": 8,
     "live": 3,
     "members": 87
   },
   "courses": [
+    {
+      "id": 1777911130480,
+      "title": "REHABILITACIÓN DEPORTIVA  ",
+      "desc": "La rehabilitación deportiva es el proceso de recuperación física después de una lesión, enfocado en restaurar la movilidad, fuerza y función del cuerpo. Incluye ejercicios terapéuticos, control del dolor y estrategias progresivas.",
+      "category": "fisioterapia-deportiva",
+      "date": "2026-05-04",
+      "badge": "CERTIFICADO",
+      "thumbnail": "https://drive.google.com/file/d/1xP6umvAWeBUOrcBeUn14-k4HDhpTiTF7/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1Ykd5zOBP4anxUEcSAxnDzSDf3MzCtxkB/view?usp=drive_link",
+      "availableDate": "",
+      "lessons": [
+        {
+          "id": 1777911130480,
+          "title": "CLASE NO. 1",
+          "desc": "EVALUACIÓN FUNCIONAL Y BIOMECÁNICA DEL DEPORTISTA",
+          "duration": "1 HORA",
+          "videoUrl": "https://drive.google.com/file/d/1NmqNcGbKfygKc1CcsjLUtz82VFkbxidv/view?usp=drive_link"
+        },
+        {
+          "id": 1777911130481,
+          "title": "CLASE NO. 2",
+          "desc": "CONTROL DEL DOLOR Y FASES TEMPRANAS DE LA LESIÓN",
+          "duration": "1 HORA",
+          "videoUrl": "https://drive.google.com/file/d/1Bii3xTWv5e7iGKc6iKPQpAA2a4PZ3Gu1/view?usp=sharing"
+        },
+        {
+          "id": 1777911130482,
+          "title": "CLASE NO. 3 Y 4",
+          "desc": "FORTALECIMIENTO Y REEDUCACIÓN NEUROMUSCULAR",
+          "duration": "1 HORA",
+          "videoUrl": "https://drive.google.com/file/d/1itaYTr1hm21vV3NsdR7f1yMkw1EetED8/view?usp=drive_link"
+        },
+        {
+          "id": 1777911130483,
+          "title": "CLASE NO. 5",
+          "desc": "PREVENCIÓN SECUNDARIA Y DISEÑO DE PROGRAMAS DE MANTENIMIENTO",
+          "duration": "1 HORA",
+          "videoUrl": "https://drive.google.com/file/d/1wPkGdMKNLi5mPTU9Zt355zUQLfhL6QiJ/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
     {
       "id": 1777581618134,
       "title": "FISIOPATOLOGIA LESIONES DEPORTIVAS MAS COMUNES",
