@@ -1,11 +1,60 @@
 {
   "stats": {
-    "courses": 13,
+    "courses": 14,
     "pdfs": 0,
     "live": 0,
     "members": 87
   },
   "courses": [
+    {
+      "id": 1777916731010,
+      "title": "Manejo del dolor lumbar crónico ",
+      "desc": "El manejo del dolor lumbar crónico es un abordaje integral que combina ejercicio terapéutico, terapia manual y educación del paciente para reducir el dolor, mejorar la movilidad y prevenir recaídas, favoreciendo la funcionalidad y calidad de vida.",
+      "category": "especializacion",
+      "date": "2026-05-04",
+      "badge": "Certificado ",
+      "thumbnail": "https://drive.google.com/file/d/1jK9TaSOBoBsZUDU7MlvgzcJVJwQy8c3m/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1EwwFtMbidReecuftJAhkVRc7Kwp7wdGJ/view?usp=drive_link",
+      "availableDate": "",
+      "lessons": [
+        {
+          "id": 1777916731010,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/19hnfZDKFGivn3elPR6blEWCHOwijTItR/view?usp=drive_link"
+        },
+        {
+          "id": 1777916731011,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1NHsjV8csVdxEEn699ogA3eNfNn9pw_BZ/view?usp=drive_link"
+        },
+        {
+          "id": 1777916731012,
+          "title": "Clase 3",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1AQ2qv818SeX2eGWI4VGRU_94NiT5EFDQ/view?usp=drive_link"
+        },
+        {
+          "id": 1777916731013,
+          "title": "Clase 4",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1uQOrK4LWLIzL8Dpxfpe7sV0_yA75d4zc/view?usp=drive_link"
+        },
+        {
+          "id": 1777916731014,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1CT4CycgPBbcRIJN0iH1xSMaHNZ7fwBdh/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
     {
       "id": 1777916541882,
       "title": "Terapia manual ortopédica funcional ",
