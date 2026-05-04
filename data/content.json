@@ -1,11 +1,53 @@
 {
   "stats": {
-    "courses": 4,
+    "courses": 5,
     "pdfs": 0,
     "live": 0,
     "members": 87
   },
   "courses": [
+    {
+      "id": 1777913843887,
+      "title": "Rehabilitación deportiva ",
+      "desc": "La rehabilitación deportiva es un proceso terapéutico integral enfocado en la recuperación de lesiones musculoesqueléticas, mediante técnicas especializadas que restauran la movilidad, fuerza y rendimiento físico, permitiendo al paciente reintegrarse de forma segura y eficiente a la actividad deportiva.",
+      "category": "rehabilitacion",
+      "date": "2026-05-04",
+      "badge": "Certificado ",
+      "thumbnail": "https://drive.google.com/file/d/1xP6umvAWeBUOrcBeUn14-k4HDhpTiTF7/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1Ykd5zOBP4anxUEcSAxnDzSDf3MzCtxkB/view?usp=drive_link",
+      "availableDate": "",
+      "lessons": [
+        {
+          "id": 1777913843887,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1NmqNcGbKfygKc1CcsjLUtz82VFkbxidv/view?usp=drive_link"
+        },
+        {
+          "id": 1777913843888,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1Bii3xTWv5e7iGKc6iKPQpAA2a4PZ3Gu1/view?usp=drive_link"
+        },
+        {
+          "id": 1777913843889,
+          "title": "Clase 3 y 4",
+          "desc": "",
+          "duration": "2 Horas",
+          "videoUrl": "https://drive.google.com/file/d/1itaYTr1hm21vV3NsdR7f1yMkw1EetED8/view?usp=drive_link"
+        },
+        {
+          "id": 1777913843890,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1wPkGdMKNLi5mPTU9Zt355zUQLfhL6QiJ/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
     {
       "id": 1777913620168,
       "title": "Liberación miofascial estética: facial y corporal ",
