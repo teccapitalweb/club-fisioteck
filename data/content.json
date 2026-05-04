@@ -1,7 +1,7 @@
 {
   "stats": {
     "courses": 15,
-    "pdfs": 0,
+    "pdfs": 1,
     "live": 0,
     "members": 87
   },
@@ -659,7 +659,19 @@
     }
   ],
   "live": [],
-  "pdfs": [],
+  "pdfs": [
+    {
+      "id": 1777917971067,
+      "title": "Manejo del dolor lumbar crónico ",
+      "desc": "El PDF de manejo del dolor lumbar crónico presenta un enfoque integral que incluye evaluación clínica, ejercicio terapéutico, terapia manual y educación del paciente, con el objetivo de reducir el dolor, mejorar la movilidad y prevenir recaídas, favoreciendo la funcionalidad y calidad de vida.",
+      "category": "anatomia",
+      "size": "55,3 MB ",
+      "date": "2026-05-04",
+      "fileUrl": "https://drive.google.com/file/d/1mxrkUS8h4frAL5lfzHpjgwczQ065n153/view?usp=drive_link",
+      "thumbnail": "https://drive.google.com/file/d/1jK9TaSOBoBsZUDU7MlvgzcJVJwQy8c3m/view?usp=drive_link",
+      "type": "pdf"
+    }
+  ],
   "news": [],
   "members": []
 }
