@@ -1,11 +1,60 @@
 {
   "stats": {
-    "courses": 2,
+    "courses": 3,
     "pdfs": 0,
     "live": 0,
     "members": 87
   },
   "courses": [
+    {
+      "id": 1777912590894,
+      "title": "Neuroplasticidad y rehabilitación funcional ",
+      "desc": "La neuroplasticidad aplicada a la rehabilitación funcional se refiere a la capacidad del sistema nervioso para reorganizar sus conexiones estructurales y funcionales en respuesta a estímulos terapéuticos, con el objetivo de recuperar, optimizar o compensar funciones motoras y cognitivas alteradas, favoreciendo la independencia y el desempeño funcional del paciente.",
+      "category": "rehabilitacion",
+      "date": "2026-05-04",
+      "badge": "Certificado ",
+      "thumbnail": "https://drive.google.com/file/d/1m617KTI8ymup_5ghyPix2Jt7jyFQnFvK/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1S8m6j6yelUzEBYqYyyejw5n_jaOlDM5x/view?usp=drive_link",
+      "availableDate": "",
+      "lessons": [
+        {
+          "id": 1777912590894,
+          "title": "Clase 1",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1LBKCj03p6WWv8_uydSyzbvCs-oQCZQO4/view?usp=drive_link"
+        },
+        {
+          "id": 1777912590895,
+          "title": "Clase 2",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1gSXLNHLtKNxYIWMYh1xP7x4HVOpVfvGj/view?usp=drive_link"
+        },
+        {
+          "id": 1777912590896,
+          "title": "Clase 3",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1EmBl4VcWtWU7fYbCW6CiFALGblXU6v_Z/view?usp=drive_link"
+        },
+        {
+          "id": 1777912590897,
+          "title": "Clase 4",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1IXeDZmrHDG_kg0VoEkzDDqbd6KoFTjGp/view?usp=drive_link"
+        },
+        {
+          "id": 1777912590898,
+          "title": "Clase 5",
+          "desc": "",
+          "duration": "1 Hora",
+          "videoUrl": "https://drive.google.com/file/d/1HYQUDPjB_95yROzcyq1ctk61ABjkc3Me/view?usp=drive_link"
+        }
+      ],
+      "type": "video"
+    },
     {
       "id": 1777912123479,
       "title": "Estimulación Neuroplástica en rehabilitación neurológica ",
