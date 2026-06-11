@@ -137,11 +137,19 @@
     }
     .splash-price .tachado{text-decoration:line-through;opacity:.5;margin-right:4px}
 
-    .splash-reviews{display:grid;gap:9px;max-width:440px;margin-bottom:16px}
-    .splash-reviews img:nth-child(3){display:none}
-    @media (min-height:920px){.splash-reviews img:nth-child(3){display:block}}
+    .splash-reviews{
+      max-width:440px;margin-bottom:16px;overflow:hidden;
+      -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+      mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+    }
+    .splash-reviews .rtrack{
+      display:flex;gap:14px;width:max-content;
+      animation:reviewSlide 36s linear infinite;
+    }
+    .splash-reviews:hover .rtrack{animation-play-state:paused}
+    @keyframes reviewSlide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
     .splash-reviews img{
-      width:100%;border-radius:11px;display:block;
+      width:420px;flex:none;border-radius:11px;display:block;
       border:1px solid rgba(255,255,255,.12);
       box-shadow:0 6px 18px rgba(0,0,0,.3);
     }
@@ -171,8 +179,11 @@
       .splash-price{margin:0 auto 14px;max-width:380px}
       .splash-price .opt{padding:8px 13px}
       .splash-price .opt b{font-size:1.2rem}
-      .splash-reviews{margin:0 auto 14px;max-width:380px}
-      .splash-reviews img:nth-child(n+2){display:none}
+      .splash-reviews{margin:0 auto 14px;max-width:340px}
+      .splash-reviews img{width:320px}
+      .splash-grid .splash-content{margin:0 auto !important;width:100%}
+      .splash-sell{display:flex;flex-direction:column;align-items:center}
+      .splash-sell > *{width:100%}
       .splash-trust{text-align:center;display:block}
       .splash-logo{font-size:2rem !important}
     }
@@ -719,9 +730,14 @@
 
       <!-- Reseñas REALES de Facebook (capturas auténticas) -->
       <div class="splash-reviews">
-        <img src="img/splash/review-01.webp" alt="Reseña real de Facebook de miembro FisioTeck" loading="lazy">
-        <img src="img/splash/review-03.webp" alt="Reseña real de Facebook de miembro FisioTeck" loading="lazy">
-        <img src="img/splash/review-07.webp" alt="Reseña real de Facebook de miembro FisioTeck" loading="lazy">
+        <div class="rtrack">
+          <img src="img/splash/review-01.webp" alt="Reseña real de Facebook de miembro FisioTeck" loading="lazy">
+          <img src="img/splash/review-03.webp" alt="Reseña real de Facebook de miembro FisioTeck" loading="lazy">
+          <img src="img/splash/review-07.webp" alt="Reseña real de Facebook de miembro FisioTeck" loading="lazy">
+          <img src="img/splash/review-01.webp" alt="" loading="lazy">
+          <img src="img/splash/review-03.webp" alt="" loading="lazy">
+          <img src="img/splash/review-07.webp" alt="" loading="lazy">
+        </div>
       </div>
 
       <p class="splash-trust">Pago seguro con Stripe · Acceso inmediato · Sin permanencia</p>
