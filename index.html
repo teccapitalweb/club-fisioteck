@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Club FisioTeck — Membresía Profesional</title>
+  <!-- MODIFICADO: PWA instalable -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1B3F6B">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FisioTeck">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -5225,5 +5232,104 @@
 </script>
 
 <!-- MODIFICADO: Club FisioTeck — sitio de membresía creado desde cero -->
+<!-- MODIFICADO: Popup de instalación PWA (Android + iPhone) -->
+<style>
+  .pwa-pop{position:fixed;left:50%;bottom:18px;transform:translateX(-50%) translateY(170%);width:calc(100% - 28px);max-width:440px;background:#fff;border:1px solid var(--border,#D4DDD9);border-radius:16px;box-shadow:0 18px 50px rgba(11,21,32,.32);padding:14px 16px;display:flex;gap:13px;align-items:flex-start;z-index:100001;opacity:0;transition:transform .45s cubic-bezier(.16,1,.3,1),opacity .45s;font-family:'Outfit',sans-serif}
+  .pwa-pop.show{transform:translateX(-50%) translateY(0);opacity:1}
+  .pwa-pop__img{width:54px;height:54px;border-radius:13px;flex:none;object-fit:contain;background:#fff;border:1px solid #eef1f4}
+  .pwa-pop__body{flex:1;min-width:0;padding-right:14px}
+  .pwa-pop__title{font-size:.95rem;font-weight:800;color:var(--primary,#1B3F6B);line-height:1.2}
+  .pwa-pop__txt{font-size:.78rem;color:var(--text-light,#5A6F68);line-height:1.45;margin-top:3px}
+  .pwa-pop__actions{display:flex;gap:8px;margin-top:11px}
+  .pwa-pop__btn{flex:none;border:none;border-radius:10px;padding:9px 15px;font-family:inherit;font-weight:700;font-size:.83rem;cursor:pointer;transition:filter .15s}
+  .pwa-pop__btn--go{background:var(--accent,#1565C0);color:#fff}
+  .pwa-pop__btn--go:hover{filter:brightness(1.08)}
+  .pwa-pop__btn--no{background:#eef1f4;color:var(--text-light,#5A6F68)}
+  .pwa-pop__x{position:absolute;top:9px;right:11px;width:24px;height:24px;border:none;background:none;cursor:pointer;color:#9aa9b4;display:flex;align-items:center;justify-content:center}
+  .pwa-pop__x svg{width:15px;height:15px;stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round}
+  .pwa-ios{display:none;font-size:.8rem;color:var(--text,#1A2E28);line-height:1.55;margin-top:8px}
+  .pwa-ios b{color:var(--primary,#1B3F6B)}
+  .pwa-ios svg{width:15px;height:15px;vertical-align:-3px;stroke:var(--accent,#1565C0);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;margin:0 1px}
+</style>
+<div class="pwa-pop" id="pwaPop" role="dialog" aria-live="polite">
+  <button class="pwa-pop__x" id="pwaClose" aria-label="Cerrar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <img class="pwa-pop__img" src="pwa-logo.png" alt="FisioTeck">
+  <div class="pwa-pop__body">
+    <div class="pwa-pop__title">Instala FisioTeck</div>
+    <div class="pwa-pop__txt" id="pwaTxt">Acceso directo como app en tu pantalla de inicio. Rápido y sin abrir el navegador.</div>
+    <div class="pwa-ios" id="pwaIos">
+      Toca <b>Compartir</b>
+      <svg viewBox="0 0 24 24"><path d="M12 16V4M12 4L8 8M12 4l4 4"/><path d="M5 12v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7"/></svg>
+      y luego <b>&ldquo;Agregar a inicio&rdquo;</b>.
+    </div>
+    <div class="pwa-pop__actions" id="pwaActions">
+      <button class="pwa-pop__btn pwa-pop__btn--go" id="pwaInstall">Instalar</button>
+      <button class="pwa-pop__btn pwa-pop__btn--no" id="pwaLater">Ahora no</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var KEY = 'fisio_pwa_pop_until';
+  var pop = document.getElementById('pwaPop');
+  if (!pop) return;
+  var iosBox   = document.getElementById('pwaIos');
+  var actions  = document.getElementById('pwaActions');
+  var btnGo    = document.getElementById('pwaInstall');
+  var btnLater = document.getElementById('pwaLater');
+  var btnClose = document.getElementById('pwaClose');
+  var deferred = null;
+
+  function isStandalone(){
+    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  }
+  function silenciado(){
+    try { return Date.now() < parseInt(localStorage.getItem(KEY) || '0', 10); } catch(e){ return false; }
+  }
+  function recordarCierre(dias){
+    try { localStorage.setItem(KEY, String(Date.now() + dias*24*60*60*1000)); } catch(e){}
+  }
+  function show(){ pop.classList.add('show'); }
+  function hide(){ pop.classList.remove('show'); }
+
+  if (isStandalone() || silenciado()) return;
+
+  var ua = navigator.userAgent || '';
+  var isIOS = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+  // Android / Chrome / Edge: prompt nativo
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault();
+    deferred = e;
+    iosBox.style.display = 'none';
+    actions.style.display = 'flex';
+    setTimeout(show, 1500);
+  });
+
+  // iOS Safari: sin prompt -> instrucciones
+  if (isIOS && !isStandalone()) {
+    actions.style.display = 'none';
+    iosBox.style.display = 'block';
+    setTimeout(show, 1800);
+  }
+
+  if (btnGo) btnGo.addEventListener('click', function(){
+    if (!deferred) return;
+    deferred.prompt();
+    deferred.userChoice.then(function(){ deferred = null; hide(); })
+      .catch(function(){ deferred = null; hide(); });
+  });
+  if (btnLater) btnLater.addEventListener('click', function(){ recordarCierre(7); hide(); });
+  if (btnClose) btnClose.addEventListener('click', function(){ recordarCierre(7); hide(); });
+  window.addEventListener('appinstalled', function(){ recordarCierre(365); hide(); });
+
+  // Registrar service worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('sw.js').catch(function(){});
+    });
+  }
+})();
+</script>
 </body>
 </html>
