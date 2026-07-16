@@ -2097,52 +2097,138 @@
         toggleRegisterBtn();
       });
   }
-  // ===== STRIPE EMBEDDED CHECKOUT =====
+  // ===== STRIPE CHECKOUT — POPUP + POLLING (patrón confiable IMDAC/Dermalysse) =====
   const WEBHOOK_URL = 'https://web-production-cd020.up.railway.app';
   const STRIPE_PK = 'pk_live_51TMAcSA7If2CqXs9NuKsM1cVT9n5agProkMR8HFiT6QTXzS0g9PtiokZ4cpT1Qo3rk9bbsrZHx9sOUbE9UEOjgGs00n1OM3Y9b';
   let stripeInstance = null;
+  let _pagoWatcher = null;
+  let _pagoVentana = null;
 
   async function openStripeCheckout(plan) {
     const user = auth.currentUser;
     if (!user) return;
 
-    // Show checkout modal
+    // Modal con estado "preparando"
     document.getElementById('stripeCheckoutModal').style.display = 'flex';
-    document.getElementById('stripeCheckoutContainer').innerHTML = '<div style="text-align:center;padding:40px;"><div class="spinner" style="border:3px solid rgba(255,255,255,.1);border-top:3px solid #1565C0;border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite;margin:0 auto 16px;"></div><p style="color:rgba(255,255,255,.6);font-size:.9rem;">Preparando checkout...</p></div>';
+    document.getElementById('stripeCheckoutContainer').innerHTML = '<div style="text-align:center;padding:40px;"><div class="spinner" style="border:3px solid rgba(255,255,255,.1);border-top:3px solid #1565C0;border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite;margin:0 auto 16px;"></div><p style="color:rgba(255,255,255,.6);font-size:.9rem;">Preparando checkout seguro...</p></div>';
 
     try {
       const res = await fetch(WEBHOOK_URL + '/api/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: plan, email: user.email, uid: user.uid })
+        body: JSON.stringify({ plan: plan, email: user.email, uid: user.uid, mode: 'hosted' })
       });
       const data = await res.json();
-      if (!data.clientSecret) throw new Error('No client secret');
 
-      // Load Stripe if not loaded
-      if (!stripeInstance) {
-        if (!window.Stripe) {
-          const s = document.createElement('script');
-          s.src = 'https://js.stripe.com/v3/';
-          document.head.appendChild(s);
-          await new Promise((resolve, reject) => { s.onload = resolve; s.onerror = reject; });
+      // === RUTA A: backend nuevo devuelve URL (popup preferido) ===
+      if (data.url) {
+        const w = 520, h = 780;
+        const left = (screen.width - w) / 2;
+        const top = (screen.height - h) / 2;
+        _pagoVentana = window.open(data.url, 'stripe_pay', `width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=yes`);
+
+        // Fallback si el navegador bloqueó el popup
+        if (!_pagoVentana || _pagoVentana.closed || typeof _pagoVentana.closed === 'undefined') {
+          document.getElementById('stripeCheckoutContainer').innerHTML = `
+            <div style="text-align:center;padding:40px;">
+              <div style="font-size:2rem;margin-bottom:12px;">⚠️</div>
+              <p style="color:#333;font-size:1rem;margin-bottom:8px;font-weight:600;">Tu navegador bloqueó la ventana de pago</p>
+              <p style="color:#666;font-size:.85rem;margin-bottom:20px;">Abre el checkout en una nueva pestaña:</p>
+              <a href="${data.url}" target="_blank" onclick="vigilarPago(null,'${plan}')" style="display:inline-block;padding:12px 28px;border-radius:8px;background:#1565C0;color:#fff;text-decoration:none;font-family:inherit;font-weight:600;">Ir a pagar →</a>
+              <button onclick="closeStripeCheckout()" style="display:block;margin:16px auto 0;padding:10px 24px;border-radius:8px;background:none;color:#666;border:1px solid #ccc;font-family:inherit;cursor:pointer;">Cerrar</button>
+            </div>`;
+          return;
         }
-        stripeInstance = Stripe(STRIPE_PK);
+
+        // UI mientras el usuario paga
+        document.getElementById('stripeCheckoutContainer').innerHTML = `
+          <div style="text-align:center;padding:40px;">
+            <div class="spinner" style="border:3px solid rgba(21,101,192,.1);border-top:3px solid #1565C0;border-radius:50%;width:44px;height:44px;animation:spin 1s linear infinite;margin:0 auto 20px;"></div>
+            <h3 style="color:#0F1A2A;font-size:1.1rem;margin-bottom:8px;">Completa tu pago en la ventana</h3>
+            <p style="color:#666;font-size:.9rem;margin-bottom:20px;line-height:1.5;">Estamos esperando la confirmación de Stripe.<br>No cierres esta ventana.</p>
+            <button onclick="cancelarVigilanciaPago()" style="padding:10px 24px;border-radius:8px;background:none;color:#666;border:1px solid #ccc;font-family:inherit;cursor:pointer;font-size:.85rem;">Cancelar</button>
+          </div>`;
+
+        vigilarPago(_pagoVentana, plan);
+        return;
       }
 
-      document.getElementById('stripeCheckoutContainer').innerHTML = '<div id="stripe-checkout-element" style="min-height:400px;"></div>';
+      // === RUTA B: backend viejo aún devuelve clientSecret (embedded fallback) ===
+      if (data.clientSecret) {
+        if (!stripeInstance) {
+          if (!window.Stripe) {
+            const s = document.createElement('script');
+            s.src = 'https://js.stripe.com/v3/';
+            document.head.appendChild(s);
+            await new Promise((resolve, reject) => { s.onload = resolve; s.onerror = reject; });
+          }
+          stripeInstance = Stripe(STRIPE_PK);
+        }
+        document.getElementById('stripeCheckoutContainer').innerHTML = '<div id="stripe-checkout-element" style="min-height:400px;"></div>';
+        const checkout = await stripeInstance.initEmbeddedCheckout({ clientSecret: data.clientSecret });
+        checkout.mount('#stripe-checkout-element');
+        return;
+      }
 
-      const checkout = await stripeInstance.initEmbeddedCheckout({
-        clientSecret: data.clientSecret
-      });
-      checkout.mount('#stripe-checkout-element');
+      throw new Error('Respuesta del backend inválida');
     } catch(err) {
       console.error('Stripe checkout error:', err);
-      document.getElementById('stripeCheckoutContainer').innerHTML = '<div style="text-align:center;padding:40px;"><p style="color:#EF4444;font-size:1rem;margin-bottom:16px;">Error al cargar el checkout</p><button onclick="closeStripeCheckout()" style="padding:10px 24px;border-radius:8px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);font-family:inherit;cursor:pointer;">Cerrar</button></div>';
+      document.getElementById('stripeCheckoutContainer').innerHTML = '<div style="text-align:center;padding:40px;"><p style="color:#EF4444;font-size:1rem;margin-bottom:16px;">Error al cargar el checkout</p><button onclick="closeStripeCheckout()" style="padding:10px 24px;border-radius:8px;background:rgba(0,0,0,.05);color:#333;border:1px solid #ccc;font-family:inherit;cursor:pointer;">Cerrar</button></div>';
     }
   }
 
+  // Polling a Firestore para detectar cuando el webhook activa la membresía
+  function vigilarPago(ventana, plan) {
+    const user = auth.currentUser;
+    if (!user) return;
+    if (_pagoWatcher) clearInterval(_pagoWatcher);
+
+    let intentos = 0;
+    const MAX_INTENTOS = 300; // 300 × 2s = 10 minutos
+    _pagoWatcher = setInterval(async () => {
+      intentos++;
+
+      // Timeout de seguridad
+      if (intentos >= MAX_INTENTOS) {
+        clearInterval(_pagoWatcher);
+        _pagoWatcher = null;
+        return;
+      }
+
+      // Si el usuario cerró la ventana sin pagar, seguir esperando 30s más (webhook puede tardar)
+      if (ventana && ventana.closed && intentos > 15) {
+        clearInterval(_pagoWatcher);
+        _pagoWatcher = null;
+        closeStripeCheckout();
+        return;
+      }
+
+      try {
+        const doc = await db.collection('members').doc(user.uid).get();
+        if (!doc.exists) return;
+        const st = doc.data().status || '';
+        if (st === 'active' || st === 'paid') {
+          clearInterval(_pagoWatcher);
+          _pagoWatcher = null;
+          try { if (ventana && !ventana.closed) ventana.close(); } catch(e){}
+          memberIsPaid = true;
+          closeStripeCheckout();
+          hideExplorationBanner();
+          loadUserProfile();
+          setTimeout(showCelebration, 400);
+        }
+      } catch(e) { /* seguir intentando */ }
+    }, 2000);
+  }
+
+  function cancelarVigilanciaPago() {
+    if (_pagoWatcher) { clearInterval(_pagoWatcher); _pagoWatcher = null; }
+    try { if (_pagoVentana && !_pagoVentana.closed) _pagoVentana.close(); } catch(e){}
+    closeStripeCheckout();
+  }
+
   function closeStripeCheckout() {
+    if (_pagoWatcher) { clearInterval(_pagoWatcher); _pagoWatcher = null; }
     document.getElementById('stripeCheckoutModal').style.display = 'none';
     document.getElementById('stripeCheckoutContainer').innerHTML = '';
   }
@@ -3743,6 +3829,9 @@
     const article = (siteData.news || []).find(n => String(n.id) === String(id));
     if (!article) return;
 
+    // Logro: contar noticias leídas
+    incrementarStatLogro('newsRead');
+
     // Auto news with external link — open in new tab
     if (article.autoNews && article.externalLink) {
       window.open(article.externalLink, '_blank');
@@ -4764,6 +4853,7 @@
   function downloadPdf(url, title) {
     if (!memberIsPaid) { showPaywallOverlay(); return; }
     if (url) {
+      incrementarStatLogro('pdfsDownloaded');
       window.open(drivePdfUrl(url), '_blank');
     } else {
       showToast('El PDF "' + title + '" se descargará cuando el admin lo suba');
@@ -4772,10 +4862,20 @@
   function joinLive(link) {
     if (!memberIsPaid) { showPaywallOverlay(); return; }
     if (link) {
+      incrementarStatLogro('webinarsAttended');
       window.open(link, '_blank');
     } else {
       showToast('El enlace de la sesión se habilitará antes de la clase');
     }
+  }
+
+  // Helper compartido: incrementa un stat de logro y dispara checkAchievements
+  function incrementarStatLogro(key) {
+    if (!achievementData) return;
+    if (!achievementData.stats) achievementData.stats = {};
+    achievementData.stats[key] = (achievementData.stats[key] || 0) + 1;
+    saveAchievements();
+    checkAchievements();
   }
 
   // ===== NAVIGATION =====
@@ -5117,38 +5217,45 @@
           let doc = await docRef.get();
           let memberData = doc.exists ? doc.data() : null;
 
-          // Si el doc existe pero no tiene datos de pago, buscar por email
-          // (el webhook guarda por email, el registro guarda por UID)
-          if (!memberData || !memberData.payments || memberData.payments.length === 0) {
-            const emailQuery = await db.collection('members')
-              .where('email', '==', user.email.toLowerCase())
-              .limit(5).get();
-            
-            let paymentDoc = null;
-            emailQuery.forEach(d => {
-              const data = d.data();
-              if (d.id !== user.uid && data.payments && data.payments.length > 0) {
-                paymentDoc = { id: d.id, data: data };
-              }
-            });
+          // Merge por email SEGURO: solo si el correo está verificado
+          // y hay UN único doc alterno con pagos (evita fusionar cuentas ajenas)
+          if ((!memberData || !memberData.payments || memberData.payments.length === 0) && user.emailVerified) {
+            try {
+              const emailQuery = await db.collection('members')
+                .where('email', '==', user.email.toLowerCase())
+                .limit(5).get();
 
-            if (paymentDoc) {
-              // Merge payment data into the UID-based doc
-              const mergeData = {};
-              if (paymentDoc.data.plan) mergeData.plan = paymentDoc.data.plan;
-              if (paymentDoc.data.payments) mergeData.payments = paymentDoc.data.payments;
-              if (paymentDoc.data.nextPaymentDate) mergeData.nextPaymentDate = paymentDoc.data.nextPaymentDate;
-              if (paymentDoc.data.paymentMethod) mergeData.paymentMethod = paymentDoc.data.paymentMethod;
-              if (paymentDoc.data.status) mergeData.status = paymentDoc.data.status;
+              const candidatos = [];
+              emailQuery.forEach(d => {
+                const data = d.data();
+                if (d.id !== user.uid && data.payments && data.payments.length > 0) {
+                  candidatos.push({ id: d.id, data: data });
+                }
+              });
 
-              if (doc.exists) {
-                await docRef.update(mergeData);
-              } else {
-                await docRef.set({ ...mergeData, name: user.displayName || '', email: user.email || '' });
+              // Solo mergeamos si hay exactamente UN candidato (evita ambigüedad)
+              if (candidatos.length === 1) {
+                const paymentDoc = candidatos[0];
+                console.log('[merge] Fusionando pagos del doc', paymentDoc.id, '→', user.uid);
+                const mergeData = {};
+                if (paymentDoc.data.plan) mergeData.plan = paymentDoc.data.plan;
+                if (paymentDoc.data.payments) mergeData.payments = paymentDoc.data.payments;
+                if (paymentDoc.data.nextPaymentDate) mergeData.nextPaymentDate = paymentDoc.data.nextPaymentDate;
+                if (paymentDoc.data.paymentMethod) mergeData.paymentMethod = paymentDoc.data.paymentMethod;
+                if (paymentDoc.data.status) mergeData.status = paymentDoc.data.status;
+                if (paymentDoc.data.stripeCustomerId) mergeData.stripeCustomerId = paymentDoc.data.stripeCustomerId;
+                if (paymentDoc.data.stripeSubscriptionId) mergeData.stripeSubscriptionId = paymentDoc.data.stripeSubscriptionId;
+
+                if (doc.exists) await docRef.update(mergeData);
+                else await docRef.set({ ...mergeData, name: user.displayName || '', email: user.email || '' });
+
+                doc = await docRef.get();
+                memberData = doc.exists ? doc.data() : null;
+              } else if (candidatos.length > 1) {
+                console.warn('[merge] Múltiples docs con este email — no se fusiona automáticamente para evitar mezclar cuentas');
               }
-              // Re-read the merged doc
-              doc = await docRef.get();
-              memberData = doc.exists ? doc.data() : null;
+            } catch(mergeErr) {
+              console.error('[merge] Error buscando pagos por email:', mergeErr);
             }
           }
 
