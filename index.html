@@ -725,13 +725,13 @@
 
       <div class="splash-price">
         <div class="opt">
-          <b>$249</b>
+          <b id="splash-precio-mes">$249</b>
           <small>MXN al mes<br>Cancela cuando quieras</small>
         </div>
         <div class="opt opt--star">
-          <span class="badge">Ahorras $989</span>
-          <b>$1,999</b>
-          <small>MXN al año · sale en <span class="tachado">$249</span><strong style="color:var(--accent-light);">$167/mes</strong><br>Acceso completo los 365 días</small>
+          <span class="badge" id="splash-ahorro">Ahorras $989</span>
+          <b id="splash-precio-ano">$1,999</b>
+          <small>MXN al año · sale en <span class="tachado" id="splash-tachado">$249</span><strong style="color:var(--accent-light);" id="splash-equivale">$167/mes</strong><br>Acceso completo los 365 días</small>
         </div>
       </div>
 
@@ -1277,7 +1277,7 @@
       </div>
       <div class="sub-card">
         <h3>Plan Club FisioTeck</h3>
-        <div class="sub-price">$249 <span>MXN / mes</span></div>
+        <div class="sub-price" id="sub-precio-display">$249 <span>MXN / mes</span></div>
         <div class="sub-status"><div class="dot"></div> Activa</div>
       </div>
       <div class="sub-details">
@@ -1332,13 +1332,13 @@
           <p style="margin-bottom:12px;">Al suscribirte y utilizar la plataforma Club FisioTeck (en adelante "el Club"), operada por FisioTeck, aceptas los siguientes términos y condiciones. Te recomendamos leerlos cuidadosamente.</p>
 
           <p style="margin-bottom:6px;"><strong>1. Descripción del servicio</strong></p>
-          <p style="margin-bottom:12px;">Club FisioTeck es una plataforma digital de membresía mensual que ofrece acceso a cursos grabados, clases en línea en vivo, material en formato PDF y otros recursos educativos en el área de fisioterapia y rehabilitación. El acceso al contenido está condicionado al pago vigente de la suscripción mensual de $249.00 MXN (doscientos cuarenta y nueve pesos mexicanos).</p>
+          <p style="margin-bottom:12px;">Club FisioTeck es una plataforma digital de membresía mensual que ofrece acceso a cursos grabados, clases en línea en vivo, material en formato PDF y otros recursos educativos en el área de fisioterapia y rehabilitación. El acceso al contenido está condicionado al pago vigente de la suscripción mensual de <span class="txt-precio-mes">$249.00</span> MXN.</p>
 
           <p style="margin-bottom:6px;"><strong>2. Registro y cuenta</strong></p>
           <p style="margin-bottom:12px;">Para acceder al Club debes contar con una cuenta activa proporcionada por el administrador. Cada cuenta es personal e intransferible. Eres responsable de mantener la confidencialidad de tus credenciales de acceso. Club FisioTeck se reserva el derecho de suspender o cancelar cualquier cuenta que comparta credenciales con terceros o haga uso indebido de la plataforma.</p>
 
           <p style="margin-bottom:6px;"><strong>3. Suscripción y pagos</strong></p>
-          <p style="margin-bottom:12px;">La membresía tiene un costo mensual de $249.00 MXN. El pago se realiza mediante transferencia bancaria. El acceso al contenido se activa una vez confirmado el pago y permanece activo durante el período pagado. No se realizan cobros automáticos; el socio es responsable de realizar su pago cada mes para mantener el acceso activo.</p>
+          <p style="margin-bottom:12px;">La membresía tiene un costo mensual de <span class="txt-precio-mes">$249.00</span> MXN. El pago se realiza mediante transferencia bancaria. El acceso al contenido se activa una vez confirmado el pago y permanece activo durante el período pagado. No se realizan cobros automáticos; el socio es responsable de realizar su pago cada mes para mantener el acceso activo.</p>
 
           <p style="margin-bottom:6px;"><strong>4. Política de reembolso</strong></p>
           <p style="margin-bottom:12px;">No se otorgan reembolsos una vez procesado el pago del período mensual. Si cancelas tu suscripción, mantendrás el acceso hasta que finalice el período ya pagado. Tras ello, tu acceso se desactivará automáticamente.</p>
@@ -1894,7 +1894,7 @@
       <!-- PLAN MENSUAL -->
       <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:28px 24px;width:220px;text-align:center;transition:all .3s ease;" onmouseover="this.style.borderColor='#1565C0';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='rgba(255,255,255,.12)';this.style.transform='translateY(0)'">
         <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.45);margin-bottom:8px;">Mensual</div>
-        <div style="font-size:2.2rem;font-weight:700;color:#fff;margin-bottom:4px;letter-spacing:2px;">$249</div>
+        <div style="font-size:2.2rem;font-weight:700;color:#fff;margin-bottom:4px;letter-spacing:2px;" id="paywall-precio-mes">$249</div>
         <div style="font-size:.8rem;color:rgba(255,255,255,.4);margin-bottom:20px;">MXN / mes</div>
         <button onclick="openStripeCheckout('mensual')" style="display:block;width:100%;padding:12px;border-radius:10px;background:rgba(21,101,192,.15);color:#1565C0;font-family:inherit;font-size:.88rem;font-weight:600;border:1px solid rgba(21,101,192,.3);cursor:pointer;transition:all .25s ease;" onmouseover="this.style.background='#1565C0';this.style.color='#0F1A2A'" onmouseout="this.style.background='rgba(21,101,192,.15)';this.style.color='#1565C0'">
           Elegir Mensual
@@ -1902,9 +1902,9 @@
       </div>
       <!-- PLAN ANUAL -->
       <div style="background:rgba(21,101,192,.08);border:2px solid #1565C0;border-radius:16px;padding:28px 24px;width:220px;text-align:center;position:relative;transition:all .3s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
-        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#1565C0;color:#0F1A2A;font-size:.7rem;font-weight:700;padding:4px 14px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;">Ahorras $989</div>
+        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#1565C0;color:#0F1A2A;font-size:.7rem;font-weight:700;padding:4px 14px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;" id="paywall-ahorro">Ahorras $989</div>
         <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.45);margin-bottom:8px;">Anual</div>
-        <div style="font-size:2.2rem;font-weight:700;color:#fff;margin-bottom:4px;letter-spacing:2px;">$1,999</div>
+        <div style="font-size:2.2rem;font-weight:700;color:#fff;margin-bottom:4px;letter-spacing:2px;" id="paywall-precio-ano">$1,999</div>
         <div style="font-size:.8rem;color:rgba(255,255,255,.4);margin-bottom:20px;">MXN / año</div>
         <button onclick="openStripeCheckout('anual')" style="display:block;width:100%;padding:12px;border-radius:10px;background:#1565C0;color:#0F1A2A;font-family:inherit;font-size:.88rem;font-weight:700;border:1px solid #1565C0;cursor:pointer;transition:all .25s ease;" onmouseover="this.style.background='#4285D6'" onmouseout="this.style.background='#1565C0'">
           Elegir Anual
@@ -2352,11 +2352,11 @@
       body: `<p style="margin-bottom:12px;"><strong>Última actualización:</strong> Abril 2026</p>
 <p style="margin-bottom:12px;">Al suscribirte y utilizar la plataforma Club FisioTeck (en adelante "el Club"), operada por FisioTeck, aceptas los siguientes términos y condiciones.</p>
 <p style="margin-bottom:6px;"><strong>1. Descripción del servicio</strong></p>
-<p style="margin-bottom:12px;">Club FisioTeck es una plataforma digital de membresía mensual que ofrece acceso a cursos grabados, clases en línea en vivo, material en formato PDF y otros recursos educativos en el área de fisioterapia y rehabilitación. El acceso al contenido está condicionado al pago vigente de la suscripción mensual de $249.00 MXN.</p>
+<p style="margin-bottom:12px;">Club FisioTeck es una plataforma digital de membresía mensual que ofrece acceso a cursos grabados, clases en línea en vivo, material en formato PDF y otros recursos educativos en el área de fisioterapia y rehabilitación. El acceso al contenido está condicionado al pago vigente de la suscripción mensual de <span class="txt-precio-mes">$249.00</span> MXN.</p>
 <p style="margin-bottom:6px;"><strong>2. Registro y cuenta</strong></p>
 <p style="margin-bottom:12px;">Cada cuenta es personal e intransferible. Eres responsable de mantener la confidencialidad de tus credenciales. Club FisioTeck se reserva el derecho de suspender cualquier cuenta que comparta credenciales con terceros o haga uso indebido de la plataforma.</p>
 <p style="margin-bottom:6px;"><strong>3. Suscripción y pagos</strong></p>
-<p style="margin-bottom:12px;">La membresía tiene un costo mensual de $249.00 MXN. El pago se realiza mediante transferencia bancaria. El acceso se activa una vez confirmado el pago y permanece activo durante el período pagado.</p>
+<p style="margin-bottom:12px;">La membresía tiene un costo mensual de <span class="txt-precio-mes">$249.00</span> MXN. El pago se realiza mediante transferencia bancaria. El acceso se activa una vez confirmado el pago y permanece activo durante el período pagado.</p>
 <p style="margin-bottom:6px;"><strong>4. Política de reembolso</strong></p>
 <p style="margin-bottom:12px;">No se otorgan reembolsos una vez procesado el pago del período mensual. Si cancelas, mantendrás el acceso hasta que finalice el período ya pagado.</p>
 <p style="margin-bottom:6px;"><strong>5. Uso del contenido</strong></p>
@@ -2476,7 +2476,22 @@
     // --- Datos reales de suscripción desde Firebase ---
     const plan = userData.plan || 'mensual';
     const planLabel = plan === 'anual' ? 'Plan Anual' : 'Plan Mensual';
-    const planPrice = plan === 'anual' ? '$2,490' : '$249';
+    // Precio mostrado: lo que el socio REALMENTE pagó (último pago registrado
+    // por el webhook), y si no hay registro, el precio dinámico actual de
+    // config/club. (Antes decía $2,490 fijo para anual — bug: el real era $1,999.)
+    let _montoSocio = null;
+    if (Array.isArray(userData.payments)) {
+      for (let i = userData.payments.length - 1; i >= 0; i--) {
+        if (typeof userData.payments[i]?.amount === 'number' && userData.payments[i].amount > 0) {
+          _montoSocio = userData.payments[i].amount;
+          break;
+        }
+      }
+    }
+    if (!_montoSocio) {
+      _montoSocio = plan === 'anual' ? (window.__PRECIO_ANO || 1999) : (window.__PRECIO_MES || 249);
+    }
+    const planPrice = '$' + _montoSocio.toLocaleString('es-MX');
     const planPeriod = plan === 'anual' ? 'año' : 'mes';
     const memberStatus = userData.status || 'active';
     const isCancelled = memberStatus === 'cancelled';
@@ -5059,7 +5074,7 @@
         const statusLabel = p.status === 'paid' ? 'Pagado' : p.status === 'pending' ? 'Pendiente' : p.status;
         const statusColor = p.status === 'paid' ? 'var(--success)' : 'var(--warning)';
         const statusBg = p.status === 'paid' ? 'rgba(34,197,94,.1)' : 'rgba(245,158,11,.1)';
-        const amount = typeof p.amount === 'number' ? '$' + p.amount.toLocaleString('es-MX', {minimumFractionDigits:2}) + ' MXN' : '$249.00 MXN';
+        const amount = typeof p.amount === 'number' ? '$' + p.amount.toLocaleString('es-MX', {minimumFractionDigits:2}) + ' MXN' : '$' + (window.__PRECIO_MES || 249).toLocaleString('es-MX', {minimumFractionDigits:2}) + ' MXN';
         rows += `<tr style="border-bottom:1px solid var(--border);">
           <td style="padding:10px 12px;">${formatDate(p.date)}</td>
           <td style="padding:10px 12px;">${p.concept || 'Membresía ' + (p.plan || 'mensual')}</td>
@@ -5397,6 +5412,51 @@
   });
   // Close video modal and legal modal on escape
   document.addEventListener('keydown', e => { if(e.key === 'Escape') { closeVideo(); closeLegalModal(); } });
+
+  // ═══ PRECIOS DINÁMICOS (config/club en Firestore) ═══
+  // Reemplaza en TODA la página los precios que antes estaban fijos:
+  // splash/login, paywall, "Mi Suscripción" y los montos de Términos y Condiciones.
+  // Corre ANTES del login (el splash muestra precios sin sesión). Si Firestore
+  // falla, se quedan los precios de respaldo ya escritos en el HTML.
+  async function cargarPreciosDinamicos() {
+    try {
+      const snap = await db.collection('config').doc('club').get();
+      const c = snap.exists ? snap.data() : {};
+      const precioMes = Number(c.precioMes) > 0 ? Number(c.precioMes) : 249;
+      const precioAno = Number(c.precioAno) > 0 ? Number(c.precioAno) : 1999;
+      window.__PRECIO_MES = precioMes;
+      window.__PRECIO_ANO = precioAno;
+
+      const ahorro = Math.max(0, (precioMes * 12) - precioAno);
+      const equivaleMes = Math.round(precioAno / 12);
+      const fmt = n => n.toLocaleString('es-MX');
+      const setTxt = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+
+      // Splash / login
+      setTxt('splash-precio-mes', '$' + fmt(precioMes));
+      setTxt('splash-precio-ano', '$' + fmt(precioAno));
+      setTxt('splash-ahorro', 'Ahorras $' + fmt(ahorro));
+      setTxt('splash-tachado', '$' + fmt(precioMes));
+      setTxt('splash-equivale', '$' + fmt(equivaleMes) + '/mes');
+
+      // Paywall (contenido bloqueado)
+      setTxt('paywall-precio-mes', '$' + fmt(precioMes));
+      setTxt('paywall-precio-ano', '$' + fmt(precioAno));
+      setTxt('paywall-ahorro', 'Ahorras $' + fmt(ahorro));
+
+      // Tarjeta estática de "Mi Suscripción" (la de socio activo la sobreescribe loadUserProfile)
+      const subEl = document.getElementById('sub-precio-display');
+      if (subEl) subEl.innerHTML = '$' + fmt(precioMes) + ' <span>MXN / mes</span>';
+
+      // Términos y Condiciones (todas las menciones del precio mensual)
+      document.querySelectorAll('.txt-precio-mes').forEach(el => {
+        el.textContent = '$' + precioMes.toLocaleString('es-MX', { minimumFractionDigits: 2 });
+      });
+    } catch (e) {
+      console.warn('[Club FisioTeck] Precios dinámicos no disponibles, se usan los del HTML:', e.message);
+    }
+  }
+  cargarPreciosDinamicos();
 </script>
 
 <!-- MODIFICADO: Club FisioTeck — sitio de membresía creado desde cero -->
