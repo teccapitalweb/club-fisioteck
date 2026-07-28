@@ -2605,9 +2605,17 @@
     const user = auth.currentUser;
     if (!user) return;
 
-    // Modal con estado "preparando"
-    document.getElementById('stripeCheckoutModal').style.display = 'flex';
-    document.getElementById('stripeCheckoutContainer').innerHTML = '<div style="text-align:center;padding:40px;"><div class="spinner" style="border:3px solid rgba(255,255,255,.1);border-top:3px solid #4CA6DE;border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite;margin:0 auto 16px;"></div><p style="color:rgba(255,255,255,.6);font-size:.9rem;">Preparando checkout seguro...</p></div>';
+    // Sin modal intermedio: el botón muestra el estado de carga y se
+    // redirige DIRECTO al formulario de pago de Stripe en esta misma
+    // pestaña. Al terminar, Stripe regresa al club con ?session_id= y
+    // se dispara la celebración (flujo estándar de Stripe Checkout).
+    const _btn = (typeof event !== 'undefined' && event && event.target && event.target.closest) ? event.target.closest('button') : null;
+    let _btnTextoOriginal = '';
+    if (_btn) {
+      _btnTextoOriginal = _btn.innerHTML;
+      _btn.disabled = true;
+      _btn.innerHTML = 'Abriendo pago seguro…';
+    }
 
     try {
       const res = await fetch(WEBHOOK_URL + '/api/create-checkout', {
@@ -2617,41 +2625,16 @@
       });
       const data = await res.json();
 
-      // === RUTA A: backend nuevo devuelve URL (popup preferido) ===
+      // === RUTA A: backend devuelve URL → redirect directo, sin modal ===
       if (data.url) {
-        const w = 520, h = 780;
-        const left = (screen.width - w) / 2;
-        const top = (screen.height - h) / 2;
-        _pagoVentana = window.open(data.url, 'stripe_pay', `width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=yes`);
-
-        // Fallback si el navegador bloqueó el popup
-        if (!_pagoVentana || _pagoVentana.closed || typeof _pagoVentana.closed === 'undefined') {
-          document.getElementById('stripeCheckoutContainer').innerHTML = `
-            <div style="text-align:center;padding:40px;">
-              <div style="margin-bottom:12px;color:var(--warning);display:flex;justify-content:center;"><svg class="ic" style="width:30px;height:30px;"><use href="#f-alert"/></svg></div>
-              <p style="color:var(--text);font-size:1rem;margin-bottom:8px;font-weight:600;">Tu navegador bloqueó la ventana de pago</p>
-              <p style="color:var(--text-light);font-size:.85rem;margin-bottom:20px;">Abre el checkout en una nueva pestaña:</p>
-              <a href="${data.url}" target="_blank" onclick="vigilarPago(null,'${plan}')" style="display:inline-block;padding:12px 28px;border-radius:8px;background:var(--accent);color:#fff;text-decoration:none;font-family:inherit;font-weight:600;">Ir a pagar →</a>
-              <button onclick="closeStripeCheckout()" style="display:block;margin:16px auto 0;padding:10px 24px;border-radius:8px;background:none;color:var(--text-light);border:1px solid var(--border-2);font-family:inherit;cursor:pointer;">Cerrar</button>
-            </div>`;
-          return;
-        }
-
-        // UI mientras el usuario paga
-        document.getElementById('stripeCheckoutContainer').innerHTML = `
-          <div style="text-align:center;padding:40px;">
-            <div class="spinner" style="border:3px solid var(--accent-ghost);border-top:3px solid var(--accent);border-radius:50%;width:44px;height:44px;animation:spin 1s linear infinite;margin:0 auto 20px;"></div>
-            <h3 style="color:var(--text);font-size:1.1rem;margin-bottom:8px;">Completa tu pago en la ventana</h3>
-            <p style="color:var(--text-light);font-size:.9rem;margin-bottom:20px;line-height:1.5;">Estamos esperando la confirmación de Stripe.<br>No cierres esta ventana.</p>
-            <button onclick="cancelarVigilanciaPago()" style="padding:10px 24px;border-radius:8px;background:none;color:var(--text-light);border:1px solid var(--border-2);font-family:inherit;cursor:pointer;font-size:.85rem;">Cancelar</button>
-          </div>`;
-
-        vigilarPago(_pagoVentana, plan);
+        window.location.href = data.url;
         return;
       }
 
       // === RUTA B: backend viejo aún devuelve clientSecret (embedded fallback) ===
       if (data.clientSecret) {
+        if (_btn) { _btn.disabled = false; _btn.innerHTML = _btnTextoOriginal; }
+        document.getElementById('stripeCheckoutModal').style.display = 'flex';
         if (!stripeInstance) {
           if (!window.Stripe) {
             const s = document.createElement('script');
@@ -2670,7 +2653,8 @@
       throw new Error('Respuesta del backend inválida');
     } catch(err) {
       console.error('Stripe checkout error:', err);
-      document.getElementById('stripeCheckoutContainer').innerHTML = '<div style="text-align:center;padding:40px;"><p style="color:#EF4444;font-size:1rem;margin-bottom:16px;">Error al cargar el checkout</p><button onclick="closeStripeCheckout()" style="padding:10px 24px;border-radius:8px;background:rgba(0,0,0,.05);color:#333;border:1px solid #ccc;font-family:inherit;cursor:pointer;">Cerrar</button></div>';
+      if (_btn) { _btn.disabled = false; _btn.innerHTML = _btnTextoOriginal; }
+      showToast('No se pudo abrir el pago. Intenta de nuevo.');
     }
   }
 
