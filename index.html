@@ -938,6 +938,55 @@
     .empty-state h3 { font-family:var(--font-display); font-size:1.1rem; color:var(--text-light); margin-bottom:8px; font-weight:700; }
     .empty-state p { font-size:.85rem; max-width:360px; margin:0 auto; line-height:1.6; }
 
+    /* ── TARJETAS PDF (estilo SYNOVA) ── */
+    .pdf-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:20px; }
+    .pdf-card {
+      background:var(--surface); border-radius:22px; overflow:hidden; border:1px solid var(--border);
+      transition:transform .3s cubic-bezier(.2,.8,.25,1), border-color .25s, box-shadow .35s;
+      display:flex; flex-direction:column; position:relative;
+    }
+    .pdf-card:hover {
+      transform:translateY(-5px);
+      border-color:color-mix(in srgb, var(--accent) 50%, transparent);
+      box-shadow:0 22px 50px color-mix(in srgb, var(--accent) 16%, rgba(0,0,0,.12));
+    }
+    .pdf-card__cover {
+      height:120px; background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 55%,#000));
+      position:relative; overflow:hidden;
+      display:flex; align-items:center; justify-content:center; color:#fff;
+    }
+    .pdf-card__cover::before {
+      content:""; position:absolute; inset:0; pointer-events:none; z-index:1;
+      background-image:linear-gradient(to right,rgba(255,255,255,.08) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.08) 1px,transparent 1px);
+      background-size:26px 26px;
+      -webkit-mask-image:radial-gradient(ellipse at center,#000 0%,transparent 75%);
+      mask-image:radial-gradient(ellipse at center,#000 0%,transparent 75%);
+    }
+    .pdf-card__cover img { width:100%; height:100%; object-fit:cover; }
+    .pdf-card__badge {
+      position:absolute; top:11px; right:11px; z-index:2;
+      background:rgba(0,0,0,.45); backdrop-filter:blur(10px);
+      color:#fff; border:1px solid rgba(255,255,255,.22);
+      padding:4px 10px; border-radius:100px;
+      font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:700;
+      text-transform:uppercase; letter-spacing:.8px;
+    }
+    .pdf-card__body { padding:16px 18px 18px; display:flex; flex-direction:column; gap:8px; flex:1; }
+    .pdf-card__title { font-family:var(--font-display); font-size:.98rem; font-weight:700; letter-spacing:-.02em; line-height:1.3; }
+    .pdf-card__desc { font-size:.8rem; color:var(--text-light); line-height:1.55; display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden; }
+    .pdf-card__footer {
+      display:flex; justify-content:space-between; align-items:center; gap:8px;
+      margin-top:auto; padding-top:10px; border-top:1px solid var(--border);
+    }
+    .pdf-card__size { font-family:'JetBrains Mono',monospace; font-size:.68rem; font-weight:600; color:var(--text-muted); }
+    .pdf-card__btn {
+      padding:8px 16px; border-radius:100px; font-size:.78rem; font-weight:700;
+      background:var(--accent); color:var(--on-accent); transition:var(--transition);
+      box-shadow:0 6px 16px color-mix(in srgb, var(--accent) 30%, transparent);
+      display:inline-flex; align-items:center; gap:6px;
+    }
+    .pdf-card__btn:hover { background:var(--accent-deep); transform:translateY(-1px); }
+
     /* ── BUSCADOR ── */
     .search-bar {
       display:flex; align-items:center; gap:11px; padding:12px 17px;
@@ -1392,7 +1441,7 @@
               <h3 style="font-size:1rem;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;"><svg class="ic" style="width:17px;height:17px;vertical-align:-3px;"><use href="#f-news"/></svg> Noticias y novedades</h3>
               <button onclick="showPage('news')" style="background:none;border:none;color:var(--primary);font-size:.8rem;font-weight:500;cursor:pointer;">Ver todas →</button>
             </div>
-            <div id="homeNews" style="display:flex;flex-direction:column;gap:12px;"></div>
+            <div id="homeNews" class="news-grid" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;"></div>
           </div>
         </div>
 
@@ -1534,7 +1583,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="text" placeholder="Buscar PDFs..." id="searchPdfs" oninput="filterContent('pdfs')">
       </div>
-      <div class="content-list" id="pdfsList"></div>
+      <div class="pdf-grid" id="pdfsList"></div>
     </section>
 
     <!-- NEWS -->
@@ -1627,6 +1676,26 @@
         <h3>Plan Club FisioTeck</h3>
         <div class="sub-price" id="sub-precio-display">$249 <span>MXN / mes</span></div>
         <div class="sub-status"><div class="dot"></div> Activa</div>
+      </div>
+
+      <!-- SELECTOR DE PLANES — visible cuando el socio NO tiene suscripción activa.
+           Puede elegir mensual o anual libremente (como Dermalysse y SYNOVA). -->
+      <div id="subPlanesElegir" style="display:none;margin-bottom:24px;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;">
+          <div class="card" style="text-align:center;padding:28px 22px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;">Mensual</div>
+            <div style="font-family:var(--font-display);font-size:2.2rem;font-weight:800;letter-spacing:-.03em;line-height:1;" id="subplan-precio-mes">$249</div>
+            <div style="font-size:.8rem;color:var(--text-muted);margin:6px 0 18px;">MXN / mes · cancela cuando quieras</div>
+            <button class="btn-primary" style="width:100%;" onclick="openStripeCheckout('mensual')">Elegir Mensual</button>
+          </div>
+          <div class="card" style="text-align:center;padding:28px 22px;position:relative;border-color:var(--accent);border-width:1.5px;">
+            <div id="subplan-ahorro" style="position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--accent);color:var(--on-accent);font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:100px;white-space:nowrap;box-shadow:0 6px 16px color-mix(in srgb,var(--accent) 35%,transparent);">Ahorras $989</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">Anual</div>
+            <div style="font-family:var(--font-display);font-size:2.2rem;font-weight:800;letter-spacing:-.03em;line-height:1;" id="subplan-precio-ano">$1,999</div>
+            <div style="font-size:.8rem;color:var(--text-muted);margin:6px 0 18px;" id="subplan-equivale">MXN / año · equivale a $167/mes</div>
+            <button class="btn-primary" style="width:100%;" onclick="openStripeCheckout('anual')">Elegir Anual</button>
+          </div>
+        </div>
       </div>
       <div class="sub-details">
         <div class="sub-detail-item">
@@ -2861,9 +2930,21 @@
       else sidebarPlan.textContent = 'Inactivo';
     }
 
+    // Selector de planes: si el socio NO está activo ni cancelado-con-acceso,
+    // en vez de la tarjeta fija del plan que eligió al registrarse, se le
+    // muestran AMBOS planes para elegir libremente (como Dermalysse/SYNOVA).
+    const puedeElegirPlan = !isActive && !isCancelled;
+    const selectorPlanes = document.getElementById('subPlanesElegir');
+    if (selectorPlanes) selectorPlanes.style.display = puedeElegirPlan ? '' : 'none';
+    const subDetailsEl = document.querySelector('.sub-details');
+    if (subDetailsEl) subDetailsEl.style.display = puedeElegirPlan ? 'none' : '';
+    const cancelSecEl = document.querySelector('.cancel-section');
+    if (cancelSecEl && puedeElegirPlan) cancelSecEl.style.display = 'none';
+
     // Subscription card
     const subCard = document.querySelector('.sub-card');
     if (subCard) {
+      subCard.style.display = puedeElegirPlan ? 'none' : '';
       subCard.querySelector('h3').textContent = planLabel + ' — Club FisioTeck';
       subCard.querySelector('.sub-price').innerHTML = planPrice + ' <span>MXN / ' + planPeriod + '</span>';
       const statusEl = subCard.querySelector('.sub-status');
@@ -2894,9 +2975,9 @@
       banner.remove();
     }
 
-    // Hide cancel button if already cancelled
+    // Hide cancel button if already cancelled (o si está eligiendo plan — no hay nada que cancelar)
     const cancelSection = document.querySelector('.cancel-section');
-    if (cancelSection) cancelSection.style.display = isCancelled ? 'none' : '';
+    if (cancelSection) cancelSection.style.display = (isCancelled || puedeElegirPlan) ? 'none' : '';
 
     // Subscription details
     const start = userData.startDate || new Date().toISOString().split('T')[0];
@@ -4128,20 +4209,8 @@
       container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);">Próximamente noticias y artículos</div>';
       return;
     }
-    container.innerHTML = news.map(n => {
-      const thumbUrl = n.thumbnail ? (n.autoNews ? n.thumbnail : driveImageUrl(n.thumbnail)) : '';
-      const d = new Date(n.date + 'T12:00:00');
-      const timeAgo = getTimeAgo(d);
-      const clickAction = n.autoNews && n.externalLink ? `window.open('${n.externalLink}','_blank')` : `openArticle('${n.id}')`;
-      return `<div onclick="${clickAction}" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;display:flex;gap:14px;cursor:pointer;transition:all .3s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.boxShadow='0 0 12px rgba(20,167,155,.12)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
-        ${thumbUrl ? `<img src="${thumbUrl}" style="width:100px;height:75px;object-fit:cover;border-radius:8px;flex-shrink:0;" onerror="this.style.display='none'">` : ''}
-        <div style="flex:1;min-width:0;">
-          ${n.source ? `<div style="font-size:.65rem;font-weight:600;color:var(--primary);margin-bottom:2px;">${n.source}</div>` : ''}
-          <div style="font-size:.88rem;font-weight:600;color:var(--text);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${n.title}</div>
-          <div style="font-size:.72rem;color:var(--text-muted);margin-top:4px;display:flex;align-items:center;gap:8px;">${timeAgo} ${n.externalLink ? '<span style="margin-left:auto;color:var(--primary);">Leer ↗</span>' : ''}</div>
-        </div>
-      </div>`;
-    }).join('');
+    // Mismas cards que la pestaña de Noticias (estilo SYNOVA)
+    container.innerHTML = news.map(n => newsCardHTML(n)).join('');
   }
   function renderNews() {
     const news = siteData.news || [];
@@ -4511,7 +4580,7 @@
     });
     if (newUnlocks.length > 0) {
       saveAchievements();
-      newUnlocks.forEach(b => showToast(b.icon + ' ¡Insignia desbloqueada! ' + b.name + ' (+' + b.xp + ' XP)'));
+      newUnlocks.forEach(b => showToast('¡Insignia desbloqueada! ' + b.name + ' (+' + b.xp + ' XP)'));
       updateXpWidget();
     }
   }
@@ -4523,7 +4592,7 @@
     const w = document.getElementById('xpWidget');
     if (!w) return;
     w.style.display = 'block';
-    document.getElementById('xpLevelIcon').textContent = level.icon;
+    document.getElementById('xpLevelIcon').innerHTML = level.icon;
     document.getElementById('xpLevelName').textContent = level.name;
     document.getElementById('xpPoints').textContent = xp + ' XP' + (nextLevel ? ' · Siguiente: ' + nextLevel.name + ' (' + nextLevel.min + ' XP)' : ' · Nivel máximo');
     const pct = nextLevel ? Math.min(100, ((xp - level.min) / (nextLevel.min - level.min)) * 100) : 100;
@@ -4541,7 +4610,7 @@
     let html = `<div style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:var(--radius);padding:28px;color:#fff;margin-bottom:24px;position:relative;overflow:hidden;">
       <div style="position:absolute;top:-30%;right:-5%;width:200px;height:200px;background:rgba(255,255,255,.05);border-radius:50%;"></div>
       <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;position:relative;z-index:1;">
-        <div style="font-size:3rem;">${level.icon}</div>
+        <div style="display:flex;justify-content:center;color:var(--accent);">${level.icon}</div>
         <div><div style="font-size:1.3rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;">${level.name}</div>
         <div style="font-size:.85rem;opacity:.7;">${xp} XP · ${unlockedSet.size}/${BADGES.length} insignias</div></div>
       </div>
@@ -4563,7 +4632,7 @@
       cb.forEach(badge => {
         const u = unlockedSet.has(badge.id);
         html += `<div style="background:var(--bg-card);border:1px solid ${u?'var(--primary)':'var(--border)'};border-radius:var(--radius);padding:16px;display:flex;align-items:center;gap:14px;${u?'':'opacity:.5;filter:grayscale(100%);'}">
-          <div style="width:48px;height:48px;border-radius:50%;background:${u?'var(--accent-ghost)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">${badge.icon}</div>
+          <div style="width:48px;height:48px;border-radius:50%;background:${u?'var(--accent-ghost)':'var(--border)'};display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0;">${badge.icon}</div>
           <div style="flex:1;min-width:0;"><div style="font-size:.88rem;font-weight:600;">${badge.name}</div><div style="font-size:.75rem;color:var(--text-muted);margin-top:2px;">${badge.desc}</div>
           <div style="font-size:.7rem;font-weight:600;color:${u?'var(--success)':'var(--text-muted)'};margin-top:4px;">${u?'✓ Desbloqueada':'+'+badge.xp+' XP'}</div></div></div>`;
       });
@@ -4573,7 +4642,7 @@
     html += `<div style="margin-top:8px;"><h3 style="font-size:.95rem;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;"><svg class="ic" style="width:15px;height:15px;vertical-align:-2px;margin-right:5px;"><use href="#f-compass"/></svg>Niveles</h3><div style="display:flex;gap:8px;flex-wrap:wrap;">`;
     LEVELS.forEach(lv => {
       const a = lv.name===level.name, r = xp>=lv.min;
-      html += `<div style="flex:1;min-width:100px;background:${a?'var(--primary)':r?'var(--accent-ghost)':'var(--bg-card)'};color:${a?'#fff':'var(--text)'};border:1px solid ${a?'var(--primary)':'var(--border)'};border-radius:var(--radius);padding:12px;text-align:center;${r||a?'':'opacity:.4;'}"><div style="font-size:1.4rem;">${lv.icon}</div><div style="font-size:.75rem;font-weight:600;margin-top:4px;">${lv.name}</div><div style="font-size:.65rem;${a?'opacity:.7;':'color:var(--text-muted);'}margin-top:2px;">${lv.min}+ XP</div></div>`;
+      html += `<div style="flex:1;min-width:100px;background:${a?'var(--primary)':r?'var(--accent-ghost)':'var(--bg-card)'};color:${a?'#fff':'var(--text)'};border:1px solid ${a?'var(--primary)':'var(--border)'};border-radius:var(--radius);padding:12px;text-align:center;${r||a?'':'opacity:.4;'}"><div style="display:flex;justify-content:center;">${lv.icon}</div><div style="font-size:.75rem;font-weight:600;margin-top:4px;">${lv.name}</div><div style="font-size:.65rem;${a?'opacity:.7;':'color:var(--text-muted);'}margin-top:2px;">${lv.min}+ XP</div></div>`;
     });
     html += '</div></div>';
     container.innerHTML = html;
@@ -5120,7 +5189,27 @@
   }
   function renderPdfs() {
     const container = document.getElementById('pdfsList');
-    container.innerHTML = siteData.pdfs.map(c => contentItemHTML(c, 'pdf')).join('');
+    // Tarjetas cuadradas estilo SYNOVA (antes: filas de lista)
+    container.innerHTML = siteData.pdfs.map(item => {
+      const thumbUrl = item.thumbnail ? driveImageUrl(item.thumbnail) : '';
+      const cover = thumbUrl
+        ? `<img src="${thumbUrl}" alt="${item.title}" onerror="this.remove()">`
+        : `<svg class="ic" style="width:36px;height:36px;position:relative;z-index:1;opacity:.92;"><use href="#f-file"/></svg>`;
+      return `
+      <div class="pdf-card" data-category="${item.category || 'all'}" data-title="${item.title.toLowerCase()}">
+        <div class="pdf-card__cover">${cover}<div class="pdf-card__badge">PDF</div></div>
+        <div class="pdf-card__body">
+          <div class="pdf-card__title">${item.title}${item.badge ? ` <span style="background:var(--accent);color:var(--on-accent);padding:2px 8px;border-radius:10px;font-size:.62rem;font-weight:700;margin-left:4px;vertical-align:2px;">${item.badge}</span>` : ''}</div>
+          <div class="pdf-card__desc">${item.desc || ''}</div>
+          <div class="pdf-card__footer">
+            <span class="pdf-card__size">${item.size || ''}</span>
+            <button class="pdf-card__btn" onclick="downloadPdf('${item.fileUrl||''}','${item.title.replace(/'/g,"\\'")}')">
+              <svg class="ic" style="width:12px;height:12px;"><use href="#f-file"/></svg>Descargar
+            </button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
   }
 
   function contentItemHTML(item, type) {
@@ -5317,10 +5406,10 @@
     const searchEl = section === 'library' ? 'searchLibrary' : section === 'live' ? 'searchLive' : 'searchPdfs';
     const listEl = section === 'library' ? 'libraryList' : section === 'live' ? 'liveList' : 'pdfsList';
     const query = document.getElementById(searchEl).value.toLowerCase();
-    document.querySelectorAll(`#${listEl} .content-item`).forEach(item => {
+    document.querySelectorAll(`#${listEl} .content-item, #${listEl} .pdf-card`).forEach(item => {
       const matchCat = currentCategory === 'all' || item.dataset.category === currentCategory;
       const matchSearch = !query || item.dataset.title.includes(query);
-      item.style.display = (matchCat && matchSearch) ? 'flex' : 'none';
+      item.style.display = (matchCat && matchSearch) ? (item.classList.contains('pdf-card') ? 'flex' : 'flex') : 'none';
     });
   }
 
@@ -5819,6 +5908,12 @@
       // Tarjeta estática de "Mi Suscripción" (la de socio activo la sobreescribe loadUserProfile)
       const subEl = document.getElementById('sub-precio-display');
       if (subEl) subEl.innerHTML = '$' + fmt(precioMes) + ' <span>MXN / mes</span>';
+
+      // Selector de planes de la sección Suscripción
+      setTxt('subplan-precio-mes', '$' + fmt(precioMes));
+      setTxt('subplan-precio-ano', '$' + fmt(precioAno));
+      setTxt('subplan-ahorro', 'Ahorras $' + fmt(ahorro));
+      setTxt('subplan-equivale', 'MXN / año · equivale a $' + fmt(equivaleMes) + '/mes');
 
       // Términos y Condiciones (todas las menciones del precio mensual)
       document.querySelectorAll('.txt-precio-mes').forEach(el => {
