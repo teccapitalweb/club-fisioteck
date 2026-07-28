@@ -2598,6 +2598,7 @@
   const WEBHOOK_URL = 'https://web-production-cd020.up.railway.app';
   const STRIPE_PK = 'pk_live_51TMAcSA7If2CqXs9NuKsM1cVT9n5agProkMR8HFiT6QTXzS0g9PtiokZ4cpT1Qo3rk9bbsrZHx9sOUbE9UEOjgGs00n1OM3Y9b';
   let stripeInstance = null;
+  let _embeddedCheckout = null;
   let _pagoWatcher = null;
   let _pagoVentana = null;
 
@@ -2605,10 +2606,10 @@
     const user = auth.currentUser;
     if (!user) return;
 
-    // Sin modal intermedio: el botón muestra el estado de carga y se
-    // redirige DIRECTO al formulario de pago de Stripe en esta misma
-    // pestaña. Al terminar, Stripe regresa al club con ?session_id= y
-    // se dispara la celebración (flujo estándar de Stripe Checkout).
+    // Formulario EMBEBIDO: el botón muestra el estado de carga y el
+    // checkout de Stripe se dibuja dentro del modal, en esta misma
+    // página (sin popups ni redireccionamientos). Al pagar, Stripe
+    // regresa al club con ?session_id= y se dispara la celebración.
     const _btn = (typeof event !== 'undefined' && event && event.target && event.target.closest) ? event.target.closest('button') : null;
     let _btnTextoOriginal = '';
     if (_btn) {
@@ -2621,17 +2622,11 @@
       const res = await fetch(WEBHOOK_URL + '/api/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: plan, email: user.email, uid: user.uid, mode: 'hosted' })
+        body: JSON.stringify({ plan: plan, email: user.email, uid: user.uid, mode: 'embedded' })
       });
       const data = await res.json();
 
-      // === RUTA A: backend devuelve URL → redirect directo, sin modal ===
-      if (data.url) {
-        window.location.href = data.url;
-        return;
-      }
-
-      // === RUTA B: backend viejo aún devuelve clientSecret (embedded fallback) ===
+      // === Embedded checkout: formulario dibujado en el modal, sin redireccionamiento ===
       if (data.clientSecret) {
         if (_btn) { _btn.disabled = false; _btn.innerHTML = _btnTextoOriginal; }
         document.getElementById('stripeCheckoutModal').style.display = 'flex';
@@ -2644,9 +2639,15 @@
           }
           stripeInstance = Stripe(STRIPE_PK);
         }
+        // Stripe solo permite UNA instancia embebida a la vez:
+        // si quedó una viva (el socio cerró y volvió a abrir), destruirla.
+        if (_embeddedCheckout) {
+          try { _embeddedCheckout.destroy(); } catch(e) {}
+          _embeddedCheckout = null;
+        }
         document.getElementById('stripeCheckoutContainer').innerHTML = '<div id="stripe-checkout-element" style="min-height:400px;"></div>';
-        const checkout = await stripeInstance.initEmbeddedCheckout({ clientSecret: data.clientSecret });
-        checkout.mount('#stripe-checkout-element');
+        _embeddedCheckout = await stripeInstance.initEmbeddedCheckout({ clientSecret: data.clientSecret });
+        _embeddedCheckout.mount('#stripe-checkout-element');
         return;
       }
 
@@ -2710,6 +2711,10 @@
 
   function closeStripeCheckout() {
     if (_pagoWatcher) { clearInterval(_pagoWatcher); _pagoWatcher = null; }
+    if (_embeddedCheckout) {
+      try { _embeddedCheckout.destroy(); } catch(e) {}
+      _embeddedCheckout = null;
+    }
     document.getElementById('stripeCheckoutModal').style.display = 'none';
     document.getElementById('stripeCheckoutContainer').innerHTML = '';
   }
