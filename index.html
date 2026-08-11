@@ -159,12 +159,12 @@
     #splash-screen {
       position:fixed; inset:0; z-index:10000;
       background:
-        radial-gradient(1100px 700px at 12% -10%, rgba(28,111,176,.30), transparent 60%),
-        radial-gradient(900px 600px at 100% 100%, rgba(76,166,222,.10), transparent 62%),
-        linear-gradient(158deg, #070B12 0%, #0C1A30 46%, #081122 100%);
+        radial-gradient(1000px 680px at 8% -8%, rgba(45,154,220,.30), transparent 62%),
+        radial-gradient(760px 540px at 98% 92%, rgba(47,209,198,.13), transparent 66%),
+        linear-gradient(145deg, #06101d 0%, #0a1729 48%, #081426 100%);
       display:flex; align-items:center; justify-content:center;
       transition: opacity .6s, visibility .6s;
-      color:#fff;
+      color:#fff; isolation:isolate;
     }
     #splash-screen.hidden { opacity:0; visibility:hidden; pointer-events:none; }
     .splash-content {
@@ -210,57 +210,57 @@
     .splash-error { color:#F87171; font-size:.85rem; margin-top:8px; display:none; }
 
     /* Splash de venta */
-    #splash-screen{overflow-y:auto;align-items:flex-start;padding:30px 0}
+    #splash-screen{overflow-x:hidden;overflow-y:auto;align-items:flex-start;padding:clamp(28px,5vh,58px) 0}
     .splash-grid{
-      display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;
-      width:92%;max-width:1060px;margin:auto;
+      display:grid;grid-template-columns:minmax(0,1.18fr) minmax(400px,.82fr);gap:clamp(48px,6vw,84px);align-items:center;
+      width:min(92%,1240px);max-width:1240px;margin:auto;
     }
     .splash-grid > *{min-width:0}
-    .splash-sell{text-align:left;color:#fff;animation:fadeUp .8s cubic-bezier(.16,1,.3,1);min-width:0}
+    .splash-sell{text-align:left;color:#fff;animation:fadeUp .8s cubic-bezier(.16,1,.3,1);min-width:0;padding:12px 0}
     .splash-sell h1{
       font-family:var(--font-display);
-      font-size:clamp(1.7rem,3.1vw,2.5rem);font-weight:800;line-height:1.08;
-      letter-spacing:-.03em;margin-bottom:14px;
+      font-size:clamp(2.25rem,4.1vw,3.75rem);font-weight:800;line-height:1.02;
+      letter-spacing:-.052em;margin-bottom:16px;max-width:690px;text-wrap:balance;
     }
     .splash-sell h1 span{
       background:linear-gradient(100deg,#7CC3EE,#4CA6DE 55%,#2FD1C6);
       -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
     }
-    .splash-sell .sell-sub{color:rgba(230,244,243,.6);font-size:.95rem;line-height:1.6;margin-bottom:8px;max-width:460px}
+    .splash-sell .sell-sub{color:rgba(221,236,248,.68);font-size:1rem;line-height:1.65;margin-bottom:8px;max-width:590px;text-wrap:pretty}
 
     .splash-marquee{
-      margin:18px 0 6px;max-width:100%;
+      margin:24px 0 12px;max-width:100%;padding:10px 0;
       -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
       mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
-      overflow:hidden;min-height:0;
+      overflow:hidden;min-height:0;border-block:1px solid rgba(140,190,230,.08);
     }
     .splash-marquee .track{display:flex;gap:12px;width:max-content;animation:fisioSlide 50s linear infinite}
     .splash-marquee img{
-      width:118px;height:118px;object-fit:cover;border-radius:14px;flex:none;
-      border:1px solid rgba(150,200,240,.14);
-      box-shadow:0 10px 26px rgba(0,0,0,.4);
+      width:112px;height:112px;object-fit:cover;border-radius:17px;flex:none;
+      border:1px solid rgba(173,219,250,.22);
+      box-shadow:0 14px 30px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.14);
       background:rgba(255,255,255,.04);
     }
     @keyframes fisioSlide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-    .splash-mcaption{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(230,244,243,.42);margin-bottom:18px}
+    .splash-mcaption{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(221,236,248,.52);margin-bottom:18px}
     .splash-mcaption b{color:#fff}
 
-    .splash-price{display:grid;gap:10px;max-width:420px;margin-bottom:18px}
+    .splash-price{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:620px;margin-bottom:18px}
     .splash-price .opt{
-      display:flex;align-items:center;gap:13px;
-      background:rgba(255,255,255,.045);border:1px solid rgba(150,200,240,.13);
-      border-radius:14px;padding:12px 16px;transition:var(--transition);
+      display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;min-height:92px;
+      background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.025));border:1px solid rgba(150,200,240,.16);
+      border-radius:18px;padding:16px 18px;transition:var(--transition);box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
     }
     .splash-price .opt:hover{border-color:rgba(150,200,240,.26);background:rgba(255,255,255,.07)}
-    .splash-price .opt b{font-family:var(--font-display);font-size:1.45rem;font-weight:800;color:#fff;letter-spacing:-.02em;white-space:nowrap}
-    .splash-price .opt small{display:block;color:rgba(230,244,243,.58);font-size:.76rem;line-height:1.45}
+    .splash-price .opt b{font-family:var(--font-display);font-size:1.6rem;font-weight:800;color:#fff;letter-spacing:-.035em;white-space:nowrap}
+    .splash-price .opt small{display:block;color:rgba(221,236,248,.64);font-size:.76rem;line-height:1.45}
     .splash-price .opt--star{
-      background:linear-gradient(120deg,rgba(61,143,203,.16),rgba(47,209,198,.08));
-      border:1.5px solid rgba(95,182,224,.55);position:relative;
+      background:linear-gradient(135deg,rgba(61,143,203,.22),rgba(47,209,198,.09));
+      border:1px solid rgba(95,196,224,.62);position:relative;
     }
     .splash-price .opt--star b{color:#7CC3EE}
     .splash-price .opt--star .badge{
-      position:absolute;top:-10px;right:12px;
+      position:absolute;top:-10px;right:14px;
       background:linear-gradient(100deg,#3D8FCB,#1C6FB0);color:#FFFFFF;
       font-size:.6rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
       padding:4px 11px;border-radius:20px;
@@ -269,7 +269,7 @@
     .splash-price .tachado{text-decoration:line-through;opacity:.45;margin-right:4px}
 
     .splash-reviews{
-      max-width:440px;margin-bottom:16px;overflow:hidden;
+      max-width:620px;margin-bottom:16px;overflow:hidden;
       -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
       mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
     }
@@ -280,52 +280,57 @@
     .splash-reviews:hover .rtrack{animation-play-state:paused}
     @keyframes reviewSlide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
     .splash-reviews img{
-      width:420px;flex:none;border-radius:13px;display:block;
-      border:1px solid rgba(150,200,240,.12);
-      box-shadow:0 8px 22px rgba(0,0,0,.35);
+      width:470px;flex:none;border-radius:17px;display:block;
+      border:1px solid rgba(150,200,240,.18);
+      box-shadow:0 12px 30px rgba(0,0,0,.4);
     }
-    .splash-proofrow{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+    .splash-proofrow{display:flex;align-items:center;gap:13px;margin-bottom:20px}
     .splash-faces{display:flex;flex:none}
     .splash-faces img{
-      width:32px;height:32px;border-radius:50%;object-fit:cover;
-      border:2px solid #0C1A30;margin-left:-9px;
+      width:34px;height:34px;border-radius:50%;object-fit:cover;
+      border:2px solid #0C1A30;margin-left:-9px;box-shadow:0 4px 12px rgba(0,0,0,.28);
     }
     .splash-faces img:first-child{margin-left:0}
-    .splash-trust{font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(230,244,243,.44)}
+    .splash-trust{font-size:.66rem;letter-spacing:.17em;text-transform:uppercase;color:rgba(221,236,248,.48)}
 
     .splash-free{
-      display:flex;align-items:center;justify-content:center;gap:7px;
-      font-size:.9rem;color:rgba(230,244,243,.75);margin-bottom:14px;
+      display:flex;align-items:center;justify-content:flex-start;gap:9px;
+      font-size:.88rem;color:rgba(230,244,243,.78);margin-bottom:14px;
     }
     .splash-free b{color:#7CC3EE;font-weight:700}
     .splash-free svg{width:16px;height:16px;flex:none;stroke:#06121F;background:#4CA6DE;border-radius:50%;padding:3px}
 
-    @media (max-width:880px){
+    @media (max-width:980px){
       #splash-screen{padding:max(18px, env(safe-area-inset-top)) 0 max(24px, env(safe-area-inset-bottom))}
-      .splash-grid{grid-template-columns:1fr;gap:18px;padding-bottom:30px;width:94%}
+      .splash-grid{grid-template-columns:1fr;gap:34px;padding-bottom:30px;width:min(92%,660px)}
+      .auth-card{order:-1}
       .splash-sell{text-align:center}
-      .splash-sell h1{font-size:1.4rem;margin-bottom:10px}
-      .splash-sell .sell-sub{display:none}
+      .splash-sell h1{font-size:clamp(2rem,7vw,3rem);margin:0 auto 12px;max-width:620px}
+      .splash-sell .sell-sub{display:block;margin:0 auto 10px;max-width:570px}
       .splash-logo{display:none !important} /* la marca ya vive dentro de la card */
-      .splash-marquee{margin:4px 0 4px}
-      .splash-marquee img{width:84px;height:84px;border-radius:12px}
-      .splash-proofrow{justify-content:center;margin-bottom:10px}
-      .splash-price{margin:0 auto 12px;max-width:380px;width:100%}
-      .splash-price .opt{padding:9px 13px}
-      .splash-price .opt b{font-size:1.15rem}
-      .splash-reviews{margin:0 auto 12px;max-width:340px}
-      .splash-reviews img{width:300px}
-      .splash-grid .splash-content{margin:0 auto !important;width:100%;max-width:440px !important}
-      .auth-card{padding:22px 18px 18px;border-radius:20px}
+      .splash-marquee{margin:20px 0 10px}
+      .splash-marquee img{width:96px;height:96px;border-radius:14px}
+      .splash-proofrow{justify-content:center;margin-bottom:16px}
+      .splash-price{margin:0 auto 16px;max-width:620px;width:100%}
+      .splash-price .opt{padding:14px 16px}
+      .splash-reviews{margin:0 auto 14px;max-width:560px}
+      .splash-reviews img{width:430px}
+      .splash-grid .splash-content{margin:0 auto !important;width:100%;max-width:480px !important}
       .auth-brand{display:block !important}
       .splash-sell{display:flex;flex-direction:column;align-items:center}
       .splash-sell > *{width:100%}
       .splash-trust{text-align:center;display:block;margin-bottom:4px}
     }
-    @media (max-width:420px){
-      .auth-card{padding:20px 15px 16px}
+    @media (max-width:560px){
+      .splash-grid{width:94%;gap:28px}
+      .splash-sell h1{font-size:1.9rem}
+      .splash-sell .sell-sub{font-size:.9rem;line-height:1.55}
+      .splash-price{grid-template-columns:1fr}
+      .splash-price .opt{min-height:78px}
+      .auth-card{padding:24px 18px 20px}
       .splash-tab{font-size:10.5px;padding:9px 8px}
-      .splash-reviews img{width:270px}
+      .splash-reviews{max-width:100%}
+      .splash-reviews img{width:min(82vw,360px)}
       .splash-price .opt small{font-size:.7rem}
     }
 
@@ -338,25 +343,37 @@
       -webkit-mask-image:radial-gradient(ellipse at 30% 40%,#000,transparent 75%);
       mask-image:radial-gradient(ellipse at 30% 40%,#000,transparent 75%);
     }
+    #splash-screen::before {
+      content:""; position:absolute; width:520px; height:520px; right:-190px; top:-180px;
+      border-radius:50%; pointer-events:none;
+      background:radial-gradient(circle,rgba(47,209,198,.13),rgba(76,166,222,.055) 42%,transparent 70%);
+      filter:blur(4px);
+    }
     #splash-screen > * { position:relative; z-index:1; }
 
     @keyframes shimmerBar { 0%,100%{background-position:0% 0} 50%{background-position:200% 0} }
     .auth-card {
-      background:#101A2C;
-      border:1px solid rgba(140,190,230,.17);
-      border-radius:22px;
-      padding:26px 26px 22px;
-      box-shadow:0 0 70px rgba(28,111,176,.12), 0 20px 60px rgba(0,0,0,.55);
-      position:relative; overflow:hidden;
+      background:linear-gradient(160deg,rgba(18,33,55,.96),rgba(11,24,43,.94));
+      border:1px solid rgba(157,207,240,.23);
+      border-radius:30px;
+      padding:34px 34px 28px;
+      box-shadow:0 0 80px rgba(28,111,176,.15),0 28px 80px rgba(0,0,0,.56),inset 0 1px 0 rgba(255,255,255,.06);
+      position:relative; overflow:hidden;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+      max-width:480px !important;justify-self:end;
     }
     .auth-card::before {
       content:""; position:absolute; top:0; left:0; right:0; height:3px;
       background:linear-gradient(90deg,#1C6FB0,#2FD1C6,#1C6FB0);
       background-size:200% 100%;
       animation:shimmerBar 3.5s ease-in-out infinite;
-      border-radius:22px 22px 0 0;
+      border-radius:30px 30px 0 0;
     }
-    .auth-brand { display:none; text-align:center; margin-bottom:16px; }
+    .auth-card::after {
+      content:"";position:absolute;width:240px;height:240px;right:-125px;top:-110px;border-radius:50%;
+      background:radial-gradient(circle,rgba(76,166,222,.18),transparent 68%);pointer-events:none;
+    }
+    .auth-card > * { position:relative; z-index:1; }
+    .auth-brand { display:none; text-align:left; margin-bottom:20px; }
     .auth-brand__name {
       font-family:var(--font-display); font-size:1.35rem; font-weight:800; letter-spacing:-.03em; color:#fff;
     }
@@ -369,30 +386,30 @@
       letter-spacing:.14em; text-transform:uppercase; color:rgba(169,187,209,.55); margin-top:4px;
     }
     .auth-tabs {
-      display:flex; gap:4px; background:rgba(255,255,255,.05);
-      padding:4px; border-radius:100px; margin-bottom:18px;
-      border:1px solid rgba(140,190,230,.1);
+      display:flex; gap:5px; background:rgba(5,14,27,.52);
+      padding:5px; border-radius:16px; margin-bottom:18px;
+      border:1px solid rgba(140,190,230,.14);box-shadow:inset 0 1px 10px rgba(0,0,0,.18);
     }
     .splash-tab {
       flex:1; text-align:center;
       font-family:'JetBrains Mono',monospace; font-size:11.5px; font-weight:700; letter-spacing:.04em;
-      padding:10px 14px; border-radius:100px; border:none; cursor:pointer;
+      padding:11px 14px; border-radius:12px; border:none; cursor:pointer;
       color:rgba(169,187,209,.7); background:transparent;
       transition:all .2s cubic-bezier(.2,.8,.25,1);
     }
     .splash-tab:hover { color:#fff; }
     .splash-tab.active {
       background:linear-gradient(135deg,#3D8FCB,#1C6FB0); color:#fff;
-      box-shadow:0 4px 14px rgba(28,111,176,.5), inset 0 1px 0 rgba(255,255,255,.18);
+      box-shadow:0 7px 20px rgba(28,111,176,.42), inset 0 1px 0 rgba(255,255,255,.2);
     }
     .auth-divider {
-      display:flex; align-items:center; gap:12px; margin:16px 0 12px;
+      display:flex; align-items:center; gap:12px; margin:18px 0 14px;
       font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700;
       letter-spacing:.14em; text-transform:uppercase; color:rgba(169,187,209,.45);
     }
     .auth-divider::before, .auth-divider::after { content:""; flex:1; height:1px; background:rgba(140,190,230,.12); }
     .btn-google {
-      width:100%; padding:12px 16px; border-radius:12px;
+      width:100%; min-height:50px; padding:12px 16px; border-radius:14px;
       background:#fff; color:#1f1f1f;
       font-family:var(--font-body); font-size:.9rem; font-weight:600;
       border:1px solid #dadce0; cursor:pointer;
@@ -405,6 +422,43 @@
       text-align:center; margin-top:14px;
       font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:500;
       letter-spacing:.06em; color:rgba(169,187,209,.4);
+    }
+
+    .auth-card .splash-free {
+      padding:12px 14px;border:1px solid rgba(76,166,222,.18);border-radius:15px;
+      background:linear-gradient(100deg,rgba(61,143,203,.12),rgba(47,209,198,.055));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+    }
+    .auth-card .splash-form { gap:12px; }
+    .auth-card .splash-input {
+      min-height:54px;padding:14px 16px;border-radius:14px;
+      border-color:rgba(157,207,240,.19);background:rgba(5,14,27,.52);
+      box-shadow:inset 0 1px 8px rgba(0,0,0,.14);
+    }
+    .auth-card .splash-input:hover { border-color:rgba(157,207,240,.3); }
+    .auth-card .splash-input:focus {
+      border-color:#4CA6DE;background:rgba(10,25,44,.86);
+      box-shadow:0 0 0 4px rgba(76,166,222,.14),0 10px 28px rgba(0,0,0,.18);
+    }
+    .auth-card .btn-splash {
+      min-height:52px;border-radius:14px;margin-top:2px;
+      background:linear-gradient(135deg,#389bd4 0%,#1c6fb0 58%,#155b96 100%);
+    }
+    .auth-card .btn-splash:disabled { box-shadow:none;filter:saturate(.6); }
+    .auth-terms {
+      display:flex;align-items:flex-start;gap:11px;margin:8px 0 4px;padding:2px 1px;
+    }
+    .auth-terms label { text-align:left; }
+
+    @media (max-width:980px) {
+      .auth-card{justify-self:center;padding:30px 28px 26px}
+      .auth-brand{text-align:center}
+    }
+    @media (max-width:560px) {
+      .auth-card{border-radius:24px;padding:24px 18px 20px}
+      .auth-card::before{border-radius:24px 24px 0 0}
+      .auth-card .splash-free{justify-content:center;font-size:.82rem;padding:11px 10px}
+      .auth-card .splash-input{min-height:51px}
     }
 
     /* ═══════════════════════════════════════════
@@ -1247,7 +1301,7 @@
     </div>
 
     <!-- FORM -->
-  <div class="splash-content auth-card" style="max-width:440px;margin:0;">
+  <div class="splash-content auth-card" style="max-width:480px;margin:0;">
     <div class="auth-brand">
       <div class="auth-brand__name">Club Fisio<span>Teck</span></div>
       <div class="auth-brand__sub">Membresía profesional</div>
@@ -1259,20 +1313,20 @@
 
     <!-- TABS (estilo píldora SYNOVA) -->
     <div class="auth-tabs">
-      <button id="tabLogin" class="splash-tab" onclick="switchAuthTab('login')">Iniciar Sesión</button>
-      <button id="tabRegister" class="splash-tab active" onclick="switchAuthTab('register')">Registrarme</button>
+      <button type="button" id="tabLogin" class="splash-tab" onclick="switchAuthTab('login')">Iniciar Sesión</button>
+      <button type="button" id="tabRegister" class="splash-tab active" onclick="switchAuthTab('register')">Registrarme</button>
     </div>
 
     <!-- LOGIN FORM -->
     <div id="formLogin" class="splash-form" style="display:none;">
-      <input type="email" class="splash-input" id="login-email" placeholder="Correo electrónico">
-      <input type="password" class="splash-input" id="login-pass" placeholder="Contraseña">
-      <button class="btn-splash" onclick="handleLogin()">Iniciar Sesión</button>
+      <input type="email" class="splash-input" id="login-email" placeholder="Correo electrónico" aria-label="Correo electrónico" autocomplete="email">
+      <input type="password" class="splash-input" id="login-pass" placeholder="Contraseña" aria-label="Contraseña" autocomplete="current-password">
+      <button type="button" class="btn-splash" onclick="handleLogin()">Iniciar Sesión</button>
       <div class="splash-error" id="login-error">Credenciales incorrectas</div>
 
       <div class="auth-divider">o continúa con</div>
 
-      <button class="btn-google" onclick="handleGoogleLogin()">
+      <button type="button" class="btn-google" onclick="handleGoogleLogin()">
         <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
         Continuar con Google
       </button>
@@ -1280,25 +1334,25 @@
 
     <!-- REGISTER FORM -->
     <div id="formRegister" class="splash-form">
-      <input type="text" class="splash-input" id="reg-name" placeholder="Nombre completo">
-      <input type="email" class="splash-input" id="reg-email" placeholder="Correo electrónico">
-      <input type="password" class="splash-input" id="reg-pass" placeholder="Contraseña">
-      <input type="password" class="splash-input" id="reg-pass-confirm" placeholder="Confirmar contraseña">
+      <input type="text" class="splash-input" id="reg-name" placeholder="Nombre completo" aria-label="Nombre completo" autocomplete="name">
+      <input type="email" class="splash-input" id="reg-email" placeholder="Correo electrónico" aria-label="Correo electrónico" autocomplete="email">
+      <input type="password" class="splash-input" id="reg-pass" placeholder="Contraseña" aria-label="Contraseña" autocomplete="new-password">
+      <input type="password" class="splash-input" id="reg-pass-confirm" placeholder="Confirmar contraseña" aria-label="Confirmar contraseña" autocomplete="new-password">
 
       <!-- TERMS CHECKBOX -->
-      <div style="display:flex;align-items:flex-start;gap:10px;margin:8px 0 4px;">
+      <div class="auth-terms">
         <input type="checkbox" id="reg-terms" onchange="toggleRegisterBtn()" style="margin-top:3px;accent-color:var(--accent);width:18px;height:18px;cursor:pointer;flex-shrink:0;">
         <label for="reg-terms" style="font-size:.8rem;color:rgba(255,255,255,.55);line-height:1.4;cursor:pointer;">
           He leído y acepto los <a href="#" onclick="event.preventDefault();openLegalModal('terms')" style="color:var(--accent);text-decoration:underline;">Términos y Condiciones</a> y la <a href="#" onclick="event.preventDefault();openLegalModal('privacy')" style="color:var(--accent);text-decoration:underline;">Política de Privacidad</a>
         </label>
       </div>
 
-      <button class="btn-splash" id="btnRegister" onclick="handleRegister()" disabled style="opacity:.4;cursor:not-allowed;">Crear Cuenta</button>
+      <button type="button" class="btn-splash" id="btnRegister" onclick="handleRegister()" disabled style="opacity:.4;cursor:not-allowed;">Crear Cuenta</button>
       <div class="splash-error" id="register-error"></div>
 
       <div class="auth-divider">o continúa con</div>
 
-      <button class="btn-google" onclick="handleGoogleLogin()">
+      <button type="button" class="btn-google" onclick="handleGoogleLogin()">
         <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
         Continuar con Google
       </button>
