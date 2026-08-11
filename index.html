@@ -543,7 +543,7 @@
       width:100%;max-width:390px !important;padding:28px 28px 24px;border-radius:22px;
       color:#173652;background:rgba(255,255,255,.9);border:1px solid #dce7ef;
       box-shadow:0 24px 55px rgba(31,70,103,.11),0 3px 12px rgba(31,70,103,.05);
-      backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+      backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color-scheme:light;
     }
     .auth-card::before,.auth-card::after { display:none; }
     .auth-card .splash-free {
@@ -569,9 +569,13 @@
     .splash-tab.active {
       color:#173652;background:transparent;border-bottom-color:#2b8ebc;box-shadow:none;
     }
-    .auth-card .splash-form { gap:11px; }
+    .auth-card .splash-form { gap:13px; }
+    .auth-field { display:flex;flex-direction:column;gap:6px;text-align:left; }
+    .auth-field__label {
+      color:#607488;font-size:.7rem;font-weight:700;line-height:1.2;margin-left:2px;
+    }
     .auth-card .splash-input {
-      min-height:50px;padding:13px 14px;border-radius:11px;color:#173652;
+      width:100%;min-height:50px;padding:13px 14px;border-radius:11px;color:#173652;
       background:#f6f9fb;border:1px solid #dce6ee;box-shadow:none;
     }
     .auth-card .splash-input::placeholder { color:#8a99a7; }
@@ -579,6 +583,19 @@
     .auth-card .splash-input:focus {
       color:#173652;background:#fff;border-color:#3d98c0;
       box-shadow:0 0 0 4px rgba(61,152,192,.1);
+    }
+    .auth-card .splash-input:-webkit-autofill,
+    .auth-card .splash-input:-webkit-autofill:hover,
+    .auth-card .splash-input:-webkit-autofill:focus {
+      -webkit-text-fill-color:#173652 !important;
+      -webkit-box-shadow:0 0 0 1000px #f6f9fb inset !important;
+      box-shadow:0 0 0 1000px #f6f9fb inset !important;
+      caret-color:#173652;border-color:#d4e1ea;
+      transition:background-color 9999s ease-out 0s;
+    }
+    .auth-card .splash-input:autofill {
+      color:#173652 !important;background:#f6f9fb !important;
+      box-shadow:0 0 0 1000px #f6f9fb inset !important;
     }
     .auth-card .btn-splash {
       min-height:49px;margin-top:3px;border-radius:11px;
@@ -625,6 +642,7 @@
       .splash-marquee img { width:92px;height:92px; }
       .splash-price .opt { background:rgba(255,255,255,.82); }
       .auth-card .splash-free { justify-content:center;padding:0;font-size:.8rem; }
+      .auth-field__label { font-size:.68rem; }
     }
 
     /* ═══════════════════════════════════════════
@@ -1476,21 +1494,21 @@
       <div class="auth-brand__name">Club Fisio<span>Teck</span></div>
       <div class="auth-brand__sub">Membresía profesional</div>
     </div>
-    <p class="splash-free" style="margin-bottom:16px;">
+    <p class="splash-free" id="authPrompt" style="margin-bottom:16px;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-      Regístrate <b>completamente gratis</b>
+      <span id="authPromptLead">Regístrate</span> <b id="authPromptStrong">completamente gratis</b>
     </p>
 
     <!-- TABS (estilo píldora SYNOVA) -->
-    <div class="auth-tabs">
-      <button type="button" id="tabLogin" class="splash-tab" onclick="switchAuthTab('login')">Iniciar Sesión</button>
-      <button type="button" id="tabRegister" class="splash-tab active" onclick="switchAuthTab('register')">Registrarme</button>
+    <div class="auth-tabs" role="tablist" aria-label="Acceso al Club">
+      <button type="button" id="tabLogin" class="splash-tab" role="tab" aria-controls="formLogin" aria-selected="false" onclick="switchAuthTab('login')">Iniciar Sesión</button>
+      <button type="button" id="tabRegister" class="splash-tab active" role="tab" aria-controls="formRegister" aria-selected="true" onclick="switchAuthTab('register')">Registrarme</button>
     </div>
 
     <!-- LOGIN FORM -->
-    <div id="formLogin" class="splash-form" style="display:none;">
-      <input type="email" class="splash-input" id="login-email" placeholder="Correo electrónico" aria-label="Correo electrónico" autocomplete="email">
-      <input type="password" class="splash-input" id="login-pass" placeholder="Contraseña" aria-label="Contraseña" autocomplete="current-password">
+    <div id="formLogin" class="splash-form" role="tabpanel" aria-labelledby="tabLogin" style="display:none;">
+      <label class="auth-field" for="login-email"><span class="auth-field__label">Correo electrónico</span><input type="email" class="splash-input" id="login-email" name="login-email" placeholder="nombre@correo.com" aria-label="Correo electrónico" autocomplete="username" inputmode="email" autocapitalize="none" spellcheck="false"></label>
+      <label class="auth-field" for="login-pass"><span class="auth-field__label">Contraseña</span><input type="password" class="splash-input" id="login-pass" name="login-password" placeholder="Escribe tu contraseña" aria-label="Contraseña" autocomplete="current-password"></label>
       <button type="button" class="btn-splash" onclick="handleLogin()">Iniciar Sesión</button>
       <div class="splash-error" id="login-error">Credenciales incorrectas</div>
 
@@ -1503,11 +1521,11 @@
     </div>
 
     <!-- REGISTER FORM -->
-    <div id="formRegister" class="splash-form">
-      <input type="text" class="splash-input" id="reg-name" placeholder="Nombre completo" aria-label="Nombre completo" autocomplete="name">
-      <input type="email" class="splash-input" id="reg-email" placeholder="Correo electrónico" aria-label="Correo electrónico" autocomplete="email">
-      <input type="password" class="splash-input" id="reg-pass" placeholder="Contraseña" aria-label="Contraseña" autocomplete="new-password">
-      <input type="password" class="splash-input" id="reg-pass-confirm" placeholder="Confirmar contraseña" aria-label="Confirmar contraseña" autocomplete="new-password">
+    <div id="formRegister" class="splash-form" role="tabpanel" aria-labelledby="tabRegister">
+      <label class="auth-field" for="reg-name"><span class="auth-field__label">Nombre completo</span><input type="text" class="splash-input" id="reg-name" name="full-name" placeholder="Tu nombre completo" aria-label="Nombre completo" autocomplete="name"></label>
+      <label class="auth-field" for="reg-email"><span class="auth-field__label">Correo electrónico</span><input type="email" class="splash-input" id="reg-email" name="register-email" placeholder="nombre@correo.com" aria-label="Correo electrónico" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false"></label>
+      <label class="auth-field" for="reg-pass"><span class="auth-field__label">Contraseña</span><input type="password" class="splash-input" id="reg-pass" name="new-password" placeholder="Mínimo 6 caracteres" aria-label="Contraseña" autocomplete="new-password"></label>
+      <label class="auth-field" for="reg-pass-confirm"><span class="auth-field__label">Confirmar contraseña</span><input type="password" class="splash-input" id="reg-pass-confirm" name="confirm-password" placeholder="Repite tu contraseña" aria-label="Confirmar contraseña" autocomplete="new-password"></label>
 
       <!-- TERMS CHECKBOX -->
       <div class="auth-terms">
@@ -2763,11 +2781,19 @@
 
   // ===== AUTH TABS =====
   function switchAuthTab(tab) {
-    document.getElementById('formLogin').style.display = tab === 'login' ? 'flex' : 'none';
-    document.getElementById('formRegister').style.display = tab === 'register' ? 'flex' : 'none';
+    const isLogin = tab === 'login';
+    document.getElementById('formLogin').style.display = isLogin ? 'flex' : 'none';
+    document.getElementById('formRegister').style.display = isLogin ? 'none' : 'flex';
     // Tabs píldora estilo SYNOVA: la clase .active controla el gradiente y el glow
-    document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
-    document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+    document.getElementById('tabLogin').classList.toggle('active', isLogin);
+    document.getElementById('tabRegister').classList.toggle('active', !isLogin);
+    document.getElementById('tabLogin').setAttribute('aria-selected', String(isLogin));
+    document.getElementById('tabRegister').setAttribute('aria-selected', String(!isLogin));
+    document.getElementById('authPromptLead').textContent = isLogin ? 'Accede a' : 'Regístrate';
+    document.getElementById('authPromptStrong').textContent = isLogin ? 'tu cuenta profesional' : 'completamente gratis';
+  }
+  function isValidEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   }
   function toggleRegisterBtn() {
     const checked = document.getElementById('reg-terms').checked;
@@ -2783,6 +2809,7 @@
     const passC = document.getElementById('reg-pass-confirm').value;
 
     if (!name || !email || !pass || !passC) { showRegError('Completa todos los campos'); return; }
+    if (!isValidEmail(email)) { showRegError('Escribe un correo electrónico válido'); return; }
     if (pass.length < 6) { showRegError('La contraseña debe tener al menos 6 caracteres'); return; }
     if (pass !== passC) { showRegError('Las contraseñas no coinciden'); return; }
     if (!document.getElementById('reg-terms').checked) { showRegError('Debes aceptar los términos'); return; }
@@ -3136,6 +3163,11 @@
     const pass = document.getElementById('login-pass').value;
     if (!email || !pass) {
       showLoginError('Por favor completa todos los campos');
+      return;
+    }
+    if (!isValidEmail(email)) {
+      showLoginError('Escribe un correo electrónico válido');
+      document.getElementById('login-email').focus();
       return;
     }
     auth.signInWithEmailAndPassword(email, pass)
