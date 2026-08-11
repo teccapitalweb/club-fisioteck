@@ -159,12 +159,12 @@
     #splash-screen {
       position:fixed; inset:0; z-index:10000;
       background:
-        radial-gradient(1100px 700px at 12% -10%, rgba(28,111,176,.30), transparent 60%),
-        radial-gradient(900px 600px at 100% 100%, rgba(76,166,222,.10), transparent 62%),
-        linear-gradient(158deg, #070B12 0%, #0C1A30 46%, #081122 100%);
+        radial-gradient(1000px 680px at 8% -8%, rgba(45,154,220,.30), transparent 62%),
+        radial-gradient(760px 540px at 98% 92%, rgba(47,209,198,.13), transparent 66%),
+        linear-gradient(145deg, #06101d 0%, #0a1729 48%, #081426 100%);
       display:flex; align-items:center; justify-content:center;
       transition: opacity .6s, visibility .6s;
-      color:#fff;
+      color:#fff; isolation:isolate;
     }
     #splash-screen.hidden { opacity:0; visibility:hidden; pointer-events:none; }
     .splash-content {
@@ -210,57 +210,57 @@
     .splash-error { color:#F87171; font-size:.85rem; margin-top:8px; display:none; }
 
     /* Splash de venta */
-    #splash-screen{overflow-y:auto;align-items:flex-start;padding:30px 0}
+    #splash-screen{overflow-x:hidden;overflow-y:auto;align-items:flex-start;padding:clamp(28px,5vh,58px) 0}
     .splash-grid{
-      display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;
-      width:92%;max-width:1060px;margin:auto;
+      display:grid;grid-template-columns:minmax(0,1.18fr) minmax(400px,.82fr);gap:clamp(48px,6vw,84px);align-items:center;
+      width:min(92%,1240px);max-width:1240px;margin:auto;
     }
     .splash-grid > *{min-width:0}
-    .splash-sell{text-align:left;color:#fff;animation:fadeUp .8s cubic-bezier(.16,1,.3,1);min-width:0}
+    .splash-sell{text-align:left;color:#fff;animation:fadeUp .8s cubic-bezier(.16,1,.3,1);min-width:0;padding:12px 0}
     .splash-sell h1{
       font-family:var(--font-display);
-      font-size:clamp(1.7rem,3.1vw,2.5rem);font-weight:800;line-height:1.08;
-      letter-spacing:-.03em;margin-bottom:14px;
+      font-size:clamp(2.25rem,4.1vw,3.75rem);font-weight:800;line-height:1.02;
+      letter-spacing:-.052em;margin-bottom:16px;max-width:690px;text-wrap:balance;
     }
     .splash-sell h1 span{
       background:linear-gradient(100deg,#7CC3EE,#4CA6DE 55%,#2FD1C6);
       -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
     }
-    .splash-sell .sell-sub{color:rgba(230,244,243,.6);font-size:.95rem;line-height:1.6;margin-bottom:8px;max-width:460px}
+    .splash-sell .sell-sub{color:rgba(221,236,248,.68);font-size:1rem;line-height:1.65;margin-bottom:8px;max-width:590px;text-wrap:pretty}
 
     .splash-marquee{
-      margin:18px 0 6px;max-width:100%;
+      margin:24px 0 12px;max-width:100%;padding:10px 0;
       -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
       mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
-      overflow:hidden;min-height:0;
+      overflow:hidden;min-height:0;border-block:1px solid rgba(140,190,230,.08);
     }
     .splash-marquee .track{display:flex;gap:12px;width:max-content;animation:fisioSlide 50s linear infinite}
     .splash-marquee img{
-      width:118px;height:118px;object-fit:cover;border-radius:14px;flex:none;
-      border:1px solid rgba(150,200,240,.14);
-      box-shadow:0 10px 26px rgba(0,0,0,.4);
+      width:112px;height:112px;object-fit:cover;border-radius:17px;flex:none;
+      border:1px solid rgba(173,219,250,.22);
+      box-shadow:0 14px 30px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.14);
       background:rgba(255,255,255,.04);
     }
     @keyframes fisioSlide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-    .splash-mcaption{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(230,244,243,.42);margin-bottom:18px}
+    .splash-mcaption{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(221,236,248,.52);margin-bottom:18px}
     .splash-mcaption b{color:#fff}
 
-    .splash-price{display:grid;gap:10px;max-width:420px;margin-bottom:18px}
+    .splash-price{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:620px;margin-bottom:18px}
     .splash-price .opt{
-      display:flex;align-items:center;gap:13px;
-      background:rgba(255,255,255,.045);border:1px solid rgba(150,200,240,.13);
-      border-radius:14px;padding:12px 16px;transition:var(--transition);
+      display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;min-height:92px;
+      background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.025));border:1px solid rgba(150,200,240,.16);
+      border-radius:18px;padding:16px 18px;transition:var(--transition);box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
     }
     .splash-price .opt:hover{border-color:rgba(150,200,240,.26);background:rgba(255,255,255,.07)}
-    .splash-price .opt b{font-family:var(--font-display);font-size:1.45rem;font-weight:800;color:#fff;letter-spacing:-.02em;white-space:nowrap}
-    .splash-price .opt small{display:block;color:rgba(230,244,243,.58);font-size:.76rem;line-height:1.45}
+    .splash-price .opt b{font-family:var(--font-display);font-size:1.6rem;font-weight:800;color:#fff;letter-spacing:-.035em;white-space:nowrap}
+    .splash-price .opt small{display:block;color:rgba(221,236,248,.64);font-size:.76rem;line-height:1.45}
     .splash-price .opt--star{
-      background:linear-gradient(120deg,rgba(61,143,203,.16),rgba(47,209,198,.08));
-      border:1.5px solid rgba(95,182,224,.55);position:relative;
+      background:linear-gradient(135deg,rgba(61,143,203,.22),rgba(47,209,198,.09));
+      border:1px solid rgba(95,196,224,.62);position:relative;
     }
     .splash-price .opt--star b{color:#7CC3EE}
     .splash-price .opt--star .badge{
-      position:absolute;top:-10px;right:12px;
+      position:absolute;top:-10px;right:14px;
       background:linear-gradient(100deg,#3D8FCB,#1C6FB0);color:#FFFFFF;
       font-size:.6rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
       padding:4px 11px;border-radius:20px;
@@ -269,7 +269,7 @@
     .splash-price .tachado{text-decoration:line-through;opacity:.45;margin-right:4px}
 
     .splash-reviews{
-      max-width:440px;margin-bottom:16px;overflow:hidden;
+      max-width:620px;margin-bottom:16px;overflow:hidden;
       -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
       mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
     }
@@ -280,52 +280,57 @@
     .splash-reviews:hover .rtrack{animation-play-state:paused}
     @keyframes reviewSlide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
     .splash-reviews img{
-      width:420px;flex:none;border-radius:13px;display:block;
-      border:1px solid rgba(150,200,240,.12);
-      box-shadow:0 8px 22px rgba(0,0,0,.35);
+      width:470px;flex:none;border-radius:17px;display:block;
+      border:1px solid rgba(150,200,240,.18);
+      box-shadow:0 12px 30px rgba(0,0,0,.4);
     }
-    .splash-proofrow{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+    .splash-proofrow{display:flex;align-items:center;gap:13px;margin-bottom:20px}
     .splash-faces{display:flex;flex:none}
     .splash-faces img{
-      width:32px;height:32px;border-radius:50%;object-fit:cover;
-      border:2px solid #0C1A30;margin-left:-9px;
+      width:34px;height:34px;border-radius:50%;object-fit:cover;
+      border:2px solid #0C1A30;margin-left:-9px;box-shadow:0 4px 12px rgba(0,0,0,.28);
     }
     .splash-faces img:first-child{margin-left:0}
-    .splash-trust{font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(230,244,243,.44)}
+    .splash-trust{font-size:.66rem;letter-spacing:.17em;text-transform:uppercase;color:rgba(221,236,248,.48)}
 
     .splash-free{
-      display:flex;align-items:center;justify-content:center;gap:7px;
-      font-size:.9rem;color:rgba(230,244,243,.75);margin-bottom:14px;
+      display:flex;align-items:center;justify-content:flex-start;gap:9px;
+      font-size:.88rem;color:rgba(230,244,243,.78);margin-bottom:14px;
     }
     .splash-free b{color:#7CC3EE;font-weight:700}
     .splash-free svg{width:16px;height:16px;flex:none;stroke:#06121F;background:#4CA6DE;border-radius:50%;padding:3px}
 
-    @media (max-width:880px){
+    @media (max-width:980px){
       #splash-screen{padding:max(18px, env(safe-area-inset-top)) 0 max(24px, env(safe-area-inset-bottom))}
-      .splash-grid{grid-template-columns:1fr;gap:18px;padding-bottom:30px;width:94%}
+      .splash-grid{grid-template-columns:1fr;gap:34px;padding-bottom:30px;width:min(92%,660px)}
+      .auth-card{order:-1}
       .splash-sell{text-align:center}
-      .splash-sell h1{font-size:1.4rem;margin-bottom:10px}
-      .splash-sell .sell-sub{display:none}
+      .splash-sell h1{font-size:clamp(2rem,7vw,3rem);margin:0 auto 12px;max-width:620px}
+      .splash-sell .sell-sub{display:block;margin:0 auto 10px;max-width:570px}
       .splash-logo{display:none !important} /* la marca ya vive dentro de la card */
-      .splash-marquee{margin:4px 0 4px}
-      .splash-marquee img{width:84px;height:84px;border-radius:12px}
-      .splash-proofrow{justify-content:center;margin-bottom:10px}
-      .splash-price{margin:0 auto 12px;max-width:380px;width:100%}
-      .splash-price .opt{padding:9px 13px}
-      .splash-price .opt b{font-size:1.15rem}
-      .splash-reviews{margin:0 auto 12px;max-width:340px}
-      .splash-reviews img{width:300px}
-      .splash-grid .splash-content{margin:0 auto !important;width:100%;max-width:440px !important}
-      .auth-card{padding:22px 18px 18px;border-radius:20px}
+      .splash-marquee{margin:20px 0 10px}
+      .splash-marquee img{width:96px;height:96px;border-radius:14px}
+      .splash-proofrow{justify-content:center;margin-bottom:16px}
+      .splash-price{margin:0 auto 16px;max-width:620px;width:100%}
+      .splash-price .opt{padding:14px 16px}
+      .splash-reviews{margin:0 auto 14px;max-width:560px}
+      .splash-reviews img{width:430px}
+      .splash-grid .splash-content{margin:0 auto !important;width:100%;max-width:480px !important}
       .auth-brand{display:block !important}
       .splash-sell{display:flex;flex-direction:column;align-items:center}
       .splash-sell > *{width:100%}
       .splash-trust{text-align:center;display:block;margin-bottom:4px}
     }
-    @media (max-width:420px){
-      .auth-card{padding:20px 15px 16px}
+    @media (max-width:560px){
+      .splash-grid{width:94%;gap:28px}
+      .splash-sell h1{font-size:1.9rem}
+      .splash-sell .sell-sub{font-size:.9rem;line-height:1.55}
+      .splash-price{grid-template-columns:1fr}
+      .splash-price .opt{min-height:78px}
+      .auth-card{padding:24px 18px 20px}
       .splash-tab{font-size:10.5px;padding:9px 8px}
-      .splash-reviews img{width:270px}
+      .splash-reviews{max-width:100%}
+      .splash-reviews img{width:min(82vw,360px)}
       .splash-price .opt small{font-size:.7rem}
     }
 
@@ -338,25 +343,37 @@
       -webkit-mask-image:radial-gradient(ellipse at 30% 40%,#000,transparent 75%);
       mask-image:radial-gradient(ellipse at 30% 40%,#000,transparent 75%);
     }
+    #splash-screen::before {
+      content:""; position:absolute; width:520px; height:520px; right:-190px; top:-180px;
+      border-radius:50%; pointer-events:none;
+      background:radial-gradient(circle,rgba(47,209,198,.13),rgba(76,166,222,.055) 42%,transparent 70%);
+      filter:blur(4px);
+    }
     #splash-screen > * { position:relative; z-index:1; }
 
     @keyframes shimmerBar { 0%,100%{background-position:0% 0} 50%{background-position:200% 0} }
     .auth-card {
-      background:#101A2C;
-      border:1px solid rgba(140,190,230,.17);
-      border-radius:22px;
-      padding:26px 26px 22px;
-      box-shadow:0 0 70px rgba(28,111,176,.12), 0 20px 60px rgba(0,0,0,.55);
-      position:relative; overflow:hidden;
+      background:linear-gradient(160deg,rgba(18,33,55,.96),rgba(11,24,43,.94));
+      border:1px solid rgba(157,207,240,.23);
+      border-radius:30px;
+      padding:34px 34px 28px;
+      box-shadow:0 0 80px rgba(28,111,176,.15),0 28px 80px rgba(0,0,0,.56),inset 0 1px 0 rgba(255,255,255,.06);
+      position:relative; overflow:hidden;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+      max-width:480px !important;justify-self:end;
     }
     .auth-card::before {
       content:""; position:absolute; top:0; left:0; right:0; height:3px;
       background:linear-gradient(90deg,#1C6FB0,#2FD1C6,#1C6FB0);
       background-size:200% 100%;
       animation:shimmerBar 3.5s ease-in-out infinite;
-      border-radius:22px 22px 0 0;
+      border-radius:30px 30px 0 0;
     }
-    .auth-brand { display:none; text-align:center; margin-bottom:16px; }
+    .auth-card::after {
+      content:"";position:absolute;width:240px;height:240px;right:-125px;top:-110px;border-radius:50%;
+      background:radial-gradient(circle,rgba(76,166,222,.18),transparent 68%);pointer-events:none;
+    }
+    .auth-card > * { position:relative; z-index:1; }
+    .auth-brand { display:none; text-align:left; margin-bottom:20px; }
     .auth-brand__name {
       font-family:var(--font-display); font-size:1.35rem; font-weight:800; letter-spacing:-.03em; color:#fff;
     }
@@ -369,30 +386,30 @@
       letter-spacing:.14em; text-transform:uppercase; color:rgba(169,187,209,.55); margin-top:4px;
     }
     .auth-tabs {
-      display:flex; gap:4px; background:rgba(255,255,255,.05);
-      padding:4px; border-radius:100px; margin-bottom:18px;
-      border:1px solid rgba(140,190,230,.1);
+      display:flex; gap:5px; background:rgba(5,14,27,.52);
+      padding:5px; border-radius:16px; margin-bottom:18px;
+      border:1px solid rgba(140,190,230,.14);box-shadow:inset 0 1px 10px rgba(0,0,0,.18);
     }
     .splash-tab {
       flex:1; text-align:center;
       font-family:'JetBrains Mono',monospace; font-size:11.5px; font-weight:700; letter-spacing:.04em;
-      padding:10px 14px; border-radius:100px; border:none; cursor:pointer;
+      padding:11px 14px; border-radius:12px; border:none; cursor:pointer;
       color:rgba(169,187,209,.7); background:transparent;
       transition:all .2s cubic-bezier(.2,.8,.25,1);
     }
     .splash-tab:hover { color:#fff; }
     .splash-tab.active {
       background:linear-gradient(135deg,#3D8FCB,#1C6FB0); color:#fff;
-      box-shadow:0 4px 14px rgba(28,111,176,.5), inset 0 1px 0 rgba(255,255,255,.18);
+      box-shadow:0 7px 20px rgba(28,111,176,.42), inset 0 1px 0 rgba(255,255,255,.2);
     }
     .auth-divider {
-      display:flex; align-items:center; gap:12px; margin:16px 0 12px;
+      display:flex; align-items:center; gap:12px; margin:18px 0 14px;
       font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700;
       letter-spacing:.14em; text-transform:uppercase; color:rgba(169,187,209,.45);
     }
     .auth-divider::before, .auth-divider::after { content:""; flex:1; height:1px; background:rgba(140,190,230,.12); }
     .btn-google {
-      width:100%; padding:12px 16px; border-radius:12px;
+      width:100%; min-height:50px; padding:12px 16px; border-radius:14px;
       background:#fff; color:#1f1f1f;
       font-family:var(--font-body); font-size:.9rem; font-weight:600;
       border:1px solid #dadce0; cursor:pointer;
@@ -405,6 +422,209 @@
       text-align:center; margin-top:14px;
       font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:500;
       letter-spacing:.06em; color:rgba(169,187,209,.4);
+    }
+
+    .auth-card .splash-free {
+      padding:12px 14px;border:1px solid rgba(76,166,222,.18);border-radius:15px;
+      background:linear-gradient(100deg,rgba(61,143,203,.12),rgba(47,209,198,.055));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+    }
+    .auth-card .splash-form { gap:12px; }
+    .auth-card .splash-input {
+      min-height:54px;padding:14px 16px;border-radius:14px;
+      border-color:rgba(157,207,240,.19);background:rgba(5,14,27,.52);
+      box-shadow:inset 0 1px 8px rgba(0,0,0,.14);
+    }
+    .auth-card .splash-input:hover { border-color:rgba(157,207,240,.3); }
+    .auth-card .splash-input:focus {
+      border-color:#4CA6DE;background:rgba(10,25,44,.86);
+      box-shadow:0 0 0 4px rgba(76,166,222,.14),0 10px 28px rgba(0,0,0,.18);
+    }
+    .auth-card .btn-splash {
+      min-height:52px;border-radius:14px;margin-top:2px;
+      background:linear-gradient(135deg,#389bd4 0%,#1c6fb0 58%,#155b96 100%);
+    }
+    .auth-card .btn-splash:disabled { box-shadow:none;filter:saturate(.6); }
+    .auth-terms {
+      display:flex;align-items:flex-start;gap:11px;margin:8px 0 4px;padding:2px 1px;
+    }
+    .auth-terms label { text-align:left; }
+
+    @media (max-width:980px) {
+      .auth-card{justify-self:center;padding:30px 28px 26px}
+      .auth-brand{text-align:center}
+    }
+    @media (max-width:560px) {
+      .auth-card{border-radius:24px;padding:24px 18px 20px}
+      .auth-card::before{border-radius:24px 24px 0 0}
+      .auth-card .splash-free{justify-content:center;font-size:.82rem;padding:11px 10px}
+      .auth-card .splash-input{min-height:51px}
+    }
+
+    /* Dirección visual minimalista: clínica, luminosa y editorial */
+    #splash-screen {
+      color:#102942;
+      background:
+        radial-gradient(760px 520px at 94% 2%,rgba(80,177,220,.16),transparent 66%),
+        radial-gradient(620px 480px at 2% 100%,rgba(47,209,198,.08),transparent 70%),
+        linear-gradient(145deg,#f9fbfd 0%,#f3f7fb 54%,#eef5f9 100%);
+    }
+    #splash-screen::after { display:none; }
+    #splash-screen::before {
+      width:460px;height:460px;right:-160px;top:-190px;
+      background:radial-gradient(circle,rgba(39,149,202,.13),transparent 68%);
+      filter:none;
+    }
+    .splash-grid {
+      grid-template-columns:minmax(0,1.28fr) minmax(330px,.72fr);
+      width:min(90%,1180px);max-width:1180px;gap:clamp(52px,7vw,94px);
+    }
+    .splash-sell { color:#102942;padding:8px 0; }
+    .splash-logo {
+      display:inline-flex;align-items:center;width:auto !important;
+      color:#173652 !important;font-size:.92rem !important;letter-spacing:.055em;
+      margin-bottom:20px !important;padding:8px 11px 8px 10px;
+      border:1px solid #d9e5ee;border-radius:999px;background:rgba(255,255,255,.68);
+    }
+    .splash-logo::before {
+      content:"";width:7px;height:7px;border-radius:50%;margin-right:8px;
+      background:#28a4ca;box-shadow:0 0 0 4px rgba(40,164,202,.1);
+    }
+    .splash-sell h1 {
+      color:#102942;font-size:clamp(2.35rem,4vw,3.65rem);line-height:1.03;
+      letter-spacing:-.052em;max-width:680px;margin-bottom:17px;
+    }
+    .splash-sell h1 span {
+      display:inline-block;margin-left:.12em;
+      background:linear-gradient(105deg,#247cae 0%,#2a9bc5 52%,#28aaa7 100%);
+      -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .splash-sell .sell-sub { color:#5d7185;max-width:610px;font-size:.97rem;line-height:1.65; }
+    .splash-marquee {
+      margin:24px 0 12px;padding:4px 0 10px;border:0;
+      -webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);
+      mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);
+    }
+    .splash-marquee .track { gap:14px; }
+    .splash-marquee img {
+      width:108px;height:108px;border-radius:16px;border:1px solid rgba(30,79,116,.12);
+      background:#fff;box-shadow:0 10px 24px rgba(42,77,108,.12);
+    }
+    .splash-proofrow { margin-bottom:18px; }
+    .splash-faces img { border-color:#f5f8fb;box-shadow:0 3px 9px rgba(25,65,96,.14); }
+    .splash-mcaption { color:#718397;letter-spacing:.12em; }
+    .splash-mcaption b { color:#173652; }
+    .splash-price { gap:11px;max-width:600px;margin-bottom:17px; }
+    .splash-price .opt {
+      min-height:82px;padding:14px 16px;border-radius:15px;
+      background:rgba(255,255,255,.72);border:1px solid #dce7ef;
+      box-shadow:0 7px 20px rgba(31,70,102,.055);
+    }
+    .splash-price .opt:hover {
+      background:#fff;border-color:#c8dbe8;transform:translateY(-1px);
+    }
+    .splash-price .opt b { color:#173652;font-size:1.45rem; }
+    .splash-price .opt small { color:#62778a; }
+    .splash-price .opt--star {
+      background:linear-gradient(140deg,#eef8fc,#edf8f7);border-color:#9dd5e3;
+    }
+    .splash-price .opt--star b { color:#237da9; }
+    .splash-price .opt--star .badge {
+      top:-9px;background:#237da9;color:#fff;box-shadow:none;
+    }
+    .splash-reviews { max-width:600px;margin-bottom:14px; }
+    .splash-reviews img {
+      width:440px;border-radius:14px;border:1px solid #d9e4ec;
+      box-shadow:0 9px 24px rgba(26,59,87,.11);
+    }
+    .splash-trust { color:#758a9c;letter-spacing:.14em; }
+
+    .auth-card {
+      width:100%;max-width:390px !important;padding:28px 28px 24px;border-radius:22px;
+      color:#173652;background:rgba(255,255,255,.9);border:1px solid #dce7ef;
+      box-shadow:0 24px 55px rgba(31,70,103,.11),0 3px 12px rgba(31,70,103,.05);
+      backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    }
+    .auth-card::before,.auth-card::after { display:none; }
+    .auth-card .splash-free {
+      justify-content:flex-start;margin-bottom:18px !important;padding:0;border:0;border-radius:0;
+      color:#64788b;background:transparent;box-shadow:none;font-size:.82rem;
+    }
+    .auth-card .splash-free b { color:#237da9; }
+    .auth-card .splash-free svg {
+      width:18px;height:18px;padding:4px;color:#217ca4;stroke:#217ca4;background:#e5f5f8;
+    }
+    .auth-tabs {
+      gap:0;margin-bottom:20px;padding:0;border:0;border-bottom:1px solid #e3ebf1;
+      border-radius:0;background:transparent;box-shadow:none;
+    }
+    .splash-tab {
+      padding:11px 8px 12px;border-radius:0;color:#8291a0;
+      font-family:var(--font-body);font-size:.8rem;font-weight:650;letter-spacing:0;
+      border-bottom:2px solid transparent;margin-bottom:-1px;
+    }
+    .splash-tab:hover { color:#173652; }
+    .splash-tab:focus { outline:none; }
+    .splash-tab:focus-visible { outline:3px solid rgba(43,142,188,.14);outline-offset:3px;border-radius:7px; }
+    .splash-tab.active {
+      color:#173652;background:transparent;border-bottom-color:#2b8ebc;box-shadow:none;
+    }
+    .auth-card .splash-form { gap:11px; }
+    .auth-card .splash-input {
+      min-height:50px;padding:13px 14px;border-radius:11px;color:#173652;
+      background:#f6f9fb;border:1px solid #dce6ee;box-shadow:none;
+    }
+    .auth-card .splash-input::placeholder { color:#8a99a7; }
+    .auth-card .splash-input:hover { border-color:#c5d6e2;background:#f9fbfc; }
+    .auth-card .splash-input:focus {
+      color:#173652;background:#fff;border-color:#3d98c0;
+      box-shadow:0 0 0 4px rgba(61,152,192,.1);
+    }
+    .auth-card .btn-splash {
+      min-height:49px;margin-top:3px;border-radius:11px;
+      color:#fff;background:#173f63;box-shadow:none;
+    }
+    .auth-card .btn-splash:hover { transform:translateY(-1px);background:#0f3455;box-shadow:0 8px 18px rgba(23,63,99,.16); }
+    .auth-divider {
+      margin:16px 0 12px;color:#9aa7b3;font-family:var(--font-body);
+      font-size:.66rem;letter-spacing:.11em;
+    }
+    .auth-divider::before,.auth-divider::after { background:#e4ebf0; }
+    .btn-google {
+      min-height:48px;border-radius:11px;color:#344759;background:#fff;border-color:#dce5eb;
+      box-shadow:none;
+    }
+    .btn-google:hover { border-color:#c8d6e0;box-shadow:0 5px 14px rgba(30,65,92,.08); }
+    .auth-brand__name { color:#173652; }
+    .auth-brand__sub { color:#8494a3; }
+    .auth-terms label { color:#687b8d !important; }
+    .auth-terms a { color:#237da9 !important; }
+    #reg-terms {
+      appearance:none;-webkit-appearance:none;background:#fff;border:1px solid #b9c9d4;border-radius:4px;
+    }
+    #reg-terms:checked {
+      border-color:#237da9;background-color:#237da9;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.2' d='m3.5 8.4 2.7 2.7 6.3-6.3'/%3E%3C/svg%3E");
+      background-size:14px;background-position:center;background-repeat:no-repeat;
+    }
+    #reg-terms:focus-visible { outline:3px solid rgba(43,142,188,.15);outline-offset:2px; }
+
+    @media (max-width:980px) {
+      #splash-screen { padding:24px 0 34px; }
+      .splash-grid { width:min(92%,660px);gap:38px; }
+      .auth-card { max-width:390px !important;padding:27px 25px 23px; }
+      .splash-sell h1 { color:#102942; }
+      .splash-sell .sell-sub { color:#5d7185; }
+      .splash-reviews { max-width:560px; }
+      .splash-price .opt { padding:14px 16px; }
+    }
+    @media (max-width:560px) {
+      .splash-grid { width:92%;gap:32px; }
+      .auth-card { max-width:390px !important;padding:23px 18px 20px;border-radius:18px; }
+      .splash-sell h1 { font-size:1.9rem; }
+      .splash-marquee img { width:92px;height:92px; }
+      .splash-price .opt { background:rgba(255,255,255,.82); }
+      .auth-card .splash-free { justify-content:center;padding:0;font-size:.8rem; }
     }
 
     /* ═══════════════════════════════════════════
@@ -1208,7 +1428,11 @@
       <h1>Domina las técnicas que tus pacientes <span>necesitan hoy</span></h1>
       <p class="sell-sub">Cursos de fisioterapia y rehabilitación, herramientas clínicas para usar en consulta, webinars y certificados. Esto es lo que te espera adentro:</p>
 
-      <div class="splash-marquee" aria-hidden="true"><div class="track"><img src="img/splash/course-01.webp" alt="" loading="lazy"><img src="img/splash/course-02.webp" alt="" loading="lazy"><img src="img/splash/course-03.webp" alt="" loading="lazy"><img src="img/splash/course-05.webp" alt="" loading="lazy"><img src="img/splash/course-07.webp" alt="" loading="lazy"><img src="img/splash/course-09.webp" alt="" loading="lazy"><img src="img/splash/course-11.webp" alt="" loading="lazy"><img src="img/splash/course-13.webp" alt="" loading="lazy"><img src="img/splash/course-15.webp" alt="" loading="lazy"><img src="img/splash/course-17.webp" alt="" loading="lazy"><img src="img/splash/course-01.webp" alt="" loading="lazy"><img src="img/splash/course-02.webp" alt="" loading="lazy"><img src="img/splash/course-03.webp" alt="" loading="lazy"><img src="img/splash/course-05.webp" alt="" loading="lazy"><img src="img/splash/course-07.webp" alt="" loading="lazy"><img src="img/splash/course-09.webp" alt="" loading="lazy"><img src="img/splash/course-11.webp" alt="" loading="lazy"><img src="img/splash/course-13.webp" alt="" loading="lazy"><img src="img/splash/course-15.webp" alt="" loading="lazy"><img src="img/splash/course-17.webp" alt="" loading="lazy"></div></div>
+      <div class="splash-marquee" aria-hidden="true">
+        <div class="track">
+          <img src="img/splash/course-01.webp" alt="" loading="eager"><img src="img/splash/course-02.webp" alt="" loading="eager"><img src="img/splash/course-03.webp" alt="" loading="eager"><img src="img/splash/course-05.webp" alt="" loading="eager"><img src="img/splash/course-07.webp" alt="" loading="eager"><img src="img/splash/course-09.webp" alt="" loading="eager"><img src="img/splash/course-11.webp" alt="" loading="eager"><img src="img/splash/course-13.webp" alt="" loading="eager"><img src="img/splash/course-15.webp" alt="" loading="eager"><img src="img/splash/course-17.webp" alt="" loading="eager"><img src="img/splash/course-01.webp" alt="" loading="eager"><img src="img/splash/course-02.webp" alt="" loading="eager"><img src="img/splash/course-03.webp" alt="" loading="eager"><img src="img/splash/course-05.webp" alt="" loading="eager"><img src="img/splash/course-07.webp" alt="" loading="eager"><img src="img/splash/course-09.webp" alt="" loading="eager"><img src="img/splash/course-11.webp" alt="" loading="eager"><img src="img/splash/course-13.webp" alt="" loading="eager"><img src="img/splash/course-15.webp" alt="" loading="eager"><img src="img/splash/course-17.webp" alt="" loading="eager">
+        </div>
+      </div>
       <div class="splash-proofrow">
         <div class="splash-faces">
           <img src="img/splash/student-01.webp" alt="Alumno FisioTeck">
@@ -1247,7 +1471,7 @@
     </div>
 
     <!-- FORM -->
-  <div class="splash-content auth-card" style="max-width:440px;margin:0;">
+  <div class="splash-content auth-card" style="max-width:480px;margin:0;">
     <div class="auth-brand">
       <div class="auth-brand__name">Club Fisio<span>Teck</span></div>
       <div class="auth-brand__sub">Membresía profesional</div>
@@ -1259,20 +1483,20 @@
 
     <!-- TABS (estilo píldora SYNOVA) -->
     <div class="auth-tabs">
-      <button id="tabLogin" class="splash-tab" onclick="switchAuthTab('login')">Iniciar Sesión</button>
-      <button id="tabRegister" class="splash-tab active" onclick="switchAuthTab('register')">Registrarme</button>
+      <button type="button" id="tabLogin" class="splash-tab" onclick="switchAuthTab('login')">Iniciar Sesión</button>
+      <button type="button" id="tabRegister" class="splash-tab active" onclick="switchAuthTab('register')">Registrarme</button>
     </div>
 
     <!-- LOGIN FORM -->
     <div id="formLogin" class="splash-form" style="display:none;">
-      <input type="email" class="splash-input" id="login-email" placeholder="Correo electrónico">
-      <input type="password" class="splash-input" id="login-pass" placeholder="Contraseña">
-      <button class="btn-splash" onclick="handleLogin()">Iniciar Sesión</button>
+      <input type="email" class="splash-input" id="login-email" placeholder="Correo electrónico" aria-label="Correo electrónico" autocomplete="email">
+      <input type="password" class="splash-input" id="login-pass" placeholder="Contraseña" aria-label="Contraseña" autocomplete="current-password">
+      <button type="button" class="btn-splash" onclick="handleLogin()">Iniciar Sesión</button>
       <div class="splash-error" id="login-error">Credenciales incorrectas</div>
 
       <div class="auth-divider">o continúa con</div>
 
-      <button class="btn-google" onclick="handleGoogleLogin()">
+      <button type="button" class="btn-google" onclick="handleGoogleLogin()">
         <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
         Continuar con Google
       </button>
@@ -1280,25 +1504,25 @@
 
     <!-- REGISTER FORM -->
     <div id="formRegister" class="splash-form">
-      <input type="text" class="splash-input" id="reg-name" placeholder="Nombre completo">
-      <input type="email" class="splash-input" id="reg-email" placeholder="Correo electrónico">
-      <input type="password" class="splash-input" id="reg-pass" placeholder="Contraseña">
-      <input type="password" class="splash-input" id="reg-pass-confirm" placeholder="Confirmar contraseña">
+      <input type="text" class="splash-input" id="reg-name" placeholder="Nombre completo" aria-label="Nombre completo" autocomplete="name">
+      <input type="email" class="splash-input" id="reg-email" placeholder="Correo electrónico" aria-label="Correo electrónico" autocomplete="email">
+      <input type="password" class="splash-input" id="reg-pass" placeholder="Contraseña" aria-label="Contraseña" autocomplete="new-password">
+      <input type="password" class="splash-input" id="reg-pass-confirm" placeholder="Confirmar contraseña" aria-label="Confirmar contraseña" autocomplete="new-password">
 
       <!-- TERMS CHECKBOX -->
-      <div style="display:flex;align-items:flex-start;gap:10px;margin:8px 0 4px;">
+      <div class="auth-terms">
         <input type="checkbox" id="reg-terms" onchange="toggleRegisterBtn()" style="margin-top:3px;accent-color:var(--accent);width:18px;height:18px;cursor:pointer;flex-shrink:0;">
         <label for="reg-terms" style="font-size:.8rem;color:rgba(255,255,255,.55);line-height:1.4;cursor:pointer;">
           He leído y acepto los <a href="#" onclick="event.preventDefault();openLegalModal('terms')" style="color:var(--accent);text-decoration:underline;">Términos y Condiciones</a> y la <a href="#" onclick="event.preventDefault();openLegalModal('privacy')" style="color:var(--accent);text-decoration:underline;">Política de Privacidad</a>
         </label>
       </div>
 
-      <button class="btn-splash" id="btnRegister" onclick="handleRegister()" disabled style="opacity:.4;cursor:not-allowed;">Crear Cuenta</button>
+      <button type="button" class="btn-splash" id="btnRegister" onclick="handleRegister()" disabled style="opacity:.4;cursor:not-allowed;">Crear Cuenta</button>
       <div class="splash-error" id="register-error"></div>
 
       <div class="auth-divider">o continúa con</div>
 
-      <button class="btn-google" onclick="handleGoogleLogin()">
+      <button type="button" class="btn-google" onclick="handleGoogleLogin()">
         <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
         Continuar con Google
       </button>
@@ -2406,8 +2630,8 @@
 <div id="paywallOverlay" style="display:none;position:fixed;inset:0;z-index:9997;background:rgba(15,26,42,.92);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px;overflow-y:auto;">
   <div style="text-align:center;color:#fff;max-width:520px;animation:fadeUp .4s ease;padding:40px 0;">
     <div style="width:80px;height:80px;border-radius:50%;background:rgba(76,166,222,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#4CA6DE" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-    <h2 style="font-size:1.5rem;margin-bottom:6px;text-transform:uppercase;letter-spacing:3px;">Contenido exclusivo</h2>
-    <p style="color:rgba(255,255,255,.55);font-size:.92rem;line-height:1.6;margin-bottom:28px;">Suscríbete para desbloquear todos los cursos, herramientas clínicas, foro profesional, webinars y más.</p>
+    <h2 style="font-size:1.5rem;margin-bottom:6px;text-transform:uppercase;letter-spacing:3px;">Continúa aprendiendo</h2>
+    <p style="color:rgba(255,255,255,.55);font-size:.92rem;line-height:1.6;margin-bottom:28px;">Ya puedes explorar el catálogo y ver la primera clase gratis. Activa tu membresía para abrir las clases restantes, materiales, herramientas, certificados y comunidad.</p>
 
     <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;">
       <!-- PLAN MENSUAL -->
@@ -3104,7 +3328,7 @@
     // Load member notifications
     loadMemberNotifications();
 
-    // Re-render courses and home with user-based unlock dates
+    // Re-render courses and home with the complete published catalog
     renderLibrary();
     renderHome();
 
@@ -3235,25 +3459,19 @@
     // Featured course - find first unlocked course with incomplete progress
     const featEl = document.getElementById('featuredCourse');
     const allC = siteData.courses || [];
+    const today2 = new Date().toISOString().split('T')[0];
     let featCourse = null;
     for (const c of allC) {
+      if (c.availableDate && c.availableDate > today2) continue;
       const prog = getCourseProgress(c.id);
       const total = (c.lessons || []).length;
       const comp = (prog.completed || []).length;
       if (total > 0 && comp < total) { featCourse = c; break; }
     }
     if (!featCourse && allC.length > 0) {
-      // Pick first UNLOCKED course
-      const today2 = new Date().toISOString().split('T')[0];
-      const regDate2 = userStartDate ? new Date(userStartDate + 'T00:00:00') : new Date();
-      const daysSince2 = Math.floor((new Date() - regDate2) / (1000 * 60 * 60 * 24));
-      const userBased2 = allC.filter(c => !c.availableDate).sort((a,b) => (a.date||'').localeCompare(b.date||''));
+      // Pick the first published course. Registration date never hides catalog items.
       for (const c of allC) {
         if (c.availableDate && c.availableDate > today2) continue;
-        if (!c.availableDate) {
-          const idx2 = userBased2.findIndex(ub => ub.id === c.id);
-          if (idx2 >= 0 && daysSince2 < idx2 * 15) continue;
-        }
         featCourse = c;
         break;
       }
@@ -3274,18 +3492,12 @@
 
     const container = document.getElementById('recentCourses');
     const today = new Date().toISOString().split('T')[0];
-    const regDate = userStartDate ? new Date(userStartDate + 'T00:00:00') : new Date();
     const now = new Date();
-    const daysSinceReg = Math.floor((now - regDate) / (1000 * 60 * 60 * 24));
 
-    // Dual mode: fixed date vs user-based
+    // All published courses are visible; only explicit future releases stay locked.
     const allCourses = [...siteData.courses];
-    const fixedD = allCourses.filter(c => c.availableDate);
-    const userB = allCourses.filter(c => !c.availableDate);
-    fixedD.forEach(c => { c._isLocked = c.availableDate > today; c._daysLeft = c._isLocked ? Math.ceil((new Date(c.availableDate+'T00:00:00') - now)/(1000*60*60*24)) : 0; });
-    const ubSort = [...userB].sort((a,b) => (a.date||'').localeCompare(b.date||''));
-    ubSort.forEach((c,i) => { c._unlockDays = i*15; c._isLocked = daysSinceReg < c._unlockDays; c._daysLeft = c._unlockDays - daysSinceReg; });
-    const combined = [...fixedD, ...ubSort];
+    allCourses.forEach(c => { c._isLocked = Boolean(c.availableDate && c.availableDate > today); c._daysLeft = c._isLocked ? Math.ceil((new Date(c.availableDate+'T00:00:00') - now)/(1000*60*60*24)) : 0; });
+    const combined = allCourses;
     const recent = combined.filter(c => !c._isLocked).slice(-3).reverse();
     if (recent.length === 0) recent.push(...combined.slice(0, 3));
     container.innerHTML = recent.map(c => {
@@ -4440,32 +4652,16 @@
     }
 
     const today = new Date().toISOString().split('T')[0];
-    const regDate = userStartDate ? new Date(userStartDate + 'T00:00:00') : new Date();
     const now = new Date();
-    const daysSinceReg = Math.floor((now - regDate) / (1000 * 60 * 60 * 24));
 
-    // Separate: courses WITH fixed date vs WITHOUT (user-based unlock)
-    const fixedDate = courses.filter(c => c.availableDate);
-    const userBased = courses.filter(c => !c.availableDate);
-
-    // Fixed date courses: locked if date is in the future
-    fixedDate.forEach(c => {
-      c._isLocked = c.availableDate > today;
+    // Todo el catálogo se puede explorar. Sólo una fecha explícita futura oculta
+    // temporalmente un curso que todavía no ha sido publicado.
+    const all = [...courses];
+    all.forEach(c => {
+      c._isLocked = Boolean(c.availableDate && c.availableDate > today);
       c._daysLeft = c._isLocked ? Math.ceil((new Date(c.availableDate + 'T00:00:00') - now) / (1000*60*60*24)) : 0;
-      c._mode = 'fixed';
+      c._mode = c.availableDate ? 'fixed' : 'catalog';
     });
-
-    // User-based courses: sort by availableDate to get order, unlock every 15 days
-    const ubSorted = [...userBased].sort((a, b) => (a.date || '').localeCompare(b.date || ''));
-    ubSorted.forEach((c, i) => {
-      c._unlockDays = i * 15;
-      c._isLocked = daysSinceReg < c._unlockDays;
-      c._daysLeft = c._unlockDays - daysSinceReg;
-      c._mode = 'user';
-    });
-
-    // Combine all
-    const all = [...fixedDate, ...ubSorted];
 
     // Sort: unlocked first, then locked by days left
     all.sort((a, b) => {
@@ -4931,7 +5127,6 @@
   }
 
   function openCourseDetail(courseId) {
-    if (!memberIsPaid) { showPaywallOverlay(); return; }
     const course = siteData.courses.find(c => c.id === courseId);
     if (!course) return;
 
@@ -4943,20 +5138,6 @@
       showToast('Este curso se abre en ' + daysLeft + ' días');
       return;
     }
-    // Check user-based unlock
-    if (!course.availableDate) {
-      const regDate = userStartDate ? new Date(userStartDate + 'T00:00:00') : new Date();
-      const daysSinceReg = Math.floor((now - regDate) / (1000 * 60 * 60 * 24));
-      const allUserBased = siteData.courses.filter(c => !c.availableDate).sort((a,b) => (a.date||'').localeCompare(b.date||''));
-      const idx = allUserBased.findIndex(c => c.id === courseId);
-      const unlockDays = idx * 15;
-      if (daysSinceReg < unlockDays) {
-        const daysLeft = unlockDays - daysSinceReg;
-        showToast('Este curso se abre en ' + daysLeft + ' días');
-        return;
-      }
-    }
-    if (!course) return;
     currentCourseId = courseId;
     const thumbUrl = course.thumbnail ? driveImageUrl(course.thumbnail) : '';
     const lessons = course.lessons || [];
@@ -4981,7 +5162,10 @@
             const compSet = new Set(prog.completed || []);
             let nextLesson = 0;
             for (let i = 0; i < totalLessons; i++) { if (!compSet.has(i)) { nextLesson = i; break; } if (i === totalLessons - 1) nextLesson = i; }
-            const btnLabel = compSet.size > 0 ? (compSet.size >= totalLessons ? '▶ Volver a ver' : '▶ Continuar curso') : '▶ Comenzar curso';
+            const btnLabel = memberIsPaid
+              ? (compSet.size > 0 ? (compSet.size >= totalLessons ? '▶ Volver a ver' : '▶ Continuar curso') : '▶ Comenzar curso')
+              : '▶ Ver primera clase gratis';
+            if (!memberIsPaid) nextLesson = 0;
             return `<div style="display:flex;gap:12px;flex-wrap:wrap;">
             <button class="course-btn" onclick="playLesson(${nextLesson})" style="font-size:.9rem;padding:10px 24px;">${btnLabel}</button>
             ${course.temarioImg ? `<button onclick="toggleTemario()" style="padding:10px 24px;border-radius:var(--radius-sm);font-size:.9rem;font-weight:500;background:var(--accent-ghost);color:var(--primary);border:1px solid var(--primary);cursor:pointer;transition:var(--transition);">Ver temario</button>` : ''}
@@ -5008,8 +5192,9 @@
         </div>
         <div class="lesson-list">
           ${lessons.map((l, i) => {
+            const isPreview = i === 0;
             const isCompleted = completedSet.has(i);
-            const isUnlocked = i === 0 || completedSet.has(i - 1);
+            const isUnlocked = memberIsPaid || isPreview;
             const statusIcon = isCompleted
               ? '<div style="width:32px;height:32px;border-radius:50%;background:var(--success);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.9rem;">✓</div>'
               : isUnlocked
@@ -5018,18 +5203,18 @@
             const playIcon = isUnlocked
               ? `<svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" width="20" style="flex-shrink:0;cursor:pointer;"><polygon points="5 3 19 12 5 21 5 3"/></svg>`
               : `<svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" width="20" style="flex-shrink:0;opacity:.4;"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
-            const rowStyle = !isUnlocked ? 'opacity:.5;cursor:not-allowed;' : '';
-            const clickAction = isUnlocked ? `onclick="playLesson(${i})"` : `onclick="showToast('Completa la clase anterior para desbloquear esta.')"`;
+            const rowStyle = !isUnlocked ? 'opacity:.58;cursor:pointer;' : '';
+            const clickAction = isUnlocked ? `onclick="playLesson(${i})"` : `onclick="showPaywallOverlay()"`;
             return `
             <div class="lesson-item-wrap">
               <div class="lesson-item" id="lesson-${i}" ${clickAction} style="${rowStyle}">
                 ${statusIcon}
-                <div class="lesson-title">${l.title}</div>
+                <div class="lesson-title">${l.title}${isPreview && !memberIsPaid ? '<span style="display:block;color:var(--success);font-size:.7rem;font-weight:600;margin-top:3px;">Vista previa gratis</span>' : (!isUnlocked ? '<span style="display:block;color:var(--text-muted);font-size:.7rem;font-weight:500;margin-top:3px;">Incluida con la membresía</span>' : '')}</div>
                 <div class="lesson-duration">${l.duration || ''}</div>
                 ${playIcon}
                 ${l.desc ? `<button onclick="event.stopPropagation();toggleLessonDesc(${i})" style="background:none;border:none;cursor:pointer;padding:4px;flex-shrink:0;font-size:1.2rem;color:var(--text-muted);line-height:1;">⋮</button>` : ''}
               </div>
-              ${isUnlocked && !isCompleted ? `<div style="padding:8px 18px 12px 60px;">
+              ${memberIsPaid && isUnlocked && !isCompleted ? `<div style="padding:8px 18px 12px 60px;">
                 <button onclick="event.stopPropagation();markLessonComplete(${courseId},${i})" style="padding:8px 18px;border-radius:var(--radius-sm);font-size:.8rem;font-weight:500;background:rgba(15,157,108,.1);color:var(--success);border:1px solid rgba(15,157,108,.3);cursor:pointer;transition:var(--transition);" onmouseover="this.style.background='var(--success)';this.style.color='#fff'" onmouseout="this.style.background='rgba(15,157,108,.1)';this.style.color='var(--success)'">✓ Marcar como completada</button>
               </div>` : ''}
               ${l.desc ? `<div id="lessonDesc-${i}" style="display:none;padding:10px 18px 14px 60px;font-size:.84rem;color:var(--text-light);line-height:1.6;background:var(--bg);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);margin-top:-1px;">${l.desc}</div>` : ''}
@@ -5051,17 +5236,19 @@
     document.getElementById('page-course-detail').style.display = 'block';
   }
   function playLesson(index) {
-    if (!memberIsPaid) { showPaywallOverlay(); return; }
     const course = siteData.courses.find(c => c.id === currentCourseId);
     if (!course || !course.lessons || !course.lessons[index]) return;
-    const progress = getCourseProgress(currentCourseId);
-    const completedSet = new Set(progress.completed || []);
-    const isUnlocked = index === 0 || completedSet.has(index - 1);
-    if (!isUnlocked) { showToast('Completa la clase anterior para desbloquear esta.'); return; }
+    const isPreview = index === 0;
+    if (!memberIsPaid && !isPreview) { showPaywallOverlay(); return; }
     const lesson = course.lessons[index];
     document.querySelectorAll('.lesson-item').forEach(el => el.classList.remove('playing'));
     document.getElementById('lesson-'+index)?.classList.add('playing');
-    openVideo(lesson.title, lesson.videoUrl || '');
+    openVideo(lesson.title, lesson.videoUrl || '', {
+      courseId: course.id,
+      lessonId: lesson.id,
+      preview: isPreview,
+      provider: lesson.videoProvider || (lesson.bunnyVideoId ? 'bunny' : 'drive')
+    });
   }
   function backToLibrary() {
     document.getElementById('page-course-detail').style.display = 'none';
@@ -5363,17 +5550,42 @@
   }
 
   // ===== ACTIONS =====
-  function openVideo(title, url) {
-    if (!memberIsPaid) { showPaywallOverlay(); return; }
+  async function requestBunnyPlayback(courseId, lessonId) {
+    const user = auth.currentUser;
+    if (!user) throw new Error('Inicia sesión para reproducir esta clase.');
+    const token = await user.getIdToken();
+    const response = await fetch(WEBHOOK_URL + '/api/video-playback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ courseId, lessonId })
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || 'No se pudo preparar el video.');
+    return data.embedUrl;
+  }
+
+  async function openVideo(title, url, options = {}) {
+    if (!memberIsPaid && !options.preview) { showPaywallOverlay(); return; }
     document.getElementById('videoTitle').textContent = title;
     const container = document.getElementById('videoContainer');
-    if (url) {
-      const embedUrl = driveVideoEmbed(url);
-      container.innerHTML = `<iframe src="${embedUrl}" style="width:100%;height:100%;border:none;" allow="autoplay;encrypted-media" allowfullscreen></iframe>`;
-    } else {
-      container.innerHTML = `<p style="padding:40px;text-align:center;">Este contenido estará disponible pronto.<br>El administrador subirá el video aquí.</p>`;
-    }
     document.getElementById('videoModal').classList.add('active');
+    container.innerHTML = '<p style="padding:40px;text-align:center;">Preparando video…</p>';
+    try {
+      let embedUrl = '';
+      if (options.provider === 'bunny') {
+        embedUrl = await requestBunnyPlayback(options.courseId, options.lessonId);
+      } else if (url) {
+        embedUrl = driveVideoEmbed(url);
+      }
+      if (embedUrl) {
+      container.innerHTML = `<iframe src="${embedUrl}" style="width:100%;height:100%;border:none;" allow="autoplay;encrypted-media" allowfullscreen></iframe>`;
+      } else {
+        container.innerHTML = `<p style="padding:40px;text-align:center;">Este contenido estará disponible pronto.<br>El administrador subirá el video aquí.</p>`;
+      }
+    } catch (error) {
+      container.innerHTML = '<p style="padding:40px;text-align:center;line-height:1.6;"></p>';
+      container.querySelector('p').textContent = (error.message || 'No se pudo cargar el video.') + ' Inténtalo de nuevo en unos minutos.';
+    }
   }
   function closeVideo() {
     document.getElementById('videoModal').classList.remove('active');
@@ -5430,8 +5642,8 @@
         titleEl.textContent = '⏰ Tu suscripción venció · Renueva para continuar';
         subEl.textContent = 'Tu progreso, logros y certificados están guardados. Renueva y sigue donde te quedaste.';
       } else {
-        titleEl.textContent = 'Modo exploración · Suscríbete para desbloquear todo';
-        subEl.textContent = 'Puedes navegar pero no acceder a cursos, webinars, foro y herramientas sin membresía.';
+        titleEl.textContent = 'Modo exploración · Tu primera clase es gratis';
+        subEl.textContent = 'Explora todos los cursos y reproduce la primera clase. El resto del contenido y las herramientas se desbloquean con membresía.';
       }
     }
   }
@@ -5774,6 +5986,8 @@
   document.addEventListener('DOMContentLoaded', () => {
     // Check for Stripe checkout return
     const urlParams = new URLSearchParams(window.location.search);
+    const authMode = urlParams.get('mode');
+    if (authMode === 'login' || authMode === 'register') switchAuthTab(authMode);
     const sessionId = urlParams.get('session_id');
     if (sessionId) {
       // Clean URL
