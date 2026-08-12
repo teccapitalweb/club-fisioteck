@@ -1,7 +1,7 @@
 /* Club FisioTeck — Service Worker
    Estrategia: network-first SOLO para recursos del mismo origen (online = siempre fresco,
    offline = respaldo de caché). Firebase / gstatic / CDNs NO se interceptan. */
-const CACHE = 'fisioteck-v19-app-icon';
+const CACHE = 'fisioteck-v20-course-thumbnails';
 const SHELL = [
   './',
   './index.html',
@@ -11,7 +11,21 @@ const SHELL = [
   './icon-512.png',
   './icon-maskable-512.png',
   './apple-touch-icon.png',
-  './pwa-logo.png'
+  './pwa-logo.png',
+  './assets/course-thumbnails/estimulacion-neuroplastica.webp',
+  './assets/course-thumbnails/fisiopatologia-lesiones-deportivas.webp',
+  './assets/course-thumbnails/fisioterapia-pulmonar-hipoxemia.webp',
+  './assets/course-thumbnails/fisioterapia-respiratoria-geriatrica.webp',
+  './assets/course-thumbnails/liberacion-miofascial-estetica.webp',
+  './assets/course-thumbnails/manejo-dolor-terapia-fisica.webp',
+  './assets/course-thumbnails/dolor-lumbar-cronico.webp',
+  './assets/course-thumbnails/movilidad-motora-geriatrica.webp',
+  './assets/course-thumbnails/neuroplasticidad-rehabilitacion-funcional.webp',
+  './assets/course-thumbnails/rehabilitacion-deportiva.webp',
+  './assets/course-thumbnails/rehabilitacion-hipertension-pulmonar.webp',
+  './assets/course-thumbnails/terapia-manual-ortopedica.webp',
+  './assets/course-thumbnails/paralisis-cerebral-infantil.webp',
+  './assets/course-thumbnails/vendaje-neuromuscular-ortopedia.webp'
 ];
 
 self.addEventListener('install', (e) => {
