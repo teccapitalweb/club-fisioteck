@@ -1458,7 +1458,7 @@
           <img src="img/splash/student-09.webp" alt="Alumno FisioTeck">
           <img src="img/splash/student-10.webp" alt="Alumna FisioTeck">
         </div>
-        <p class="splash-mcaption" style="margin:0;"><b>15+ cursos</b> · herramientas clínicas · 87 miembros activos</p>
+        <p class="splash-mcaption" style="margin:0;"><b>14 cursos</b> · herramientas clínicas · 87 miembros activos</p>
       </div>
 
       <div class="splash-price">
@@ -2728,7 +2728,7 @@
 
 <script>
   // ===== DATA STORE — loaded from JSON (admin updates this) =====
-  const DATA_URL = 'data/content.json';
+  const DATA_URL = 'data/content.json?v=bunny-20260811';
   let siteData = {
     stats: { courses:0, pdfs:0, live:0, members:0 },
     courses: [],
@@ -2766,7 +2766,7 @@
   // ===== INIT =====
   async function init() {
     try {
-      const res = await fetch(DATA_URL);
+      const res = await fetch(DATA_URL, { cache: 'no-store' });
       if (res.ok) siteData = await res.json();
       else siteData = DEMO_DATA;
     } catch(e) { siteData = DEMO_DATA; }
@@ -4809,7 +4809,7 @@
     { id:'tri', name:'Tricampeón', desc:'Completa 3 cursos', icon:'<svg class="ic" style="width:22px;height:22px;"><use href="#f-trophy"/></svg>', xp:300, cat:'cursos', check: s => s.completedCourses >= 3 },
     { id:'half_dozen', name:'Media Docena', desc:'Completa 6 cursos', icon:'⭐', xp:500, cat:'cursos', check: s => s.completedCourses >= 6 },
     { id:'dominator', name:'Dominador', desc:'Completa 10 cursos', icon:'<svg class="ic" style="width:22px;height:22px;"><use href="#f-flame"/></svg>', xp:800, cat:'cursos', check: s => s.completedCourses >= 10 },
-    { id:'legend', name:'Leyenda FisioTeck', desc:'Completa los 15 cursos', icon:'<svg class="ic" style="width:22px;height:22px;"><use href="#f-crown"/></svg>', xp:1500, cat:'cursos', check: s => s.completedCourses >= 15 },
+    { id:'legend', name:'Leyenda FisioTeck', desc:'Completa los 14 cursos', icon:'<svg class="ic" style="width:22px;height:22px;"><use href="#f-crown"/></svg>', xp:1500, cat:'cursos', check: s => s.completedCourses >= 14 },
     { id:'streak3', name:'Racha de 3', desc:'Entra al Club 3 días seguidos', icon:'<svg class="ic" style="width:22px;height:22px;"><use href="#f-flame"/></svg>', xp:100, cat:'constancia', check: s => s.streak >= 3 },
     { id:'streak7', name:'Racha de 7', desc:'Entra 7 días seguidos', icon:'<svg class="ic" style="width:22px;height:22px;"><use href="#f-bolt"/></svg>', xp:250, cat:'constancia', check: s => s.streak >= 7 },
     { id:'streak30', name:'Racha de 30', desc:'Entra 30 días seguidos', icon:'<svg class="ic" style="width:22px;height:22px;"><use href="#f-medal"/></svg>', xp:700, cat:'constancia', check: s => s.streak >= 30 },
@@ -5224,7 +5224,7 @@
         </div>
         <div class="lesson-list">
           ${lessons.map((l, i) => {
-            const isPreview = i === 0;
+            const isPreview = l.isPreview === true;
             const isCompleted = completedSet.has(i);
             const isUnlocked = memberIsPaid || isPreview;
             const statusIcon = isCompleted
@@ -5270,9 +5270,9 @@
   function playLesson(index) {
     const course = siteData.courses.find(c => c.id === currentCourseId);
     if (!course || !course.lessons || !course.lessons[index]) return;
-    const isPreview = index === 0;
-    if (!memberIsPaid && !isPreview) { showPaywallOverlay(); return; }
     const lesson = course.lessons[index];
+    const isPreview = lesson.isPreview === true;
+    if (!memberIsPaid && !isPreview) { showPaywallOverlay(); return; }
     document.querySelectorAll('.lesson-item').forEach(el => el.classList.remove('playing'));
     document.getElementById('lesson-'+index)?.classList.add('playing');
     openVideo(lesson.title, lesson.videoUrl || '', {
