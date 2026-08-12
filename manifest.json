@@ -1,16 +1,38 @@
 {
+  "id": "./",
   "name": "Club FisioTeck",
   "short_name": "FisioTeck",
   "description": "Membresía profesional de fisioterapia y rehabilitación",
-  "start_url": "./index.html",
+  "lang": "es-MX",
+  "dir": "ltr",
+  "start_url": "./?source=pwa",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#0B1520",
-  "theme_color": "#1B3F6B",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#F3F7FB",
+  "theme_color": "#0D5FA0",
+  "categories": ["education", "medical", "health", "productivity"],
+  "prefer_related_applications": false,
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
     { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Mis cursos",
+      "short_name": "Cursos",
+      "description": "Abrir la biblioteca de cursos",
+      "url": "./?source=pwa&open=library",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Mi perfil",
+      "short_name": "Perfil",
+      "description": "Abrir mi perfil de FisioTeck",
+      "url": "./?source=pwa&open=account",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
   ]
 }

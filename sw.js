@@ -1,10 +1,11 @@
 /* Club FisioTeck — Service Worker
    Estrategia: network-first SOLO para recursos del mismo origen (online = siempre fresco,
    offline = respaldo de caché). Firebase / gstatic / CDNs NO se interceptan. */
-const CACHE = 'fisioteck-v17-bunny-catalog';
+const CACHE = 'fisioteck-v18-mobile-pwa';
 const SHELL = [
   './',
   './index.html',
+  './data/content.json',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
@@ -36,13 +37,18 @@ self.addEventListener('fetch', (e) => {
   e.respondWith(
     fetch(req)
       .then((res) => {
-        // Guardar copia fresca en caché para uso offline
-        const copy = res.clone();
-        caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
+        // Guardar únicamente respuestas válidas para no fijar errores en caché.
+        if (res.ok) {
+          const copy = res.clone();
+          caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
+        }
         return res;
       })
-      .catch(() =>
-        caches.match(req).then((hit) => hit || caches.match('./index.html'))
-      )
+      .catch(async () => {
+        const hit = await caches.match(req);
+        if (hit) return hit;
+        if (req.mode === 'navigate') return caches.match('./index.html');
+        return new Response('', { status: 503, statusText: 'Sin conexión' });
+      })
   );
 });
