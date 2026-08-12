@@ -1,658 +1,997 @@
 {
   "stats": {
-    "courses": 15,
+    "courses": 14,
     "pdfs": 1,
     "live": 0,
     "members": 87
   },
   "courses": [
     {
-      "id": 1777916925112,
-      "title": "Mejora de la movilidad y la función motora en pacientes geriátricos  ",
-      "desc": "La mejora de la movilidad y la función motora en pacientes geriátricos es un enfoque terapéutico que emplea ejercicio físico, entrenamiento funcional y técnicas de rehabilitación para optimizar la fuerza, equilibrio y coordinación, promoviendo la autonomía y la calidad de vida del adulto mayor.",
+      "id": 1777912123479,
+      "title": "Estimulación neuroplástica en rehabilitación neurológica",
+      "desc": "La estimulación neuroplástica en rehabilitación neurológica consiste en aplicar ejercicios y terapias que activan la capacidad del cerebro para reorganizarse y crear nuevas conexiones, con el objetivo de recuperar funciones afectadas y mejorar el desempeño motor y cognitivo.",
       "category": "rehabilitacion",
-      "date": "2026-05-04",
-      "badge": "Certificado ",
-      "thumbnail": "https://drive.google.com/file/d/1LkeNppElZE5KYW2HYl8tRazWBC8gwLqs/view?usp=drive_link",
-      "temarioImg": "https://drive.google.com/file/d/1gnN81rhQ_cobwjmnvHmHFl9iGM4m-dp2/view?usp=drive_link",
+      "date": "2026-08-11",
+      "badge": "Certificado",
+      "thumbnail": "https://drive.google.com/file/d/1IX76YB8jbAmBb_ukz7Nj7RMJ1OUqN-Aa/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1GmR6mrhhoaUX8WIRgeUiZJDGiKLRLZli/view?usp=drive_link",
       "availableDate": "",
+      "duration": "4 h 31 min",
+      "bunnyCollectionId": "81658bc3-b359-44f1-9bfa-769f2eebca51",
       "lessons": [
         {
-          "id": 1777916925112,
-          "title": "Clase 1",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/14pbI2Pri4eBQVUqbs7ZuL46GpNt6YcEg/view?usp=drive_link"
+          "id": 1777912123479,
+          "title": "Sesión 01",
+          "desc": "Contenido grabado del curso Estimulación neuroplástica en rehabilitación neurológica.",
+          "duration": "58 min",
+          "sessionNumbers": [
+            1
+          ],
+          "isPreview": true,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "58fa738a-ed77-44be-95be-29c81407366e",
+          "bunnyCollectionId": "81658bc3-b359-44f1-9bfa-769f2eebca51"
         },
         {
-          "id": 1777916925113,
-          "title": "Clase 2 y 3",
-          "desc": "",
-          "duration": "2 Horas",
-          "videoUrl": "https://drive.google.com/file/d/1WMzfpWGFcx1qIGXSdIEdYtXu07wA92fW/view?usp=drive_link"
+          "id": 1777912123480,
+          "title": "Sesión 02",
+          "desc": "Contenido grabado del curso Estimulación neuroplástica en rehabilitación neurológica.",
+          "duration": "53 min",
+          "sessionNumbers": [
+            2
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "1d8e1055-b3c0-46e0-b728-e84c6f6bf35d",
+          "bunnyCollectionId": "81658bc3-b359-44f1-9bfa-769f2eebca51"
         },
         {
-          "id": 1777916925114,
-          "title": "Clase 4 y 5",
-          "desc": "",
-          "duration": "2 Horas",
-          "videoUrl": "https://drive.google.com/file/d/1QGut_DIbQLIfN_0L2UFIcYAgN2KngEjI/view?usp=drive_link"
-        }
-      ],
-      "type": "video"
-    },
-    {
-      "id": 1777916731010,
-      "title": "Manejo del dolor lumbar crónico ",
-      "desc": "El manejo del dolor lumbar crónico es un abordaje integral que combina ejercicio terapéutico, terapia manual y educación del paciente para reducir el dolor, mejorar la movilidad y prevenir recaídas, favoreciendo la funcionalidad y calidad de vida.",
-      "category": "especializacion",
-      "date": "2026-05-04",
-      "badge": "Certificado ",
-      "thumbnail": "https://drive.google.com/file/d/1jK9TaSOBoBsZUDU7MlvgzcJVJwQy8c3m/view?usp=drive_link",
-      "temarioImg": "https://drive.google.com/file/d/1EwwFtMbidReecuftJAhkVRc7Kwp7wdGJ/view?usp=drive_link",
-      "availableDate": "",
-      "lessons": [
-        {
-          "id": 1777916731010,
-          "title": "Clase 1",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/19hnfZDKFGivn3elPR6blEWCHOwijTItR/view?usp=drive_link"
+          "id": 1777912123481,
+          "title": "Sesión 03",
+          "desc": "Contenido grabado del curso Estimulación neuroplástica en rehabilitación neurológica.",
+          "duration": "51 min",
+          "sessionNumbers": [
+            3
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "20b2a5c3-5395-4f17-9dd4-9ac2a70b036a",
+          "bunnyCollectionId": "81658bc3-b359-44f1-9bfa-769f2eebca51"
         },
         {
-          "id": 1777916731011,
-          "title": "Clase 2",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1NHsjV8csVdxEEn699ogA3eNfNn9pw_BZ/view?usp=drive_link"
-        },
-        {
-          "id": 1777916731012,
-          "title": "Clase 3",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1AQ2qv818SeX2eGWI4VGRU_94NiT5EFDQ/view?usp=drive_link"
-        },
-        {
-          "id": 1777916731013,
-          "title": "Clase 4",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1uQOrK4LWLIzL8Dpxfpe7sV0_yA75d4zc/view?usp=drive_link"
-        },
-        {
-          "id": 1777916731014,
-          "title": "Clase 5",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1CT4CycgPBbcRIJN0iH1xSMaHNZ7fwBdh/view?usp=drive_link"
-        }
-      ],
-      "type": "video"
-    },
-    {
-      "id": 1777916541882,
-      "title": "Terapia manual ortopédica funcional ",
-      "desc": "La terapia manual ortopédica funcional es un enfoque especializado que utiliza técnicas manuales para evaluar y tratar disfunciones musculoesqueléticas, mejorando la movilidad, reduciendo el dolor y restaurando la función mediante intervenciones basadas en el movimiento.",
-      "category": "ortopedia",
-      "date": "2026-05-04",
-      "badge": "Certificado ",
-      "thumbnail": "https://drive.google.com/file/d/1E9vOyARMufJdFzDjBWP3W4Cm4QJEqsdZ/view?usp=drive_link",
-      "temarioImg": "https://drive.google.com/file/d/1LGdEhd1zee1tdbvMcJrTtHYLE-_IziTy/view?usp=drive_link",
-      "availableDate": "",
-      "lessons": [
-        {
-          "id": 1777916541881,
-          "title": "Clase 1",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1OnHi_KaOHQf8MRJb9B-XT9hj9-EwIJ-v/view?usp=drive_link"
-        },
-        {
-          "id": 1777916541882,
-          "title": "Clase 2",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1Y2ENDJavpJKupnmPaSgdor8NbceUKMec/view?usp=drive_link"
-        },
-        {
-          "id": 1777916541883,
-          "title": "Clase 3 y 4",
-          "desc": "",
-          "duration": "2 Horas",
-          "videoUrl": "https://drive.google.com/file/d/1M3HvitxwQsCOCqb1R_bc3pkqEmzU2_3x/view?usp=drive_link"
-        },
-        {
-          "id": 1777916541884,
-          "title": "Clase 5",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1nV_fSfVMF9_ubsUQ8bAV-NEubYI8uaEb/view?usp=drive_link"
-        }
-      ],
-      "type": "video"
-    },
-    {
-      "id": 1777916390491,
-      "title": "Manejo del dolor en terapia física  ",
-      "desc": "El manejo del dolor en terapia física consiste en la aplicación de técnicas terapéuticas como ejercicios, agentes físicos y terapia manual para disminuir el dolor, mejorar la movilidad y favorecer la recuperación funcional del paciente.",
-      "category": "anatomia",
-      "date": "2026-05-04",
-      "badge": "Certificado ",
-      "thumbnail": "https://drive.google.com/file/d/1V1pvTDUXN78HgNFKM5OjGKtCBSFTpuNE/view?usp=drive_link",
-      "temarioImg": "https://drive.google.com/file/d/1jVzJF2yw3njVWOFXwlcYyu2S0Srjwtut/view?usp=drive_link",
-      "availableDate": "",
-      "lessons": [
-        {
-          "id": 1777916390490,
-          "title": "Clase 1, 2 y 3",
-          "desc": "",
-          "duration": "3 Horas",
-          "videoUrl": "https://drive.google.com/file/d/1EBsIwDLAMsSl5xo_tjKu-EwSMbmuwSUq/view?usp=drive_link"
-        },
-        {
-          "id": 1777916390492,
-          "title": "Clase 4 y 5",
-          "desc": "",
-          "duration": "2 Horas",
-          "videoUrl": "https://drive.google.com/file/d/1NSUtDnK4lTnzkizs543aw6bP9NLnfH0H/view?usp=drive_link"
-        }
-      ],
-      "type": "video"
-    },
-    {
-      "id": 1777916001185,
-      "title": "Rehabilitación y ejercicios en quiropráctica ",
-      "desc": "La rehabilitación y ejercicios en quiropráctica integran técnicas manuales y programas de ejercicio terapéutico orientados a corregir disfunciones musculoesqueléticas, mejorar la movilidad y fortalecer estructuras, favoreciendo la recuperación funcional y la prevención de recaídas.",
-      "category": "rehabilitacion",
-      "date": "2026-05-04",
-      "badge": "Certificado ",
-      "thumbnail": "https://drive.google.com/file/d/1yB1zBYPoXMxkGhnV9TqKCsSme7JS62YT/view?usp=drive_link",
-      "temarioImg": "https://drive.google.com/file/d/1sn4nbb4RJ3z8t-RD2OQUEzw5Zahldir8/view?usp=drive_link",
-      "availableDate": "",
-      "lessons": [
-        {
-          "id": 1777916001185,
-          "title": "Clase 1",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1txS5UogBWcPhB-SzIg1zkxl0OhwpPbpU/view?usp=drive_link"
-        },
-        {
-          "id": 1777916001186,
-          "title": "Clase 2",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1Qul3fhsw_2JP2JLdDYnUrB4_Dmxe65gz/view?usp=drive_link"
-        },
-        {
-          "id": 1777916001187,
-          "title": "Clase 3",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/11ECDGgKpMgdVMXbeXDk1Xxg7EuCOYq1h/view?usp=drive_link"
-        },
-        {
-          "id": 1777916001188,
-          "title": "Clase 4",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1uzCcb0oZavy5OkGyVwwS2X1dj1jeZbkH/view?usp=drive_link"
-        },
-        {
-          "id": 1777916001189,
-          "title": "Clase 5",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1BqjiPV8KSSOKoniL5zjPBwbxcsdjund9/view?usp=drive_link"
-        }
-      ],
-      "type": "video"
-    },
-    {
-      "id": 1777915750230,
-      "title": "Vendaje neuromuscular avanzado en ortopedia ",
-      "desc": "El vendaje neuromuscular avanzado en ortopedia es una técnica terapéutica que utiliza cintas elásticas para mejorar la función muscular y articular, disminuir el dolor y la inflamación, y favorecer la recuperación de lesiones, proporcionando soporte sin limitar el movimiento.",
-      "category": "ortopedia",
-      "date": "2026-05-04",
-      "badge": "Certificado ",
-      "thumbnail": "https://drive.google.com/file/d/18pD3_Sm72HU0t3CNHnI8Ky0XoQE_Kscp/view?usp=drive_link",
-      "temarioImg": "https://drive.google.com/file/d/1OkUlf5pu_V2JRPO7L5CYT9FRBgImGpUS/view?usp=drive_link",
-      "availableDate": "",
-      "lessons": [
-        {
-          "id": 1777915750230,
-          "title": "Clase 1 y 2",
-          "desc": "",
-          "duration": "2 Horas",
-          "videoUrl": "https://drive.google.com/file/d/1zBh7oYOKPOJpx9nr0BacK9CzlhP9OkcD/view?usp=drive_link"
-        },
-        {
-          "id": 1777915750231,
-          "title": "Clase 3",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1U4X6RzMUOf53KSTpRM1rireV1hSHvqbH/view?usp=drive_link"
-        },
-        {
-          "id": 1777915750232,
-          "title": "Clase 4",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1VvOC36mnVjYqX_P6-iM8_vx3K4IRHXiC/view?usp=drive_link"
-        },
-        {
-          "id": 1777915750233,
-          "title": "Clase 5",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1y6xW8ZhCL3t-9QzPQSgH6_xmzxrRKi9O/view?usp=drive_link"
-        }
-      ],
-      "type": "video"
-    },
-    {
-      "id": 1777915302535,
-      "title": "Fisioterapia respiratoria en pacientes geriátricos ",
-      "desc": "La fisioterapia respiratoria en pacientes geriátricos es un enfoque terapéutico especializado que emplea ejercicios respiratorios, técnicas de higiene bronquial y entrenamiento ventilatorio para mejorar la función pulmonar, prevenir complicaciones y optimizar la calidad de vida en el adulto mayor.",
-      "category": "fisioterapia",
-      "date": "2026-05-04",
-      "badge": "Certificado ",
-      "thumbnail": "https://drive.google.com/file/d/1dOENqa1bFiHviOVwQPwlk9jYmJ2T20M_/view?usp=drive_link",
-      "temarioImg": "https://drive.google.com/file/d/1TWA-wtq5XfXS-b4uWQ0T2T90dJuqhazD/view?usp=drive_link",
-      "availableDate": "",
-      "lessons": [
-        {
-          "id": 1777915302535,
-          "title": "Clase 1",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1mEAwC0lrJ28alqXre1qbyZSRd9OVLKzJ/view?usp=drive_link"
-        },
-        {
-          "id": 1777915302536,
-          "title": "Clase 2",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1yxdoDIWzI8cNj3ZUPGI8ftLuKrcS4SMG/view?usp=drive_link"
-        },
-        {
-          "id": 1777915302537,
-          "title": "Clase 3",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/19TMfUkEOlKk4746whTfYNWJX84Wvkel_/view?usp=drive_link"
-        },
-        {
-          "id": 1777915302538,
-          "title": "Clase 4",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1XJSbOjNG-UU0kHcFj6iOKvuRd4xV8fH1/view?usp=drive_link"
-        },
-        {
-          "id": 1777915302539,
-          "title": "Clase 5",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1rfjG3k4XOzkFfXXCl-h_ysC5p3uExC0U/view?usp=drive_link"
-        }
-      ],
-      "type": "video"
-    },
-    {
-      "id": 1777915087745,
-      "title": "Fisioterapia pulmonar: Hipoxemia Ventilación ",
-      "desc": "La fisioterapia pulmonar en hipoxemia y ventilación comprende técnicas terapéuticas orientadas a mejorar la oxigenación y la eficiencia ventilatoria, mediante ejercicios respiratorios, manejo de secreciones y apoyo ventilatorio, con el objetivo de optimizar la función pulmonar y la capacidad respiratoria del paciente.",
-      "category": "fisioterapia",
-      "date": "2026-05-04",
-      "badge": "Certificado ",
-      "thumbnail": "https://drive.google.com/file/d/1Oh_pvVAx6E0WYL_xtsovKp2lTz45yWbj/view?usp=drive_link",
-      "temarioImg": "https://drive.google.com/file/d/1GqQq_0dOhP3uy6VhxAkq8kKMm1GcdIrE/view?usp=drive_link",
-      "availableDate": "",
-      "lessons": [
-        {
-          "id": 1777915087745,
-          "title": "Clase 1",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1_SzD6ByOTIJ1roRt5UzK79lSygMiQHhD/view?usp=drive_link"
-        },
-        {
-          "id": 1777915087746,
-          "title": "Clase 2",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/17RkUSF89qU8ioAN2h8-gM7mBk80qcV9B/view?usp=drive_link"
-        },
-        {
-          "id": 1777915087747,
-          "title": "Clase 3",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1SuEbNIKU-0HM5qXLRV0FvG2puZ1phZ-d/view?usp=drive_link"
-        },
-        {
-          "id": 1777915087748,
-          "title": "Clase 4",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1XETzXthhoO42cmSDxySQp6l8XFPFFOWY/view?usp=drive_link"
-        },
-        {
-          "id": 1777915087749,
-          "title": "Clase 5",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/15lYNcL_t3MI1QCOD1B9RBYhoZFx4WoJs/view?usp=drive_link"
-        }
-      ],
-      "type": "video"
-    },
-    {
-      "id": 1777914828962,
-      "title": "Rehabilitación en hipertensión pulmonar y enfermedades vasculares pulmonares   ",
-      "desc": "La rehabilitación en hipertensión pulmonar y enfermedades vasculares pulmonares es un enfoque terapéutico integral que combina ejercicio supervisado, educación y técnicas respiratorias para mejorar la capacidad funcional, optimizar la oxigenación y favorecer la calidad de vida del paciente, siempre bajo control médico especializado.",
-      "category": "rehabilitacion",
-      "date": "2026-05-04",
-      "badge": "Certificado ",
-      "thumbnail": "https://drive.google.com/file/d/1siCvSrjbIiUQLjuzOcutwiwHjejEhjOT/view?usp=drive_link",
-      "temarioImg": "https://drive.google.com/file/d/1E3VskAPNhqQsCHwiLPTLr9lWUUnPdTFv/view?usp=drive_link",
-      "availableDate": "",
-      "lessons": [
-        {
-          "id": 1777914828962,
-          "title": "Clase 1",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/13e6pHdxCRncZdzEGTRwVVcIIgAogNaSR/view?usp=drive_link"
-        },
-        {
-          "id": 1777914828963,
-          "title": "Clase 2",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1-mlJkfu7otEA0gTfeMfuN0Q2VRzmeczC/view?usp=drive_link"
-        },
-        {
-          "id": 1777914828964,
-          "title": "Clase 3",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1kP-OSphv88glHR1ZY75P6jpPGKMdBFBd/view?usp=drive_link"
-        },
-        {
-          "id": 1777914828965,
-          "title": "Clase 4",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1Q5j9HKRaDTItTwjAIxMdpfJ3ge3sNEvI/view?usp=drive_link"
-        },
-        {
-          "id": 1777914828966,
-          "title": "Clase 5",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1Jh7z6mpiisie4g2BXJCud74-lg3Zr1FX/view?usp=drive_link"
+          "id": 1777912123482,
+          "title": "Sesiones 04 y 05",
+          "desc": "Contenido grabado del curso Estimulación neuroplástica en rehabilitación neurológica.",
+          "duration": "1 h 49 min",
+          "sessionNumbers": [
+            4,
+            5
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "c8fd05c3-eefd-4ef1-aa50-22968cea2d7a",
+          "bunnyCollectionId": "81658bc3-b359-44f1-9bfa-769f2eebca51"
         }
       ],
       "type": "video"
     },
     {
       "id": 1777914182781,
-      "title": "Fisiopatología: lesiones deportivas mas comunes  ",
+      "title": "Fisiopatología de las lesiones deportivas más comunes",
       "desc": "La fisiopatología de las lesiones deportivas más comunes estudia los cambios estructurales y funcionales que ocurren en músculos, ligamentos y articulaciones tras un esfuerzo excesivo o trauma, como esguinces, desgarros y tendinitis, afectando el rendimiento y la función del tejido lesionado.",
       "category": "anatomia",
-      "date": "2026-05-04",
-      "badge": "Certificado ",
+      "date": "2026-08-11",
+      "badge": "Certificado",
       "thumbnail": "https://drive.google.com/file/d/1eSuk5lgRba1vzVmZfos0GedkS5h3j1PW/view?usp=drive_link",
       "temarioImg": "https://drive.google.com/file/d/1DzRp2QBA4mxKtpy3coD2t0cFBL8374ML/view?usp=drive_link",
       "availableDate": "",
+      "duration": "3 h 55 min",
+      "bunnyCollectionId": "34fe9215-17e2-42ce-9bd3-b26ec7da70bc",
       "lessons": [
         {
           "id": 1777914182781,
-          "title": "Clase 1",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1XAO7qW_P5alFoyOqUPVab9KgnxP4ziCF/view?usp=drive_link"
+          "title": "Sesión 01",
+          "desc": "Contenido grabado del curso Fisiopatología de las lesiones deportivas más comunes.",
+          "duration": "1 h",
+          "sessionNumbers": [
+            1
+          ],
+          "isPreview": true,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "e646b0a7-0ffa-4df0-9635-a63e878aa3c4",
+          "bunnyCollectionId": "34fe9215-17e2-42ce-9bd3-b26ec7da70bc"
         },
         {
           "id": 1777914182782,
-          "title": "Clase 2",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1IBVwn9c2GBj5BU2J_LnW4lWFfE2MEElV/view?usp=drive_link"
+          "title": "Sesión 02",
+          "desc": "Contenido grabado del curso Fisiopatología de las lesiones deportivas más comunes.",
+          "duration": "55 min",
+          "sessionNumbers": [
+            2
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "59d759ff-f58c-4ade-a371-e5a5afa15e5d",
+          "bunnyCollectionId": "34fe9215-17e2-42ce-9bd3-b26ec7da70bc"
         },
         {
           "id": 1777914182783,
-          "title": "Clase 3",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1-6U2SrZbJCNG20bSAP0PNCMysNlnHjXF/view?usp=drive_link"
+          "title": "Sesión 03",
+          "desc": "Contenido grabado del curso Fisiopatología de las lesiones deportivas más comunes.",
+          "duration": "47 min",
+          "sessionNumbers": [
+            3
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "3f15548c-e636-4720-a6e0-3a32a464718f",
+          "bunnyCollectionId": "34fe9215-17e2-42ce-9bd3-b26ec7da70bc"
         },
         {
           "id": 1777914182784,
-          "title": "Clase 4",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/18JLHuENoooL6UuliT7hgtjWEK2ST7CTN/view?usp=drive_link"
+          "title": "Sesión 04",
+          "desc": "Contenido grabado del curso Fisiopatología de las lesiones deportivas más comunes.",
+          "duration": "37 min",
+          "sessionNumbers": [
+            4
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "4271606e-f58f-4356-83d8-80c1f448dcb2",
+          "bunnyCollectionId": "34fe9215-17e2-42ce-9bd3-b26ec7da70bc"
         },
         {
           "id": 1777914182785,
-          "title": "Clase 5",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1ROTa_2vQdeJ_CzAPI91uKjXpEBOXVL-4/view?usp=drive_link"
+          "title": "Sesión 05",
+          "desc": "Contenido grabado del curso Fisiopatología de las lesiones deportivas más comunes.",
+          "duration": "36 min",
+          "sessionNumbers": [
+            5
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "0dd88bc2-9d8f-473e-96ff-febecd16cfa9",
+          "bunnyCollectionId": "34fe9215-17e2-42ce-9bd3-b26ec7da70bc"
         }
       ],
       "type": "video"
     },
     {
-      "id": 1777913843887,
-      "title": "Rehabilitación deportiva ",
-      "desc": "La rehabilitación deportiva es un proceso terapéutico integral enfocado en la recuperación de lesiones musculoesqueléticas, mediante técnicas especializadas que restauran la movilidad, fuerza y rendimiento físico, permitiendo al paciente reintegrarse de forma segura y eficiente a la actividad deportiva.",
-      "category": "rehabilitacion",
-      "date": "2026-05-04",
-      "badge": "Certificado ",
-      "thumbnail": "https://drive.google.com/file/d/1xP6umvAWeBUOrcBeUn14-k4HDhpTiTF7/view?usp=drive_link",
-      "temarioImg": "https://drive.google.com/file/d/1Ykd5zOBP4anxUEcSAxnDzSDf3MzCtxkB/view?usp=drive_link",
+      "id": 1777915087745,
+      "title": "Fisioterapia pulmonar: hipoxemia y ventilación",
+      "desc": "La fisioterapia pulmonar en hipoxemia y ventilación comprende técnicas terapéuticas orientadas a mejorar la oxigenación y la eficiencia ventilatoria, mediante ejercicios respiratorios, manejo de secreciones y apoyo ventilatorio, con el objetivo de optimizar la función pulmonar y la capacidad respiratoria del paciente.",
+      "category": "fisioterapia",
+      "date": "2026-08-11",
+      "badge": "Certificado",
+      "thumbnail": "https://drive.google.com/file/d/1Oh_pvVAx6E0WYL_xtsovKp2lTz45yWbj/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1GqQq_0dOhP3uy6VhxAkq8kKMm1GcdIrE/view?usp=drive_link",
       "availableDate": "",
+      "duration": "4 h 52 min",
+      "bunnyCollectionId": "8061e688-3239-466f-851f-76d71f2006ba",
       "lessons": [
         {
-          "id": 1777913843887,
-          "title": "Clase 1",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1NmqNcGbKfygKc1CcsjLUtz82VFkbxidv/view?usp=drive_link"
+          "id": 1777915087745,
+          "title": "Sesión 01",
+          "desc": "Contenido grabado del curso Fisioterapia pulmonar: hipoxemia y ventilación.",
+          "duration": "54 min",
+          "sessionNumbers": [
+            1
+          ],
+          "isPreview": true,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "fe7c040e-54f3-44cc-aa26-9f88616b5e9c",
+          "bunnyCollectionId": "8061e688-3239-466f-851f-76d71f2006ba"
         },
         {
-          "id": 1777913843888,
-          "title": "Clase 2",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1Bii3xTWv5e7iGKc6iKPQpAA2a4PZ3Gu1/view?usp=drive_link"
+          "id": 1777915087746,
+          "title": "Sesión 02",
+          "desc": "Contenido grabado del curso Fisioterapia pulmonar: hipoxemia y ventilación.",
+          "duration": "1 h 17 min",
+          "sessionNumbers": [
+            2
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "d7ef6fa1-a9c7-4c35-8920-375ffc4371f7",
+          "bunnyCollectionId": "8061e688-3239-466f-851f-76d71f2006ba"
         },
         {
-          "id": 1777913843889,
-          "title": "Clase 3 y 4",
-          "desc": "",
-          "duration": "2 Horas",
-          "videoUrl": "https://drive.google.com/file/d/1itaYTr1hm21vV3NsdR7f1yMkw1EetED8/view?usp=drive_link"
+          "id": 1777915087747,
+          "title": "Sesión 03",
+          "desc": "Contenido grabado del curso Fisioterapia pulmonar: hipoxemia y ventilación.",
+          "duration": "1 h 8 min",
+          "sessionNumbers": [
+            3
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "ad8e603f-780c-4049-b9ca-f1f130d194e8",
+          "bunnyCollectionId": "8061e688-3239-466f-851f-76d71f2006ba"
         },
         {
-          "id": 1777913843890,
-          "title": "Clase 5",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1wPkGdMKNLi5mPTU9Zt355zUQLfhL6QiJ/view?usp=drive_link"
+          "id": 1777915087748,
+          "title": "Sesión 04",
+          "desc": "Contenido grabado del curso Fisioterapia pulmonar: hipoxemia y ventilación.",
+          "duration": "15 min",
+          "sessionNumbers": [
+            4
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "e93be7f7-8a25-4499-93ea-5c717569877d",
+          "bunnyCollectionId": "8061e688-3239-466f-851f-76d71f2006ba"
+        },
+        {
+          "id": 1777915087749,
+          "title": "Sesión 05",
+          "desc": "Contenido grabado del curso Fisioterapia pulmonar: hipoxemia y ventilación.",
+          "duration": "1 h 18 min",
+          "sessionNumbers": [
+            5
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "301b1387-6dab-486b-a23b-8f1920cb32d8",
+          "bunnyCollectionId": "8061e688-3239-466f-851f-76d71f2006ba"
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "id": 1777915302535,
+      "title": "Fisioterapia respiratoria en pacientes geriátricos",
+      "desc": "La fisioterapia respiratoria en pacientes geriátricos es un enfoque terapéutico especializado que emplea ejercicios respiratorios, técnicas de higiene bronquial y entrenamiento ventilatorio para mejorar la función pulmonar, prevenir complicaciones y optimizar la calidad de vida en el adulto mayor.",
+      "category": "fisioterapia",
+      "date": "2026-08-11",
+      "badge": "Certificado",
+      "thumbnail": "https://drive.google.com/file/d/1dOENqa1bFiHviOVwQPwlk9jYmJ2T20M_/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1TWA-wtq5XfXS-b4uWQ0T2T90dJuqhazD/view?usp=drive_link",
+      "availableDate": "",
+      "duration": "8 h 7 min",
+      "bunnyCollectionId": "0bc5bbdf-f15a-4627-b6e7-9d579bc1f528",
+      "lessons": [
+        {
+          "id": 1777915302535,
+          "title": "Sesión 01",
+          "desc": "Contenido grabado del curso Fisioterapia respiratoria en pacientes geriátricos.",
+          "duration": "1 h 52 min",
+          "sessionNumbers": [
+            1
+          ],
+          "isPreview": true,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "542c8048-f905-430e-8c93-55cc62023e3f",
+          "bunnyCollectionId": "0bc5bbdf-f15a-4627-b6e7-9d579bc1f528"
+        },
+        {
+          "id": 1777915302536,
+          "title": "Sesión 02",
+          "desc": "Contenido grabado del curso Fisioterapia respiratoria en pacientes geriátricos.",
+          "duration": "1 h 43 min",
+          "sessionNumbers": [
+            2
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "b392dc38-09e3-449d-985e-0b1cb0f87f2d",
+          "bunnyCollectionId": "0bc5bbdf-f15a-4627-b6e7-9d579bc1f528"
+        },
+        {
+          "id": 1777915302537,
+          "title": "Sesión 03",
+          "desc": "Contenido grabado del curso Fisioterapia respiratoria en pacientes geriátricos.",
+          "duration": "1 h 57 min",
+          "sessionNumbers": [
+            3
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "dcd6f14b-0123-43ae-8d68-27711d7abd9f",
+          "bunnyCollectionId": "0bc5bbdf-f15a-4627-b6e7-9d579bc1f528"
+        },
+        {
+          "id": 1777915302538,
+          "title": "Sesión 04",
+          "desc": "Contenido grabado del curso Fisioterapia respiratoria en pacientes geriátricos.",
+          "duration": "1 h 31 min",
+          "sessionNumbers": [
+            4
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "a8740831-9e56-4244-a9be-44d243bbfd86",
+          "bunnyCollectionId": "0bc5bbdf-f15a-4627-b6e7-9d579bc1f528"
+        },
+        {
+          "id": 1777915302539,
+          "title": "Sesión 05",
+          "desc": "Contenido grabado del curso Fisioterapia respiratoria en pacientes geriátricos.",
+          "duration": "1 h 4 min",
+          "sessionNumbers": [
+            5
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "ce18c56b-73d0-4f32-82cf-35f42890f43e",
+          "bunnyCollectionId": "0bc5bbdf-f15a-4627-b6e7-9d579bc1f528"
         }
       ],
       "type": "video"
     },
     {
       "id": 1777913620168,
-      "title": "Liberación miofascial estética: facial y corporal ",
+      "title": "Liberación miofascial estética facial y corporal",
       "desc": "La liberación miofascial estética (facial y corporal) es una técnica manual que actúa sobre la fascia para liberar tensiones y adherencias, mejorando la circulación, la elasticidad de los tejidos y la apariencia de la piel, favoreciendo un efecto tonificante, relajante y rejuvenecedor.",
       "category": "especializacion",
-      "date": "2026-05-04",
-      "badge": "Certificado ",
+      "date": "2026-08-11",
+      "badge": "Certificado",
       "thumbnail": "https://drive.google.com/file/d/1fRd0pAzwqjQ21LRFjyp0MkH537IdK7MJ/view?usp=drive_link",
       "temarioImg": "https://drive.google.com/file/d/1Oo4im8FYKW3UvDBCRDuFVFoVafQeBBze/view?usp=drive_link",
       "availableDate": "",
+      "duration": "4 h 52 min",
+      "bunnyCollectionId": "f95b3a9c-6721-4dfb-a77b-fe4bf0d3e985",
       "lessons": [
         {
           "id": 1777913620168,
-          "title": "Clase 1",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/10bf25syWIs7oNMZT53bfZICltFWfMN60/view?usp=drive_link"
+          "title": "Sesión 01",
+          "desc": "Contenido grabado del curso Liberación miofascial estética facial y corporal.",
+          "duration": "1 h",
+          "sessionNumbers": [
+            1
+          ],
+          "isPreview": true,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "b3c85c96-4e62-404c-b603-35c790dcad83",
+          "bunnyCollectionId": "f95b3a9c-6721-4dfb-a77b-fe4bf0d3e985"
         },
         {
           "id": 1777913620169,
-          "title": "Clase 2",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1r4GonkjWzLk9S4EsB5dj-DhnEzPb4vjV/view?usp=drive_link"
+          "title": "Sesión 02",
+          "desc": "Contenido grabado del curso Liberación miofascial estética facial y corporal.",
+          "duration": "1 h 2 min",
+          "sessionNumbers": [
+            2
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "46478a16-cd79-4dd7-86e1-71632194c985",
+          "bunnyCollectionId": "f95b3a9c-6721-4dfb-a77b-fe4bf0d3e985"
         },
         {
           "id": 1777913620170,
-          "title": "Clase 3",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1vVkVOHSCEHhTOwTH98XYgcazNQfpbHKz/view?usp=drive_link"
+          "title": "Sesión 03",
+          "desc": "Contenido grabado del curso Liberación miofascial estética facial y corporal.",
+          "duration": "1 h 9 min",
+          "sessionNumbers": [
+            3
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "3dd1c297-ddd7-4a36-b5a6-526549fb4dda",
+          "bunnyCollectionId": "f95b3a9c-6721-4dfb-a77b-fe4bf0d3e985"
         },
         {
           "id": 1777913620171,
-          "title": "Clase 4 y 5",
-          "desc": "",
-          "duration": "2 Horas",
-          "videoUrl": "https://drive.google.com/file/d/1JjuYfyNq7XjwaclsYhJksHWBmCcploED/view?usp=drive_link"
+          "title": "Sesiones 04 y 05",
+          "desc": "Contenido grabado del curso Liberación miofascial estética facial y corporal.",
+          "duration": "1 h 42 min",
+          "sessionNumbers": [
+            4,
+            5
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "cc78bee9-0fe3-4fc9-b759-d842fb93de15",
+          "bunnyCollectionId": "f95b3a9c-6721-4dfb-a77b-fe4bf0d3e985"
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "id": 1777916390491,
+      "title": "Manejo del dolor en terapia física",
+      "desc": "El manejo del dolor en terapia física consiste en la aplicación de técnicas terapéuticas como ejercicios, agentes físicos y terapia manual para disminuir el dolor, mejorar la movilidad y favorecer la recuperación funcional del paciente.",
+      "category": "anatomia",
+      "date": "2026-08-11",
+      "badge": "Certificado",
+      "thumbnail": "https://drive.google.com/file/d/1V1pvTDUXN78HgNFKM5OjGKtCBSFTpuNE/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1jVzJF2yw3njVWOFXwlcYyu2S0Srjwtut/view?usp=drive_link",
+      "availableDate": "",
+      "duration": "5 h 9 min",
+      "bunnyCollectionId": "893efc0c-6583-4513-a195-a31405eabb47",
+      "lessons": [
+        {
+          "id": 1777916390490,
+          "title": "Sesiones 01, 02 y 03",
+          "desc": "Contenido grabado del curso Manejo del dolor en terapia física.",
+          "duration": "2 h 56 min",
+          "sessionNumbers": [
+            1,
+            2,
+            3
+          ],
+          "isPreview": true,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "4f0a5df7-78b7-45f3-9b5f-6a5e6a739175",
+          "bunnyCollectionId": "893efc0c-6583-4513-a195-a31405eabb47"
+        },
+        {
+          "id": 1777916390492,
+          "title": "Sesiones 04 y 05",
+          "desc": "Contenido grabado del curso Manejo del dolor en terapia física.",
+          "duration": "2 h 13 min",
+          "sessionNumbers": [
+            4,
+            5
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "cf5a33f2-3673-41df-979a-8e0156d4a749",
+          "bunnyCollectionId": "893efc0c-6583-4513-a195-a31405eabb47"
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "id": 1777916731010,
+      "title": "Manejo del dolor lumbar crónico",
+      "desc": "El manejo del dolor lumbar crónico es un abordaje integral que combina ejercicio terapéutico, terapia manual y educación del paciente para reducir el dolor, mejorar la movilidad y prevenir recaídas, favoreciendo la funcionalidad y calidad de vida.",
+      "category": "especializacion",
+      "date": "2026-08-11",
+      "badge": "Certificado",
+      "thumbnail": "https://drive.google.com/file/d/1jK9TaSOBoBsZUDU7MlvgzcJVJwQy8c3m/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1EwwFtMbidReecuftJAhkVRc7Kwp7wdGJ/view?usp=drive_link",
+      "availableDate": "",
+      "duration": "5 h 21 min",
+      "bunnyCollectionId": "662d2a7b-567a-4b5f-ad46-4a9a09b7aac3",
+      "lessons": [
+        {
+          "id": 1777916731010,
+          "title": "Sesión 01",
+          "desc": "Contenido grabado del curso Manejo del dolor lumbar crónico.",
+          "duration": "57 min",
+          "sessionNumbers": [
+            1
+          ],
+          "isPreview": true,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "e85562e3-5281-4ac1-b4c1-c26d9c24a0f4",
+          "bunnyCollectionId": "662d2a7b-567a-4b5f-ad46-4a9a09b7aac3"
+        },
+        {
+          "id": 1777916731011,
+          "title": "Sesión 02",
+          "desc": "Contenido grabado del curso Manejo del dolor lumbar crónico.",
+          "duration": "1 h 8 min",
+          "sessionNumbers": [
+            2
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "85570f9c-b995-4952-ba86-81477751a76a",
+          "bunnyCollectionId": "662d2a7b-567a-4b5f-ad46-4a9a09b7aac3"
+        },
+        {
+          "id": 1777916731012,
+          "title": "Sesión 03",
+          "desc": "Contenido grabado del curso Manejo del dolor lumbar crónico.",
+          "duration": "1 h 13 min",
+          "sessionNumbers": [
+            3
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "f5db74cd-b2e4-4892-8652-d7ee163b8f9c",
+          "bunnyCollectionId": "662d2a7b-567a-4b5f-ad46-4a9a09b7aac3"
+        },
+        {
+          "id": 1777916731013,
+          "title": "Sesión 04",
+          "desc": "Contenido grabado del curso Manejo del dolor lumbar crónico.",
+          "duration": "1 h 3 min",
+          "sessionNumbers": [
+            4
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "516f10dd-8b30-4c3b-998d-6c2f97d3d22d",
+          "bunnyCollectionId": "662d2a7b-567a-4b5f-ad46-4a9a09b7aac3"
+        },
+        {
+          "id": 1777916731014,
+          "title": "Sesión 05",
+          "desc": "Contenido grabado del curso Manejo del dolor lumbar crónico.",
+          "duration": "59 min",
+          "sessionNumbers": [
+            5
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "d197642e-019e-4420-9d50-e8c97fcb8ccd",
+          "bunnyCollectionId": "662d2a7b-567a-4b5f-ad46-4a9a09b7aac3"
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "id": 1777916925112,
+      "title": "Mejora de la movilidad y la función motora en pacientes geriátricos",
+      "desc": "La mejora de la movilidad y la función motora en pacientes geriátricos es un enfoque terapéutico que emplea ejercicio físico, entrenamiento funcional y técnicas de rehabilitación para optimizar la fuerza, equilibrio y coordinación, promoviendo la autonomía y la calidad de vida del adulto mayor.",
+      "category": "rehabilitacion",
+      "date": "2026-08-11",
+      "badge": "Certificado",
+      "thumbnail": "https://drive.google.com/file/d/1LkeNppElZE5KYW2HYl8tRazWBC8gwLqs/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1gnN81rhQ_cobwjmnvHmHFl9iGM4m-dp2/view?usp=drive_link",
+      "availableDate": "",
+      "duration": "3 h 24 min",
+      "bunnyCollectionId": "e38260a5-996c-421d-b8ad-fe93eb28176e",
+      "lessons": [
+        {
+          "id": 1777916925112,
+          "title": "Sesión 01",
+          "desc": "Contenido grabado del curso Mejora de la movilidad y la función motora en pacientes geriátricos.",
+          "duration": "1 h 18 min",
+          "sessionNumbers": [
+            1
+          ],
+          "isPreview": true,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "c1586124-f505-4338-ab15-971b9feafd00",
+          "bunnyCollectionId": "e38260a5-996c-421d-b8ad-fe93eb28176e"
+        },
+        {
+          "id": 1777916925113,
+          "title": "Sesiones 02 y 03",
+          "desc": "Contenido grabado del curso Mejora de la movilidad y la función motora en pacientes geriátricos.",
+          "duration": "49 min",
+          "sessionNumbers": [
+            2,
+            3
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "e496e502-cf35-48a8-ac4a-f69c019b14dd",
+          "bunnyCollectionId": "e38260a5-996c-421d-b8ad-fe93eb28176e"
+        },
+        {
+          "id": 1777916925114,
+          "title": "Sesiones 04 y 05",
+          "desc": "Contenido grabado del curso Mejora de la movilidad y la función motora en pacientes geriátricos.",
+          "duration": "1 h 18 min",
+          "sessionNumbers": [
+            4,
+            5
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "2bbe986c-aff9-4da2-9241-64cfd456e359",
+          "bunnyCollectionId": "e38260a5-996c-421d-b8ad-fe93eb28176e"
         }
       ],
       "type": "video"
     },
     {
       "id": 1777912590894,
-      "title": "Neuroplasticidad y rehabilitación funcional ",
+      "title": "Neuroplasticidad y rehabilitación funcional",
       "desc": "La neuroplasticidad aplicada a la rehabilitación funcional se refiere a la capacidad del sistema nervioso para reorganizar sus conexiones estructurales y funcionales en respuesta a estímulos terapéuticos, con el objetivo de recuperar, optimizar o compensar funciones motoras y cognitivas alteradas, favoreciendo la independencia y el desempeño funcional del paciente.",
       "category": "rehabilitacion",
-      "date": "2026-05-04",
-      "badge": "Certificado ",
+      "date": "2026-08-11",
+      "badge": "Certificado",
       "thumbnail": "https://drive.google.com/file/d/1m617KTI8ymup_5ghyPix2Jt7jyFQnFvK/view?usp=drive_link",
       "temarioImg": "https://drive.google.com/file/d/1S8m6j6yelUzEBYqYyyejw5n_jaOlDM5x/view?usp=drive_link",
       "availableDate": "",
+      "duration": "5 h 39 min",
+      "bunnyCollectionId": "f641218b-8103-4307-9750-e2c272f74044",
       "lessons": [
         {
           "id": 1777912590894,
-          "title": "Clase 1",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1LBKCj03p6WWv8_uydSyzbvCs-oQCZQO4/view?usp=drive_link"
+          "title": "Sesión 01",
+          "desc": "Contenido grabado del curso Neuroplasticidad y rehabilitación funcional.",
+          "duration": "1 h 14 min",
+          "sessionNumbers": [
+            1
+          ],
+          "isPreview": true,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "193f3fb0-44eb-4e46-b1f4-479ffb325eb9",
+          "bunnyCollectionId": "f641218b-8103-4307-9750-e2c272f74044"
         },
         {
           "id": 1777912590895,
-          "title": "Clase 2",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1gSXLNHLtKNxYIWMYh1xP7x4HVOpVfvGj/view?usp=drive_link"
+          "title": "Sesión 02",
+          "desc": "Contenido grabado del curso Neuroplasticidad y rehabilitación funcional.",
+          "duration": "1 h 10 min",
+          "sessionNumbers": [
+            2
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "1e9b778f-464a-4a64-a9c5-78eedcf89774",
+          "bunnyCollectionId": "f641218b-8103-4307-9750-e2c272f74044"
         },
         {
           "id": 1777912590896,
-          "title": "Clase 3",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1EmBl4VcWtWU7fYbCW6CiFALGblXU6v_Z/view?usp=drive_link"
+          "title": "Sesión 03",
+          "desc": "Contenido grabado del curso Neuroplasticidad y rehabilitación funcional.",
+          "duration": "1 h 5 min",
+          "sessionNumbers": [
+            3
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "b6108ced-227f-4ffc-83a8-2b9f164156ad",
+          "bunnyCollectionId": "f641218b-8103-4307-9750-e2c272f74044"
         },
         {
           "id": 1777912590897,
-          "title": "Clase 4",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1IXeDZmrHDG_kg0VoEkzDDqbd6KoFTjGp/view?usp=drive_link"
+          "title": "Sesión 04",
+          "desc": "Contenido grabado del curso Neuroplasticidad y rehabilitación funcional.",
+          "duration": "1 h 13 min",
+          "sessionNumbers": [
+            4
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "ae9c8023-2eae-45e2-9267-6ea544c267f3",
+          "bunnyCollectionId": "f641218b-8103-4307-9750-e2c272f74044"
         },
         {
           "id": 1777912590898,
-          "title": "Clase 5",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1HYQUDPjB_95yROzcyq1ctk61ABjkc3Me/view?usp=drive_link"
+          "title": "Sesión 05",
+          "desc": "Contenido grabado del curso Neuroplasticidad y rehabilitación funcional.",
+          "duration": "57 min",
+          "sessionNumbers": [
+            5
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "933b295f-53a5-43a4-9026-632c9539af3a",
+          "bunnyCollectionId": "f641218b-8103-4307-9750-e2c272f74044"
         }
       ],
       "type": "video"
     },
     {
-      "id": 1777912123479,
-      "title": "Estimulación Neuroplástica en rehabilitación neurológica ",
-      "desc": "La estimulación neuroplástica en rehabilitación neurológica consiste en aplicar ejercicios y terapias que activan la capacidad del cerebro para reorganizarse y crear nuevas conexiones, con el objetivo de recuperar funciones afectadas y mejorar el desempeño motor y cognitivo.",
+      "id": 1777913843887,
+      "title": "Rehabilitación deportiva",
+      "desc": "La rehabilitación deportiva es un proceso terapéutico integral enfocado en la recuperación de lesiones musculoesqueléticas, mediante técnicas especializadas que restauran la movilidad, fuerza y rendimiento físico, permitiendo al paciente reintegrarse de forma segura y eficiente a la actividad deportiva.",
       "category": "rehabilitacion",
-      "date": "2026-05-04",
-      "badge": "Certificado ",
-      "thumbnail": "https://drive.google.com/file/d/1IX76YB8jbAmBb_ukz7Nj7RMJ1OUqN-Aa/view?usp=drive_link",
-      "temarioImg": "https://drive.google.com/file/d/1GmR6mrhhoaUX8WIRgeUiZJDGiKLRLZli/view?usp=drive_link",
+      "date": "2026-08-11",
+      "badge": "Certificado",
+      "thumbnail": "https://drive.google.com/file/d/1xP6umvAWeBUOrcBeUn14-k4HDhpTiTF7/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1Ykd5zOBP4anxUEcSAxnDzSDf3MzCtxkB/view?usp=drive_link",
       "availableDate": "",
+      "duration": "5 h 13 min",
+      "bunnyCollectionId": "0ee1609d-a4a0-4a31-b2af-58bfd81f5631",
       "lessons": [
         {
-          "id": 1777912123479,
-          "title": "Clase 1",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1qknx72HehMNt0P6XXRn6jQjs89FgabPQ/view?usp=drive_link"
+          "id": 1777913843887,
+          "title": "Sesión 01",
+          "desc": "Contenido grabado del curso Rehabilitación deportiva.",
+          "duration": "1 h 15 min",
+          "sessionNumbers": [
+            1
+          ],
+          "isPreview": true,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "2bc4ebc4-fb5c-48fc-98d8-1e720da07639",
+          "bunnyCollectionId": "0ee1609d-a4a0-4a31-b2af-58bfd81f5631"
         },
         {
-          "id": 1777912123480,
-          "title": "Clase 2",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1M29ZFkWn7rGhilv_CY-nIF8QU9bVrzpl/view?usp=drive_link"
+          "id": 1777913843888,
+          "title": "Sesión 02",
+          "desc": "Contenido grabado del curso Rehabilitación deportiva.",
+          "duration": "1 h 15 min",
+          "sessionNumbers": [
+            2
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "5032d390-f90f-4f5e-bbdc-8fdc43a7e1ee",
+          "bunnyCollectionId": "0ee1609d-a4a0-4a31-b2af-58bfd81f5631"
         },
         {
-          "id": 1777912123481,
-          "title": "Clase 3",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1z0IHISnJbElSpFPJG7j6hJTc7Apz93-5/view?usp=drive_link"
+          "id": 1777913843889,
+          "title": "Sesiones 03 y 04",
+          "desc": "Contenido grabado del curso Rehabilitación deportiva.",
+          "duration": "1 h 56 min",
+          "sessionNumbers": [
+            3,
+            4
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "467905cf-6463-43d0-aca7-8639a8e185ee",
+          "bunnyCollectionId": "0ee1609d-a4a0-4a31-b2af-58bfd81f5631"
         },
         {
-          "id": 1777912123482,
-          "title": "Clase 4 y 5",
-          "desc": "",
-          "duration": "2 Horas",
-          "videoUrl": "https://drive.google.com/file/d/1SZANthFXL1dSltgSjaE9_Lyq5QcOPey9/view?usp=drive_link"
+          "id": 1777913843890,
+          "title": "Sesión 05",
+          "desc": "Contenido grabado del curso Rehabilitación deportiva.",
+          "duration": "46 min",
+          "sessionNumbers": [
+            5
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "ada4406e-f11e-43cb-b5fb-6b322bf2d50c",
+          "bunnyCollectionId": "0ee1609d-a4a0-4a31-b2af-58bfd81f5631"
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "id": 1777914828962,
+      "title": "Rehabilitación en hipertensión pulmonar y enfermedades vasculares pulmonares",
+      "desc": "La rehabilitación en hipertensión pulmonar y enfermedades vasculares pulmonares es un enfoque terapéutico integral que combina ejercicio supervisado, educación y técnicas respiratorias para mejorar la capacidad funcional, optimizar la oxigenación y favorecer la calidad de vida del paciente, siempre bajo control médico especializado.",
+      "category": "rehabilitacion",
+      "date": "2026-08-11",
+      "badge": "Certificado",
+      "thumbnail": "https://drive.google.com/file/d/1siCvSrjbIiUQLjuzOcutwiwHjejEhjOT/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1E3VskAPNhqQsCHwiLPTLr9lWUUnPdTFv/view?usp=drive_link",
+      "availableDate": "",
+      "duration": "5 h 2 min",
+      "bunnyCollectionId": "fe78203c-44c0-44ff-8ad3-bf82510e9024",
+      "lessons": [
+        {
+          "id": 1777914828962,
+          "title": "Sesión 01",
+          "desc": "Contenido grabado del curso Rehabilitación en hipertensión pulmonar y enfermedades vasculares pulmonares.",
+          "duration": "1 h 11 min",
+          "sessionNumbers": [
+            1
+          ],
+          "isPreview": true,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "90dbb7a5-8616-423b-8f8e-26acf7678f9c",
+          "bunnyCollectionId": "fe78203c-44c0-44ff-8ad3-bf82510e9024"
+        },
+        {
+          "id": 1777914828963,
+          "title": "Sesión 02",
+          "desc": "Contenido grabado del curso Rehabilitación en hipertensión pulmonar y enfermedades vasculares pulmonares.",
+          "duration": "57 min",
+          "sessionNumbers": [
+            2
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "1a13733c-50fd-4ad5-a64b-ddb7b29221ea",
+          "bunnyCollectionId": "fe78203c-44c0-44ff-8ad3-bf82510e9024"
+        },
+        {
+          "id": 1777914828964,
+          "title": "Sesión 03",
+          "desc": "Contenido grabado del curso Rehabilitación en hipertensión pulmonar y enfermedades vasculares pulmonares.",
+          "duration": "1 h 5 min",
+          "sessionNumbers": [
+            3
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "ba809c6f-e453-4163-bcb0-69d5fa932b78",
+          "bunnyCollectionId": "fe78203c-44c0-44ff-8ad3-bf82510e9024"
+        },
+        {
+          "id": 1777914828965,
+          "title": "Sesión 04",
+          "desc": "Contenido grabado del curso Rehabilitación en hipertensión pulmonar y enfermedades vasculares pulmonares.",
+          "duration": "1 h 5 min",
+          "sessionNumbers": [
+            4
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "91ebbb3e-ac0e-4276-9939-68285480f582",
+          "bunnyCollectionId": "fe78203c-44c0-44ff-8ad3-bf82510e9024"
+        },
+        {
+          "id": 1777914828966,
+          "title": "Sesión 05",
+          "desc": "Contenido grabado del curso Rehabilitación en hipertensión pulmonar y enfermedades vasculares pulmonares.",
+          "duration": "45 min",
+          "sessionNumbers": [
+            5
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "61e6312d-7ca8-47b6-883c-2827c4418f67",
+          "bunnyCollectionId": "fe78203c-44c0-44ff-8ad3-bf82510e9024"
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "id": 1777916541882,
+      "title": "Terapia manual ortopédica funcional",
+      "desc": "La terapia manual ortopédica funcional es un enfoque especializado que utiliza técnicas manuales para evaluar y tratar disfunciones musculoesqueléticas, mejorando la movilidad, reduciendo el dolor y restaurando la función mediante intervenciones basadas en el movimiento.",
+      "category": "ortopedia",
+      "date": "2026-08-11",
+      "badge": "Certificado",
+      "thumbnail": "https://drive.google.com/file/d/1E9vOyARMufJdFzDjBWP3W4Cm4QJEqsdZ/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1LGdEhd1zee1tdbvMcJrTtHYLE-_IziTy/view?usp=drive_link",
+      "availableDate": "",
+      "duration": "5 h 22 min",
+      "bunnyCollectionId": "f96a408d-61d7-424f-8ad1-53d9ad146cb3",
+      "lessons": [
+        {
+          "id": 1777916541881,
+          "title": "Sesión 01",
+          "desc": "Contenido grabado del curso Terapia manual ortopédica funcional.",
+          "duration": "1 h 5 min",
+          "sessionNumbers": [
+            1
+          ],
+          "isPreview": true,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "95f3a4a2-ede6-45a4-9706-1bd06a8ae505",
+          "bunnyCollectionId": "f96a408d-61d7-424f-8ad1-53d9ad146cb3"
+        },
+        {
+          "id": 1777916541882,
+          "title": "Sesión 02",
+          "desc": "Contenido grabado del curso Terapia manual ortopédica funcional.",
+          "duration": "1 h 16 min",
+          "sessionNumbers": [
+            2
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "b616d456-1950-4f56-ab05-5d8a8ce755ff",
+          "bunnyCollectionId": "f96a408d-61d7-424f-8ad1-53d9ad146cb3"
+        },
+        {
+          "id": 1777916541883,
+          "title": "Sesiones 03 y 04",
+          "desc": "Contenido grabado del curso Terapia manual ortopédica funcional.",
+          "duration": "1 h 59 min",
+          "sessionNumbers": [
+            3,
+            4
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "4fb92444-c34d-4c6c-a480-57f4bceeb873",
+          "bunnyCollectionId": "f96a408d-61d7-424f-8ad1-53d9ad146cb3"
+        },
+        {
+          "id": 1777916541884,
+          "title": "Sesión 05",
+          "desc": "Contenido grabado del curso Terapia manual ortopédica funcional.",
+          "duration": "1 h 1 min",
+          "sessionNumbers": [
+            5
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "cf3a7167-f098-47f5-9b39-a266fd615fe6",
+          "bunnyCollectionId": "f96a408d-61d7-424f-8ad1-53d9ad146cb3"
         }
       ],
       "type": "video"
     },
     {
       "id": 1777911849560,
-      "title": "Tratamiento fisioterapéutico en parálisis cerebral infantil ",
+      "title": "Tratamiento fisioterapéutico en parálisis cerebral infantil",
       "desc": "Tratamiento enfocado en mejorar la movilidad, postura, equilibrio y coordinación del niño con parálisis cerebral, ayudando a reducir limitaciones físicas y favoreciendo su independencia y calidad de vida.",
       "category": "fisioterapia",
-      "date": "2026-05-04",
-      "badge": "Certificado ",
+      "date": "2026-08-11",
+      "badge": "Certificado",
       "thumbnail": "https://drive.google.com/file/d/1IDNcfU56TOr8KAJv4b45-FmqcL3d7X4E/view?usp=drive_link",
       "temarioImg": "https://drive.google.com/file/d/12s1sPztd0C4IM56XSNGsQkJ19fEJ-p3q/view?usp=drive_link",
       "availableDate": "",
+      "duration": "4 h 8 min",
+      "bunnyCollectionId": "5c588657-887f-4219-b538-c65f6bfc7de3",
       "lessons": [
         {
           "id": 1777912150239,
-          "title": "Clase 1 y 2",
-          "desc": "",
-          "duration": "2 Horas",
-          "videoUrl": "https://drive.google.com/file/d/1xV_MVMGfvVYTUypbSbKDBV4-VnuZ6zW7/view?usp=drive_link"
+          "title": "Sesiones 01 y 02",
+          "desc": "Contenido grabado del curso Tratamiento fisioterapéutico en parálisis cerebral infantil.",
+          "duration": "1 h 44 min",
+          "sessionNumbers": [
+            1,
+            2
+          ],
+          "isPreview": true,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "4e27763c-d512-4e70-a2bc-1c66f6d91356",
+          "bunnyCollectionId": "5c588657-887f-4219-b538-c65f6bfc7de3"
         },
         {
           "id": 1777912150240,
-          "title": "Clase 3 y 4",
-          "desc": "",
-          "duration": "2 Horas",
-          "videoUrl": "https://drive.google.com/file/d/1wXAfokDMOd2PnfkFC1RPdPeyacIeccTT/view?usp=drive_link"
+          "title": "Sesiones 03 y 04",
+          "desc": "Contenido grabado del curso Tratamiento fisioterapéutico en parálisis cerebral infantil.",
+          "duration": "1 h 29 min",
+          "sessionNumbers": [
+            3,
+            4
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "349b64b9-7bdb-4cc2-9c9f-5fc009271b9b",
+          "bunnyCollectionId": "5c588657-887f-4219-b538-c65f6bfc7de3"
         },
         {
           "id": 1777912150241,
-          "title": "Clase 5",
-          "desc": "",
-          "duration": "1 Hora",
-          "videoUrl": "https://drive.google.com/file/d/1JKv-hYdQVYygKo3mqYaZBy5xWmM2m9Je/view?usp=drive_link"
+          "title": "Sesión 05",
+          "desc": "Contenido grabado del curso Tratamiento fisioterapéutico en parálisis cerebral infantil.",
+          "duration": "54 min",
+          "sessionNumbers": [
+            5
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "e4cf9334-8af1-4292-bb0f-f83da5257536",
+          "bunnyCollectionId": "5c588657-887f-4219-b538-c65f6bfc7de3"
+        }
+      ],
+      "type": "video"
+    },
+    {
+      "id": 1777915750230,
+      "title": "Vendaje neuromuscular avanzado en ortopedia",
+      "desc": "El vendaje neuromuscular avanzado en ortopedia es una técnica terapéutica que utiliza cintas elásticas para mejorar la función muscular y articular, disminuir el dolor y la inflamación, y favorecer la recuperación de lesiones, proporcionando soporte sin limitar el movimiento.",
+      "category": "ortopedia",
+      "date": "2026-08-11",
+      "badge": "Certificado",
+      "thumbnail": "https://drive.google.com/file/d/18pD3_Sm72HU0t3CNHnI8Ky0XoQE_Kscp/view?usp=drive_link",
+      "temarioImg": "https://drive.google.com/file/d/1OkUlf5pu_V2JRPO7L5CYT9FRBgImGpUS/view?usp=drive_link",
+      "availableDate": "",
+      "duration": "4 h 54 min",
+      "bunnyCollectionId": "da908ab4-52f9-4f77-9f49-45cba7a9b485",
+      "lessons": [
+        {
+          "id": 1777915750230,
+          "title": "Sesiones 01 y 02",
+          "desc": "Contenido grabado del curso Vendaje neuromuscular avanzado en ortopedia.",
+          "duration": "1 h 54 min",
+          "sessionNumbers": [
+            1,
+            2
+          ],
+          "isPreview": true,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "198f20fd-140d-49e5-a085-6a92d30e9ffc",
+          "bunnyCollectionId": "da908ab4-52f9-4f77-9f49-45cba7a9b485"
+        },
+        {
+          "id": 1777915750231,
+          "title": "Sesión 03",
+          "desc": "Contenido grabado del curso Vendaje neuromuscular avanzado en ortopedia.",
+          "duration": "58 min",
+          "sessionNumbers": [
+            3
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "d750434d-16fd-424f-984b-5be41d8440a6",
+          "bunnyCollectionId": "da908ab4-52f9-4f77-9f49-45cba7a9b485"
+        },
+        {
+          "id": 1777915750232,
+          "title": "Sesión 04",
+          "desc": "Contenido grabado del curso Vendaje neuromuscular avanzado en ortopedia.",
+          "duration": "1 h 5 min",
+          "sessionNumbers": [
+            4
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "0a3dd106-33cc-42af-bf05-114c9f65774f",
+          "bunnyCollectionId": "da908ab4-52f9-4f77-9f49-45cba7a9b485"
+        },
+        {
+          "id": 1777915750233,
+          "title": "Sesión 05",
+          "desc": "Contenido grabado del curso Vendaje neuromuscular avanzado en ortopedia.",
+          "duration": "57 min",
+          "sessionNumbers": [
+            5
+          ],
+          "isPreview": false,
+          "videoProvider": "bunny",
+          "bunnyVideoId": "d7f38b34-ae03-49c2-8d2e-c276507d4b9e",
+          "bunnyCollectionId": "da908ab4-52f9-4f77-9f49-45cba7a9b485"
         }
       ],
       "type": "video"
@@ -673,5 +1012,12 @@
     }
   ],
   "news": [],
-  "members": []
+  "members": [],
+  "bunnyStream": {
+    "provider": "bunny",
+    "libraryId": 726068,
+    "migratedAt": "2026-08-12T04:02:08.112Z",
+    "courseCount": 14,
+    "videoCount": 58
+  }
 }
