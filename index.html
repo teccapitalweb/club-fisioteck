@@ -3485,7 +3485,13 @@
         headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tokenPago },
         body: JSON.stringify({ plan: plan, mode: 'embedded' })
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        // Antes solo decía «No se pudo abrir el pago»: ahora se dice el motivo (sesión vencida, demasiados intentos, Stripe sin configurar…)
+        const motivo = res.status === 401 ? 'Tu sesión venció. Vuelve a iniciar sesión.' : res.status === 429 ? 'Demasiados intentos. Espera un momento y vuelve a probar.' : (data && data.error) || ('Error ' + res.status);
+        throw new Error(motivo);
+      }
+      if (data.url && !data.clientSecret) { window.location.href = data.url; return; } // pago alojado en Stripe
 
       // === Embedded checkout: formulario dibujado en el modal, sin redireccionamiento ===
       if (data.clientSecret) {
@@ -3516,7 +3522,7 @@
     } catch(err) {
       console.error('Stripe checkout error:', err);
       if (_btn) { _btn.disabled = false; _btn.innerHTML = _btnTextoOriginal; }
-      showToast('No se pudo abrir el pago. Intenta de nuevo.');
+      showToast('No se pudo abrir el pago: ' + ((err && err.message) || 'intenta de nuevo') + '.');
     }
   }
 
