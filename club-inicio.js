@@ -95,7 +95,6 @@
     if (!memberIsPaid) {
       return h + '<section class="ftd-card ftd-lat" style="--c:var(--accent)"><div class="ftd-eyebrow">Membresía</div><h3>Abre todo el Club</h3><p>Cursos completos con certificado, material, retos, comunidad y más.</p><button type="button" class="ftd-btn" id="ftdMembresia">Ver membresía</button></section>';
     }
-    if (window.ftCalendario) h += ftCalendario.mini();
     h += '<section class="ftd-card ftd-lat" style="--c:var(--accent)"><div class="ftd-eyebrow">Tu actividad</div>' +
       barra('Cursos', d.completos + '/' + d.cursos.length, d.cursos.length ? d.completos / d.cursos.length * d.cursos.length : 0).replace(/aria-valuenow="\d+"/, 'aria-valuenow="' + (d.cursos.length ? Math.round(d.completos / d.cursos.length * 100) : 0) + '"') +
       barra('Clases', d.clases, d.totalClases) + barra('Retos', d.retosHechos + '/' + d.retosTotal, d.retosTotal ? d.retosHechos / d.retosTotal * d.retosTotal : 0).replace(/aria-valuenow="\d+"/, 'aria-valuenow="' + (d.retosTotal ? Math.round(d.retosHechos / d.retosTotal * 100) : 0) + '"') +
