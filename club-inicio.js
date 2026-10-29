@@ -104,7 +104,10 @@
   }
 
   const reducir = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let ultimaAnimacion = 0;
   function animar(raiz) {
+    const repinte = Date.now() - ultimaAnimacion < 2500; ultimaAnimacion = Date.now();
+    if (repinte) return; // repintada de la misma visita: sin animación de entrada ni contadores (evita el parpadeo)
     [...raiz.querySelectorAll('.ftd-hero, .ftd-fila > *, .ftd-invita, .ftd-der > *')].forEach((e, i) => { e.style.setProperty('--i', i); e.classList.add('ftd-entra'); });
     if (reducir()) return;
     raiz.querySelectorAll('.ftd-cuenta b').forEach(b => {
@@ -155,9 +158,24 @@
     if (!solo) cargarExtra();
   }
 
+  // Al volver al Inicio varios módulos piden repintarlo casi a la vez (accesos, logros, referidos…): antes se veía como 3 parpadeos seguidos.
+  // Ahora todos esos pedidos en una ráfaga se juntan en UNA sola pintada, y las repintadas dentro de la misma visita no repiten la animación de entrada.
   const original = window.renderHome;
-  window.renderHome = function () { const r = original ? original.apply(this, arguments) : undefined; try { pintar(); } catch (e) { console.warn('Inicio:', e && e.message); } return r; };
+  let pintando = null, ultimaPintada = 0;
+  function pintarUnaVez() {
+    pintando = null; ultimaPintada = Date.now();
+    try { if (original) original.call(window); pintar(); } catch (e) { console.warn('Inicio:', e && e.message); }
+  }
+  window.renderHome = function () {
+    if (pintando) return;
+    const espera = Math.max(0, 450 - (Date.now() - ultimaPintada));
+    pintando = setTimeout(pintarUnaVez, espera);
+  };
   window.ftInicio = { pintar };
   const pg = window.showPage;
-  window.showPage = function (page) { const r = pg.apply(this, arguments); if (page === 'home') { try { pintar(true); } catch (_) { /* sin datos */ } } return r; };
+  window.showPage = function (page) {
+    const r = pg.apply(this, arguments);
+    if (page === 'home') { if (pintando) { clearTimeout(pintando); pintando = null; } pintarUnaVez(); }
+    return r;
+  };
 })();

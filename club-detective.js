@@ -51,7 +51,7 @@
       '<section class="dt"><header class="dt-cab"><div><span class="rz-eyebrow">Detective</span><h2>' + esc(c.titulo) + '</h2><p>' + esc(c.desc) + ' Toca la foto para marcar donde ves el error.</p></div>' + (window.ftMascota ? ftMascota.html('detective', { ancho: 84 }) : '') + '</header>' +
       '<div class="dt-foto" id="dtFoto"><img src="' + imagen(c.id) + '" alt="Fotografía del caso: ' + esc(c.titulo) + '" onerror="this.parentNode.classList.add(\'sin\')"><div class="dt-falta">La imagen de este caso aún no está cargada.</div>' + pines + '</div>' +
       (final ? '<div class="dt-res ' + (final.supera ? 'ok' : 'mal') + '"><strong>' + (final.supera ? '¡Caso resuelto!' : 'Casi lo logras') + '</strong><span>Encontraste ' + final.ok + ' de ' + final.total + ' errores' + (final.sobran ? ' y marcaste ' + final.sobran + ' de más' : '') + '.</span>' +
-        (final.xp ? '<em>+' + final.xp + ' XP</em>' : '') + (final.faltan.length ? '<small>Los círculos punteados son los errores que faltaron.</small>' : '') + (final.nota ? '<small>' + esc(final.nota) + '</small>' : '') + '</div>' +
+        (final.xp ? '<em>+' + final.xp + ' XP</em>' : '') + (final.faltan.length ? '<small>Los círculos punteados son los errores que faltaron.</small>' : (!final.supera && final.intentosRestantes ? '<small>Los verdes están bien y los rojos no. Te quedan ' + final.intentosRestantes + ' intento' + (final.intentosRestantes === 1 ? '' : 's') + ' antes de ver dónde estaban los errores.</small>' : '')) + (final.nota ? '<small>' + esc(final.nota) + '</small>' : '') + '</div>' +
         '<div class="rt-acciones"><button type="button" class="rt-btn" onclick="ftDetective.abrir(\'' + c.id + '\')">Jugar otra vez</button><button type="button" class="rt-btn is-ghost" onclick="ftRetosInicio()">Más retos</button></div>'
         : '<div class="dt-barra"><span>Marcas: <b>' + marcas.length + '</b> de ' + MAX_MARCAS + ' · Errores por encontrar: <b>' + c.errores + '</b></span><div><button type="button" class="rt-btn is-ghost" id="dtDeshacer"' + (marcas.length ? '' : ' disabled') + '>Deshacer</button> <button type="button" class="rt-btn" id="dtRevisar"' + (marcas.length ? '' : ' disabled') + '>Revisar</button></div></div>') +
       (cal ? '<pre class="dt-cal">' + marcas.map(m => '{"x":' + m.x + ',"y":' + m.y + ',"r":9}').join(',\n') + '</pre>' : '') + '</section>';
@@ -72,7 +72,7 @@
     const srv = window.ftAcceso ? await ftAcceso.completarReto({ retoId: juego.caso.id, tipo: 'detective', marcas: juego.marcas }) : null;
     if (!srv) { if (window.showToast) showToast('No se pudo revisar tu respuesta. Intenta de nuevo.'); if (btn) btn.disabled = false; return; }
     if (srv.nuevo) { if (window.ftLogros) ftLogros.actualizar('/api/logros'); if (window.showToast) showToast('+' + (srv.xp || 0) + ' XP por resolver el caso'); }
-    pintar({ ok: srv.ok, total: srv.total, sobran: srv.sobran || 0, aciertos: srv.aciertos || [], faltan: srv.faltan || [], supera: srv.supera, xp: srv.nuevo ? srv.xp : 0, nota: srv.supera && !srv.nuevo ? 'Ya ganaste el XP de este caso. Repetirlo es solo práctica.' : '' });
+    pintar({ ok: srv.ok, total: srv.total, sobran: srv.sobran || 0, aciertos: srv.aciertos || [], faltan: srv.faltan || [], intentosRestantes: srv.intentosRestantes || 0, supera: srv.supera, xp: srv.nuevo ? srv.xp : 0, nota: srv.supera && !srv.nuevo ? 'Ya ganaste el XP de este caso. Repetirlo es solo práctica.' : '' });
   }
 
   function abrir(id) {
