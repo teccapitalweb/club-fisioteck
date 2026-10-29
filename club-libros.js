@@ -93,7 +93,10 @@
   async function leer(id) {
     try {
       const r = await certFetch('/api/libros/' + encodeURIComponent(id) + '/enlace', { method: 'POST', body: '{}' });
-      if (window.ftVisor) ftVisor.abrir({ titulo: r.titulo, url: r.url, formato: 'Libro', incrustar: true }); else window.open(r.url, '_blank', 'noopener');
+      const lib = ((S.datos || {}).libros || []).find(x => x.id === id) || {};
+      // Libros propios (PDF del servidor): lector de libro abierto como Alintec. Los externos (por ejemplo OpenStax) se leen en su sitio.
+      if (r.propio && window.ftLector) ftLector.abrir({ id, titulo: r.titulo, subtitulo: lib.autor || 'Libro de FisioTeck', url: r.url });
+      else if (window.ftVisor) ftVisor.abrir({ titulo: r.titulo, url: r.url, formato: 'Libro', incrustar: true }); else window.open(r.url, '_blank', 'noopener');
     } catch (e) { if (e.status === 402) showPaywallOverlay(); else showToast(e.message); }
   }
 
