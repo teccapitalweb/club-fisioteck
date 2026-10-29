@@ -1,0 +1,55 @@
+/* Panel · Notificaciones y Configuración (diseño tomado de Alintec Food) */
+.pg-tabs { display:inline-flex; padding:4px; gap:2px; margin-bottom:16px; border-radius:14px; border:1px solid var(--border); background:var(--surface); }
+.pg-tabs button { padding:9px 16px; border-radius:10px; background:transparent; color:var(--text-light); font:inherit; font-size:.84rem; font-weight:600; transition:var(--transition); }
+.pg-tabs button.on { background:var(--accent-ghost); color:var(--accent); }
+.pg-tabs .n { margin-left:6px; padding:1px 7px; border-radius:99px; background:var(--danger); color:#fff; font-size:.68rem; }
+
+/* ----- Notificaciones ----- */
+.pg-notif { display:grid; grid-template-columns:minmax(300px,1fr) 1.25fr; gap:20px; align-items:start; }
+@media(max-width:980px){ .pg-notif { grid-template-columns:1fr; } }
+.pg-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:22px; }
+.pg-card h3 { font-family:var(--font-display); font-size:1.02rem; margin-bottom:4px; }
+.pg-card .sub { font-size:.82rem; color:var(--text-muted); margin-bottom:16px; }
+.pg-sticky { position:sticky; top:18px; }
+.pg-tipos { display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:8px; margin-bottom:16px; }
+.pg-tipo { display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 6px; border-radius:12px; border:1px solid var(--border-2); background:transparent; color:var(--text-light); font:inherit; font-size:.74rem; font-weight:600; transition:var(--transition); }
+.pg-tipo i { width:34px; height:34px; border-radius:10px; display:grid; place-items:center; background:color-mix(in srgb, var(--c) 16%, transparent); color:var(--c); font-style:normal; }
+.pg-tipo svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.pg-tipo:hover { border-color:var(--c); }
+.pg-tipo.on { border-color:var(--c); background:color-mix(in srgb, var(--c) 10%, transparent); color:var(--text); }
+.pg-cuenta { float:right; font-size:.7rem; color:var(--text-muted); font-weight:500; }
+.pg-prev { margin:4px 0 16px; padding:14px; border-radius:14px; border:1px dashed var(--border-2); background:var(--surface-2); }
+.pg-prev small { display:block; margin-bottom:8px; font-size:.64rem; letter-spacing:.14em; text-transform:uppercase; color:var(--text-muted); font-weight:700; }
+.pg-item { display:flex; gap:12px; align-items:flex-start; padding:14px 16px; border-radius:14px; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--c, var(--accent)); }
+.pg-item .ic-box { width:38px; height:38px; flex-shrink:0; border-radius:11px; display:grid; place-items:center; background:color-mix(in srgb, var(--c, var(--accent)) 14%, transparent); color:var(--c, var(--accent)); }
+.pg-item .ic-box svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.pg-item .cuerpo { flex:1; min-width:0; }
+.pg-item .tit { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.pg-item .tit strong { font-size:.92rem; }
+.pg-item .tag { font-family:'JetBrains Mono',monospace; font-size:.58rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:2px 8px; border-radius:6px; background:color-mix(in srgb, var(--c, var(--accent)) 14%, transparent); color:var(--c, var(--accent)); }
+.pg-item p { font-size:.84rem; color:var(--text-light); margin:4px 0 0; line-height:1.5; }
+.pg-item .pie { display:flex; gap:12px; flex-wrap:wrap; margin-top:8px; font-size:.72rem; color:var(--text-muted); }
+.pg-item .pie a { color:var(--accent); font-weight:600; }
+.pg-del { width:32px; height:32px; flex-shrink:0; display:grid; place-items:center; border-radius:9px; border:1px solid transparent; background:transparent; color:var(--text-muted); transition:var(--transition); }
+.pg-del:hover { color:var(--danger); border-color:var(--danger); background:rgba(220,45,63,.08); }
+.pg-del svg { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2; }
+.pg-lista { display:flex; flex-direction:column; gap:10px; max-height:720px; overflow-y:auto; padding-right:4px; }
+.pg-vacio { text-align:center; padding:44px 16px; color:var(--text-muted); font-size:.88rem; }
+
+/* ----- Configuración ----- */
+.pg-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:18px; }
+.pg-grid .full { grid-column:1/-1; }
+.pg-cab { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+.pg-cab i { width:34px; height:34px; border-radius:10px; display:grid; place-items:center; background:var(--accent-ghost); color:var(--accent); }
+.pg-cab svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.pg-cab h3 { margin:0; }
+.pg-resumen { margin-left:auto; padding:5px 12px; border-radius:99px; font-size:.72rem; font-weight:700; background:color-mix(in srgb, var(--c) 16%, transparent); color:var(--c); }
+.pg-serv { display:flex; align-items:center; gap:12px; padding:12px 4px; border-bottom:1px solid var(--border); }
+.pg-serv:last-child { border-bottom:none; }
+.pg-serv .pt { width:12px; height:12px; border-radius:50%; background:var(--c); flex-shrink:0; box-shadow:0 0 0 4px color-mix(in srgb, var(--c) 18%, transparent); }
+.pg-serv .tx { flex:1; min-width:0; } .pg-serv .tx strong { display:block; font-size:.88rem; } .pg-serv .tx span { font-size:.78rem; color:var(--text-light); }
+.pg-serv .et { font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:700; letter-spacing:.1em; padding:3px 9px; border-radius:6px; background:color-mix(in srgb, var(--c) 16%, transparent); color:var(--c); }
+.pg-acciones { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+.pg-enlaces { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.pg-enlaces a { display:block; padding:14px; border-radius:12px; border:1px solid var(--border-2); color:var(--text); font-size:.84rem; transition:var(--transition); }
+.pg-enlaces a:hover { border-color:var(--accent); background:var(--accent-ghost); } .pg-enlaces a strong { display:block; margin-bottom:2px; } .pg-enlaces a span { color:var(--text-light); font-size:.76rem; }

@@ -1,0 +1,101 @@
+/* Club FisioTeck — diseño del panel, parte 4: Logros, Certificados, Perfil, Suscripción y Foro (estructura de Alintec Food, paleta FisioTeck). */
+
+/* ═════════ Logros ═════════ */
+.ftl-nivel { position:relative; overflow:hidden; padding:26px 28px; border-radius:28px; color:#fff; background:linear-gradient(135deg,#0A3E68,var(--accent) 70%,#159E92); box-shadow:var(--ftd-sombra); margin-bottom:22px; }
+.ftl-nivel::before { content:''; position:absolute; right:-80px; top:-100px; width:300px; height:300px; border-radius:50%; background:rgba(255,255,255,.08); }
+.ftl-nivel > * { position:relative; }
+.ftl-nivel-cab { display:flex; align-items:center; gap:16px; } .ftl-nivel-cab > div:nth-child(2) { flex:1; min-width:0; }
+.ftl-nivel-ico { width:64px; height:64px; border-radius:20px; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.3); display:flex; align-items:center; justify-content:center; color:#FBD27A; } .ftl-nivel-ico svg { width:32px !important; height:32px !important; }
+.ftl-nivel small, .ftl-sig small { font-family:var(--ftd-mono); font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; opacity:.8; }
+.ftl-nivel h2 { margin:2px 0 0; font-family:var(--ftd-display); font-size:clamp(1.8rem,5vw,2.6rem); font-weight:800; letter-spacing:-.04em; line-height:1; }
+.ftl-racha { padding:9px 16px; border-radius:999px; background:rgba(255,255,255,.16); font-family:var(--ftd-mono); font-weight:700; font-size:1rem; } .ftl-racha small { opacity:.85; }
+.ftl-pasos { display:flex; align-items:center; margin:22px 0 18px; }
+.ftl-pasos i { flex:1; height:3px; background:rgba(255,255,255,.28); border-radius:2px; margin:0 -2px 16px; }
+.ftl-paso { display:grid; justify-items:center; gap:6px; } .ftl-paso span { width:32px; height:32px; border-radius:50%; border:2px solid rgba(255,255,255,.45); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.8rem; }
+.ftl-paso small { font-size:.52rem; letter-spacing:.08em; } .ftl-paso.hecho span { background:rgba(255,255,255,.9); color:#0A3E68; border-color:transparent; } .ftl-paso.actual span { background:#FBD27A; color:#5A3A00; border-color:transparent; box-shadow:0 0 0 5px rgba(251,210,122,.3); }
+.ftl-sig { display:flex; align-items:center; gap:22px; padding:20px; border-radius:22px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2); }
+.ftl-aro { flex:none; width:112px; height:112px; border-radius:50%; background:conic-gradient(#fff calc(var(--p)*1%), rgba(255,255,255,.2) 0); display:grid; place-content:center; text-align:center; position:relative; }
+.ftl-aro::before { content:''; position:absolute; inset:9px; border-radius:50%; background:#0F5C95; } .ftl-aro b, .ftl-aro small { position:relative; } .ftl-aro b { font-family:var(--ftd-display); font-size:1.6rem; }
+.ftl-sig h3 { margin:2px 0 6px; font-family:var(--ftd-display); font-size:1.5rem; letter-spacing:-.03em; } .ftl-sig p { margin:0 0 10px; font-size:.85rem; line-height:1.5; opacity:.92; }
+.ftl-chips { display:flex; flex-wrap:wrap; gap:8px; } .ftl-chips span { padding:5px 12px; border-radius:999px; background:rgba(255,255,255,.16); font-family:var(--ftd-mono); font-size:.62rem; letter-spacing:.06em; }
+.ftl-kpis { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin-bottom:24px; }
+.ftl-kpis > div { padding:16px 18px; border-radius:20px; background:var(--surface); border:1px solid var(--border); border-top:4px solid var(--k,var(--accent)); box-shadow:var(--ftd-sombra); }
+.ftl-kpis small { display:block; font-family:var(--ftd-mono); font-size:.56rem; letter-spacing:.14em; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; }
+.ftl-kpis b { font-family:var(--ftd-display); font-size:1.9rem; letter-spacing:-.03em; } .ftl-kpis em { font-style:normal; font-size:1rem; color:var(--text-muted); font-weight:500; }
+.ftl-cat { padding:22px; border-radius:26px; background:var(--surface); border:1px solid var(--border); box-shadow:var(--ftd-sombra); margin-bottom:18px; }
+.ftl-cat header { display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; margin-bottom:16px; border-bottom:1px solid var(--border); }
+.ftl-cat h3 { margin:0; font-family:var(--ftd-display); font-size:1.1rem; color:var(--c); } .ftl-cat header span { padding:3px 12px; border-radius:999px; background:var(--surface-3); font-family:var(--ftd-mono); font-size:.66rem; color:var(--text-light); }
+.ftl-ins { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:14px; }
+.ftl-badge { display:grid; justify-items:center; gap:6px; padding:18px 12px 14px; border-radius:20px; text-align:center; background:var(--surface-2); border:1px solid var(--border); opacity:.62; filter:grayscale(.7); transition:transform .25s; }
+.ftl-badge.on { opacity:1; filter:none; background:color-mix(in srgb,var(--c) 9%,var(--surface)); border-color:color-mix(in srgb,var(--c) 35%,var(--border)); } .ftl-badge.on:hover { transform:translateY(-4px); }
+.ftl-badge .rombo { width:54px; height:54px; border-radius:16px; transform:rotate(45deg); background:var(--border-2); display:flex; align-items:center; justify-content:center; margin:6px 0 8px; } .ftl-badge.on .rombo { background:var(--c); box-shadow:0 8px 18px color-mix(in srgb,var(--c) 40%,transparent); }
+.ftl-badge .rombo span { transform:rotate(-45deg); color:#fff; display:flex; font-size:1.2rem; } .ftl-badge .rombo svg { width:22px !important; height:22px !important; }
+.ftl-badge strong { font-size:.82rem; line-height:1.25; } .ftl-badge small { font-size:.68rem; color:var(--text-muted); line-height:1.35; }
+.ftl-badge em { margin-top:2px; padding:2px 10px; border-radius:999px; font-style:normal; font-family:var(--ftd-mono); font-size:.58rem; letter-spacing:.06em; background:var(--surface-3); color:var(--text-light); } .ftl-badge.on em { background:var(--c); color:#fff; }
+@media (max-width:880px) { .ftl-kpis { grid-template-columns:repeat(2,minmax(0,1fr)); } .ftl-sig { flex-direction:column; text-align:center; } .ftl-nivel { padding:20px; } .ftl-paso small { display:none; } .ftl-ins { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
+/* ═════════ Certificados ═════════ */
+.ftd-cert-grid { grid-template-columns:minmax(0,1fr) !important; gap:14px !important; }
+.ftd-cert { position:relative; display:grid; grid-template-columns:auto minmax(0,1fr); column-gap:18px; padding:20px 22px !important; border-radius:24px !important; background:var(--surface) !important; border:1px solid var(--border) !important; box-shadow:var(--ftd-sombra); }
+.ftd-cert > :not(.ftd-cert-medalla) { grid-column:2; }
+.ftd-cert-medalla { grid-row:1 / span 6; width:64px; height:64px; border-radius:20px; background:linear-gradient(145deg,#F5C75B,#C2760B); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 22px rgba(194,118,11,.32); } .ftd-cert-medalla svg { width:30px; height:30px; }
+.ftd-cert strong { font-family:var(--ftd-display); }
+a.ftd-cert-ver { border-radius:999px !important; background:linear-gradient(135deg,var(--accent-deep),var(--accent)) !important; }
+@media (max-width:560px) { .ftd-cert { grid-template-columns:minmax(0,1fr); } .ftd-cert > :not(.ftd-cert-medalla) { grid-column:1; } .ftd-cert-medalla { grid-row:auto; width:52px; height:52px; margin-bottom:10px; } }
+
+/* ═════════ Perfil ═════════ */
+.ftd-perfil > .card:first-of-type { border-radius:26px; box-shadow:var(--ftd-sombra); background:linear-gradient(120deg,var(--accent-ghost),var(--surface) 70%); }
+.ftd-perfil .account-grid .card { border-radius:24px; box-shadow:var(--ftd-sombra); border:1px solid var(--border); padding:24px; }
+.ftd-perfil .account-grid h3 { font-family:var(--ftd-mono); font-size:.64rem !important; letter-spacing:.16em; text-transform:uppercase; color:var(--text-muted); padding-bottom:12px; border-bottom:1px solid var(--border); font-weight:700 !important; }
+.ftd-perfil .form-label { font-family:var(--ftd-mono); font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); }
+.ftd-perfil .form-input { border-radius:14px; }
+.ftd-perfil .btn-primary, .ftd-perfil .btn-outline { border-radius:999px; }
+.ftd-dl { margin:0; display:grid; } .ftd-dl > div { display:flex; justify-content:space-between; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); } .ftd-dl > div:last-child { border-bottom:0; }
+.ftd-dl dt { font-family:var(--ftd-mono); font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); } .ftd-dl dd { margin:0; font-weight:600; font-size:.88rem; text-align:right; }
+
+/* ═════════ Suscripción ═════════ */
+#page-subscription .sub-card { border-radius:28px; box-shadow:var(--ftd-sombra); }
+#page-subscription .card, #page-subscription .sub-details { border-radius:24px; box-shadow:var(--ftd-sombra); }
+#page-subscription .sub-detail-item { border-radius:16px; }
+#page-subscription .sub-detail-label { font-family:var(--ftd-mono); letter-spacing:.14em; }
+#page-subscription .btn-primary, #page-subscription .btn-danger { border-radius:999px; }
+#subPlanesElegir .card { transition:transform .25s; } #subPlanesElegir .card:hover { transform:translateY(-4px); }
+
+/* ═════════ Foro ═════════ */
+.ftd-foro > div[style*="justify-content:flex-end"] { display:none !important; }
+.ftd-foro-caja { width:100%; display:flex; align-items:center; gap:14px; padding:16px 18px; border:1px solid var(--border); border-radius:22px; background:var(--surface); box-shadow:var(--ftd-sombra); cursor:pointer; font:inherit; text-align:left; margin-bottom:16px; }
+.ftd-foro-caja:hover { border-color:var(--accent); } .ftd-foro-caja .txt { flex:1; color:var(--text-muted); font-size:.9rem; }
+.ftd-foro-caja b { padding:9px 20px; border-radius:999px; background:linear-gradient(135deg,var(--accent-deep),var(--accent)); color:#fff; font-size:.8rem; }
+.ftd-foro-caja .av, .ftd-post .av { flex:none; width:42px; height:42px; border-radius:50%; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; }
+.ftd-foro-tabs { max-width:520px; margin:0 0 16px; }
+.ftd-post { display:flex; gap:14px; padding:18px 20px; border-radius:22px; background:var(--surface); border:1px solid var(--border); box-shadow:var(--ftd-sombra); margin-bottom:12px; cursor:pointer; transition:transform .2s, border-color .2s; }
+.ftd-post:hover { transform:translateY(-2px); border-color:var(--accent); } .ftd-post .cuerpo { flex:1; min-width:0; }
+.ftd-post header { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:6px; } .ftd-post header strong { font-size:.88rem; }
+.ftd-post .tag { padding:2px 10px; border-radius:999px; background:var(--accent-ghost); color:var(--accent); font-family:var(--ftd-mono); font-size:.56rem; letter-spacing:.1em; text-transform:uppercase; font-weight:700; } .ftd-post time { margin-left:auto; font-family:var(--ftd-mono); font-size:.62rem; color:var(--text-muted); }
+.ftd-post h4 { margin:0 0 4px; font-family:var(--ftd-display); font-size:1.02rem; } .ftd-post p { margin:0; color:var(--text-light); font-size:.86rem; line-height:1.5; overflow-wrap:anywhere; }
+.ftd-post footer { display:flex; gap:18px; margin-top:12px; padding-top:10px; border-top:1px solid var(--border); font-family:var(--ftd-mono); font-size:.68rem; color:var(--text-muted); }
+.ftd-post footer span { display:inline-flex; align-items:center; gap:6px; } .ftd-post footer svg { width:14px; height:14px; } .ftd-post footer .like { color:#DC2D3F; } .ftd-post footer .like svg { fill:currentColor; }
+.ftd-foro-vacio { padding:40px; text-align:center; color:var(--text-muted); border:1.5px dashed var(--border-2); border-radius:22px; }
+@media (max-width:560px) { .ftd-foro-caja .txt { font-size:.8rem; } .ftd-post { padding:14px; } }
+@media (prefers-reduced-motion:reduce) { .ftl-badge, .ftd-post, #subPlanesElegir .card { transition:none; } }
+
+/* ── Logros: premios por nivel y por invitar ── */
+.ftl-premios { border-radius:28px; overflow:hidden; background:var(--surface); border:1px solid var(--border); box-shadow:var(--ftd-sombra); margin-bottom:22px; }
+.ftl-premios > header { display:flex; align-items:center; gap:18px; padding:24px 26px; color:#fff; background:linear-gradient(135deg,#0A2F52,#0D5FA0); }
+.ftl-premios > header .ico { flex:none; width:58px; height:58px; border-radius:18px; background:#F5C75B; color:#5A3A00; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 22px rgba(0,0,0,.25); } .ftl-premios > header .ico svg { width:28px; height:28px; }
+.ftl-premios header small { font-family:var(--ftd-mono); font-size:.58rem; letter-spacing:.14em; text-transform:uppercase; opacity:.8; }
+.ftl-premios header h3 { margin:4px 0 6px; font-family:var(--ftd-display); font-size:clamp(1.3rem,3.4vw,1.9rem); letter-spacing:-.03em; line-height:1.1; } .ftl-premios header h3 em { font-style:normal; color:#F5C75B; }
+.ftl-premios header p { margin:0; font-size:.84rem; opacity:.88; max-width:520px; line-height:1.5; } .ftl-premios header > div:nth-child(2) { flex:1; min-width:0; }
+.ftl-premios .cuenta { flex:none; text-align:center; padding:12px 18px; border-radius:18px; background:rgba(255,255,255,.14); } .ftl-premios .cuenta b { display:block; font-family:var(--ftd-display); font-size:2rem; line-height:1; } .ftl-premios .cuenta span { font-family:var(--ftd-mono); font-size:.52rem; letter-spacing:.1em; text-transform:uppercase; }
+.ftl-metas { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; padding:18px; }
+.ftl-meta { display:flex; gap:14px; padding:16px; border-radius:20px; background:var(--surface-2); border:1px solid var(--border); } .ftl-meta.ganada { background:var(--ftd-teal-soft); border-color:var(--ftd-teal); }
+.ftl-meta .ico { flex:none; width:46px; height:46px; border-radius:14px; background:var(--surface); display:flex; align-items:center; justify-content:center; color:var(--accent); border:1px solid var(--border); } .ftl-meta .ico svg { width:22px; height:22px; } .ftl-meta.ganada .ico { background:var(--ftd-teal); color:#fff; border-color:transparent; }
+.ftl-meta small { font-family:var(--ftd-mono); font-size:.54rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); } .ftl-meta h4 { margin:2px 0; font-family:var(--ftd-display); font-size:1.1rem; } .ftl-meta p { margin:0 0 8px; font-size:.78rem; color:var(--text-light); }
+.ftl-meta .pie span { font-size:.74rem; font-weight:700; } .ftl-meta .pie .ok { color:#0A7D45; } .ftl-meta .pie .no { color:var(--text-muted); font-weight:600; }
+.ftl-ref { display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; padding:22px 26px; border-radius:26px; background:linear-gradient(120deg,var(--accent-ghost),var(--surface)); border:1px solid var(--border); box-shadow:var(--ftd-sombra); margin-bottom:22px; }
+.ftl-ref .txt { flex:1 1 320px; min-width:0; } .ftl-ref small { font-family:var(--ftd-mono); font-size:.58rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ftd-teal); font-weight:700; } .ftl-ref small.num { display:block; margin-top:6px; color:var(--text-muted); }
+.ftl-ref h3 { margin:4px 0 6px; font-family:var(--ftd-display); font-size:1.25rem; letter-spacing:-.02em; } .ftl-ref p { margin:0 0 12px; font-size:.84rem; color:var(--text-light); line-height:1.5; }
+.ftl-barra { height:10px; border-radius:999px; background:var(--border-2); overflow:hidden; } .ftl-barra i { display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,var(--accent),var(--ftd-teal)); transition:width .6s; }
+.ftl-ref .acc { display:flex; flex-wrap:wrap; gap:10px; }
+@media (max-width:880px) { .ftl-premios > header { flex-wrap:wrap; padding:20px; } .ftl-premios .cuenta { margin-left:auto; } .ftl-ref { padding:18px; } }
+@media (prefers-reduced-motion:reduce) { .ftl-barra i { transition:none; } }

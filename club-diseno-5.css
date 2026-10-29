@@ -1,0 +1,39 @@
+/* Club FisioTeck — Zona de retos con la estructura de Zoorigen y Alintec: "Elige tu reto" con tarjetas de misión con foto y un panel que se abre debajo
+   (Tu camino con línea de tiempo, escenas del Detective, flashcards). Va después de club-diseno-3.css y -4.css y reemplaza el estilo anterior de las misiones. */
+.rz-mis { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; margin-bottom:22px; }
+.rz-mision { display:flex; flex-direction:column; gap:0; padding:0; overflow:hidden; border-radius:24px; background:var(--surface); border:1px solid var(--border); box-shadow:var(--ftd-sombra); text-align:left; font:inherit; color:inherit; cursor:pointer; transition:transform .25s, box-shadow .25s, border-color .25s; opacity:1; }
+.rz-mision:hover, .rz-mision:focus-visible { transform:translateY(-4px); box-shadow:0 18px 40px rgba(10,30,50,.18); } .rz-mision:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
+.rz-mision.abierta { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent-ghost), var(--ftd-sombra); }
+.rz-mision .foto { position:relative; display:block; aspect-ratio:16/8.5; background-size:cover; background-position:center; background-color:var(--surface-3); }
+.rz-mision .foto b { position:absolute; left:14px; top:14px; padding:6px 12px; border-radius:999px; background:rgba(10,20,34,.72); color:#fff; backdrop-filter:blur(6px); font-family:var(--ftd-mono); font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; }
+.rz-mision .cuerpo { display:grid; gap:8px; padding:18px 20px 16px; flex:1; }
+.rz-mision .cuerpo strong { font-family:var(--ftd-display); font-size:1.12rem; letter-spacing:-.02em; }
+.rz-mision .desc { font-size:.84rem; line-height:1.5; color:var(--text-light); }
+.rz-mision .pie { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:auto; padding-top:6px; font-size:.76rem; font-weight:700; color:var(--accent); }
+.rz-mision .pie.azul { color:#0B6FA8; } .rz-mision .pie.verde { color:#5B7A12; } .rz-mision .pie.ambar { color:#B45309; }
+.rz-mision .pie i { display:flex; color:var(--text-muted); } .rz-mision .pie svg { width:18px; height:18px; transition:transform .25s; } .rz-mision:hover .pie svg { transform:translateX(4px); }
+.rz-pan { margin-bottom:24px; padding:26px; border-radius:26px; background:var(--surface); border:1px solid var(--border); box-shadow:var(--ftd-sombra); scroll-margin-top:90px; animation:rzAbre .3s; }
+@keyframes rzAbre { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+.rz-pan-cab { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:14px; }
+.rz-pan-cab small { font-family:var(--ftd-mono); font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color:#B45309; font-weight:700; }
+.rz-pan-cab h3 { margin:4px 0 6px; font-family:var(--ftd-display); font-size:1.4rem; letter-spacing:-.03em; } .rz-pan-cab p { margin:0; font-size:.86rem; color:var(--text-light); line-height:1.5; max-width:620px; }
+.rz-cerrar { flex:none; width:38px; height:38px; border-radius:50%; border:1px solid var(--border-2); background:var(--surface-2); color:var(--text); font-size:1.3rem; line-height:1; cursor:pointer; }
+.rz-pan-barra { height:8px; border-radius:999px; background:var(--border-2); overflow:hidden; margin-bottom:20px; } .rz-pan-barra i { display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,#E0A21A,#C2760B); transition:width .5s; }
+.rz-camino { list-style:none; margin:0; padding:0; position:relative; display:grid; gap:12px; }
+.rz-camino::before { content:''; position:absolute; left:19px; top:24px; bottom:24px; width:2px; background:var(--border-2); }
+.rz-camino li { position:relative; display:flex; align-items:center; gap:16px; }
+.rz-camino .nodo { position:relative; z-index:1; flex:none; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--surface); border:2px solid var(--border-2); color:var(--text-light); font-weight:800; font-size:.86rem; }
+.rz-camino .nodo svg { width:18px; height:18px; } .rz-camino .nodo.ok { background:#1E8A4E; border-color:#1E8A4E; color:#fff; } .rz-camino .nodo.act { background:#C2760B; border-color:#C2760B; color:#fff; box-shadow:0 0 0 5px rgba(194,118,11,.2); }
+.paso { flex:1; min-width:0; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 18px; border-radius:16px; border:1px solid var(--border); background:var(--surface-2); color:var(--text); font:inherit; text-align:left; cursor:pointer; transition:border-color .2s, transform .2s; }
+.paso:hover { border-color:var(--accent); transform:translateX(3px); } .paso.rec { border-color:#C2760B; background:color-mix(in srgb,#C2760B 7%, var(--surface)); }
+.paso strong { display:block; font-size:.92rem; line-height:1.35; } .paso small { display:block; margin-top:3px; font-size:.74rem; color:var(--text-muted); }
+.paso b, .rz-escena b { flex:none; padding:5px 12px; border-radius:999px; background:var(--surface-3); color:var(--text-light); font-family:var(--ftd-mono); font-size:.56rem; letter-spacing:.1em; text-transform:uppercase; }
+.paso b.ok, .rz-escena.ok b { background:rgba(30,138,78,.14); color:#157A41; } .paso b.rec { background:#C2760B; color:#fff; }
+.rz-escenas { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:16px; }
+.rz-escena { position:relative; display:flex; flex-direction:column; padding:0; overflow:hidden; border-radius:20px; border:1px solid var(--border); background:var(--surface-2); color:var(--text); font:inherit; text-align:left; cursor:pointer; transition:transform .25s, border-color .25s; }
+.rz-escena:hover { transform:translateY(-4px); border-color:var(--accent); }
+.rz-escena .foto { display:block; aspect-ratio:4/3; background-size:cover; background-position:center; background-color:var(--surface-3); }
+.rz-escena .txt { display:grid; gap:2px; padding:12px 14px 6px; } .rz-escena .txt strong { font-size:.92rem; } .rz-escena .txt small { font-size:.74rem; color:var(--text-muted); }
+.rz-escena b { align-self:flex-start; margin:4px 14px 14px; }
+@media (max-width:640px) { .rz-mis { grid-template-columns:minmax(0,1fr); } .rz-pan { padding:18px; } .paso { padding:12px 14px; } .paso b { display:none; } .rz-camino li { gap:12px; } }
+@media (prefers-reduced-motion:reduce) { .rz-mision, .rz-pan, .rz-escena, .paso { transition:none; animation:none; } }

@@ -1,0 +1,46 @@
+/* Preguntas y juegos al terminar una clase (club-juegos.js) */
+body.ftj-abierto { overflow:hidden; }
+.ftj-ov { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(6,11,18,.72); backdrop-filter:blur(5px); }
+.ftj-caja { width:100%; max-width:560px; max-height:94vh; overflow:auto; background:var(--surface,var(--bg)); color:var(--text); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow-lg); }
+.ftj-cab { display:flex; justify-content:space-between; align-items:center; padding:16px 20px; border-bottom:1px solid var(--border); }
+.ftj-cab h3 { font-size:1.02rem; margin:0; }
+.ftj-x { width:32px; height:32px; border:0; border-radius:8px; background:transparent; color:var(--text-muted); font-size:1.4rem; line-height:1; cursor:pointer; } .ftj-x:hover { background:var(--accent-ghost); color:var(--text); }
+.ftj-cuerpo { padding:20px; text-align:center; }
+.ftj-txt { font-size:.88rem; color:var(--text-light); margin:0 0 14px; line-height:1.5; }
+.ftj-q { font-size:1.05rem; font-weight:600; line-height:1.4; margin:4px 0 16px; }
+.ftj-ops { display:flex; flex-direction:column; gap:10px; }
+.ftj-op { padding:13px 16px; border-radius:var(--radius-sm); border:1px solid var(--border-2); background:transparent; color:var(--text); font:inherit; font-size:.92rem; text-align:left; cursor:pointer; transition:var(--transition); }
+.ftj-op:hover:not(:disabled) { border-color:var(--primary); background:var(--accent-ghost); }
+.ftj-op.bien { background:rgba(15,157,88,.14); border-color:var(--success); } .ftj-op.mal { background:rgba(220,45,63,.12); border-color:var(--danger); }
+.ftj-num { font-size:2.6rem; font-weight:800; margin:8px 0; color:var(--primary); }
+.ftj-btn { margin-top:6px; padding:12px 22px; border:0; border-radius:var(--radius-sm); background:var(--primary); color:#fff; font:inherit; font-weight:700; cursor:pointer; }
+
+.ftj-sopa { display:grid; gap:2px; margin:0 auto 14px; max-width:420px; touch-action:none; user-select:none; }
+.ftj-cel { aspect-ratio:1; display:grid; place-items:center; font-weight:700; font-size:clamp(.7rem,2.6vw,1rem); border-radius:6px; background:var(--accent-ghost); color:var(--text); cursor:pointer; }
+.ftj-cel.sel { background:var(--primary); color:#fff; } .ftj-cel.ok { background:rgba(15,157,88,.35); color:var(--text); }
+.ftj-pal { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; } .ftj-pal span { padding:4px 10px; border-radius:99px; border:1px solid var(--border-2); font-size:.74rem; font-weight:600; } .ftj-pal span.ok { text-decoration:line-through; background:rgba(15,157,88,.14); color:var(--success); border-color:transparent; }
+
+.ftj-mem { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+@media(max-width:480px){ .ftj-mem { grid-template-columns:repeat(2,1fr); } }
+.ftj-carta { position:relative; min-height:84px; padding:8px; border:1px solid var(--border-2); border-radius:12px; background:var(--accent-ghost); color:var(--text); font:inherit; font-size:.76rem; cursor:pointer; }
+.ftj-carta .dorso { display:none; } .ftj-carta .cara { font-size:1.4rem; font-weight:800; color:var(--primary); }
+.ftj-carta.abierta .cara, .ftj-carta.lista .cara { display:none; } .ftj-carta.abierta .dorso, .ftj-carta.lista .dorso { display:block; }
+.ftj-carta.abierta { background:var(--surface,var(--bg)); border-color:var(--primary); } .ftj-carta.lista { background:rgba(15,157,88,.16); border-color:var(--success); cursor:default; }
+
+.ftj-rompe { display:grid; gap:3px; width:min(100%,380px); aspect-ratio:1; margin:0 auto; }
+.ftj-pieza { border:2px solid transparent; border-radius:6px; background-color:var(--accent-ghost); background-repeat:no-repeat; color:var(--text); font-weight:800; cursor:pointer; padding:0; }
+.ftj-pieza.sel { border-color:var(--primary); box-shadow:0 0 0 2px var(--primary) inset; } .ftj-pieza.bien { border-color:rgba(15,157,88,.7); }
+
+.ftj-vidas { font-size:1.2rem; letter-spacing:4px; color:var(--danger); margin-bottom:10px; min-height:1.6em; }
+.ftj-letras { font-family:'JetBrains Mono',monospace; font-size:1.7rem; font-weight:800; letter-spacing:4px; margin:12px 0 18px; word-break:break-word; }
+.ftj-teclado { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; }
+.ftj-tecla { width:38px; height:42px; border-radius:8px; border:1px solid var(--border-2); background:transparent; color:var(--text); font:inherit; font-weight:700; cursor:pointer; }
+.ftj-tecla:hover:not(:disabled) { border-color:var(--primary); } .ftj-tecla.bien { background:rgba(15,157,88,.2); border-color:var(--success); } .ftj-tecla.mal { background:rgba(220,45,63,.15); border-color:var(--danger); } .ftj-tecla:disabled { cursor:default; }
+
+/* Sopa: progreso; rompecabezas: imagen de referencia; ahorcado: muñeco */
+.ftj-prog { height:8px; border-radius:999px; background:var(--border-2,#DDE5EE); overflow:hidden; margin:0 0 6px; } .ftj-prog i { display:block; height:100%; width:0; border-radius:999px; background:linear-gradient(90deg,#159E92,#0D5FA0); transition:width .4s; }
+.ftj-ref { width:96px; height:96px; margin:0 auto 12px; border-radius:12px; background-size:cover; background-position:center; border:2px solid var(--border-2,#DDE5EE); }
+.ftj-vidas { display:flex; align-items:center; justify-content:center; gap:14px; font-size:.85rem; letter-spacing:0; }
+.ftj-muneco { width:84px; height:98px; color:var(--text,#10223A); flex:none; } .ftj-nerr { color:var(--text-light,#5B7389); font-weight:600; }
+.ftj-tecla.ayuda { outline:2px dashed #0F9D58; outline-offset:-3px; }
+@media (prefers-reduced-motion:reduce) { .ftj-prog i { transition:none; } }

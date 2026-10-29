@@ -1,0 +1,71 @@
+/* Club FisioTeck — diseño del panel, parte 2: cabeceras de sección con mascota, Mis cursos, detalle del curso, PDF y material, Retos.
+   Misma estructura que el panel de Alintec Food con la paleta de FisioTeck. Usa las variables de tema (claro/oscuro) y de club-diseno.css. */
+
+/* ═════════ Cabeceras de sección (hero con mascota) ═════════ */
+.ftd-sec-hero { position:relative; overflow:hidden; display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:18px; padding:28px 34px; min-height:150px; border-radius:28px; border:1px solid var(--border); background:linear-gradient(120deg,var(--accent-ghost),var(--surface) 60%,var(--ftd-teal-soft)); box-shadow:var(--ftd-sombra); margin-bottom:22px; }
+.ftd-sec-hero::before { content:''; position:absolute; width:260px; height:260px; right:-70px; top:-110px; border-radius:50%; background:radial-gradient(circle,var(--ftd-teal-soft),transparent 70%); pointer-events:none; }
+.ftd-sec-hero > * { position:relative; z-index:1; }
+.ftd-sec-hero h1 { margin:8px 0 6px; font-family:var(--ftd-display); font-weight:800; font-size:clamp(2rem,5vw,2.7rem); letter-spacing:-.045em; line-height:1.02; }
+.ftd-sec-hero h1 em { font-style:normal; color:var(--ftd-teal); }
+.ftd-sec-hero h1 em::after { content:''; display:block; width:46px; height:4px; border-radius:3px; background:var(--ftd-rosa); margin-top:6px; }
+.ftd-sec-hero p { margin:0; color:var(--text-light); max-width:560px; line-height:1.55; font-size:.92rem; }
+@media (max-width:880px) { .ftd-sec-hero { grid-template-columns:minmax(0,1fr); padding:22px; } .ftd-sec-hero .fm { display:none; } }
+
+/* ═════════ Mis cursos ═════════ */
+#page-library.ftd > *:not(#ftCursos) { display:none !important; }
+.ftd-tabs { display:flex; gap:6px; padding:5px; border-radius:999px; background:var(--surface); border:1.5px solid var(--border-2); max-width:560px; margin-top:16px; }
+.ftd-tabs button { flex:1; padding:10px 14px; border-radius:999px; border:0; background:none; font:inherit; font-size:.82rem; font-weight:700; color:var(--text-light); cursor:pointer; }
+.ftd-tabs button.on { background:linear-gradient(135deg,var(--accent-deep),var(--accent)); color:#fff; box-shadow:0 6px 14px rgba(13,95,160,.32); }
+.ftd-barra-herr { display:flex; flex-wrap:wrap; gap:14px; align-items:center; padding:14px; border-radius:22px; background:var(--surface); border:1px solid var(--border); box-shadow:var(--ftd-sombra); margin-bottom:24px; }
+.ftd-busca { position:relative; flex:1 1 280px; max-width:420px; }
+.ftd-busca svg { position:absolute; left:14px; top:50%; transform:translateY(-50%); width:16px; height:16px; color:var(--text-muted); }
+.ftd-busca input { width:100%; padding:11px 16px 11px 40px; border-radius:999px; border:1px solid var(--border-2); background:var(--surface-2); color:var(--text); font:inherit; font-size:.88rem; }
+.ftd-busca input:focus { outline:0; border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-ghost); }
+.ftd-chips { display:flex; flex-wrap:wrap; gap:8px; }
+.ftd-chips button { padding:8px 15px; border-radius:999px; border:1px solid var(--border-2); background:var(--surface); color:var(--text); font:inherit; font-size:.78rem; font-weight:600; cursor:pointer; }
+.ftd-chips button:hover { border-color:var(--accent); }
+.ftd-chips button.on { background:linear-gradient(135deg,var(--accent-deep),var(--accent)); border-color:transparent; color:#fff; box-shadow:0 6px 14px rgba(13,95,160,.28); }
+.ftd-cursos { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; }
+.ftd-curso { position:relative; height:260px; border-radius:24px; overflow:hidden; cursor:pointer; background:#0d1220; box-shadow:0 8px 24px rgba(10,10,10,.16); transition:transform .3s, box-shadow .3s; color:#fff; border:0; padding:0; text-align:left; font:inherit; --vp-c:var(--accent); }
+.ftd-curso:hover, .ftd-curso:focus-visible { transform:translateY(-5px); box-shadow:0 22px 48px rgba(10,10,10,.28); }
+.ftd-curso:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
+.ftd-curso .foto { position:absolute; inset:0; background-size:cover; background-position:center; transition:transform .7s; }
+.ftd-curso:hover .foto { transform:scale(1.06); }
+.ftd-curso::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(13,18,32,0) 25%,rgba(13,18,32,.55) 60%,rgba(8,12,22,.94) 100%); }
+.ftd-curso .etq { position:absolute; left:14px; top:14px; right:56px; z-index:2; display:flex; flex-wrap:wrap; gap:6px; }
+.ftd-curso .etq span { padding:5px 10px; border-radius:999px; background:rgba(255,255,255,.16); backdrop-filter:blur(8px); font-family:var(--ftd-mono); font-size:.55rem; letter-spacing:.1em; text-transform:uppercase; font-weight:700; }
+.ftd-curso .etq span:first-child { background:color-mix(in srgb,var(--vp-c) 55%,rgba(255,255,255,.1)); }
+.ftd-curso .flecha { position:absolute; right:14px; top:14px; z-index:2; width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.3); display:flex; align-items:center; justify-content:center; transition:background .25s, transform .25s; }
+.ftd-curso .flecha svg { width:15px; height:15px; }
+.ftd-curso:hover .flecha { background:var(--vp-c); transform:rotate(8deg) scale(1.06); }
+.ftd-curso .estado { position:absolute; right:14px; top:56px; z-index:2; max-width:52%; padding:5px 10px; border-radius:999px; background:rgba(0,0,0,.45); backdrop-filter:blur(8px); font-size:.62rem; font-weight:700; text-align:right; line-height:1.3; }
+.ftd-curso .estado.ok { background:rgba(15,157,88,.85); }
+.ftd-curso .pie { position:absolute; left:18px; right:18px; bottom:16px; z-index:2; transition:transform .3s; }
+.ftd-curso:hover .pie { transform:translateY(-34px); }
+.ftd-curso h3 { margin:0 0 7px; font-family:var(--ftd-display); font-size:1.18rem; font-weight:800; letter-spacing:-.025em; line-height:1.2; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.ftd-curso .meta { display:flex; flex-wrap:wrap; gap:12px; font-size:.72rem; opacity:.9; }
+.ftd-curso .ver { position:absolute; left:18px; bottom:16px; z-index:3; padding:8px 18px; border-radius:999px; background:#fff; color:#0B2A4A; font-size:.74rem; font-weight:800; opacity:0; transform:translateY(8px); transition:opacity .25s, transform .25s; }
+.ftd-curso:hover .ver, .ftd-curso:focus-visible .ver { opacity:1; transform:translateY(0); }
+.ftd-curso .pbar { position:absolute; left:0; right:0; bottom:0; height:4px; background:rgba(255,255,255,.24); z-index:3; }
+.ftd-curso .pbar i { display:block; height:100%; background:var(--vp-c); }
+.ftd-curso.bloq .foto { filter:grayscale(.25) brightness(.72); }
+@media (hover:none) { .ftd-curso .ver { display:none; } .ftd-curso:hover .pie { transform:none; } }
+@media (max-width:560px) { .ftd-cursos { grid-template-columns:minmax(0,1fr); } .ftd-curso { height:250px; } }
+@media (prefers-reduced-motion:reduce) { .ftd-curso, .ftd-curso .foto, .ftd-curso .pie, .ftd-curso .ver { transition:none; } }
+
+/* ── Detalle del curso: hero a ancho completo y línea de tiempo de clases ── */
+.course-detail-hero { position:relative; display:flex !important; align-items:flex-end; min-height:380px; border-radius:28px; overflow:hidden; background:#0d1220; box-shadow:0 20px 48px rgba(10,10,10,.22); color:#fff; padding:0 !important; border:0 !important; }
+.course-detail-hero .course-detail-thumb { position:absolute !important; inset:0; width:auto !important; height:auto !important; border-radius:0 !important; max-width:none !important; }
+.course-detail-hero .course-detail-thumb img { width:100%; height:100%; object-fit:cover; }
+.course-detail-hero::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(13,18,32,.12),rgba(13,18,32,.55) 55%,rgba(13,18,32,.94)); }
+.course-detail-hero .course-detail-info { position:relative; z-index:2; padding:28px 30px !important; width:100%; }
+.course-detail-hero h2 { font-family:var(--ftd-display); font-weight:800; font-size:clamp(1.7rem,4vw,2.4rem); letter-spacing:-.035em; color:#fff; margin:6px 0 10px; }
+.course-detail-hero p, .course-detail-hero .course-detail-stats { color:rgba(255,255,255,.88) !important; }
+.course-detail-hero .course-btn { background:#fff !important; color:#0B2A4A !important; border-radius:999px !important; font-weight:800 !important; }
+.lesson-list { position:relative; display:grid; gap:4px; }
+.lesson-list::before { content:''; position:absolute; left:16px; top:24px; bottom:24px; width:2px; background:var(--border-2); }
+.lesson-item-wrap { position:relative; border-radius:16px; }
+.lesson-item { border-radius:16px !important; background:transparent !important; border:0 !important; min-height:66px; }
+.lesson-item:hover { background:var(--surface-2) !important; }
+.lesson-num { width:32px !important; height:32px !important; border-radius:50% !important; border:2px solid var(--border-2); background:var(--surface) !important; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.8rem; position:relative; z-index:1; }
+@media (max-width:700px) { .course-detail-hero { min-height:420px; border-radius:22px; } }

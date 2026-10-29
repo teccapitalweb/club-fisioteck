@@ -1,0 +1,118 @@
+/* Club FisioTeck — Modo historia (mapa de mundos, casos con Fisi, resultado con estrellas) y foro con publicaciones de ejemplo. */
+.hs-cab { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:26px 30px; border-radius:28px; border:1px solid var(--border); background:linear-gradient(120deg,var(--accent-ghost),var(--surface) 60%,var(--ftd-teal-soft)); box-shadow:var(--ftd-sombra); margin-bottom:22px; }
+.hs-cab small, .hs-caso-cab small, .hs-res small { font-family:var(--ftd-mono); font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ftd-teal); font-weight:700; }
+.hs-cab h2, .hs-caso-cab h2, .hs-res h2 { margin:6px 0 8px; font-family:var(--ftd-display); font-size:clamp(1.7rem,4.4vw,2.4rem); letter-spacing:-.04em; line-height:1.05; } .hs-caso-cab h2, .hs-res h2 { font-size:1.5rem; }
+.hs-cab h2 em { font-style:normal; color:var(--ftd-teal); } .hs-cab p { margin:0 0 14px; max-width:560px; color:var(--text-light); font-size:.9rem; line-height:1.55; }
+.hs-prog { height:8px; max-width:360px; border-radius:999px; background:var(--border-2); overflow:hidden; } .hs-prog i { display:block; height:100%; background:linear-gradient(90deg,#E0A21A,#C2760B); border-radius:999px; }
+.hs-prog-txt { display:block; margin-top:6px; font-family:var(--ftd-mono); font-size:.64rem; color:var(--text-muted); }
+.hs-mundos { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+.hs-mundo { display:flex; flex-direction:column; overflow:hidden; border-radius:24px; background:var(--surface); border:1px solid var(--border); box-shadow:var(--ftd-sombra); }
+.hs-mundo .img { position:relative; aspect-ratio:16/7; background-size:cover; background-position:center; } .hs-mundo.cerrado .img { filter:grayscale(.7) brightness(.8); }
+.hs-mundo .img span { position:absolute; left:14px; top:14px; padding:6px 12px; border-radius:999px; background:rgba(10,20,34,.72); color:#fff; font-family:var(--ftd-mono); font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; }
+.hs-mundo .txt { display:grid; gap:6px; padding:16px 20px 18px; flex:1; } .hs-mundo h3 { margin:0; font-family:var(--ftd-display); font-size:1.12rem; } .hs-mundo p { margin:0; font-size:.82rem; color:var(--text-light); }
+.hs-mundo .pie { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:8px; } .hs-mundo .cand { display:inline-flex; align-items:center; gap:6px; font-size:.74rem; color:var(--text-muted); font-weight:600; } .hs-mundo .cand svg { width:15px; height:15px; }
+.hs-stars { display:inline-flex; gap:3px; } .hs-stars i { display:flex; width:20px; height:20px; color:var(--border-2); } .hs-stars i.on { color:#F5B83D; } .hs-stars svg { width:100%; height:100%; fill:currentColor; }
+.hs-caso-cab { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:14px; } .hs-pts { padding:6px 14px; border-radius:999px; background:var(--surface-3); font-family:var(--ftd-mono); font-size:.68rem; color:var(--text-light); }
+.hs-escena { position:relative; min-height:240px; border-radius:26px; overflow:hidden; background-size:cover; background-position:center; display:flex; align-items:flex-end; padding:18px; box-shadow:var(--ftd-sombra); margin-bottom:16px; }
+.hs-escena::before { content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(8,20,36,.15),rgba(8,20,36,.72)); }
+.hs-guia { position:relative; display:flex; align-items:flex-end; gap:14px; width:100%; } .hs-guia .fm { flex:none; }
+.hs-burbuja { flex:1; padding:14px 18px; border-radius:18px; background:var(--surface); border:1px solid var(--border); box-shadow:0 10px 28px rgba(0,0,0,.25); } .hs-burbuja strong { font-family:var(--ftd-display); color:var(--accent); } .hs-burbuja p { margin:4px 0 0; font-size:.92rem; line-height:1.55; }
+.hs-ops { display:grid; gap:10px; }
+.hs-ops button { display:flex; align-items:flex-start; gap:14px; padding:14px 18px; border-radius:16px; border:1.5px solid var(--border-2); background:var(--surface); color:var(--text); font:inherit; font-size:.9rem; line-height:1.45; text-align:left; cursor:pointer; transition:border-color .2s, transform .2s; }
+.hs-ops button:not(:disabled):hover { border-color:var(--accent); transform:translateX(3px); } .hs-ops button span { flex:none; width:28px; height:28px; border-radius:50%; background:var(--accent-ghost); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.8rem; }
+.hs-ops button.bien { border-color:#1E8A4E; background:rgba(30,138,78,.1); } .hs-ops button.bien span { background:#1E8A4E; color:#fff; } .hs-ops button.mal { border-color:#DC2D3F; background:rgba(220,45,63,.08); } .hs-ops button.mal span { background:#DC2D3F; color:#fff; }
+.hs-fb { display:grid; gap:8px; margin-top:14px; padding:16px 20px; border-radius:18px; background:var(--surface); border:1px solid var(--border); } .hs-fb span { color:var(--text-light); font-size:.88rem; line-height:1.55; } .hs-fb button { justify-self:start; }
+.hs-res { display:grid; justify-items:center; gap:8px; padding:36px 24px; text-align:center; border-radius:28px; background:var(--surface); border:1px solid var(--border); box-shadow:var(--ftd-sombra); } .hs-res p { margin:0; max-width:460px; color:var(--text-light); line-height:1.55; } .hs-res .hs-stars i { width:34px; height:34px; }
+.hs-xp { font-family:var(--ftd-mono); font-weight:700; color:var(--ftd-teal) !important; font-size:1.1rem; } .hs-nota { font-size:.8rem; } .hs-acc { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:10px; }
+@media (max-width:880px) { .hs-mundos { grid-template-columns:minmax(0,1fr); } .hs-cab { padding:20px; } .hs-cab .fm { display:none; } .hs-guia .fm { display:none; } }
+@media (prefers-reduced-motion:reduce) { .hs-ops button { transition:none; } }
+
+/* ── Foro: publicaciones de ejemplo ── */
+.ftd-post.ejemplo { cursor:default; } .ftd-post.ejemplo:hover { transform:none; border-color:var(--border); }
+.ftd-post .ej { padding:2px 9px; border-radius:999px; background:var(--surface-3); color:var(--text-muted); font-family:var(--ftd-mono); font-size:.52rem; letter-spacing:.12em; text-transform:uppercase; font-weight:700; }
+.ftd-foro-aviso { display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:14px 18px; border-radius:18px; background:var(--accent-ghost); border:1px solid var(--border); font-size:.84rem; color:var(--text-light); margin-bottom:14px; } .ftd-foro-aviso b { color:var(--text); }
+.ftd-foro-unete { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; padding:18px 22px; border-radius:22px; background:var(--surface); border:1px solid var(--border); box-shadow:var(--ftd-sombra); margin-bottom:14px; } .ftd-foro-unete strong { display:block; font-family:var(--ftd-display); } .ftd-foro-unete span { font-size:.84rem; color:var(--text-light); }
+
+/* ── Barra de cupón arriba de todo ── */
+#ftCuponBarra { position:fixed; top:0; left:0; right:0; z-index:130; min-height:var(--ftd-cupon-h,60px); display:flex; align-items:center; justify-content:center; gap:16px; flex-wrap:wrap; padding:8px 20px; color:#fff; background:linear-gradient(90deg,#0A3E68,var(--accent) 60%,#159E92); box-shadow:0 6px 20px rgba(10,30,50,.28); }
+#ftCuponBarra .ico { flex:none; width:36px; height:36px; border-radius:10px; background:rgba(255,255,255,.18); display:flex; align-items:center; justify-content:center; } #ftCuponBarra .ico svg { width:20px; height:20px; }
+#ftCuponBarra .txt strong { display:block; font-family:var(--ftd-display); font-size:.98rem; letter-spacing:-.01em; } #ftCuponBarra .txt small { display:block; font-size:.74rem; opacity:.9; }
+#ftCuponBarra .cod { display:inline-flex; align-items:center; gap:8px; padding:5px 6px 5px 14px; border:1.5px dashed rgba(255,255,255,.7); border-radius:12px; } #ftCuponBarra .cod code { font-family:var(--ftd-mono); font-weight:700; letter-spacing:.06em; font-size:.88rem; }
+#ftCuponBarra .cod button { border:0; padding:6px 12px; border-radius:8px; background:#fff; color:#0A3E68; font:inherit; font-size:.76rem; font-weight:800; cursor:pointer; }
+#ftCuponBarra .resta { padding:8px 14px; border-radius:999px; background:rgba(0,0,0,.22); font-size:.76rem; } #ftCuponBarra .resta b { font-family:var(--ftd-mono); font-size:.9rem; }
+#ftCuponBarra .usar { display:inline-flex; align-items:center; gap:8px; border:0; padding:10px 20px; border-radius:999px; background:#fff; color:#0A3E68; font:inherit; font-weight:800; font-size:.84rem; cursor:pointer; } #ftCuponBarra .usar svg { width:16px; height:16px; }
+body.ftd-cupon { --ftd-cupon-h:60px; padding-top:var(--ftd-cupon-h); }
+body.ftd-cupon .sidebar { top:var(--ftd-cupon-h); }
+body.ftd-cupon .mobile-header { top:var(--ftd-cupon-h); }
+body.ftd-cupon .main-content .ftb { top:calc(var(--ftd-cupon-h) + 12px); }
+@media (max-width:900px) { #ftCuponBarra { gap:10px; padding:8px 12px; justify-content:space-between; } #ftCuponBarra .resta { order:5; } body.ftd-cupon { --ftd-cupon-h:112px; } }
+@media (max-width:520px) { #ftCuponBarra .ico { display:none; } #ftCuponBarra .txt strong { font-size:.88rem; } body.ftd-cupon { --ftd-cupon-h:132px; } }
+
+/* ── Perfil: ventana para editar ── */
+.pf-editar { margin-left:auto; display:inline-flex; align-items:center; gap:8px; } .pf-editar svg { width:16px; height:16px; }
+.ftd-perfil .account-avatar-section { flex-wrap:wrap; }
+.pf-overlay { position:fixed; inset:0; z-index:300; display:none; align-items:center; justify-content:center; padding:20px; background:rgba(8,20,36,.55); backdrop-filter:blur(3px); } .pf-overlay.abierto { display:flex; }
+.pf-caja { width:100%; max-width:440px; display:grid; gap:12px; padding:26px; border-radius:24px; background:var(--surface); border:1px solid var(--border); box-shadow:0 30px 70px rgba(0,0,0,.35); }
+.pf-caja h3 { margin:0; font-family:var(--ftd-display); font-size:1.3rem; } .pf-caja p { margin:0; font-size:.84rem; color:var(--text-light); line-height:1.5; }
+.pf-caja label { display:grid; gap:6px; font-family:var(--ftd-mono); font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); }
+.pf-caja input { padding:12px 14px; border-radius:14px; border:1.5px solid var(--border-2); background:var(--surface-2); color:var(--text); font:inherit; font-size:.92rem; letter-spacing:0; text-transform:none; } .pf-caja input:focus { outline:0; border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-ghost); }
+.pf-error { padding:10px 14px; border-radius:12px; background:rgba(220,45,63,.1); color:#B42318; font-size:.82rem; } .pf-acc { display:flex; justify-content:flex-end; gap:10px; margin-top:4px; }
+
+/* ── Invitar amigos (estructura de Zoorigen) ── */
+#page-referidos > .page-header { display:none; }
+.rf2-cifras-hero { display:flex; gap:28px; flex-wrap:wrap; margin-top:18px; padding-top:16px; border-top:1px solid var(--border); } .rf2-cifras-hero b { display:block; font-family:var(--ftd-display); font-size:2rem; line-height:1; } .rf2-cifras-hero span { font-size:.76rem; color:var(--text-light); }
+.rf2-card { padding:24px 26px; border-radius:26px; background:var(--surface); border:1px solid var(--border); box-shadow:var(--ftd-sombra); margin-bottom:18px; }
+.rf2-card h3 { display:flex; align-items:center; gap:10px; margin:0 0 6px; font-family:var(--ftd-display); font-size:1.12rem; } .rf2-card h3 svg { width:20px; height:20px; color:#C2760B; } .rf2-card > p { margin:0 0 14px; font-size:.86rem; color:var(--text-light); line-height:1.5; }
+.rf2-enlace { display:flex; gap:12px; flex-wrap:wrap; } .rf2-enlace code { flex:1 1 280px; min-width:0; padding:13px 16px; border-radius:14px; background:var(--surface-3); font-family:var(--ftd-mono); font-size:.8rem; overflow-wrap:anywhere; }
+.rf2-redes { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-top:12px; } .rf2-redes a { padding:12px; border-radius:14px; text-align:center; font-weight:800; font-size:.84rem; text-decoration:none; color:#fff; }
+.rf2-redes .wa { background:#25D366; } .rf2-redes .fb { background:#1877F2; } .rf2-redes .xx { background:#0F1419; } .rf2-redes .ml { background:var(--surface-3); color:var(--text); border:1px solid var(--border-2); }
+.rf2-barra { height:12px !important; margin-top:4px; } .rf2-barra-pie { display:flex; justify-content:space-between; gap:10px; margin:8px 0 16px; font-size:.76rem; color:var(--text-light); }
+.rf2-premio { display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding:16px 18px; border-radius:18px; background:var(--surface-2); border:1px solid var(--border); margin-bottom:16px; } .rf2-premio > svg { width:24px; height:24px; color:#C2760B; flex:none; }
+.rf2-premio > div { flex:1; min-width:200px; } .rf2-premio strong { display:block; } .rf2-premio span { font-size:.82rem; color:var(--text-light); } .rf2-premio .falta { font-size:.78rem; color:var(--text); }
+.rf2-premio.listo { border-color:var(--ftd-teal); background:var(--ftd-teal-soft); } .rf2-premio.usado { opacity:.9; }
+.rf2-cifras { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; } .rf2-cifras > div { padding:14px; border-radius:16px; background:var(--accent-ghost); text-align:center; } .rf2-cifras b { display:block; font-family:var(--ftd-display); font-size:1.7rem; } .rf2-cifras span { font-size:.74rem; color:var(--text-light); }
+.rf2-inv { display:flex; align-items:flex-start; gap:14px; padding:16px; border-radius:18px; background:var(--surface-2); border:1px solid var(--border); margin-top:10px; } .rf2-inv-dat { flex:1; min-width:0; display:grid; gap:4px; } .rf2-inv-dat > span, .rf2-inv-dat small { font-size:.78rem; color:var(--text-light); }
+.rf2-inv ul { list-style:none; margin:4px 0; padding:0; display:grid; gap:3px; font-size:.8rem; color:var(--text-muted); } .rf2-inv li::before { content:'○ '; } .rf2-inv li.on { color:#157A41; } .rf2-inv li.on::before { content:'● '; } .rf2-inv li em { font-style:normal; }
+.rf2-est { flex:none; padding:5px 12px; border-radius:999px; font-size:.7rem; font-weight:800; background:var(--surface-3); } .rf2-est.is-ok { background:rgba(30,138,78,.14); color:#157A41; } .rf2-est.is-pend { background:rgba(194,118,11,.14); color:#9A5B05; } .rf2-est.is-no { background:rgba(220,45,63,.1); color:#B42318; }
+.rf2-pasos { margin:0 0 12px; padding-left:20px; display:grid; gap:8px; font-size:.88rem; line-height:1.5; } .rf2-nota { margin:8px 0 0; padding:12px 14px; border-radius:14px; background:var(--surface-2); font-size:.8rem; color:var(--text-light); line-height:1.5; }
+@media (max-width:640px) { .rf2-redes, .rf2-cifras { grid-template-columns:repeat(2,minmax(0,1fr)); } .rf2-card { padding:18px; } }
+
+/* ── Retos: adelanto del siguiente curso (una sola vez) ── */
+.rz-adel { padding:20px 22px; border-radius:24px; background:linear-gradient(120deg,rgba(194,118,11,.1),var(--surface)); border:1px solid rgba(194,118,11,.35); box-shadow:var(--ftd-sombra); margin-bottom:22px; }
+.rz-adel.usado { padding:14px 18px; font-size:.84rem; }
+.rz-adel-cab { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; } .rz-adel-cab small { font-family:var(--ftd-mono); font-size:.58rem; letter-spacing:.14em; text-transform:uppercase; color:#B45309; font-weight:700; }
+.rz-adel-cab h3 { margin:4px 0 6px; font-family:var(--ftd-display); font-size:1.15rem; letter-spacing:-.02em; } .rz-adel-cab p { margin:0; font-size:.82rem; color:var(--text-light); line-height:1.5; max-width:620px; } .rz-adel-cab b { flex:none; font-family:var(--ftd-mono); font-size:1.2rem; color:#B45309; }
+.rz-adel-barra { height:10px; border-radius:999px; background:var(--border-2); overflow:hidden; margin:14px 0 10px; } .rz-adel-barra i { display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,#E0A21A,#C2760B); transition:width .5s; }
+.rz-adel-tipos { display:flex; flex-wrap:wrap; align-items:center; gap:8px; } .rz-adel-tipos span { padding:4px 12px; border-radius:999px; background:var(--surface-3); font-family:var(--ftd-mono); font-size:.62rem; color:var(--text-light); } .rz-adel-tipos span.ok { background:rgba(30,138,78,.14); color:#157A41; } .rz-adel-tipos em { font-style:normal; font-size:.7rem; color:var(--text-muted); margin-left:auto; }
+
+/* ── Inicio: entrada escalonada, tarjeta de invitar amigos ── */
+.ftd-entra { animation:ftdEntra .5s both; animation-delay:calc(var(--i,0) * 70ms); }
+@keyframes ftdEntra { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+.ftd-sub { margin:0 0 12px; font-size:.84rem; opacity:.92; line-height:1.5; }
+.ftd-invita { display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; padding:22px 26px; margin:22px 0; }
+.ftd-invita h3 { margin:6px 0; font-family:var(--ftd-display); font-size:1.2rem; letter-spacing:-.02em; } .ftd-invita p { margin:0 0 12px; font-size:.84rem; color:var(--text-light); max-width:520px; line-height:1.5; }
+.ftd-huellas { display:flex; gap:10px; } .ftd-huellas i { width:34px; height:34px; border-radius:50%; border:2px dashed var(--border-2); background:var(--surface-2); transition:background .4s, border-color .4s; transition-delay:calc(var(--i,0) * 120ms); } .ftd-huellas i.on { background:var(--ftd-teal); border:2px solid var(--ftd-teal); animation:ftdPulso 1.8s ease-in-out infinite; }
+@keyframes ftdPulso { 0%,100% { box-shadow:0 0 0 0 rgba(21,158,146,.4); } 50% { box-shadow:0 0 0 7px rgba(21,158,146,0); } }
+.ftd-invita-acc { display:flex; gap:10px; flex-wrap:wrap; }
+@media (prefers-reduced-motion:reduce) { .ftd-entra { animation:none; } .ftd-huellas i.on { animation:none; } }
+
+
+/* ── Canal: redes sociales y reglas ── */
+.ftd-redes { margin-top:20px; padding:22px; border-radius:24px; background:var(--surface); border:1px solid var(--border); box-shadow:var(--ftd-sombra); text-align:center; } .ftd-redes h3 { margin:0 0 4px; font-family:var(--ftd-display); font-size:1.05rem; } .ftd-redes p { margin:0 0 14px; font-size:.84rem; color:var(--text-light); }
+.ftd-redes .botones { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; } .ftd-redes a { display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:14px; border-radius:16px; color:#fff; font-weight:800; font-size:.9rem; text-decoration:none; transition:transform .2s; } .ftd-redes a:hover { transform:translateY(-2px); } .ftd-redes a svg { width:20px; height:20px; }
+.ftd-redes .fb { background:#1877F2; } .ftd-redes .ig { background:linear-gradient(135deg,#F58529,#DD2A7B 55%,#8134AF); }
+.ftd-reglas { margin-top:20px; padding:22px; border-radius:24px; background:var(--surface); border:1px solid var(--border); box-shadow:var(--ftd-sombra); } .ftd-reglas small { font-family:var(--ftd-mono); font-size:.58rem; letter-spacing:.14em; text-transform:uppercase; color:var(--text-muted); }
+.ftd-reglas ul { list-style:none; margin:10px 0 0; padding:0; display:grid; } .ftd-reglas li { display:flex; gap:12px; padding:12px 0; border-top:1px solid var(--border); font-size:.86rem; line-height:1.5; color:var(--text-light); } .ftd-reglas li:first-child { border-top:0; } .ftd-reglas li b { color:var(--text); }
+.ftd-reglas li i { flex:none; width:22px; height:22px; margin-top:1px; border-radius:50%; background:rgba(47,139,99,.14); position:relative; } .ftd-reglas li i::after { content:''; position:absolute; left:7px; top:4px; width:5px; height:9px; border:solid #2F8B63; border-width:0 2px 2px 0; transform:rotate(45deg); }
+@media (max-width:420px) { .ftd-redes .botones { grid-template-columns:minmax(0,1fr); } }
+.ftd-foro-cats { margin:0 0 16px; }
+.ftd-compartir { margin-top:12px; }
+
+/* ── Banner de "Modo exploración" en dorado ── */
+#explorationBanner { background:linear-gradient(120deg,#F6E3A6,#E2B650 55%,#D09A2C) !important; border:1px solid #E6CF9A; box-shadow:0 10px 26px rgba(184,134,27,.28); border-radius:20px !important; }
+#explorationBanner div[style*="color:#fff"][style*="font-weight:600"] { color:#4A2F00 !important; }
+#explorationBanner div[style*="rgba(255,255,255,.6)"] { color:#6B4608 !important; }
+#explorationBanner div[style*="border-radius:50%"] { background:rgba(255,255,255,.6) !important; color:#8A5A07 !important; }
+#explorationBanner button { background:linear-gradient(135deg,#9A6A10,#6E4708) !important; color:#fff !important; border-radius:999px !important; box-shadow:0 6px 14px rgba(110,71,8,.35); }
+
+.ftd-enlace { border:0; background:none; padding:0; font:inherit; font-size:.74rem; font-weight:700; color:var(--accent); text-decoration:underline; cursor:pointer; }

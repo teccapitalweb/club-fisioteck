@@ -1,0 +1,106 @@
+/* Club FisioTeck — Libros (club-libros.js), dentro de "PDF y material". Misma estructura que la Biblioteca de Alintec Food.
+   Usa los tokens del tema, así sigue claro/oscuro. */
+.lb-seccion { display: flex; align-items: center; gap: 8px; margin: 26px 0 10px; color: var(--text-muted); font: 800 .72rem/1 var(--ftd-mono, 'JetBrains Mono', monospace); letter-spacing: .18em; text-transform: uppercase; }
+.lb-seccion svg { width: 15px; height: 15px; }
+.lb-nota { margin: 4px 0 24px; font-size: .78rem; color: var(--text-muted); line-height: 1.5; }
+
+/* Tu siguiente libro */
+.bib-reto { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin: 0 0 18px; padding: 16px 18px; border: 1px solid var(--border); border-radius: 18px; background: var(--surface); }
+.bib-reto__ic { display: grid; place-items: center; flex: 0 0 42px; width: 42px; height: 42px; border-radius: 14px; background: var(--accent-ghost); color: var(--accent); }
+.bib-reto__ic svg { width: 19px; height: 19px; }
+.bib-reto__txt { flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.bib-reto__txt strong { font: 800 .92rem var(--ftd-display, inherit); color: var(--text); }
+.bib-reto__txt span { font-size: .8rem; line-height: 1.5; color: var(--text-light); }
+.bib-reto__bar { height: 8px; margin-top: 8px; overflow: hidden; border-radius: 99px; background: var(--surface-2); }
+.bib-reto__bar i { display: block; height: 100%; min-width: 3px; border-radius: 99px; background: var(--accent); }
+.bib-reto--ok { border-color: var(--accent); }
+.bib-reto .ftd-btn { flex: 0 0 auto; }
+
+/* Libro destacado */
+.libro-feature { position: relative; display: grid; grid-template-columns: 238px minmax(0, 1fr); gap: 34px; align-items: center; margin-bottom: 27px; padding: 28px; border: 1px solid var(--border); border-radius: 28px; background: radial-gradient(circle at 90% 10%, rgba(221, 169, 86, .16), transparent 34%), var(--surface); box-shadow: var(--shadow); cursor: pointer; overflow: hidden; transition: transform .25s ease, box-shadow .25s ease; }
+.libro-feature:hover, .libro-feature:focus-visible { transform: translateY(-3px); box-shadow: var(--shadow-lg); outline: none; }
+.libro-feature::after { content: ''; position: absolute; right: -90px; bottom: -120px; width: 270px; height: 270px; border: 1px solid rgba(49, 90, 120, .1); border-radius: 50%; box-shadow: 0 0 0 38px rgba(49, 90, 120, .025), 0 0 0 76px rgba(214, 166, 83, .02); pointer-events: none; }
+.libro-feature__cover, .libro-card__top { position: relative; }
+.libro-feature__cover { z-index: 2; aspect-ratio: 3 / 4.1; border-radius: 5px 15px 15px 5px; overflow: hidden; background-image: linear-gradient(180deg, rgba(7, 19, 29, .01) 28%, rgba(7, 19, 29, .16) 58%, rgba(7, 19, 29, .88) 100%), var(--book-cover); background-size: cover; background-position: center; box-shadow: 9px 20px 34px rgba(21, 37, 47, .28); transform: perspective(1000px) rotateY(-5deg); transition: transform .35s ease; }
+.libro-feature:hover .libro-feature__cover { transform: perspective(1000px) rotateY(0) translateY(-3px); }
+.libro-feature__cover::before, .libro-card__top::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 11px; background: linear-gradient(90deg, rgba(0, 0, 0, .58), rgba(255, 255, 255, .18) 58%, transparent); }
+.libro-feature__edition { position: absolute; z-index: 3; top: 16px; left: 21px; padding: 6px 8px; border-radius: 5px; background: #F8F4EA; color: #173044; font: 800 7px var(--ftd-mono, 'JetBrains Mono', monospace); letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 4px 11px rgba(0, 0, 0, .18); }
+.libro-feature__cover-copy { position: absolute; left: 22px; right: 17px; bottom: 22px; color: #fff; text-shadow: 0 3px 14px rgba(0, 0, 0, .62); }
+.libro-feature__cover-copy small { display: block; margin-bottom: 7px; color: #F0D4A1; font: 800 7px var(--ftd-mono, 'JetBrains Mono', monospace); letter-spacing: 1px; text-transform: uppercase; }
+.libro-feature__cover-copy strong { display: block; font: 800 18px/1.12 var(--ftd-display, inherit); letter-spacing: -.025em; }
+.libro-feature__info { position: relative; z-index: 2; min-width: 0; }
+.libro-feature__eyebrow { display: block; margin-bottom: 10px; color: #A36C35; font: 800 9px var(--ftd-mono, 'JetBrains Mono', monospace); letter-spacing: 1.5px; text-transform: uppercase; }
+.libro-feature h2 { max-width: 760px; margin: 0; color: var(--text); font: 800 clamp(26px, 3.5vw, 42px)/1.08 var(--ftd-display, inherit); letter-spacing: -.045em; }
+.libro-feature__author { margin: 10px 0 0; color: var(--text-light); font-size: 14px; font-weight: 700; }
+.libro-feature__summary { max-width: 680px; margin: 18px 0 0; color: var(--text-light); font-size: 13.5px; line-height: 1.65; }
+.libro-feature__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.libro-feature__cta { display: inline-flex; align-items: center; gap: 9px; padding: 11px 16px; border-radius: 12px; background: #173F58; color: #fff; font-size: 12px; font-weight: 800; box-shadow: 0 9px 20px rgba(23, 63, 88, .2); }
+.libro-feature__cta svg { width: 15px; height: 15px; }
+.libro-feature.is-locked .libro-feature__cta { background: var(--surface-2); color: var(--text-light); box-shadow: none; }
+.libro-feature__save { display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid var(--border-2); border-radius: 12px; background: var(--surface); color: var(--text-light); cursor: pointer; }
+.libro-feature__save.is-on { background: #FFF1D6; color: #B67721; border-color: #E8C784; }
+.libro-feature__save svg { width: 15px; height: 15px; }
+.libro-feature__pages { padding: 8px 11px; border-radius: 999px; background: var(--accent-ghost); color: var(--accent); font: 750 9px var(--ftd-mono, 'JetBrains Mono', monospace); }
+.libro-feature__reading { max-width: 470px; margin-top: 19px; }
+.libro-progress { height: 5px; overflow: hidden; border-radius: 999px; background: var(--border-2); }
+.libro-progress span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), #D6A653); transition: width .3s ease; }
+.libro-progress-label { margin-top: 6px; color: var(--text-muted); font: 700 9px var(--ftd-mono, 'JetBrains Mono', monospace); }
+.libro-feature.is-locked .libro-feature__cover, .libro-card.is-locked .libro-card__top { filter: saturate(.45) brightness(.85); }
+.libro-lock { position: absolute; z-index: 4; right: 10px; top: 10px; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(10, 20, 35, .72); color: #fff; }
+.libro-lock svg { width: 13px; height: 13px; }
+
+/* Estante */
+.bib-shelf-title { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 0 0 12px; padding: 12px 15px; border-left: 4px solid #D58A62; border-radius: 0 13px 13px 0; background: var(--surface); }
+.bib-shelf-title span { color: var(--text); font: 800 13px var(--ftd-display, inherit); }
+.bib-shelf-title small { color: var(--text-muted); font: 700 8.5px var(--ftd-mono, 'JetBrains Mono', monospace); text-transform: uppercase; letter-spacing: .7px; }
+.bib-libros-grid { display: flex; align-items: flex-start; gap: 24px; margin: 0; padding: 12px 7px 18px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: thin; }
+.libro-card { position: relative; flex: 0 0 148px; max-width: 148px; cursor: pointer; scroll-snap-align: start; transition: transform .25s ease; }
+.libro-card:hover, .libro-card:focus-visible { transform: translateY(-6px); outline: none; }
+.libro-card__top { aspect-ratio: 3 / 4.22; border-radius: 4px 10px 10px 4px; overflow: hidden; background-image: linear-gradient(180deg, rgba(7, 19, 29, .01) 28%, rgba(7, 19, 29, .16) 58%, rgba(7, 19, 29, .86) 100%), var(--book-cover); background-size: cover; background-position: center; box-shadow: 6px 13px 21px rgba(21, 37, 47, .25); transform: perspective(900px) rotateY(-5deg); transition: transform .3s ease; }
+.libro-card:hover .libro-card__top { transform: perspective(900px) rotateY(0) translateY(-3px); }
+.libro-card__top::before { width: 9px; }
+.libro-card__top::after { content: ''; position: absolute; inset: 0; border: 1px solid rgba(255, 255, 255, .2); border-radius: inherit; pointer-events: none; }
+.libro-card__edition { position: absolute; z-index: 3; top: 10px; left: 13px; padding: 4px 6px; border-radius: 4px; background: #F7F3EA; color: #173044; font: 800 5.7px var(--ftd-mono, 'JetBrains Mono', monospace); letter-spacing: .65px; text-transform: uppercase; box-shadow: 0 3px 8px rgba(0, 0, 0, .16); }
+.libro-card__cover-copy { position: absolute; left: 14px; right: 10px; bottom: 13px; color: #fff; text-shadow: 0 2px 10px rgba(0, 0, 0, .4); }
+.libro-card__cover-copy small { display: block; margin-bottom: 5px; color: #F1D8AA; font: 800 5.7px var(--ftd-mono, 'JetBrains Mono', monospace); letter-spacing: .65px; text-transform: uppercase; }
+.libro-card__cover-copy strong { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; font: 800 11px/1.16 var(--ftd-display, inherit); }
+.libro-card__save { position: absolute; z-index: 5; top: 7px; right: 7px; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; background: rgba(255, 255, 255, .88); border: 1px solid rgba(0, 0, 0, .06); color: #49697D; cursor: pointer; padding: 0; }
+.libro-card__save svg { width: 11px; height: 11px; }
+.libro-card__save.is-on { color: #B67721; background: #FFF1D6; }
+.libro-card .libro-lock { top: auto; bottom: 10px; right: 10px; width: 24px; height: 24px; }
+.libro-card__body { padding: 10px 2px 0; }
+.libro-card__title { font-size: 11.5px; font-weight: 700; color: var(--text); line-height: 1.28; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.libro-card__autor { margin-top: 3px; font-size: 9.5px; line-height: 1.3; color: var(--text-muted); }
+.libro-card__reading { margin-top: 9px; } .libro-card__reading .libro-progress { height: 4px; } .libro-card__reading .libro-progress-label { margin-top: 5px; font-size: 8.5px; }
+
+@media (max-width: 880px) { .libro-feature { grid-template-columns: 190px minmax(0, 1fr); gap: 24px; padding: 22px; } }
+@media (max-width: 640px) {
+  .libro-feature { grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 22px; padding: 22px 18px; border-radius: 22px; }
+  .libro-feature__cover { width: 190px; }
+  .libro-feature__info { width: 100%; }
+  .libro-feature__reading { max-width: none; }
+  .bib-reto .ftd-btn { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { .libro-feature, .libro-feature__cover, .libro-card, .libro-card__top { transition: none; } }
+
+/* El estante se desliza por dentro y no debe ensanchar la página (en pantallas medianas la cortaba por la derecha) */
+#ftLibrosBloque { min-width: 0; max-width: 100%; }
+.bib-libros-grid { min-width: 0; max-width: 100%; contain: inline-size; }
+
+/* Celulares angostos (320 px): las tarjetas de material y los filtros no se salen de la pantalla */
+.ftd-mat, .ftd-mat-cuerpo, .ftd-mat .fila { min-width: 0; }
+.ftd-mat-top { display: block; width: 100%; min-width: 0; max-width: 100%; }
+.ftd-mat-top .ftd-portada { width: 100%; box-sizing: border-box; }
+.ftd-enlace { white-space: normal; text-align: left; }
+@media (max-width: 400px) {
+  .ftd-tabs { flex-wrap: wrap; border-radius: 22px; max-width: 100%; }
+  .ftd-tabs button { flex: 1 1 auto; padding: 8px 12px; }
+}
+.hj-fig.sin-foto { display: none; } /* la foto de la noticia no cargó: se quita el recuadro vacío */
+
+/* Modo oscuro: el número azul de «Materiales» se leía poco sobre el fondo oscuro */
+:root[data-theme="dark"] .ftd-cuenta[style*="#0D5FA0"] b { color: #4CA6DE; }
+
+/* Filtros de «PDF y material» (Todo, Libros, Material PDF, De mis cursos, Por créditos): con 5 pestañas bajan de renglón dentro del recuadro y no se salen */
+.ftd-sec-hero .ftd-tabs { flex-wrap: wrap; justify-content: center; max-width: 100%; border-radius: 22px; }
+.ftd-sec-hero .ftd-tabs button { flex: 1 1 auto; white-space: nowrap; padding: 9px 14px; }

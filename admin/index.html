@@ -1,0 +1,2557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Club FisioTeck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <!-- Tema: el panel de administración SIEMPRE inicia en modo claro (el modo oscuro es solo para esta sesión y no se recuerda) -->
+  <script>document.documentElement.setAttribute('data-theme', 'light');</script>
+  <style>
+    /* ══════════════════════════════════════════════════════════════
+       PANEL ADMIN · CLUB FISIOTECK — Sistema "Clínico Premium"
+       Misma paleta y tokens que el club. Doble tema.
+       Nombres de clase preservados al 100%.
+       ══════════════════════════════════════════════════════════════ */
+
+    :root, :root[data-theme="light"] {
+      --bg:            #EEF5FC;
+      --bg-deep:       #DCEAF7;
+      --surface:       #FFFFFF;
+      --surface-2:     #F3F9FE;
+      --bg-card:       #FFFFFF;
+      --bg-sidebar:    #FFFFFF;
+      --sidebar-text:  #0B2A4A;
+
+      --border:        rgba(11,58,102,.09);
+      --border-2:      rgba(11,58,102,.16);
+
+      --text:          #0B2A4A;
+      --text-light:    #3E5975;
+      --text-muted:    #7891A8;
+
+      --accent:        #0D5FA0;
+      --accent-soft:   #3D8FCB;
+      --accent-deep:   #0A3E68;
+      --accent-ghost:  rgba(13,95,160,.09);
+      --on-accent:     #FFFFFF;
+
+      --blue:          #159E92;
+      --success:       #0F9D58;
+      --danger:        #DC2D3F;
+      --warning:       #B45309;
+      --info:          #2563AB;
+
+      --shadow:        0 1px 2px rgba(11,58,102,.05), 0 6px 20px rgba(11,58,102,.07);
+      --shadow-lg:     0 22px 55px rgba(11,58,102,.14);
+      --shadow-accent: 0 10px 28px rgba(13,95,160,.26);
+
+      color-scheme: light;
+    }
+
+    :root[data-theme="dark"] {
+      --bg:            #0B121F;
+      --bg-deep:       #070B12;
+      --surface:       #101A2C;
+      --surface-2:     #16223A;
+      --bg-card:       #101A2C;
+      --bg-sidebar:    #0D1626;
+      --sidebar-text:  #EAF2FA;
+
+      --border:        rgba(140,190,230,.09);
+      --border-2:      rgba(140,190,230,.17);
+
+      --text:          #EAF2FA;
+      --text-light:    #A9BBD1;
+      --text-muted:    #7C8FA8;
+
+      --accent:        #4CA6DE;
+      --accent-soft:   #7CC3EE;
+      --accent-deep:   #1C6FB0;
+      --accent-ghost:  rgba(76,166,222,.13);
+      --on-accent:     #06121F;
+
+      --blue:          #2FD1C6;
+      --success:       #34D399;
+      --danger:        #F87171;
+      --warning:       #FBBF24;
+      --info:          #4A9BE0;
+
+      --shadow:        0 1px 2px rgba(0,0,0,.32), 0 6px 20px rgba(0,0,0,.38);
+      --shadow-lg:     0 22px 55px rgba(0,0,0,.55);
+      --shadow-accent: 0 10px 28px rgba(76,166,222,.22);
+
+      color-scheme: dark;
+    }
+
+    :root {
+      /* Alias por compatibilidad con estilos inline existentes */
+      --primary:       var(--accent);
+      --primary-light: var(--accent-soft);
+      --primary-dark:  var(--accent-deep);
+      --accent-light:  var(--accent-soft);
+      --bg-dark:       #0B121F;
+
+      --radius:        22px;
+      --radius-sm:     12px;
+      --transition:    .22s cubic-bezier(.4,0,.2,1);
+      --font-display:  'Plus Jakarta Sans','Inter',system-ui,sans-serif;
+      --font-body:     'Inter',system-ui,sans-serif;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    .ic { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; vertical-align:-2px; }
+    body {
+      font-family:var(--font-body); background:var(--bg); color:var(--text); line-height:1.55;
+      -webkit-font-smoothing:antialiased;
+      transition:background .3s ease, color .3s ease;
+    }
+    a { text-decoration:none; color:inherit; }
+    button { cursor:pointer; border:none; font-family:inherit; }
+    ::selection { background:var(--accent-ghost); color:var(--text); }
+
+    ::-webkit-scrollbar { width:10px; height:10px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:var(--border-2); border-radius:6px; border:3px solid transparent; background-clip:content-box; }
+    ::-webkit-scrollbar-thumb:hover { background:var(--accent); background-clip:content-box; }
+    html { scrollbar-color:var(--border-2) transparent; scrollbar-width:thin; }
+
+    /* ═══ LOGIN (siempre oscuro) ═══ */
+    #auth-screen {
+      position:fixed; inset:0; z-index:10000;
+      background:
+        radial-gradient(900px 600px at 15% -10%, rgba(28,111,176,.30), transparent 60%),
+        radial-gradient(700px 500px at 100% 100%, rgba(47,209,198,.10), transparent 62%),
+        linear-gradient(155deg, #070B12 0%, #0C1A30 50%, #081122 100%);
+      display:flex; align-items:center; justify-content:center;
+    }
+    #auth-screen.hidden { display:none; }
+    .auth-box {
+      text-align:center; color:#fff; width:90%; max-width:380px;
+      animation: fadeUp .6s cubic-bezier(.16,1,.3,1);
+    }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .auth-title {
+      font-family:var(--font-display); font-size:1.75rem; margin-bottom:6px;
+      text-transform:uppercase; letter-spacing:-.02em; font-weight:800;
+    }
+    .auth-title span {
+      background:linear-gradient(100deg,#7CC3EE,#4CA6DE 55%,#2FD1C6);
+      -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    .auth-badge {
+      display:inline-block; background:rgba(210,47,62,.18); border:1px solid rgba(248,113,113,.35);
+      color:#FCA5A5; padding:4px 13px; border-radius:20px; font-size:.66rem; font-weight:700;
+      margin-bottom:26px; letter-spacing:.14em; text-transform:uppercase;
+    }
+    .auth-input {
+      width:100%; padding:13px 16px; margin-bottom:12px; border-radius:var(--radius-sm);
+      border:1px solid rgba(150,200,240,.15); background:rgba(255,255,255,.05); color:#fff;
+      font-size:.95rem; font-family:inherit; outline:none; transition:var(--transition);
+    }
+    .auth-input:focus { border-color:#4CA6DE; background:rgba(255,255,255,.09); box-shadow:0 0 0 3px rgba(76,166,222,.18); }
+    .auth-input::placeholder { color:rgba(230,244,243,.32); }
+    .auth-btn {
+      width:100%; padding:13px;
+      background:linear-gradient(100deg,#3D8FCB,#1C6FB0); color:#FFFFFF; font-weight:700;
+      border-radius:var(--radius-sm); font-size:.95rem; transition:var(--transition);
+      box-shadow:0 10px 26px rgba(28,111,176,.34);
+    }
+    .auth-btn:hover { transform:translateY(-2px); box-shadow:0 16px 34px rgba(28,111,176,.44); }
+    .auth-btn:active { transform:translateY(0); }
+    .auth-error { color:#F87171; font-size:.82rem; margin-top:8px; display:none; }
+
+    /* ═══ LAYOUT ═══ */
+    .admin-wrapper { display:flex; min-height:100vh; }
+    .admin-sidebar {
+      width:248px; background:var(--bg-sidebar); color:var(--sidebar-text); position:fixed;
+      top:0; left:0; bottom:0; z-index:100; display:flex; flex-direction:column;
+      border-right:1px solid var(--border);
+      transition:transform var(--transition), background .3s ease;
+    }
+    .admin-sidebar-header { padding:20px; border-bottom:1px solid var(--border); }
+    .admin-sidebar-header h2 {
+      font-family:var(--font-display); font-size:1.05rem; text-transform:uppercase;
+      letter-spacing:.01em; font-weight:800; color:var(--text);
+    }
+    .admin-sidebar-header h2 span {
+      background:linear-gradient(100deg,var(--accent-soft),var(--accent));
+      -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    .admin-sidebar-header .admin-tag {
+      font-size:.62rem; background:rgba(210,47,62,.12); border:1px solid rgba(210,47,62,.3);
+      color:var(--danger); padding:3px 10px; border-radius:20px; font-weight:700;
+      display:inline-block; margin-top:7px; letter-spacing:.12em; text-transform:uppercase;
+    }
+    .admin-nav { flex:1; padding:12px 0; overflow-y:auto; }
+    .admin-nav-item {
+      display:flex; align-items:center; gap:11px; padding:10px 20px;
+      font-size:.88rem; font-weight:500; color:var(--text-light); cursor:pointer;
+      transition:var(--transition); position:relative;
+    }
+    .admin-nav-item::before {
+      content:''; position:absolute; left:0; top:50%; transform:translateY(-50%) scaleY(0);
+      width:3px; height:20px; border-radius:0 3px 3px 0; background:var(--accent);
+      transition:transform var(--transition);
+    }
+    .admin-nav-item:hover { color:var(--text); background:var(--accent-ghost); }
+    .admin-nav-item.active { color:var(--accent); background:var(--accent-ghost); font-weight:600; }
+    .admin-nav-item.active::before { transform:translateY(-50%) scaleY(1); }
+    .admin-nav-item svg { width:18px; height:18px; flex-shrink:0; }
+    .admin-nav-section {
+      padding:14px 20px 6px; font-size:.63rem; text-transform:uppercase;
+      letter-spacing:.16em; color:var(--text-muted); font-weight:600;
+    }
+    .admin-sidebar-footer {
+      padding:14px 20px; border-top:1px solid var(--border);
+      font-size:.8rem; color:var(--text-muted);
+    }
+
+    /* Botón de tema */
+    .theme-toggle {
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      margin:0 14px 10px; padding:9px 12px; width:calc(100% - 28px);
+      background:var(--surface-2); border:1px solid var(--border);
+      border-radius:var(--radius-sm); color:var(--text-light);
+      font-size:.8rem; font-weight:600; font-family:inherit; transition:var(--transition);
+    }
+    .theme-toggle:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-ghost); }
+    .theme-toggle svg { width:16px; height:16px; flex-shrink:0; }
+
+    .admin-main { flex:1; margin-left:248px; padding:26px 30px 48px; }
+
+    /* ═══ MÓVIL ═══ */
+    .mobile-admin-bar {
+      display:none; position:fixed; top:0; left:0; right:0; height:56px;
+      background:var(--surface); border-bottom:1px solid var(--border);
+      padding:0 14px; align-items:center; justify-content:space-between; z-index:99;
+      backdrop-filter:saturate(180%) blur(12px);
+    }
+    .mobile-admin-bar h2 {
+      font-family:var(--font-display); font-size:.9rem; color:var(--text);
+      text-transform:uppercase; letter-spacing:.01em; font-weight:800;
+    }
+    .mobile-admin-bar h2 span {
+      background:linear-gradient(100deg,var(--accent-soft),var(--accent));
+      -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    .mobile-admin-bar button { background:none; color:var(--text); padding:8px; border-radius:8px; }
+    .mobile-admin-bar button:hover { background:var(--accent-ghost); }
+    .admin-overlay { display:none; position:fixed; inset:0; background:rgba(6,11,18,.55); backdrop-filter:blur(3px); z-index:99; }
+    @media(max-width:768px) {
+      .mobile-admin-bar { display:flex; }
+      .admin-sidebar { transform:translateX(-100%); z-index:101; box-shadow:var(--shadow-lg); }
+      .admin-sidebar.open { transform:translateX(0); }
+      .admin-overlay.open { display:block; }
+      .admin-main { margin-left:0 !important; padding-top:72px !important; }
+    }
+
+    /* ═══ CABECERA DE PÁGINA ═══ */
+    .admin-page-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:26px; flex-wrap:wrap; gap:12px; }
+    .admin-page-header > div:first-child { display:flex; flex-direction:column; gap:5px; }
+    .admin-page-title { font-family:var(--font-display); font-size:1.75rem; font-weight:800; letter-spacing:-.04em; line-height:1.08; }
+    /* Eyebrow estilo SYNOVA */
+    .admin-page-sub {
+      order:-1; margin-top:0;
+      font-family:'JetBrains Mono',monospace; font-size:.64rem; font-weight:700;
+      letter-spacing:.2em; text-transform:uppercase; color:var(--accent);
+      display:inline-flex; align-items:center; gap:8px;
+    }
+    .admin-page-sub::before { content:""; width:22px; height:1.5px; background:var(--accent); border-radius:2px; }
+
+    /* ═══ BOTONES ═══ */
+    .btn {
+      padding:11px 21px; border-radius:var(--radius-sm); font-size:.88rem; font-weight:600;
+      transition:var(--transition); display:inline-flex; align-items:center; gap:7px;
+    }
+    .btn-p { background:var(--accent); color:var(--on-accent); box-shadow:0 8px 22px color-mix(in srgb, var(--accent) 38%, transparent); }
+    .btn-p:hover { background:var(--accent-deep); transform:translateY(-1px); box-shadow:var(--shadow-accent); }
+    .btn-p:active { transform:translateY(0); }
+    .btn-d { background:var(--danger); color:#fff; } .btn-d:hover { filter:brightness(.92); }
+    .btn-w { background:var(--warning); color:#fff; } .btn-w:hover { filter:brightness(.92); }
+    .btn-o { background:transparent; border:1px solid var(--border-2); color:var(--text); }
+    .btn-o:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-ghost); }
+    .btn-sm { padding:7px 15px; font-size:.8rem; }
+    .btn-icon { padding:7px 9px; border-radius:8px; }
+
+    /* ═══ TARJETAS ═══ */
+    .admin-card {
+      background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+      padding:22px; margin-bottom:20px; transition:var(--transition);
+    }
+    .admin-card:hover { border-color:var(--border-2); }
+    .admin-card h3 { font-family:var(--font-display); font-size:1rem; font-weight:700; margin-bottom:16px; letter-spacing:-.015em; }
+
+    /* ═══ TABLA ═══ */
+    .admin-table { width:100%; border-collapse:collapse; font-size:.85rem; }
+    .admin-table thead th {
+      padding:11px 12px; text-align:left; color:var(--text-muted); font-weight:600;
+      border-bottom:1px solid var(--border-2); font-size:.72rem;
+      text-transform:uppercase; letter-spacing:.1em;
+    }
+    .admin-table tbody td { padding:13px 12px; border-bottom:1px solid var(--border); vertical-align:middle; }
+    .admin-table tbody tr { transition:var(--transition); }
+    .admin-table tbody tr:hover { background:var(--accent-ghost); }
+    .badge { padding:4px 11px; border-radius:20px; font-size:.72rem; font-weight:700; }
+    .badge-success { background:rgba(15,157,108,.12); color:var(--success); }
+    .badge-warning { background:rgba(180,83,9,.12); color:var(--warning); }
+    .badge-danger  { background:rgba(210,47,62,.12); color:var(--danger); }
+    .badge-info    { background:rgba(37,99,171,.12); color:var(--info); }
+
+    /* ═══ MODAL ═══ */
+    .modal-overlay {
+      display:none; position:fixed; inset:0; background:rgba(6,11,18,.6); backdrop-filter:blur(5px);
+      z-index:9000; align-items:center; justify-content:center; padding:20px;
+    }
+    .modal-overlay.active { display:flex; }
+    .modal-box {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:var(--radius); width:100%; max-width:560px;
+      max-height:90vh; overflow-y:auto; animation: fadeUp .3s cubic-bezier(.16,1,.3,1);
+      box-shadow:var(--shadow-lg);
+    }
+    .modal-header { padding:20px 24px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+    .modal-header h3 { font-family:var(--font-display); font-size:1.05rem; font-weight:700; letter-spacing:-.015em; }
+    .modal-close { background:none; font-size:1.4rem; color:var(--text-muted); padding:4px 9px; border-radius:8px; transition:var(--transition); }
+    .modal-close:hover { background:var(--accent-ghost); color:var(--text); }
+    .modal-body { padding:24px; }
+    .modal-footer { padding:16px 24px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:10px; }
+    .form-group { margin-bottom:16px; }
+    .form-label { display:block; font-size:.78rem; font-weight:600; color:var(--text-light); margin-bottom:6px; }
+    .form-input, .form-select, .form-textarea {
+      width:100%; padding:11px 14px; border:1px solid var(--border); border-radius:var(--radius-sm);
+      font-size:.9rem; font-family:inherit; outline:none; transition:var(--transition);
+      background:var(--surface-2); color:var(--text);
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color:var(--text-muted); }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color:var(--accent); background:var(--surface); box-shadow:0 0 0 3px var(--accent-ghost);
+    }
+    .form-textarea { resize:vertical; min-height:80px; }
+    .form-select { cursor:pointer; }
+
+    /* ═══ STATS ═══ */
+    .stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-bottom:26px; }
+    .stat-box {
+      background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+      padding:20px; transition:var(--transition); position:relative; overflow:hidden;
+    }
+    .stat-box::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:2px;
+      background:linear-gradient(90deg,var(--accent),var(--blue)); opacity:0; transition:opacity var(--transition);
+    }
+    .stat-box:hover { border-color:var(--border-2); box-shadow:var(--shadow); transform:translateY(-3px); }
+    .stat-box:hover::before { opacity:1; }
+    .stat-box .stat-icon { width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; margin-bottom:12px; }
+    .stat-box .stat-val { font-family:var(--font-display); font-size:1.9rem; font-weight:800; letter-spacing:-.03em; line-height:1; }
+    .stat-box .stat-lbl { font-size:.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.1em; font-weight:600; margin-top:5px; }
+
+    /* ═══ RESUMEN (KPIs, gráficas, listas) ═══ */
+    .ap-hero {
+      position:relative; overflow:hidden; border-radius:var(--radius); padding:26px 28px; margin-bottom:20px;
+      background:linear-gradient(120deg, var(--accent-deep), var(--accent)); color:#fff;
+      display:flex; justify-content:space-between; align-items:center; gap:18px; flex-wrap:wrap;
+    }
+    .ap-hero::after { content:""; position:absolute; right:-60px; top:-80px; width:260px; height:260px; border-radius:50%; background:radial-gradient(circle, rgba(255,255,255,.18), transparent 70%); }
+    .ap-hero .eyebrow { font-family:'JetBrains Mono',monospace; font-size:.64rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; opacity:.85; }
+    .ap-hero h2 { font-family:var(--font-display); font-size:1.7rem; font-weight:800; letter-spacing:-.03em; line-height:1.1; margin:6px 0 4px; }
+    .ap-hero p { font-size:.88rem; opacity:.88; max-width:46ch; }
+    .ap-hero-nums { display:flex; gap:26px; position:relative; z-index:1; }
+    .ap-hero-nums b { display:block; font-family:var(--font-display); font-size:2rem; font-weight:800; line-height:1; letter-spacing:-.03em; }
+    .ap-hero-nums span { font-size:.68rem; text-transform:uppercase; letter-spacing:.1em; opacity:.85; }
+    .ap-kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
+    @media(max-width:1100px){ .ap-kpis { grid-template-columns:repeat(2,1fr); } }
+    @media(max-width:480px){ .ap-kpis { grid-template-columns:1fr 1fr; gap:10px; } .ap-hero h2{font-size:1.35rem;} }
+    .ap-kpi { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px; position:relative; overflow:hidden; transition:var(--transition); }
+    .ap-kpi::before { content:""; position:absolute; left:0; top:14px; bottom:14px; width:3px; border-radius:0 3px 3px 0; background:var(--k, var(--accent)); }
+    .ap-kpi:hover { transform:translateY(-2px); box-shadow:var(--shadow); border-color:var(--border-2); }
+    .ap-kpi .lbl { font-size:.68rem; text-transform:uppercase; letter-spacing:.1em; font-weight:600; color:var(--text-muted); }
+    .ap-kpi .val { font-family:var(--font-display); font-size:1.8rem; font-weight:800; letter-spacing:-.03em; line-height:1.15; margin-top:4px; }
+    .ap-kpi .note { font-size:.74rem; color:var(--text-light); margin-top:2px; }
+    .ap-cols { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    @media(max-width:900px){ .ap-cols { grid-template-columns:1fr; gap:0; } }
+    .ap-chart { width:100%; height:auto; display:block; }
+    .ap-chart text { fill:var(--text-muted); font-size:9px; font-family:var(--font-body); }
+    .ap-chart .v { fill:var(--text); font-weight:700; }
+    .ap-bar { fill:var(--accent); transition:opacity .2s; } .ap-bar:hover { opacity:.7; }
+    .ap-bar.alt { fill:var(--blue); }
+    .ap-donut-wrap { display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
+    .ap-donut-wrap svg { width:150px; height:150px; flex-shrink:0; }
+    .ap-legend { display:flex; flex-direction:column; gap:9px; font-size:.84rem; flex:1; min-width:150px; }
+    .ap-legend div { display:flex; align-items:center; gap:9px; }
+    .ap-legend i { width:10px; height:10px; border-radius:3px; flex-shrink:0; }
+    .ap-legend b { margin-left:auto; font-family:var(--font-display); }
+    .ap-list { display:flex; flex-direction:column; }
+    .ap-row { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); font-size:.86rem; }
+    .ap-row:last-child { border-bottom:none; }
+    .ap-av { width:34px; height:34px; border-radius:50%; background:var(--accent-ghost); color:var(--accent); display:grid; place-items:center; font-weight:700; font-size:.82rem; flex-shrink:0; }
+    .ap-row .who { min-width:0; flex:1; } .ap-row .who strong { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .ap-row .who small { color:var(--text-muted); font-size:.74rem; }
+    .ap-empty { padding:22px 0; text-align:center; color:var(--text-muted); font-size:.84rem; }
+    .ap-chips { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+    .ap-chip { padding:7px 14px; border-radius:999px; border:1px solid var(--border-2); background:transparent; color:var(--text-light); font-size:.8rem; font-weight:600; transition:var(--transition); }
+    .ap-chip:hover { border-color:var(--accent); color:var(--accent); }
+    .ap-chip.on { background:var(--accent); border-color:var(--accent); color:var(--on-accent); }
+    .ap-toolbar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px; }
+    .ap-toolbar .form-input { max-width:300px; }
+
+    .ap-hbar { display:flex; align-items:center; gap:10px; margin:9px 0; font-size:.84rem; }
+    .ap-hbar .t { width:34%; min-width:90px; color:var(--text-light); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .ap-hbar .b { flex:1; height:12px; background:var(--surface-2); border-radius:8px; overflow:hidden; }
+    .ap-hbar .b i { display:block; height:100%; border-radius:8px; background:linear-gradient(90deg,var(--accent),var(--blue)); }
+    .ap-hbar .n { width:42px; text-align:right; font-weight:700; font-family:var(--font-display); }
+    .ap-post { display:flex; gap:12px; align-items:flex-start; padding:14px 0; border-bottom:1px solid var(--border); }
+    .ap-post:last-child { border-bottom:none; }
+    .ap-post .who { flex:1; min-width:0; }
+    .ap-post .who strong { display:block; }
+    .ap-post .who p { font-size:.82rem; color:var(--text-light); margin-top:3px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .ap-post .who small { color:var(--text-muted); font-size:.74rem; }
+    .ap-replies { margin:10px 0 0 46px; padding-left:14px; border-left:2px solid var(--border-2); font-size:.82rem; }
+    .ap-replies div { display:flex; justify-content:space-between; gap:10px; padding:5px 0; }
+
+    /* ═══ SECCIONES ═══ */
+    .admin-section { display:none; }
+    .admin-section.active { display:block; animation: fadeIn .3s ease; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+    .config-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    @media(max-width:768px) { .config-grid { grid-template-columns:1fr; } }
+
+    /* ═══ TOAST ═══ */
+    .admin-toast {
+      position:fixed; bottom:20px; right:20px; background:var(--text); color:var(--bg);
+      padding:13px 22px; border-radius:var(--radius-sm); font-size:.88rem; font-weight:600;
+      transform:translateY(80px); opacity:0; transition:var(--transition); z-index:9999;
+      box-shadow:var(--shadow-lg);
+    }
+    .admin-toast.show { transform:translateY(0); opacity:1; }
+
+    @media(max-width:600px) {
+      .admin-table { font-size:.78rem; }
+      .admin-table thead th, .admin-table tbody td { padding:9px 7px; }
+      .admin-main { padding:14px 14px 48px; }
+      .stats-row { grid-template-columns:1fr 1fr; }
+      .admin-page-title { font-size:1.35rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+    }
+  </style>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_0EUrUpGl0YinXQBb0FjOuVX3-MEc_MM",
+      authDomain: "club-fisioteck.firebaseapp.com",
+      projectId: "club-fisioteck",
+      storageBucket: "club-fisioteck.firebasestorage.app",
+      messagingSenderId: "392428159347",
+      appId: "1:392428159347:web:15431483da25c545850506"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const fbDb = firebase.firestore();
+  </script>
+  <link rel="stylesheet" href="cursos.css?v=1">
+  <link rel="stylesheet" href="paginas.css?v=1">
+  <link rel="stylesheet" href="miembros.css?v=1">
+  <link rel="stylesheet" href="graficas.css?v=1">
+  <link rel="stylesheet" href="recordatorios.css?v=1">
+  <link rel="stylesheet" href="trafico.css?v=1">
+  <link rel="stylesheet" href="servidor.css?v=1">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="f-video" viewBox="0 0 24 24"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M22 8l-6 4 6 4V8z"/></symbol>
+<symbol id="f-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8M16 17H8"/></symbol>
+<symbol id="f-live" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49M7.76 16.24a6 6 0 0 1 0-8.49M19.07 4.93a10 10 0 0 1 0 14.14M4.93 19.07a10 10 0 0 1 0-14.14"/></symbol>
+<symbol id="f-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+<symbol id="f-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></symbol>
+<symbol id="f-megaphone" viewBox="0 0 24 24"><path d="M3 11l18-7v18l-18-7v-4z"/><path d="M7 15v4a2 2 0 0 0 2 2h1"/></symbol>
+<symbol id="f-dollar" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></symbol>
+</defs></svg>
+
+
+<!-- AUTH -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-title">Club Fisio<span>Teck</span></div>
+    <div class="auth-badge">PANEL ADMIN</div>
+    <button class="auth-btn" onclick="adminLogin()">Entrar con Google</button>
+    <div class="auth-error" id="adminError">Esta cuenta no tiene permisos de administrador</div>
+  </div>
+</div>
+
+<!-- MOBILE BAR -->
+<div class="mobile-admin-bar">
+  <h2>Fisio<span>Teck</span> Admin</h2>
+  <div style="display:flex;align-items:center;gap:4px;">
+    <button onclick="toggleTheme()" aria-label="Cambiar tema">
+      <svg id="themeIconMobile" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <button onclick="toggleAdminSidebar()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</div>
+<div class="admin-overlay" id="adminOverlay" onclick="toggleAdminSidebar()"></div>
+
+<!-- LAYOUT -->
+<div class="admin-wrapper">
+  <nav class="admin-sidebar" id="adminSidebar">
+    <div class="admin-sidebar-header">
+      <h2>Club Fisio<span>Teck</span></h2>
+      <div class="admin-tag">ADMINISTRADOR</div>
+    </div>
+    <div class="admin-nav">
+      <div class="admin-nav-section">General</div>
+      <div class="admin-nav-item active" data-section="dashboard" onclick="showSection('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div>
+      <div class="admin-nav-section">Contenido</div>
+      <div class="admin-nav-item" data-section="courses" onclick="showSection('courses')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        Cursos Grabados
+      </div>
+      <div class="admin-nav-item" data-section="live" onclick="showSection('live')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+        Webinar
+      </div>
+      <div class="admin-nav-item" data-section="pdfs" onclick="showSection('pdfs')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Material PDF
+      </div>
+      <div class="admin-nav-item" data-section="certs" onclick="showSection('certs')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><circle cx="12" cy="14" r="2.5"/></svg>
+        Certificados
+      </div>
+      <div class="admin-nav-item" data-section="reviews" onclick="showSection('reviews')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Reseñas
+      </div>
+      <div class="admin-nav-item" data-section="news" onclick="showSection('news')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1m2 13a2 2 0 0 1-2-2V7m2 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"/></svg>
+        Noticias
+      </div>
+      <div class="admin-nav-section">Gestión</div>
+      <div class="admin-nav-item" data-section="members" onclick="showSection('members')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Miembros
+      </div>
+      <div class="admin-nav-item" data-section="trials" onclick="showSection('trials')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="4"/><path d="M12 8v13M19 12v9H5v-9M7.5 8a2.5 2.5 0 1 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 1 1 0 5"/></svg>
+        Pruebas gratuitas
+      </div>
+      <div class="admin-nav-item" data-section="payments" onclick="showSection('payments')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Suscripciones y pagos
+      </div>
+      <div class="admin-nav-item" data-section="notifications" onclick="showSection('notifications')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        Notificaciones
+        <span id="notifBadge" style="background:var(--danger);color:#fff;font-size:.65rem;padding:2px 7px;border-radius:10px;margin-left:auto;display:none;">0</span>
+      </div>
+      <div class="admin-nav-section">Comunidad</div>
+      <div class="admin-nav-item" data-section="forum" onclick="showSection('forum')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Foro
+      </div>
+      <div class="admin-nav-item" data-section="credits" onclick="showSection('credits')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5h4a1.5 1.5 0 0 1 0 3h-3a1.5 1.5 0 0 0 0 3h4.5"/></svg>
+        Créditos y cupones
+      </div>
+      <div class="admin-nav-item" data-section="referrals" onclick="showSection('referrals')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
+        Referidos
+      </div>
+      <div class="admin-nav-item" data-section="directory" onclick="showSection('directory')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Directorio
+      </div>
+      <div class="admin-nav-section">Marketing</div>
+      <div class="admin-nav-item" data-section="survey" onclick="showSection('survey')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Encuesta y visitas
+      </div>
+      <div class="admin-nav-item" data-section="metrics" onclick="showSection('metrics')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Métricas
+      </div>
+      <div class="admin-nav-section">Cuenta</div>
+      <div class="admin-nav-item" data-section="config" onclick="showSection('config')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Configuración
+      </div>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema">
+      <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span id="themeLabel">Modo oscuro</span>
+    </button>
+    <div class="admin-sidebar-footer">
+      <a href="../?como=user" style="display:block;color:inherit;text-decoration:none;margin-bottom:10px;cursor:pointer;">Ver como usuario ↗</a>
+      <div onclick="adminLogout()" style="cursor:pointer;">Cerrar sesión ↗</div>
+    </div>
+  </nav>
+
+  <main class="admin-main">
+
+    <!-- DASHBOARD -->
+    <section class="admin-section active" id="sec-dashboard">
+      <div class="admin-page-header">
+        <div><div class="admin-page-title">Resumen</div><div class="admin-page-sub">Club FisioTeck</div></div>
+        <button class="btn btn-p" onclick="publishChanges()"><svg class="ic" style="width:15px;height:15px;vertical-align:-2px;margin-right:6px;"><use href="#f-upload"/></svg>Publicar Cambios</button>
+      </div>
+
+      <div class="ap-hero">
+        <div>
+          <div class="eyebrow">Panel de administración</div>
+          <h2>Tu club, de un vistazo.</h2>
+          <p>Miembros, ingresos y contenido en un solo lugar. Los datos se leen en vivo de Firebase.</p>
+        </div>
+        <div class="ap-hero-nums">
+          <div><b id="hMiembros">0</b><span>Miembros</span></div>
+          <div><b id="hActivos">0</b><span>Activos</span></div>
+          <div><b id="hIngresos">$0</b><span>Este mes</span></div>
+        </div>
+      </div>
+
+      <div class="ap-kpis">
+        <div class="ap-kpi" style="--k:var(--accent)"><div class="lbl">Miembros totales</div><div class="val" id="kTotal">0</div><div class="note" id="kTotalN">&nbsp;</div></div>
+        <div class="ap-kpi" style="--k:var(--success)"><div class="lbl">Membresías activas</div><div class="val" id="kActivos">0</div><div class="note" id="kActivosN">&nbsp;</div></div>
+        <div class="ap-kpi" style="--k:var(--blue)"><div class="lbl">Nuevos esta semana</div><div class="val" id="kNuevos">0</div><div class="note">Registros en 7 días</div></div>
+        <div class="ap-kpi" style="--k:var(--warning)"><div class="lbl">Vencen en 7 días</div><div class="val" id="kVencen">0</div><div class="note">Conviene dar seguimiento</div></div>
+        <div class="ap-kpi" style="--k:var(--success)"><div class="lbl">Ingresos del mes</div><div class="val" id="kIngMes">$0</div><div class="note" id="kIngMesN">&nbsp;</div></div>
+        <div class="ap-kpi" style="--k:var(--danger)"><div class="lbl">Vencidos o inactivos</div><div class="val" id="kVencidos">0</div><div class="note">Pueden renovar</div></div>
+        <div class="ap-kpi" style="--k:var(--info)"><div class="lbl">Cursos grabados</div><div class="val" id="dCourses">0</div><div class="note" id="kClases">&nbsp;</div></div>
+        <div class="ap-kpi" style="--k:var(--accent-soft)"><div class="lbl">PDFs y webinars</div><div class="val"><span id="dPdfs">0</span> · <span id="dLive">0</span></div><div class="note">Material · sesiones en línea</div></div>
+      </div>
+
+      <div class="ap-cols">
+        <div class="admin-card"><h3>Altas por semana</h3><div id="chAltas"></div></div>
+        <div class="admin-card"><h3>Ingresos por mes</h3><div id="chIngresos"></div></div>
+      </div>
+      <div class="ap-cols">
+        <div class="admin-card"><h3>Estado de las cuentas</h3><div id="chEstados"></div></div>
+        <div class="admin-card"><h3>Próximos vencimientos</h3><div id="listVencen" class="ap-list"></div></div>
+      </div>
+      <div class="admin-card"><h3>Actividad reciente</h3><div id="listActividad" class="ap-list"></div></div>
+      <span id="dMembers" hidden></span>
+    </section>
+
+    <!-- COURSES -->
+    <section class="admin-section" id="sec-courses">
+      <div class="cu-hero">
+        <div>
+          <div class="cu-eyebrow">Catálogo de cursos</div>
+          <h2>Cursos</h2>
+          <p>Administra los cursos grabados del Club: clases, preguntas, juegos dinámicos y disponibilidad.</p>
+        </div>
+        <div class="cu-hero-acc">
+          <button class="btn btn-o" onclick="cuCargarDelSitio(true)" title="Trae el contenido que hoy está publicado en el sitio">Recargar del sitio</button>
+          <button class="btn btn-p" onclick="abrirEditorCurso(null)">+ Nuevo curso</button>
+        </div>
+      </div>
+      <div class="cu-kpis" id="cuKpis"></div>
+      <div class="cu-toolbar">
+        <div class="cu-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="search" placeholder="Buscar por título o instructor…" oninput="cuBuscar(this.value)"></div>
+        <div class="cu-seg" id="cuOrdenSeg"></div>
+        <div class="cu-seg" id="cuVistaSeg"></div>
+      </div>
+      <div class="cu-pills" id="cuAreas"></div>
+      <div class="cu-pills" id="cuEstados"></div>
+      <div id="cuContenedor"></div>
+    </section>
+
+    <!-- LIVE -->
+    <section class="admin-section" id="sec-live">
+      <div class="admin-page-header">
+        <div><div class="admin-page-title">Webinar</div><div class="admin-page-sub">Webinars y sesiones en vivo</div></div>
+        <button class="btn btn-p" onclick="openModal('live')">+ Nueva Sesión</button>
+      </div>
+      <div class="admin-card" style="overflow-x:auto;">
+        <table class="admin-table">
+          <thead><tr><th>Título</th><th>Categoría</th><th>Fecha</th><th>Hora</th><th>Enlace</th><th>Acciones</th></tr></thead>
+          <tbody id="liveTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PDFS -->
+    <section class="admin-section" id="sec-pdfs">
+      <div class="admin-page-header">
+        <div><div class="admin-page-title">Material PDF</div><div class="admin-page-sub">Guías y recursos descargables</div></div>
+        <button class="btn btn-p" onclick="openModal('pdf')">+ Nuevo PDF</button>
+      </div>
+      <div class="admin-card" style="overflow-x:auto;">
+        <table class="admin-table">
+          <thead><tr><th>Título</th><th>Categoría</th><th>Tamaño</th><th>Fecha</th><th>URL</th><th>Acciones</th></tr></thead>
+          <tbody id="pdfsTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- MEMBERS -->
+    <section class="admin-section" id="sec-members">
+      <div class="cu-hero">
+        <div>
+          <div class="cu-eyebrow">Comunidad</div>
+          <h2>Miembros</h2>
+          <p>Aquí ves a <strong>todos los registrados</strong> (los que crearon cuenta) y a <strong>todos los miembros activos</strong> (los que ya pagaron), con su fecha de registro y de pago.</p>
+        </div>
+        <div class="cu-hero-acc">
+          <button class="btn btn-o" onclick="exportarSociosCSV()">Descargar CSV</button>
+          <button class="btn btn-o" onclick="mbPapelera()">Papelera</button>
+          <button class="btn btn-p" onclick="mbAccesoManual()">+ Agregar acceso manual</button>
+        </div>
+      </div>
+      <div class="cu-kpis" id="mbKpis" style="grid-template-columns:repeat(auto-fit,minmax(165px,1fr));"></div>
+      <div class="cu-toolbar">
+        <div class="cu-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="mbBuscador" placeholder="Buscar por nombre, correo o UID…" oninput="mbBuscar(this.value)"><button type="button" id="mbLimpiar" onclick="mbLimpiarBusqueda()" aria-label="Limpiar" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:50%;background:var(--surface-2);color:var(--text-muted);">×</button></div>
+      </div>
+      <div class="cu-pills" id="mbPlanes"></div>
+      <div class="cu-pills" id="mbEstados"></div>
+      <div id="mbContenedor"></div>
+    </section>
+
+    <!-- CONFIG -->
+    <!-- NEWS -->
+    <section class="admin-section" id="sec-news">
+      <div class="admin-page-header">
+        <div><div class="admin-page-title">Noticias y Blog</div><div class="admin-page-sub">Publica artículos, tips y novedades</div></div>
+        <button class="btn btn-p" onclick="openModal('news')">+ Nueva Noticia</button>
+      </div>
+      <div class="admin-card" style="overflow-x:auto;">
+        <table class="admin-table">
+          <thead><tr><th>Título</th><th>Categoría</th><th>Fecha</th><th>Acciones</th></tr></thead>
+          <tbody id="newsTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- NOTIFICATIONS -->
+    <!-- ENCUESTA Y VISITAS -->
+    <section class="admin-section" id="sec-survey">
+      <div class="admin-page-header">
+        <div><div class="admin-page-title">Encuesta y visitas</div><div class="admin-page-sub">Portada, Guía virtual y prospectos</div></div>
+      </div>
+      <div id="enEstado"></div>
+      <div class="ap-kpis">
+        <div class="ap-kpi" style="--k:var(--accent)"><div class="lbl">Sesiones</div><div class="val" id="enSes">0</div><div class="note">Personas que empezaron</div></div>
+        <div class="ap-kpi" style="--k:var(--success)"><div class="lbl">Completadas</div><div class="val" id="enCom">0</div><div class="note" id="enTasa">&nbsp;</div></div>
+        <div class="ap-kpi" style="--k:var(--warning)"><div class="lbl">Dejaron WhatsApp</div><div class="val" id="enLeads">0</div><div class="note" id="enCal">&nbsp;</div></div>
+        <div class="ap-kpi" style="--k:var(--blue)"><div class="lbl">Visitas (30 días)</div><div class="val" id="enVis">0</div><div class="note" id="enVisN">&nbsp;</div></div>
+      </div>
+      <div class="admin-card">
+        <h3>Contador de visitas</h3>
+        <p style="font-size:.85rem;color:var(--text-light);margin:-6px 0 12px;">Solo suma visitas por día y página: no guarda IP, cookies ni quién fue, y respeta "No rastrear". Está apagado hasta que lo enciendas; el aviso de privacidad de la portada ya lo menciona.</p>
+        <label class="form-label" style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><input type="checkbox" id="enContador" onchange="alternarContadorVisitas(this.checked)"> Contar visitas de la portada</label>
+        <div id="enVisGrafica"></div>
+      </div>
+      <div class="ap-cols">
+        <div class="admin-card"><h3>Perfil</h3><div id="enPerfiles"></div></div>
+        <div class="admin-card"><h3>Área de interés</h3><div id="enAreas"></div></div>
+      </div>
+      <div class="ap-cols">
+        <div class="admin-card"><h3>Cómo nos conocieron</h3><div id="enOrigen"></div></div>
+        <div class="admin-card"><h3>Cuándo quieren empezar</h3><div id="enUrg"></div></div>
+      </div>
+      <div class="ap-cols">
+        <div class="admin-card"><h3>Qué los detiene</h3><div id="enFrenos"></div></div>
+        <div class="admin-card"><h3>Dónde abandonan la encuesta</h3><div id="enAband"></div></div>
+      </div>
+      <div class="admin-card" style="overflow-x:auto;">
+        <h3>Prospectos con WhatsApp</h3>
+        <p style="font-size:.82rem;color:var(--text-muted);margin:-6px 0 10px;">Aceptaron el aviso de privacidad. Solo tú los ves.</p>
+        <table class="admin-table"><thead><tr><th>Número</th><th>Perfil</th><th>Área</th><th>Urgencia</th><th>Fecha</th><th></th></tr></thead><tbody id="enLeadsTabla"></tbody></table>
+      </div>
+      <div class="admin-card" style="overflow-x:auto;">
+        <h3>Preguntas que la Guía no supo contestar</h3>
+        <table class="admin-table"><thead><tr><th>Pregunta</th><th>Veces</th><th>Última</th></tr></thead><tbody id="enSinResp"></tbody></table>
+      </div>
+    </section>
+
+    <!-- CRÉDITOS Y CUPONES -->
+    <section class="admin-section" id="sec-credits">
+      <div class="admin-page-header">
+        <div><div class="admin-page-title">Créditos y cupones</div><div class="admin-page-sub">Para cuentas con y sin membresía</div></div>
+      </div>
+      <div id="crEstado"></div>
+      <div class="ap-kpis">
+        <div class="ap-kpi" style="--k:var(--accent)"><div class="lbl">Créditos regalados</div><div class="val" id="crReg">0</div><div class="note">Por el administrador</div></div>
+        <div class="ap-kpi" style="--k:var(--blue)"><div class="lbl">Por cupones</div><div class="val" id="crCup">0</div><div class="note">Entregados con clave</div></div>
+        <div class="ap-kpi" style="--k:var(--success)"><div class="lbl">Canjeados</div><div class="val" id="crCanj">0</div><div class="note">Gastados en materiales</div></div>
+        <div class="ap-kpi" style="--k:var(--warning)"><div class="lbl">Cupones activos</div><div class="val" id="crAct">0</div><div class="note">Se pueden canjear hoy</div></div>
+      </div>
+      <div class="ap-cols">
+        <div class="admin-card">
+          <h3>Regalar créditos</h3>
+          <div class="form-group"><label class="form-label">Correo de la cuenta</label><input class="form-input" id="crRegEmail" type="email" placeholder="persona@correo.com"></div>
+          <div class="form-group"><label class="form-label">Créditos (1 a 1000)</label><input class="form-input" id="crRegCant" type="number" min="1" max="1000" value="100"></div>
+          <div class="form-group"><label class="form-label">Mensaje (opcional)</label><input class="form-input" id="crRegMsg" maxlength="200" placeholder="Se lo mostramos al entrar"></div>
+          <button class="btn btn-p" onclick="regalarCreditos()">Regalar</button>
+        </div>
+        <div class="admin-card">
+          <h3>Nuevo cupón</h3>
+          <div class="form-group"><label class="form-label">Clave (vacía = al azar)</label><input class="form-input" id="cuClave" placeholder="Ej.: CANAL100"></div>
+          <div class="form-group"><label class="form-label">Créditos</label><input class="form-input" id="cuCred" type="number" min="1" max="1000" value="100"></div>
+          <div class="form-group"><label class="form-label">Máximo de personas (vacío = todas)</label><input class="form-input" id="cuMax" type="number" min="1" placeholder="Todas"></div>
+          <div class="form-group"><label class="form-label">¿A quién le llega?</label><select class="form-select" id="cuPub"><option value="todos">Todas las cuentas</option><option value="gratuitos">Solo cuentas sin membresía</option><option value="miembros">Solo miembros</option></select></div>
+          <div class="form-group"><label class="form-label">Vence (vacío = no vence)</label><input class="form-input" id="cuVence" type="datetime-local"></div>
+          <button class="btn btn-p" onclick="crearCupon()">Crear cupón</button>
+        </div>
+      </div>
+      <div class="admin-card" style="overflow-x:auto;">
+        <h3>Cupones</h3>
+        <table class="admin-table"><thead><tr><th>Clave</th><th>Créditos</th><th>Audiencia</th><th>Canjes</th><th>Vence</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="cuTabla"></tbody></table>
+      </div>
+      <div class="ap-cols">
+        <div class="admin-card"><h3>Materiales más canjeados</h3><div id="crMat"></div></div>
+        <div class="admin-card" style="overflow-x:auto;"><h3>Movimientos recientes</h3><table class="admin-table"><thead><tr><th>Fecha</th><th>Cuenta</th><th>Tipo</th><th>Créditos</th></tr></thead><tbody id="crMov"></tbody></table></div>
+      </div>
+    </section>
+
+    <!-- REFERIDOS -->
+    <section class="admin-section" id="sec-referrals">
+      <div class="admin-page-header">
+        <div><div class="admin-page-title">Referidos</div><div class="admin-page-sub">Invitaciones de los miembros</div></div>
+      </div>
+      <div id="rfEstado"></div>
+      <div class="ap-kpis">
+        <div class="ap-kpi" style="--k:var(--accent)"><div class="lbl">Invitaciones</div><div class="val" id="rfTotal">0</div><div class="note">Registros con enlace</div></div>
+        <div class="ap-kpi" style="--k:var(--success)"><div class="lbl">Válidas</div><div class="val" id="rfVal">0</div><div class="note">Correo confirmado</div></div>
+        <div class="ap-kpi" style="--k:var(--warning)"><div class="lbl">Por confirmar</div><div class="val" id="rfPen">0</div><div class="note">Aún sin verificar correo</div></div>
+        <div class="ap-kpi" style="--k:var(--blue)"><div class="lbl">Invitados que pagaron</div><div class="val" id="rfPago">0</div><div class="note" id="rfRech">&nbsp;</div></div>
+      </div>
+      <div class="admin-card"><h3>Miembros que más invitan</h3><div id="rfTop"></div></div>
+      <div class="admin-card" style="overflow-x:auto;">
+        <table class="admin-table"><thead><tr><th>Invitado</th><th>Lo invitó</th><th>Estado</th><th>Pagó</th><th>Fecha</th></tr></thead><tbody id="rfTabla"></tbody></table>
+      </div>
+    </section>
+
+    <!-- RESEÑAS -->
+    <section class="admin-section" id="sec-reviews">
+      <div class="admin-page-header">
+        <div><div class="admin-page-title">Reseñas</div><div class="admin-page-sub">Lo que opinan quienes terminaron un curso</div></div>
+      </div>
+      <div id="reEstado"></div>
+      <div class="ap-kpis">
+        <div class="ap-kpi" style="--k:var(--accent)"><div class="lbl">Reseñas</div><div class="val" id="reTotal">0</div><div class="note">Solo de quienes certificaron</div></div>
+        <div class="ap-kpi" style="--k:var(--warning)"><div class="lbl">Promedio</div><div class="val" id="rePromedio">—</div><div class="note">De 1 a 5 estrellas</div></div>
+        <div class="ap-kpi" style="--k:var(--success)"><div class="lbl">Con comentario</div><div class="val" id="reCom">0</div><div class="note">Texto además de estrellas</div></div>
+        <div class="ap-kpi" style="--k:var(--danger)"><div class="lbl">Por mejorar</div><div class="val" id="reBajas">0</div><div class="note">Cursos con promedio menor a 4</div></div>
+      </div>
+      <div class="ap-cols">
+        <div class="admin-card"><h3>Calificaciones</h3><div id="reHisto"></div></div>
+        <div class="admin-card"><h3>Cursos mejor calificados</h3><div id="reCursos"></div></div>
+      </div>
+      <div class="admin-card"><h3>Comentarios</h3><div id="reLista" class="ap-list"></div></div>
+    </section>
+
+    <!-- DIRECTORIO -->
+    <section class="admin-section" id="sec-directory">
+      <div class="admin-page-header">
+        <div><div class="admin-page-title">Directorio</div><div class="admin-page-sub">Tarjetas de miembros visibles en el Club</div></div>
+      </div>
+      <div class="ap-kpis">
+        <div class="ap-kpi" style="--k:var(--accent)"><div class="lbl">Tarjetas</div><div class="val" id="diTotal">0</div><div class="note">Creadas por miembros</div></div>
+        <div class="ap-kpi" style="--k:var(--success)"><div class="lbl">Visibles</div><div class="val" id="diAct">0</div><div class="note">Aparecen en el directorio</div></div>
+        <div class="ap-kpi" style="--k:var(--warning)"><div class="lbl">Ocultas</div><div class="val" id="diOc">0</div><div class="note">Ocultadas por el equipo</div></div>
+        <div class="ap-kpi" style="--k:var(--blue)"><div class="lbl">Especialidad más común</div><div class="val" id="diTop" style="font-size:1.05rem;line-height:1.3;">—</div><div class="note">&nbsp;</div></div>
+      </div>
+      <div class="ap-chips" id="diChips"></div>
+      <div class="ap-toolbar"><input class="form-input" type="search" placeholder="Buscar por nombre, puesto, ciudad o especialidad" oninput="diBuscar(this.value)"></div>
+      <div class="admin-card" style="overflow-x:auto;">
+        <table class="admin-table">
+          <thead><tr><th>Miembro</th><th>Especialidad</th><th>Ciudad</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="diTabla"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PRUEBAS GRATUITAS -->
+    <section class="admin-section" id="sec-trials">
+      <div class="admin-page-header">
+        <div><div class="admin-page-title">Pruebas gratuitas</div><div class="admin-page-sub">Qué curso eligió cada cuenta sin membresía</div></div>
+      </div>
+      <div class="ap-kpis">
+        <div class="ap-kpi" style="--k:var(--accent)"><div class="lbl">Eligieron curso</div><div class="val" id="trElig">0</div><div class="note">Prueba iniciada</div></div>
+        <div class="ap-kpi" style="--k:var(--warning)"><div class="lbl">Aún no eligen</div><div class="val" id="trPend">0</div><div class="note">Registrados sin membresía</div></div>
+        <div class="ap-kpi" style="--k:var(--success)"><div class="lbl">Se suscribieron</div><div class="val" id="trConv">0</div><div class="note" id="trConvN">&nbsp;</div></div>
+        <div class="ap-kpi" style="--k:var(--blue)"><div class="lbl">Curso más elegido</div><div class="val" id="trTop" style="font-size:1.05rem;line-height:1.3;">—</div><div class="note" id="trTopN">&nbsp;</div></div>
+      </div>
+      <div class="admin-card" style="overflow-x:auto;">
+        <h3>Cursos elegidos</h3>
+        <div id="trCursos"></div>
+      </div>
+      <div class="admin-card" style="overflow-x:auto;">
+        <table class="admin-table">
+          <thead><tr><th>Miembro</th><th>Curso de prueba</th><th>Elegido</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="trTabla"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CERTIFICADOS -->
+    <section class="admin-section" id="sec-certs">
+      <div class="admin-page-header">
+        <div><div class="admin-page-title">Certificados</div><div class="admin-page-sub">Emitidos al terminar un curso</div></div>
+        <button class="btn btn-p" onclick="abrirEmisionManual()">+ Emitir certificado</button>
+      </div>
+      <div id="certEstado"></div>
+      <div class="ap-kpis">
+        <div class="ap-kpi" style="--k:var(--accent)"><div class="lbl">Emitidos</div><div class="val" id="ceTotal">0</div><div class="note">Vigentes</div></div>
+        <div class="ap-kpi" style="--k:var(--danger)"><div class="lbl">Revocados</div><div class="val" id="ceRev">0</div><div class="note">Ya no verifican</div></div>
+        <div class="ap-kpi" style="--k:var(--success)"><div class="lbl">Curso con más certificados</div><div class="val" id="ceTop" style="font-size:1.05rem;line-height:1.3;">—</div><div class="note" id="ceTopN">&nbsp;</div></div>
+        <div class="ap-kpi" style="--k:var(--blue)"><div class="lbl">Verificación pública</div><div class="val" style="font-size:1.05rem;">/verificar/</div><div class="note">Con folio o código QR</div></div>
+      </div>
+      <div class="admin-card" style="overflow-x:auto;">
+        <div class="ap-toolbar"><input class="form-input" type="search" placeholder="Buscar por nombre, correo, curso o folio" oninput="ceBuscar(this.value)"></div>
+        <table class="admin-table">
+          <thead><tr><th>Folio</th><th>Miembro</th><th>Curso</th><th>Emitido</th><th>Origen</th><th>Acciones</th></tr></thead>
+          <tbody id="ceTabla"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SUSCRIPCIONES Y PAGOS -->
+    <section class="admin-section" id="sec-payments">
+      <div class="admin-page-header">
+        <div><div class="admin-page-title">Suscripciones y pagos</div><div class="admin-page-sub">Cobros de Stripe y renovaciones</div></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-o" id="pgSync" onclick="sincronizarStripe()">Traer pagos desde Stripe</button><button class="btn btn-o" onclick="exportarPagosCSV()">Descargar CSV</button></div>
+      </div>
+      <div class="ap-kpis">
+        <div class="ap-kpi" style="--k:var(--success)"><div class="lbl">Dinero cobrado</div><div class="val" id="pgTotal">$0</div><div class="note" id="pgTotalN">&nbsp;</div></div>
+        <div class="ap-kpi" style="--k:var(--accent)"><div class="lbl">Personas que pagaron</div><div class="val" id="pgPersonas">0</div><div class="note">Con al menos un pago</div></div>
+        <div class="ap-kpi" style="--k:var(--blue)"><div class="lbl">Plan más elegido</div><div class="val" id="pgPlan">—</div><div class="note" id="pgPlanN">&nbsp;</div></div>
+        <div class="ap-kpi" style="--k:var(--danger)"><div class="lbl">Cancelados con acceso</div><div class="val" id="pgCanc">0</div><div class="note">No renovarán</div></div>
+        <div class="ap-kpi" style="--k:var(--warning)"><div class="lbl">Cobros rechazados</div><div class="val" id="pgFallidos">0</div><div class="note">Tarjeta sin fondos o rechazada</div></div>
+      </div>
+      <div class="admin-card">
+        <h3>Próximas renovaciones</h3>
+        <div class="ap-chips" id="pgVentanaChips"></div>
+        <div id="pgRenov" class="ap-list"></div>
+      </div>
+      <div class="admin-card" style="overflow-x:auto;">
+        <h3>Historial de pagos</h3>
+        <div class="ap-chips" id="pgEstadoChips"></div>
+        <div class="ap-toolbar"><input class="form-input" type="search" placeholder="Buscar por nombre o correo" oninput="pgBuscar(this.value)"></div>
+        <table class="admin-table">
+          <thead><tr><th>Fecha</th><th>Miembro</th><th>Concepto</th><th>Monto</th><th>Estado</th></tr></thead>
+          <tbody id="pgTabla"></tbody>
+        </table>
+      </div>
+      <div class="admin-card" style="overflow-x:auto;">
+        <h3>Pagos sin cuenta vinculada</h3>
+        <p style="font-size:.84rem;color:var(--text-light);margin:-6px 0 12px;">Personas que pagaron con un correo que todavía no tiene cuenta en el Club. Se vinculan solas cuando se registran con ese correo.</p>
+        <table class="admin-table">
+          <thead><tr><th>Correo</th><th>Plan</th><th>Pagó</th><th>Vence</th></tr></thead>
+          <tbody id="pgPendientes"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- FORO -->
+    <section class="admin-section" id="sec-forum">
+      <div class="admin-page-header">
+        <div><div class="admin-page-title">Foro</div><div class="admin-page-sub">Modera y publica como equipo</div></div>
+        <button class="btn btn-p" onclick="abrirTemaOficial()">+ Tema oficial</button>
+      </div>
+      <div class="ap-kpis">
+        <div class="ap-kpi" style="--k:var(--accent)"><div class="lbl">Temas</div><div class="val" id="foTemas">0</div><div class="note">Cargados (últimos 100)</div></div>
+        <div class="ap-kpi" style="--k:var(--blue)"><div class="lbl">Respuestas</div><div class="val" id="foResp">0</div><div class="note">Suma de los temas</div></div>
+        <div class="ap-kpi" style="--k:var(--success)"><div class="lbl">Participantes</div><div class="val" id="foAutores">0</div><div class="note">Autores distintos</div></div>
+        <div class="ap-kpi" style="--k:var(--warning)"><div class="lbl">Sin respuesta</div><div class="val" id="foSin">0</div><div class="note">Temas por atender</div></div>
+      </div>
+      <div class="ap-chips" id="foChips"></div>
+      <div class="admin-card"><div id="foLista" class="ap-list"><div class="ap-empty">Cargando…</div></div></div>
+    </section>
+
+    <!-- MÉTRICAS -->
+    <section class="admin-section" id="sec-metrics">
+      <div class="admin-page-header">
+        <div><div class="admin-page-title">Métricas</div><div class="admin-page-sub">Crecimiento y conversión del Club</div></div>
+      </div>
+      <div class="ap-kpis">
+        <div class="ap-kpi" style="--k:var(--accent)"><div class="lbl">Registros</div><div class="val" id="meReg">0</div><div class="note">Cuentas creadas</div></div>
+        <div class="ap-kpi" style="--k:var(--success)"><div class="lbl">Conversión a pago</div><div class="val" id="meConv">0%</div><div class="note" id="meConvN">&nbsp;</div></div>
+        <div class="ap-kpi" style="--k:var(--blue)"><div class="lbl">Retención</div><div class="val" id="meRet">0%</div><div class="note">Pagaron y siguen activos</div></div>
+        <div class="ap-kpi" style="--k:var(--warning)"><div class="lbl">Ticket promedio</div><div class="val" id="meTicket">$0</div><div class="note">Por pago</div></div>
+      </div>
+      <div class="ap-cols">
+        <div class="admin-card"><h3>Registros por mes</h3><div id="meAltas"></div></div>
+        <div class="admin-card"><h3>Embudo: de registro a miembro</h3><div id="meEmbudo"></div></div>
+      </div>
+      <div class="ap-cols">
+        <div class="admin-card"><h3>Planes</h3><div id="mePlanes"></div></div>
+        <div class="admin-card"><h3>Especialidad de los miembros</h3><div id="meEsp"></div></div>
+      </div>
+    </section>
+
+    <section class="admin-section" id="sec-notifications">
+      <div class="cu-hero">
+        <div>
+          <div class="cu-eyebrow">Comunicación con miembros</div>
+          <h2>Notificaciones</h2>
+          <p>Avisa a todos los miembros de un curso nuevo, una clase en vivo o una promoción. Les aparece en la campana del Club.</p>
+        </div>
+      </div>
+      <div class="cu-kpis">
+        <div class="cu-kpi" style="--c1:#2563AB;--c2:#4CA6DE"><div class="lbl">Total publicadas</div><div class="val" id="pnTotal">0</div><div class="sub">Últimas 50</div></div>
+        <div class="cu-kpi" style="--c1:#0F9D58;--c2:#34D399"><div class="lbl">Hoy</div><div class="val" id="pnHoy">0</div><div class="sub">Últimas 24 horas</div></div>
+        <div class="cu-kpi" style="--c1:#B45309;--c2:#FBBF24"><div class="lbl">Esta semana</div><div class="val" id="pnSemana">0</div><div class="sub">Últimos 7 días</div></div>
+        <div class="cu-kpi" style="--c1:#DC2D3F;--c2:#F87171"><div class="lbl">Alertas sin leer</div><div class="val" id="pnAlertas">0</div><div class="sub">Pagos y cancelaciones</div></div>
+      </div>
+      <div class="pg-tabs" id="pgTabsNotif">
+        <button type="button" class="on" data-p="avisos" onclick="pgPestana('avisos')">Avisos a miembros</button>
+        <button type="button" data-p="alertas" id="pgTabAlertas" onclick="pgPestana('alertas')">Alertas del sistema</button>
+      </div>
+      <div id="pgPaneAvisos">
+        <div class="pg-notif">
+          <div class="pg-card pg-sticky">
+            <h3>Crear nueva notificación</h3>
+            <p class="sub">Se envía a todos los miembros.</p>
+            <div class="pg-tipos" id="pgTipos"></div>
+            <div class="form-group"><label class="form-label">Título <span class="pg-cuenta" id="pgCuentaT">0/80</span></label><input class="form-input" id="notifTitle" maxlength="80" placeholder="Ej.: Nuevo curso de Rehabilitación Deportiva" oninput="pgVista()"></div>
+            <div class="form-group"><label class="form-label">Mensaje <span class="pg-cuenta" id="pgCuentaM">0/180</span></label><textarea class="form-textarea" id="notifMessage" maxlength="180" rows="3" placeholder="Descripción breve" oninput="pgVista()"></textarea></div>
+            <div class="form-group"><label class="form-label">Enlace (opcional)</label><input class="form-input" id="notifLink" placeholder="https://…"></div>
+            <div class="pg-prev" id="pgVista"></div>
+            <button type="button" class="btn btn-p" id="pgEnviar" style="width:100%;justify-content:center;" onclick="sendMemberNotification()">Enviar a todos los miembros</button>
+          </div>
+          <div class="pg-card">
+            <h3>Historial de notificaciones</h3>
+            <p class="sub">Las más recientes primero. Al eliminar una, deja de verse en la campana de los miembros.</p>
+            <div class="pg-lista" id="pgHistorial"><div class="pg-vacio">Cargando…</div></div>
+          </div>
+        </div>
+      </div>
+      <div id="pgPaneAlertas" style="display:none;">
+        <div style="margin-bottom:12px;"><button class="btn btn-o" onclick="markAllRead()">Marcar todo como leído</button></div>
+        <div id="notifList" style="display:flex;flex-direction:column;gap:12px;"><div class="pg-vacio">Cargando…</div></div>
+      </div>
+    </section>
+
+    <!-- CONFIG -->
+    <section class="admin-section" id="sec-config">
+      <div class="cu-hero">
+        <div>
+          <div class="cu-eyebrow">Ajustes globales</div>
+          <h2>Configuración</h2>
+          <p>Precios, contacto, apertura de cursos y estado de los servicios del Club.</p>
+        </div>
+      </div>
+      <div class="pg-grid">
+        <div class="pg-card">
+          <div class="pg-cab"><i><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></i><h3>Precios de la membresía</h3></div>
+          <p class="sub">Se reflejan en el Club y en los cobros de Stripe. Solo afectan a <strong>nuevas suscripciones</strong>.</p>
+          <div class="form-group"><label class="form-label">Plan mensual (MXN)</label><input class="form-input" type="number" min="10" id="cfgPrecioMes" value="199"></div>
+          <div class="form-group"><label class="form-label">Plan anual (MXN)</label><input class="form-input" type="number" min="10" id="cfgPrecioAno" value="1999"></div>
+          <button class="btn btn-p" onclick="guardarPreciosMembresia()">Guardar precios</button>
+        </div>
+        <div class="pg-card">
+          <div class="pg-cab"><i><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></i><h3>Contacto</h3></div>
+          <p class="sub">Datos de contacto del Club.</p>
+          <div class="form-group"><label class="form-label">WhatsApp (con código de país)</label><input class="form-input" id="cfgWhatsapp" placeholder="5212381478840"></div>
+          <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="cfgInstagram" placeholder="@fisioteck"></div>
+          <div class="form-group"><label class="form-label">Correo de contacto</label><input class="form-input" type="email" id="cfgCorreo" placeholder="contacto@fisioteck.com"></div>
+          <button class="btn btn-p" onclick="guardarContacto()">Guardar contacto</button>
+        </div>
+        <div class="pg-card">
+          <div class="pg-cab"><i><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></i><h3>Cursos escalonados</h3></div>
+          <p class="sub">Con membresía, el primer curso (el que eligió en su prueba gratuita) está abierto y los demás se abren uno cada cierto número de días, o antes si el miembro supera retos. Al encenderlo, quienes ya pagaban conservan todo abierto.</p>
+          <div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="cfgEscActivo"> Activar cursos escalonados</label></div>
+          <div class="form-group"><label class="form-label">Días entre cursos</label><input class="form-input" type="number" min="1" max="60" id="cfgEscDias" value="8"></div>
+          <div class="form-group"><label class="form-label">Retos superados para abrir el siguiente curso antes (una sola vez por socio, mínimo 2 de cada tipo)</label><input class="form-input" type="number" min="4" max="17" id="cfgEscRetos" value="12"></div>
+          <p id="cfgEscDesde" style="font-size:.78rem;color:var(--text-muted);margin-bottom:12px;"></p>
+          <button class="btn btn-p" onclick="guardarEscalonado()">Guardar</button>
+        </div>
+        <div class="pg-card">
+          <div class="pg-cab"><i><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></i><h3>Ver el Club como miembro</h3></div>
+          <p class="sub">Revisa lo que ve un miembro. Cuando termines, vuelves a este panel desde el menú del Club.</p>
+          <div class="pg-enlaces"><a href="../?como=user"><strong>Como miembro</strong><span>Con las reglas normales de acceso</span></a><a href="../?como=user" target="_blank" rel="noopener"><strong>En otra pestaña</strong><span>Sin salir del panel</span></a></div>
+        </div>
+        <div class="pg-card full">
+          <div class="pg-cab"><i><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></i><h3>Estado de servicios</h3><span class="pg-resumen" id="pgResumen" style="display:none"></span></div>
+          <p class="sub">Revisa que el servidor, la base de datos, Stripe, Bunny, los correos y los certificados estén configurados y respondan.</p>
+          <div id="pgServicios"><div class="pg-vacio">Revisando servicios…</div></div>
+          <div class="pg-acciones"><button class="btn btn-p btn-sm" id="pgRevisarBtn" onclick="pgRevisarServicios()">Revisar ahora</button><button class="btn btn-o btn-sm" onclick="pgCopiarReporte()">Copiar reporte</button></div>
+        </div>
+        <div class="pg-card">
+          <div class="pg-cab"><i><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></i><h3>Estadísticas del sitio</h3></div>
+          <p class="sub">Este número se muestra en el inicio del sitio público.</p>
+          <div class="form-group"><label class="form-label">Miembros activos (mostrar)</label><input class="form-input" type="number" id="cfgMembers" value="87"></div>
+          <button class="btn btn-p" onclick="saveConfig()">Guardar</button>
+        </div>
+        <div class="pg-card">
+          <div class="pg-cab"><i><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.9a3.4 3.4 0 0 0-1-2.6c3.3-.4 6.800-1.600 6.800-7.400a5.800 5.800 0 0 0-1.600-4 5.400 5.400 0 0 0-.1-4s-1.300-.4-4.100 1.500a14.300 14.300 0 0 0-7.500 0C6.600 1.600 5.300 2 5.300 2a5.400 5.400 0 0 0-.1 4 5.800 5.800 0 0 0-1.600 4c0 5.800 3.500 7 6.800 7.400a3.400 3.400 0 0 0-1 2.600V22"/></svg></i><h3>Publicación en GitHub</h3></div>
+          <p class="sub">Para que “Publicar cambios” suba el contenido a tu repositorio automáticamente.</p>
+          <div class="form-group"><label class="form-label">Repositorio</label><input class="form-input" id="cfgRepo" placeholder="usuario/club-fisioteck"></div>
+          <div class="form-group"><label class="form-label">Token de GitHub</label><input class="form-input" type="password" id="cfgToken" placeholder="ghp_xxxxxxxxxxxx"></div>
+          <button class="btn btn-p" onclick="saveGitConfig()">Guardar configuración</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="modalTitle">Nuevo elemento</h3>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-o" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-p" id="modalSave" onclick="saveModalItem()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="admin-toast" id="adminToast"></div>
+
+<script>
+  // ===== ADMIN CONFIG =====
+  const ADMIN_EMAILS = ['teccapitalweb@gmail.com', 'fisiotec25@gmail.com'];
+  const DATA_KEY = 'clubft_data';
+  const GIT_KEY = 'clubft_git';
+
+  // ===== DATA =====
+  let data = { stats:{courses:0,pdfs:0,live:0,members:87}, courses:[], live:[], pdfs:[], members:[] };
+  let currentModal = null;
+  let editingId = null;
+
+  function loadData() {
+    const saved = localStorage.getItem(DATA_KEY);
+    if (saved) {
+      data = JSON.parse(saved);
+    } else {
+      // Load demo data
+      data = {
+        stats: { courses:6, pdfs:5, live:3, members:87 },
+        courses: [
+          { id:1, title:"Fundamentos de Fisioterapia Deportiva", desc:"Aprende las bases del tratamiento deportivo profesional", category:"fisioterapia", duration:"2h 30min", date:"2026-04-01", badge:"Nuevo", videoUrl:"", thumbnail:"" },
+          { id:2, title:"Anatomía Funcional del Miembro Superior", desc:"Estudio detallado de la anatomía aplicada", category:"anatomia", duration:"1h 45min", date:"2026-03-28", badge:"", videoUrl:"", thumbnail:"" },
+          { id:3, title:"Rehabilitación Post-Quirúrgica de Rodilla", desc:"Protocolos actualizados de recuperación", category:"rehabilitacion", duration:"3h 10min", date:"2026-03-20", badge:"Popular", videoUrl:"", thumbnail:"" },
+          { id:4, title:"Vendaje Neuromuscular Avanzado", desc:"Técnicas de kinesiotaping para profesionales", category:"especializacion", duration:"2h 00min", date:"2026-03-15", badge:"", videoUrl:"", thumbnail:"" },
+          { id:5, title:"Electroterapia Clínica", desc:"Uso correcto de equipos de electroterapia", category:"fisioterapia", duration:"1h 50min", date:"2026-03-10", badge:"", videoUrl:"", thumbnail:"" },
+          { id:6, title:"Pilates Terapéutico", desc:"Método Pilates aplicado a la rehabilitación", category:"rehabilitacion", duration:"2h 20min", date:"2026-03-05", badge:"Nuevo", videoUrl:"", thumbnail:"" }
+        ],
+        live: [
+          { id:101, title:"Masterclass: Punción Seca", desc:"Sesión en vivo con el Dr. García", category:"especializacion", date:"2026-04-15", time:"18:00", badge:"Próximamente", link:"" },
+          { id:102, title:"Caso Clínico: Lumbalgia Crónica", desc:"Análisis en grupo", category:"rehabilitacion", date:"2026-04-20", time:"19:00", badge:"", link:"" },
+          { id:103, title:"Q&A: Fisioterapia Pediátrica", desc:"Resuelve tus dudas", category:"fisioterapia", date:"2026-04-25", time:"17:00", badge:"", link:"" }
+        ],
+        pdfs: [
+          { id:201, title:"Guía de Evaluación Postural", desc:"Manual completo — 42 páginas", category:"fisioterapia", size:"3.2 MB", date:"2026-04-01", fileUrl:"" },
+          { id:202, title:"Protocolo de Rehabilitación de Hombro", desc:"Fases de tratamiento", category:"rehabilitacion", size:"1.8 MB", date:"2026-03-28", fileUrl:"" },
+          { id:203, title:"Atlas de Anatomía Palpatoria", desc:"Referencia visual", category:"anatomia", size:"8.5 MB", date:"2026-03-20", fileUrl:"" },
+          { id:204, title:"Ejercicios Terapéuticos para Cervicalgia", desc:"Programa con ilustraciones", category:"rehabilitacion", size:"2.1 MB", date:"2026-03-15", fileUrl:"" },
+          { id:205, title:"Guía de Vendaje Funcional", desc:"Técnicas paso a paso", category:"especializacion", size:"4.7 MB", date:"2026-03-10", fileUrl:"" }
+        ],
+        members: []
+      };
+      saveData();
+    }
+    if (!data.news) data.news = [];
+  }
+  function saveData() {
+    data.stats.courses = data.courses.length;
+    data.stats.pdfs = data.pdfs.length;
+    data.stats.live = data.live.length;
+    data.stats.members = data.members.length || parseInt(document.getElementById('cfgMembers')?.value || '87');
+    localStorage.setItem(DATA_KEY, JSON.stringify(data));
+  }
+
+  // ===== AUTH =====
+  function esAdmin(u) {
+    return !!(u && u.email && u.emailVerified && ADMIN_EMAILS.indexOf(u.email.toLowerCase()) !== -1);
+  }
+  function adminLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    firebase.auth().signInWithPopup(provider).catch(err => {
+      if (err.code !== 'auth/popup-closed-by-user') toast('No se pudo iniciar sesión con Google');
+    });
+  }
+  function adminLogout() { firebase.auth().signOut().then(() => location.reload()); }
+  let adminIniciado = false;
+  function manejarSesionAdmin(u) {
+    if (esAdmin(u)) {
+      document.getElementById('auth-screen').classList.add('hidden');
+      if (!adminIniciado) { adminIniciado = true; initAdmin(); }
+      return;
+    }
+    document.getElementById('auth-screen').classList.remove('hidden');
+    if (u) {
+      const el = document.getElementById('adminError');
+      el.style.display = 'block';
+      firebase.auth().signOut();
+      setTimeout(() => el.style.display = 'none', 4000);
+    }
+  }
+
+  // ===== RENDER =====
+  function initAdmin() {
+    loadData();
+    renderDashboard();
+    renderCourses();
+    renderLive();
+    renderPdfs();
+    cargarLibresPriv();
+    renderNewsList();
+    loadFirebaseMembers();
+    loadGitConfig();
+    loadNotifications();
+  }
+  // ===== RESUMEN =====
+  function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function fechaDe(v) {
+    if (!v) return null;
+    if (typeof v.toDate === 'function') return v.toDate();
+    if (typeof v === 'object' && typeof v.seconds === 'number') return new Date(v.seconds * 1000);
+    const d = new Date(String(v).length === 10 ? v + 'T00:00:00' : v);
+    return isNaN(d) ? null : d;
+  }
+  function dinero(n) { return '$' + Math.round(n).toLocaleString('es-MX'); }
+  function iniciales(t) { return (t || '?').trim().split(/\s+/).slice(0, 2).map(x => x[0]).join('').toUpperCase() || '?'; }
+  function estadoSocio(m) {
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    const pagado = m.status === 'active' || m.status === 'paid';
+    const vence = fechaDe(m.accessUntil || m.nextPaymentDate);
+    if (pagado && (!vence || vence >= hoy)) return 'activo';
+    if (pagado || m.status === 'inactive' || m.status === 'cancelled') return 'vencido';
+    return 'sin';
+  }
+  function barChart(vals, labels, alt, fmt) {
+    const W = 360, H = 150, pad = 22, base = H - 20, max = Math.max(1, ...vals);
+    const bw = (W - pad * 2) / vals.length, gap = Math.min(10, bw * 0.28);
+    let g = '';
+    vals.forEach((v, k) => {
+      const h = Math.max(v > 0 ? 3 : 0, (v / max) * (base - 22));
+      const x = pad + k * bw + gap / 2, y = base - h;
+      g += '<rect class="ap-bar' + (alt ? ' alt' : '') + '" x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + (bw - gap).toFixed(1) + '" height="' + h.toFixed(1) + '" rx="4"><title>' + esc(labels[k]) + ': ' + esc(fmt(v)) + '</title></rect>';
+      if (v > 0) g += '<text class="v" x="' + (x + (bw - gap) / 2).toFixed(1) + '" y="' + (y - 4).toFixed(1) + '" text-anchor="middle">' + esc(fmt(v)) + '</text>';
+      g += '<text x="' + (x + (bw - gap) / 2).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="middle">' + esc(labels[k]) + '</text>';
+    });
+    return '<svg class="ap-chart" viewBox="0 0 ' + W + ' ' + H + '" role="img"><line x1="' + pad + '" x2="' + (W - pad) + '" y1="' + base + '" y2="' + base + '" stroke="var(--border-2)"/>' + g + '</svg>';
+  }
+  function donut(items) {
+    const total = items.reduce((t, x) => t + x.v, 0);
+    if (!total) return '<div class="ap-empty">Aún no hay miembros registrados</div>';
+    const R = 52, C = 2 * Math.PI * R; let off = 0, arcs = '';
+    items.forEach(x => {
+      const len = (x.v / total) * C;
+      if (x.v) arcs += '<circle cx="70" cy="70" r="' + R + '" fill="none" stroke="' + x.c + '" stroke-width="18" stroke-dasharray="' + len.toFixed(2) + ' ' + (C - len).toFixed(2) + '" stroke-dashoffset="' + (-off).toFixed(2) + '" transform="rotate(-90 70 70)"/>';
+      off += len;
+    });
+    return '<div class="ap-donut-wrap"><svg viewBox="0 0 140 140" role="img"><circle cx="70" cy="70" r="' + R + '" fill="none" stroke="var(--border)" stroke-width="18"/>' + arcs +
+      '<text x="70" y="68" text-anchor="middle" style="font-size:22px;font-weight:800;fill:var(--text);font-family:var(--font-display)">' + total + '</text><text x="70" y="84" text-anchor="middle" style="font-size:9px;fill:var(--text-muted)">miembros</text></svg>' +
+      '<div class="ap-legend">' + items.map(x => '<div><i style="background:' + x.c + '"></i>' + x.t + '<b>' + x.v + '</b></div>').join('') + '</div></div>';
+  }
+  function renderDashboard() {
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    const ms = firebaseMembers;
+    const conteo = { activo: 0, vencido: 0, sin: 0 };
+    ms.forEach(m => conteo[estadoSocio(m)]++);
+
+    const hace7 = new Date(hoy); hace7.setDate(hace7.getDate() - 7);
+    const en7 = new Date(hoy); en7.setDate(en7.getDate() + 7);
+    const nuevos = ms.filter(m => { const d = fechaDe(m.createdAt || m.startDate); return d && d >= hace7; }).length;
+    const vencen = ms.filter(m => { if (estadoSocio(m) !== 'activo') return false; const d = fechaDe(m.accessUntil || m.nextPaymentDate); return d && d <= en7; });
+
+    // Pagos
+    const pagos = [];
+    ms.forEach(m => (m.payments || []).forEach(pg => { const d = fechaDe(pg.date); const monto = Number(pg.amount) || 0; if (d && pg.status !== 'failed') pagos.push({ d, monto, m }); }));
+    const mesActual = pagos.filter(x => x.d.getFullYear() === hoy.getFullYear() && x.d.getMonth() === hoy.getMonth());
+    const ingMes = mesActual.reduce((t, x) => t + x.monto, 0);
+
+    set('hMiembros', ms.length || data.stats.members); set('hActivos', conteo.activo); set('hIngresos', dinero(ingMes));
+    set('kTotal', ms.length); set('kTotalN', conteo.sin + ' sin membresía');
+    set('kActivos', conteo.activo); set('kActivosN', ms.length ? Math.round(conteo.activo / ms.length * 100) + '% del total' : '\u00a0');
+    set('kNuevos', nuevos); set('kVencen', vencen.length); set('kVencidos', conteo.vencido);
+    set('kIngMes', dinero(ingMes)); set('kIngMesN', mesActual.length + ' pago' + (mesActual.length === 1 ? '' : 's'));
+    set('dCourses', data.courses.length); set('dPdfs', data.pdfs.length); set('dLive', data.live.length);
+    set('kClases', data.courses.reduce((t, c) => t + ((c.lessons && c.lessons.length) || 0), 0) + ' clases en total');
+
+    // Altas por semana (12 semanas)
+    const altas = new Array(12).fill(0), etiq = [];
+    for (let k = 0; k < 12; k++) { const d = new Date(hoy); d.setDate(d.getDate() - (11 - k) * 7); etiq.push(d.getDate() + '/' + (d.getMonth() + 1)); }
+    ms.forEach(m => { const d = fechaDe(m.createdAt || m.startDate); if (!d) return; const sem = 11 - Math.floor((hoy - d) / (7 * 864e5)); if (sem >= 0 && sem < 12) altas[sem]++; });
+    document.getElementById('chAltas').innerHTML = barChart(altas, etiq, false, v => String(v));
+
+    // Ingresos por mes (6 meses)
+    const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+    const ing = new Array(6).fill(0), etM = [];
+    for (let k = 0; k < 6; k++) { const d = new Date(hoy.getFullYear(), hoy.getMonth() - (5 - k), 1); etM.push(meses[d.getMonth()]); pagos.forEach(x => { if (x.d.getFullYear() === d.getFullYear() && x.d.getMonth() === d.getMonth()) ing[k] += x.monto; }); }
+    document.getElementById('chIngresos').innerHTML = pagos.length ? barChart(ing, etM, true, v => dinero(v)) : '<div class="ap-empty">Aún no hay pagos registrados</div>';
+
+    document.getElementById('chEstados').innerHTML = donut([
+      { t: 'Activos', v: conteo.activo, c: 'var(--success)' },
+      { t: 'Vencidos / inactivos', v: conteo.vencido, c: 'var(--danger)' },
+      { t: 'Sin membresía', v: conteo.sin, c: 'var(--accent-soft)' }
+    ]);
+
+    document.getElementById('listVencen').innerHTML = vencen.sort((a, b) => fechaDe(a.accessUntil || a.nextPaymentDate) - fechaDe(b.accessUntil || b.nextPaymentDate)).slice(0, 6).map(m => {
+      const d = fechaDe(m.accessUntil || m.nextPaymentDate), dias = Math.round((d - hoy) / 864e5);
+      return '<div class="ap-row"><div class="ap-av">' + esc(iniciales(m.name || m.email)) + '</div><div class="who"><strong>' + esc(m.name || m.email || '—') + '</strong><small>' + esc(m.email || '') + '</small></div><span class="badge badge-warning">' + (dias <= 0 ? 'hoy' : 'en ' + dias + ' d') + '</span></div>';
+    }).join('') || '<div class="ap-empty">Nadie vence en los próximos 7 días</div>';
+
+    const act = [];
+    ms.forEach(m => { const d = fechaDe(m.createdAt || m.startDate); if (d) act.push({ d, t: 'Nuevo registro', m, b: 'badge-info' }); });
+    pagos.forEach(x => act.push({ d: x.d, t: 'Pago ' + dinero(x.monto), m: x.m, b: 'badge-success' }));
+    document.getElementById('listActividad').innerHTML = act.sort((a, b) => b.d - a.d).slice(0, 8).map(x =>
+      '<div class="ap-row"><div class="ap-av">' + esc(iniciales(x.m.name || x.m.email)) + '</div><div class="who"><strong>' + esc(x.m.name || x.m.email || '—') + '</strong><small>' + x.d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' }) + '</small></div><span class="badge ' + x.b + '">' + esc(x.t) + '</span></div>'
+    ).join('') || '<div class="ap-empty">Sin actividad todavía</div>';
+  }
+  function renderCourses() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('coursesTable').innerHTML = data.courses.map(c => {
+      const lessonCount = (c.lessons && c.lessons.length) || 0;
+      const isLocked = c.availableDate && c.availableDate > today;
+      const availLabel = !c.availableDate ? '<span style="color:var(--success);font-size:.82rem;">✓ Ya disponible</span>' : isLocked ? `<span style="color:var(--accent);font-size:.82rem;">${c.availableDate}</span>` : '<span style="color:var(--success);font-size:.82rem;">✓ Ya disponible</span>';
+      return `
+      <tr${isLocked ? ' style="opacity:.7;"' : ''}>
+        <td><strong>${c.title}</strong><br><span style="font-size:.78rem;color:var(--text-muted)">${c.desc}</span></td>
+        <td><span class="badge badge-info">${c.category}</span></td>
+        <td>${lessonCount} clase${lessonCount!==1?'s':''}</td>
+        <td>${c.date}</td>
+        <td>${availLabel}</td>
+        <td>${c.badge ? `<span class="badge badge-warning">${c.badge}</span>` : '—'}</td>
+        <td>
+          <button class="btn btn-o btn-sm" onclick="editItem('course',${c.id})">Editar</button>
+          <button class="btn btn-d btn-sm" onclick="deleteItem('course',${c.id})">Eliminar</button>
+        </td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-muted);">No hay cursos aún</td></tr>';
+  }
+  function renderLive() {
+    document.getElementById('liveTable').innerHTML = data.live.map(c => `
+      <tr>
+        <td><strong>${c.title}</strong><br><span style="font-size:.78rem;color:var(--text-muted)">${c.desc}</span></td>
+        <td><span class="badge badge-info">${c.category}</span></td>
+        <td>${c.date}</td>
+        <td>${c.time}</td>
+        <td>${c.link ? `<a href="${c.link}" target="_blank" style="color:var(--primary)">Enlace</a>` : '—'}</td>
+        <td>
+          <button class="btn btn-o btn-sm" onclick="editItem('live',${c.id})">Editar</button>
+          <button class="btn btn-d btn-sm" onclick="deleteItem('live',${c.id})">Eliminar</button>
+        </td>
+      </tr>
+    `).join('') || '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-muted);">No hay sesiones</td></tr>';
+  }
+  function renderPdfs() {
+    document.getElementById('pdfsTable').innerHTML = data.pdfs.map(c => `
+      <tr>
+        <td><strong>${c.title}</strong><br><span style="font-size:.78rem;color:var(--text-muted)">${c.desc}</span></td>
+        <td><span class="badge badge-info">${c.category}</span></td>
+        <td>${c.size}</td>
+        <td>${c.date}</td>
+        <td>${libresPriv[c.id] ? '<span class="badge badge-success">Privado</span>' : '—'}</td>
+        <td>
+          <button class="btn btn-o btn-sm" onclick="editItem('pdf',${c.id})">Editar</button>
+          <button class="btn btn-d btn-sm" onclick="deleteItem('pdf',${c.id})">Eliminar</button>
+        </td>
+      </tr>
+    `).join('') || '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-muted);">No hay PDFs</td></tr>';
+  }
+  function renderNewsList() {
+    const news = data.news || [];
+    document.getElementById('newsTable').innerHTML = news.map(n => `
+      <tr>
+        <td><strong>${n.title}</strong><br><span style="font-size:.78rem;color:var(--text-muted)">${(n.excerpt||'').substring(0,60)}${n.excerpt&&n.excerpt.length>60?'...':''}</span></td>
+        <td><span class="badge badge-info">${n.category||'Noticias'}</span></td>
+        <td>${n.date}</td>
+        <td>
+          <button class="btn btn-o btn-sm" onclick="editItem('news',${n.id})">Editar</button>
+          <button class="btn btn-d btn-sm" onclick="deleteItem('news',${n.id})">Eliminar</button>
+        </td>
+      </tr>
+    `).join('') || '<tr><td colspan="4" style="text-align:center;padding:30px;color:var(--text-muted);">No hay noticias</td></tr>';
+  }
+  let firebaseMembers = [];
+  async function loadFirebaseMembers() {
+    try {
+      const snapshot = await fbDb.collection('members').orderBy('createdAt','desc').get();
+      firebaseMembers = snapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
+    } catch(e) {
+      firebaseMembers = [];
+    }
+    renderMembers();
+    renderDashboard();
+    renderPagos();
+    renderMetricas();
+    renderPruebas();
+  }
+  let filtroSocios = 'todos', busquedaSocios = '';
+  function setFiltroSocios(f) { filtroSocios = f; renderMembers(); }
+  function setBusquedaSocios(v) { busquedaSocios = (v || '').toLowerCase(); renderMembers(); }
+  function renderMembers() {
+    const conteo = { todos: firebaseMembers.length, activo: 0, vencido: 0, sin: 0 };
+    firebaseMembers.forEach(m => conteo[estadoSocio(m)]++);
+    const bar = document.getElementById('membersChips');
+    if (bar) bar.innerHTML = [['todos', 'Todos'], ['activo', 'Activos'], ['vencido', 'Vencidos / inactivos'], ['sin', 'Sin membresía']].map(([k, t]) =>
+      '<button class="ap-chip' + (filtroSocios === k ? ' on' : '') + '" onclick="setFiltroSocios(\'' + k + '\')">' + t + ' · ' + conteo[k] + '</button>').join('');
+    const members = firebaseMembers.filter(m => (filtroSocios === 'todos' || estadoSocio(m) === filtroSocios) &&
+      (!busquedaSocios || ((m.name || '') + ' ' + (m.email || '')).toLowerCase().includes(busquedaSocios)));
+    document.getElementById('membersTable').innerHTML = members.map(m => `
+      <tr>
+        <td><strong>${m.name || '—'}</strong></td>
+        <td>${m.email || '—'}</td>
+        <td>${m.plan ? esc(m.plan === 'anual' ? 'Anual' : 'Mensual') : '—'}</td>
+        <td>${(fechaDe(m.accessUntil || m.nextPaymentDate) || '') ? fechaDe(m.accessUntil || m.nextPaymentDate).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}</td>
+        <td>${(() => { const e = estadoSocio(m); return '<span class="badge ' + (e === 'activo' ? 'badge-success' : e === 'vencido' ? 'badge-danger' : 'badge-info') + '">' + (e === 'activo' ? 'Activo' : e === 'vencido' ? 'Vencido' : 'Sin membresía') + '</span>'; })()}</td>
+        <td>
+          <button class="btn btn-o btn-sm" onclick="editFirebaseMember('${m.uid}')">Editar</button>
+          <button class="btn btn-o btn-sm" onclick="verProgresoSocio('${m.uid}')">Progreso</button>
+          <button class="btn btn-o btn-sm" title="Regalar 30 días de acceso" onclick="regalarTiempo('${m.uid}')">+30 días</button>
+          <button class="btn btn-${m.status==='active'?'w':'p'} btn-sm" onclick="toggleMemberStatus('${m.uid}','${m.status}')">${m.status==='active'?'Desactivar':'Activar'}</button>
+        </td>
+      </tr>
+    `).join('') || '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-muted);">No hay miembros registrados</td></tr>';
+  }
+  async function editFirebaseMember(uid) {
+    const m = firebaseMembers.find(x => x.uid === uid);
+    if (!m) return;
+    const html = `
+      <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="mfName" value="${m.name||''}"></div>
+      <div class="form-group"><label class="form-label">Teléfono</label><input class="form-input" id="mfPhone" value="${m.phone||''}"></div>
+      <div class="form-group"><label class="form-label">Especialidad</label><input class="form-input" id="mfSpecialty" value="${m.specialty||''}"></div>
+      <div class="form-group"><label class="form-label">Estado</label>
+        <select class="form-select" id="mfStatus">
+          <option value="active" ${m.status==='active'?'selected':''}>Activo</option>
+          <option value="inactive" ${m.status==='inactive'?'selected':''}>Inactivo</option>
+        </select>
+      </div>
+    `;
+    document.getElementById('modalTitle').textContent = 'Editar Miembro';
+    document.getElementById('modalBody').innerHTML = html;
+    document.getElementById('modalSave').onclick = async () => {
+      try {
+        await fbDb.collection('members').doc(uid).update({
+          name: document.getElementById('mfName').value,
+          phone: document.getElementById('mfPhone').value,
+          specialty: document.getElementById('mfSpecialty').value,
+          status: document.getElementById('mfStatus').value
+        });
+        toast('Miembro actualizado');
+        closeModal();
+        loadFirebaseMembers();
+      } catch(e) { toast('Error al actualizar'); }
+    };
+    document.getElementById('modalOverlay').classList.add('active');
+  }
+  async function toggleMemberStatus(uid, currentStatus) {
+    const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+    const action = newStatus === 'active' ? 'activar' : 'desactivar';
+    if (!confirm(`¿Seguro que deseas ${action} a este miembro?`)) return;
+    try {
+      await fbDb.collection('members').doc(uid).update({ status: newStatus });
+      toast(`Miembro ${newStatus === 'active' ? 'activado' : 'desactivado'}`);
+      loadFirebaseMembers();
+    } catch(e) { toast('Error al actualizar estado'); }
+  }
+
+  // ===== SERVIDOR (rutas /api/admin: el servidor valida tu correo de administrador) =====
+  const ADMIN_API = (location.hostname === 'localhost' || location.hostname === '127.0.0.1') ? 'http://localhost:3000' : 'https://web-production-cd020.up.railway.app';
+  async function apiAdmin(ruta, opts) {
+    const u = firebase.auth().currentUser; if (!u) throw new Error('Sin sesión');
+    const token = await u.getIdToken();
+    let r;
+    try { r = await fetch(ADMIN_API + ruta, { ...(opts || {}), headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token } }); }
+    catch (e) { throw new Error('No se pudo conectar con el servidor (' + ADMIN_API + ')'); }
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(data.error || 'Error ' + r.status);
+    return data;
+  }
+
+  // ===== CERTIFICADOS =====
+  let certLista = [], certBusqueda = '';
+  function ceBuscar(v) { certBusqueda = (v || '').toLowerCase(); renderCertificados(); }
+  async function cargarCertificados() {
+    const est = document.getElementById('certEstado');
+    try {
+      const d = await apiAdmin('/api/admin/certificados');
+      certLista = d.certificados || [];
+      est.innerHTML = '';
+      document.getElementById('ceTotal').textContent = d.total; document.getElementById('ceRev').textContent = d.revocados;
+      const top = Object.entries(d.porCurso || {}).sort((a, b) => b[1] - a[1])[0];
+      document.getElementById('ceTop').textContent = top ? top[0] : '—'; document.getElementById('ceTopN').textContent = top ? top[1] + ' certificado' + (top[1] === 1 ? '' : 's') : '\u00a0';
+    } catch (e) {
+      certLista = [];
+      est.innerHTML = '<div class="admin-card" style="border-left:4px solid var(--warning);"><strong>El servidor de certificados no respondió.</strong><p style="font-size:.86rem;color:var(--text-light);margin-top:6px;">' + esc(e.message) + '. Los certificados viven en el servidor (Railway). En local, inicia <code>npm start</code> en <code>club-fisioteck-webhooks</code> con tus variables de entorno.</p></div>';
+    }
+    renderCertificados();
+  }
+  function renderCertificados() {
+    const f = certLista.filter(c => !certBusqueda || [c.nombre, c.email, c.curso, c.folio].join(' ').toLowerCase().includes(certBusqueda));
+    document.getElementById('ceTabla').innerHTML = f.map(c =>
+      '<tr' + (c.revocado ? ' style="opacity:.55;"' : '') + '><td><code>' + esc(c.folio) + '</code></td><td><strong>' + esc(c.nombre) + '</strong><br><span style="font-size:.78rem;color:var(--text-muted)">' + esc(c.email || '') + '</span></td><td>' + esc(c.curso) + '</td><td>' +
+      new Date(c.emitidoEn).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' }) + '</td><td><span class="badge ' + (c.origen === 'manual' ? 'badge-warning' : 'badge-info') + '">' + (c.origen === 'manual' ? 'Manual' : 'Club') + '</span>' + (c.revocado ? ' <span class="badge badge-danger">Revocado</span>' : '') + '</td><td>' +
+      '<a class="btn btn-o btn-sm" target="_blank" rel="noopener" href="' + ADMIN_API + '/api/certificados/' + encodeURIComponent(c.folio) + '/pdf">PDF</a> ' +
+      (c.revocado ? '' : '<button class="btn btn-d btn-sm" onclick="revocarCertificado(\'' + esc(c.folio) + '\')">Revocar</button>') + '</td></tr>'
+    ).join('') || '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-muted);">Aún no hay certificados emitidos</td></tr>';
+  }
+  async function revocarCertificado(folio) {
+    if (!confirm('¿Revocar el certificado ' + folio + '? Dejará de verificar.')) return;
+    try { await apiAdmin('/api/admin/certificados/' + encodeURIComponent(folio) + '/revocar', { method: 'POST' }); toast('Certificado revocado'); cargarCertificados(); }
+    catch (e) { toast(e.message); }
+  }
+  function abrirEmisionManual() {
+    document.getElementById('modalTitle').textContent = 'Emitir certificado';
+    document.getElementById('modalBody').innerHTML =
+      '<div class="form-group"><label class="form-label">Correo del miembro</label><input class="form-input" id="ceEmail" type="email" placeholder="miembro@correo.com"></div>' +
+      '<div class="form-group"><label class="form-label">Curso</label><select class="form-select" id="ceCurso">' + data.courses.map(c => '<option value="' + esc(c.id) + '">' + esc(c.title) + '</option>').join('') + '</select></div>' +
+      '<div class="form-group"><label class="form-label">Nombre en el certificado (opcional)</label><input class="form-input" id="ceNombre" placeholder="Si lo dejas vacío se usa el nombre del miembro"></div>' +
+      '<p style="font-size:.78rem;color:var(--text-muted);">La emisión manual no exige haber terminado las clases. Queda marcada como "Manual".</p>';
+    document.getElementById('modalSave').onclick = async () => {
+      try {
+        await apiAdmin('/api/admin/certificados', { method: 'POST', body: JSON.stringify({ email: document.getElementById('ceEmail').value, courseId: document.getElementById('ceCurso').value, nombre: document.getElementById('ceNombre').value }) });
+        toast('Certificado emitido'); closeModal(); showSection('certs'); cargarCertificados();
+      } catch (e) { toast(e.message); }
+    };
+    document.getElementById('modalOverlay').classList.add('active');
+  }
+  async function verProgresoSocio(uid) {
+    const m = firebaseMembers.find(x => x.uid === uid); if (!m) return;
+    document.getElementById('modalTitle').textContent = 'Progreso de ' + (m.name || m.email);
+    document.getElementById('modalBody').innerHTML = '<div class="ap-empty">Cargando…</div>';
+    document.getElementById('modalSave').onclick = closeModal;
+    document.getElementById('modalOverlay').classList.add('active');
+    try {
+      const d = await apiAdmin('/api/admin/progreso/' + encodeURIComponent(uid));
+      document.getElementById('modalBody').innerHTML = d.cursos.map(c => {
+        const pct = c.total ? Math.round(c.hechas / c.total * 100) : 0;
+        return '<div style="margin-bottom:14px;"><div style="display:flex;justify-content:space-between;gap:10px;font-size:.86rem;"><strong>' + esc(c.titulo) + '</strong><span>' + c.hechas + '/' + c.total + (c.completo ? ' ✓' : '') + '</span></div><div class="ap-hbar" style="margin:6px 0 0;"><span class="b"><i style="width:' + Math.max(pct ? 2 : 0, pct) + '%"></i></span></div></div>';
+      }).join('') || '<div class="ap-empty">Sin cursos</div>';
+    } catch (e) { document.getElementById('modalBody').innerHTML = '<div class="ap-empty">' + esc(e.message) + '</div>'; }
+  }
+
+  // ===== ENCUESTA, GUÍA Y VISITAS (/api/admin/encuesta, /chatbot/sin-respuesta, /visitas) =====
+  const PREGUNTAS_ENC = { meta: 'Meta del año', p1: 'Perfil', origen: 'Cómo nos conoció', area: 'Área de interés', reto: 'Reto o meta', experiencia: 'Experiencia en línea', urgencia: 'Cuándo empezar', freno: 'Qué lo detiene' };
+  async function cargarEncuesta() {
+    const est = document.getElementById('enEstado');
+    const vacio = { sesiones: 0, completadas: 0, tasa: 0, perfiles: [], origen: [], areas: [], urgencia: [], frenos: [], abandono: [], leads: [] };
+    const [enc, sin, vis] = await Promise.all([
+      apiAdmin('/api/admin/encuesta').catch(e => ({ error: e })),
+      apiAdmin('/api/admin/chatbot/sin-respuesta').catch(e => ({ error: e })),
+      apiAdmin('/api/admin/metricas?dias=30').catch(e => ({ error: e }))
+    ]);
+    const falla = [enc, sin, vis].find(x => x.error);
+    est.innerHTML = falla ? '<div class="admin-card" style="border-left:4px solid var(--warning);"><strong>El servidor no respondió del todo.</strong><p style="font-size:.86rem;color:var(--text-light);margin-top:6px;">' + esc(falla.error.message) + '</p></div>' : '';
+    const d = enc.error ? vacio : enc;
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set('enSes', d.sesiones); set('enCom', d.completadas); set('enTasa', d.tasa + '% terminó'); set('enLeads', d.leads.length); set('enCal', d.leads.filter(l => l.caliente).length + ' quieren empezar ya');
+    const barras = (id, lista, texto) => { document.getElementById(id).innerHTML = hbars(lista.map(x => ({ t: x.valor || PREGUNTAS_ENC[x.clave] || x.clave, v: x.n })), texto); };
+    barras('enPerfiles', d.perfiles, 'Aún no hay respuestas'); barras('enAreas', d.areas, 'Aún no hay respuestas'); barras('enOrigen', d.origen, 'Aún no hay respuestas');
+    barras('enUrg', d.urgencia, 'Aún no hay respuestas'); barras('enFrenos', d.frenos, 'Aún no hay respuestas'); barras('enAband', d.abandono, 'Nadie ha abandonado todavía');
+    document.getElementById('enLeadsTabla').innerHTML = d.leads.map(l => '<tr><td><strong>' + esc(l.numero) + '</strong>' + (l.caliente ? ' <span class="badge badge-warning">Quiere empezar ya</span>' : '') + '</td><td>' + esc(l.perfil || '—') + '</td><td>' + esc(l.area || '—') + '</td><td>' + esc(l.urgencia || '—') + '</td><td>' + (l.fecha ? new Date(l.fecha).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }) : '') + '</td><td><a class="btn btn-o btn-sm" target="_blank" rel="noopener noreferrer" href="https://wa.me/' + encodeURIComponent(l.numero) + '">WhatsApp</a></td></tr>').join('') || '<tr><td colspan="6" style="text-align:center;padding:22px;color:var(--text-muted);">Nadie ha dejado su WhatsApp todavía</td></tr>';
+    document.getElementById('enSinResp').innerHTML = (sin.error ? [] : sin.preguntas).map(q => '<tr><td>' + esc(q.texto) + '</td><td>' + q.veces + '</td><td>' + new Date(q.ultimaMs).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }) + '</td></tr>').join('') || '<tr><td colspan="3" style="text-align:center;padding:22px;color:var(--text-muted);">La Guía ha podido contestar todo por ahora</td></tr>';
+    const v = vis.error ? { encendido: false, dias: [], total: 0 } : { ...vis, total: (vis.dias || []).reduce((t, x) => t + (x.total || 0), 0) };
+    document.getElementById('enContador').checked = !!v.encendido; set('enVis', v.total); set('enVisN', v.encendido ? 'Contador encendido' : 'Contador apagado');
+    document.getElementById('enVisGrafica').innerHTML = v.dias.length ? barChart(v.dias.slice(-14).map(x => x.total), v.dias.slice(-14).map(x => x.dia.slice(5)), true, n => String(n)) : '<div class="ap-empty">' + (v.encendido ? 'Aún no hay visitas registradas' : 'Enciende el contador para empezar a contar') + '</div>';
+  }
+  async function alternarContadorVisitas(activo) {
+    try { await fbDb.collection('config').doc('club').set({ contadorVisitas: activo === true }, { merge: true }); toast(activo ? 'Contador de visitas encendido (tarda hasta un minuto)' : 'Contador de visitas apagado'); cargarEncuesta(); }
+    catch (e) { toast('No se pudo cambiar: ' + (e.code || e.message)); cargarEncuesta(); }
+  }
+
+  // ===== CRÉDITOS Y CUPONES (/api/admin/creditos) =====
+  let cuponesLista = [];
+  const nombreAudiencia = { todos: 'Todas las cuentas', gratuitos: 'Sin membresía', miembros: 'Solo miembros' };
+  async function cargarCreditos() {
+    const est = document.getElementById('crEstado');
+    try {
+      const [r, c] = await Promise.all([apiAdmin('/api/admin/creditos'), apiAdmin('/api/admin/creditos/cupones')]);
+      est.innerHTML = ''; cuponesLista = c.cupones || [];
+      const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+      set('crReg', r.regalados); set('crCup', r.porCupon); set('crCanj', r.canjeados);
+      const ahora = Date.now(); set('crAct', cuponesLista.filter(x => x.activo !== false && (!x.venceMs || x.venceMs > ahora) && (!x.maxUsos || x.usos < x.maxUsos)).length);
+      document.getElementById('crMat').innerHTML = hbars(r.canjesPorMaterial.map(m => ({ t: m.titulo, v: m.n })), 'Aún no hay canjes');
+      document.getElementById('crMov').innerHTML = r.movimientos.slice(0, 30).map(m => '<tr><td>' + new Date(m.ms).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }) + '</td><td>' + esc(m.email || m.uid) + '</td><td><span class="badge ' + (m.tipo === 'canje' ? 'badge-warning' : 'badge-success') + '">' + esc(m.tipo) + (m.cupon ? ' ' + esc(m.cupon) : '') + '</span></td><td>' + (m.cantidad > 0 ? '+' : '') + m.cantidad + '</td></tr>').join('') || '<tr><td colspan="4" style="text-align:center;padding:22px;color:var(--text-muted);">Sin movimientos</td></tr>';
+    } catch (e) {
+      cuponesLista = [];
+      est.innerHTML = '<div class="admin-card" style="border-left:4px solid var(--warning);"><strong>El servidor de créditos no respondió.</strong><p style="font-size:.86rem;color:var(--text-light);margin-top:6px;">' + esc(e.message) + '</p></div>';
+    }
+    renderCupones();
+  }
+  function mensajeWhatsApp(c) { return '¡Cupón de ' + c.creditos + ' créditos para el Club FisioTeck! Clave: ' + c.clave + '. Canjéalo en Material PDF.' + (c.venceMs ? ' Vence el ' + new Date(c.venceMs).toLocaleDateString('es-MX', { day: 'numeric', month: 'long' }) + '.' : '') + (c.maxUsos ? ' Solo para las primeras ' + c.maxUsos + ' personas.' : ''); }
+  function renderCupones() {
+    const ahora = Date.now();
+    document.getElementById('cuTabla').innerHTML = cuponesLista.map(c => {
+      const venc = c.venceMs && c.venceMs < ahora, ago = c.maxUsos && c.usos >= c.maxUsos;
+      const est = c.activo === false ? ['Pausado', 'badge-warning'] : venc ? ['Vencido', 'badge-danger'] : ago ? ['Agotado', 'badge-danger'] : ['Activo', 'badge-success'];
+      return '<tr><td><code>' + esc(c.clave) + '</code></td><td>' + c.creditos + '</td><td>' + esc(nombreAudiencia[c.publico] || c.publico) + '</td><td>' + (c.usos || 0) + (c.maxUsos ? ' de ' + c.maxUsos : '') + '</td><td>' + (c.venceMs ? new Date(c.venceMs).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' }) : 'No vence') + '</td><td><span class="badge ' + est[1] + '">' + est[0] + '</span></td>' +
+        '<td><button class="btn btn-o btn-sm" onclick="copiarMensajeCupon(\'' + esc(c.clave) + '\')">Copiar mensaje</button> <button class="btn btn-o btn-sm" onclick="verCanjesCupon(\'' + esc(c.clave) + '\')">Quién</button> <button class="btn btn-' + (c.activo === false ? 'p' : 'w') + ' btn-sm" onclick="pausarCupon(\'' + esc(c.clave) + '\',' + (c.activo === false) + ')">' + (c.activo === false ? 'Activar' : 'Pausar') + '</button></td></tr>';
+    }).join('') || '<tr><td colspan="7" style="text-align:center;padding:26px;color:var(--text-muted);">Aún no hay cupones</td></tr>';
+  }
+  async function regalarCreditos() {
+    try {
+      const r = await apiAdmin('/api/admin/creditos/regalar', { method: 'POST', body: JSON.stringify({ email: document.getElementById('crRegEmail').value, cantidad: parseInt(document.getElementById('crRegCant').value), mensaje: document.getElementById('crRegMsg').value }) });
+      toast('Créditos regalados · saldo ' + r.saldo); document.getElementById('crRegMsg').value = ''; cargarCreditos();
+    } catch (e) { toast(e.message); }
+  }
+  async function crearCupon() {
+    try {
+      const v = document.getElementById('cuVence').value, max = document.getElementById('cuMax').value;
+      const r = await apiAdmin('/api/admin/creditos/cupones', { method: 'POST', body: JSON.stringify({ clave: document.getElementById('cuClave').value, creditos: parseInt(document.getElementById('cuCred').value), maxUsos: max ? parseInt(max) : null, publico: document.getElementById('cuPub').value, venceMs: v ? new Date(v).getTime() : null }) });
+      toast('Cupón creado: ' + r.cupon.clave); document.getElementById('cuClave').value = ''; cargarCreditos();
+    } catch (e) { toast(e.message); }
+  }
+  async function pausarCupon(clave, activar) { try { await apiAdmin('/api/admin/creditos/cupones/' + encodeURIComponent(clave) + '/estado', { method: 'POST', body: JSON.stringify({ activo: activar }) }); cargarCreditos(); } catch (e) { toast(e.message); } }
+  async function copiarMensajeCupon(clave) {
+    const c = cuponesLista.find(x => x.clave === clave); if (!c) return;
+    try { await navigator.clipboard.writeText(mensajeWhatsApp(c)); toast('Mensaje copiado: pégalo en el canal de WhatsApp'); } catch (e) { prompt('Copia este mensaje:', mensajeWhatsApp(c)); }
+  }
+  async function verCanjesCupon(clave) {
+    document.getElementById('modalTitle').textContent = 'Quién canjeó ' + clave;
+    document.getElementById('modalBody').innerHTML = '<div class="ap-empty">Cargando…</div>';
+    document.getElementById('modalSave').onclick = closeModal;
+    document.getElementById('modalOverlay').classList.add('active');
+    try { const r = await apiAdmin('/api/admin/creditos/cupones/' + encodeURIComponent(clave) + '/canjes'); document.getElementById('modalBody').innerHTML = r.canjes.map(x => '<div class="ap-row"><div class="who"><strong>' + esc(x.email || x.uid) + '</strong><small>' + new Date(x.ms).toLocaleString('es-MX') + '</small></div><span class="badge badge-success">+' + x.creditos + '</span></div>').join('') || '<div class="ap-empty">Nadie lo ha canjeado todavía</div>'; }
+    catch (e) { document.getElementById('modalBody').innerHTML = '<div class="ap-empty">' + esc(e.message) + '</div>'; }
+  }
+
+  // ===== REFERIDOS (/api/admin/referidos) =====
+  async function cargarReferidos() {
+    const est = document.getElementById('rfEstado');
+    let d;
+    try { d = await apiAdmin('/api/admin/referidos'); est.innerHTML = ''; }
+    catch (e) {
+      est.innerHTML = '<div class="admin-card" style="border-left:4px solid var(--warning);"><strong>El servidor de referidos no respondió.</strong><p style="font-size:.86rem;color:var(--text-light);margin-top:6px;">' + esc(e.message) + '</p></div>';
+      d = { total: 0, validos: 0, pendientes: 0, rechazados: 0, pagaron: 0, anfitriones: [], invitaciones: [] };
+    }
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set('rfTotal', d.total); set('rfVal', d.validos); set('rfPen', d.pendientes); set('rfPago', d.pagaron); set('rfRech', d.rechazados + ' no cuentan');
+    document.getElementById('rfTop').innerHTML = hbars(d.anfitriones.slice(0, 8).map(a => ({ t: a.nombre || a.email || 'Miembro', v: a.validos })), 'Aún nadie ha invitado');
+    const badge = e => e === 'valido' ? ['Válida', 'badge-success'] : e === 'pendiente-correo' ? ['Por confirmar', 'badge-warning'] : ['No cuenta', 'badge-danger'];
+    document.getElementById('rfTabla').innerHTML = d.invitaciones.slice(0, 100).map(i => { const b = badge(i.estado); return '<tr><td><strong>' + esc((i.invitado && (i.invitado.nombre || i.invitado.email)) || '—') + '</strong></td><td>' + esc((i.anfitrion && (i.anfitrion.nombre || i.anfitrion.email)) || '—') + '</td><td><span class="badge ' + b[1] + '">' + b[0] + '</span>' + (i.motivo ? '<br><span style="font-size:.74rem;color:var(--text-muted)">' + esc(i.motivo) + '</span>' : '') + '</td><td>' + (i.pago ? 'Sí' : '—') + '</td><td>' + (i.fecha ? new Date(i.fecha).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }) : '') + '</td></tr>'; }).join('') || '<tr><td colspan="5" style="text-align:center;padding:26px;color:var(--text-muted);">Aún no hay invitaciones</td></tr>';
+  }
+
+  // ===== RESEÑAS (las lee el servidor: /api/admin/resenas) =====
+  async function cargarResenas() {
+    const est = document.getElementById('reEstado');
+    let d;
+    try { d = await apiAdmin('/api/admin/resenas'); est.innerHTML = ''; }
+    catch (e) {
+      est.innerHTML = '<div class="admin-card" style="border-left:4px solid var(--warning);"><strong>El servidor de reseñas no respondió.</strong><p style="font-size:.86rem;color:var(--text-light);margin-top:6px;">' + esc(e.message) + '</p></div>';
+      d = { total: 0, promedio: 0, histograma: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }, porCurso: [], resenas: [] };
+    }
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set('reTotal', d.total); set('rePromedio', d.total ? d.promedio.toFixed(1) + ' ★' : '—');
+    set('reCom', d.resenas.filter(r => r.comentario).length); set('reBajas', d.porCurso.filter(c => c.promedio < 4).length);
+    document.getElementById('reHisto').innerHTML = hbars([5, 4, 3, 2, 1].map(n => ({ t: '★'.repeat(n), v: d.histograma[n] || 0 })), 'Aún no hay reseñas');
+    document.getElementById('reCursos').innerHTML = hbars(d.porCurso.slice(0, 8).map(c => ({ t: c.curso + ' (' + c.n + ')', v: Math.round(c.promedio * 10) / 10 })), 'Aún no hay cursos calificados');
+    document.getElementById('reLista').innerHTML = d.resenas.filter(r => r.comentario).slice(0, 40).map(r =>
+      '<div class="ap-row"><div class="ap-av">' + esc(iniciales(r.nombre || r.email)) + '</div><div class="who"><strong>' + esc(r.nombre || r.email || '—') + ' · <span style="color:#E8A317">' + '★'.repeat(r.estrellas) + '</span></strong><small>' + esc(r.curso) + '</small><div style="font-size:.84rem;color:var(--text-light);margin-top:4px;white-space:pre-wrap;">' + esc(r.comentario) + '</div></div></div>'
+    ).join('') || '<div class="ap-empty">Todavía no hay comentarios</div>';
+  }
+
+  // ===== DIRECTORIO (directorio/{uid}) =====
+  let dirLista = [], dirBusqueda = '', dirFiltro = 'todas';
+  function diBuscar(v) { dirBusqueda = (v || '').toLowerCase(); renderDirectorio(); }
+  function diFiltro(f) { dirFiltro = f; renderDirectorio(); }
+  // Las tarjetas y las marcas de moderación las lee el servidor (la moderación no se puede leer ni escribir desde el navegador)
+  async function cargarDirectorio() {
+    try { const d = await apiAdmin('/api/admin/directorio'); dirLista = d.tarjetas || []; }
+    catch (e) { dirLista = []; document.getElementById('diTabla').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:26px;color:var(--danger);">No se pudo leer el directorio: ' + esc(e.message) + '</td></tr>'; return; }
+    renderDirectorio();
+  }
+  function renderDirectorio() {
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    const vis = t => t.publicado && !t.oculta, priv = t => !t.publicado && !t.oculta;
+    set('diTotal', dirLista.length); set('diAct', dirLista.filter(vis).length); set('diOc', dirLista.filter(t => t.oculta).length);
+    const esp = {}; dirLista.forEach(t => { if (t.especialidad) esp[t.especialidad] = (esp[t.especialidad] || 0) + 1; });
+    const top = Object.entries(esp).sort((a, b) => b[1] - a[1])[0]; set('diTop', top ? top[0] : '—');
+    const chips = document.getElementById('diChips');
+    if (chips) chips.innerHTML = [['todas', 'Todas', dirLista.length], ['visibles', 'Visibles', dirLista.filter(vis).length], ['ocultas', 'Ocultas por el equipo', dirLista.filter(t => t.oculta).length], ['privadas', 'Privadas', dirLista.filter(priv).length]].map(c => '<button class="ap-chip' + (dirFiltro === c[0] ? ' on' : '') + '" onclick="diFiltro(\'' + c[0] + '\')">' + c[1] + ' (' + c[2] + ')</button>').join('');
+    const pasa = t => dirFiltro === 'todas' || (dirFiltro === 'visibles' && vis(t)) || (dirFiltro === 'ocultas' && t.oculta) || (dirFiltro === 'privadas' && priv(t));
+    document.getElementById('diTabla').innerHTML = dirLista.filter(t => pasa(t) && (!dirBusqueda || [t.nombre, t.puesto, t.empresa, t.ciudad, t.especialidad, t.bio].join(' ').toLowerCase().includes(dirBusqueda))).map(t =>
+      '<tr><td><strong>' + esc(t.nombre || '—') + '</strong>' + (t.puesto || t.empresa ? '<br><span style="font-size:.78rem;color:var(--text-muted)">' + esc([t.puesto, t.empresa].filter(Boolean).join(' · ')) + '</span>' : '') + (t.bio ? '<br><span style="font-size:.78rem;color:var(--text-light)">' + esc(String(t.bio).slice(0, 120)) + '</span>' : '') + '</td><td>' + esc(t.especialidad || '—') + '</td><td>' + esc(t.ciudad || '—') + '</td>' +
+      '<td>' + (t.oculta ? '<span class="badge badge-danger">Oculta por el equipo</span><br><span style="font-size:.74rem;color:var(--text-muted)">' + esc(t.ocultaPor || '') + (t.motivo ? ' · ' + esc(t.motivo) : '') + '</span>' : t.publicado ? '<span class="badge badge-success">Visible</span>' : '<span class="badge badge-warning">Privada</span>') + '</td>' +
+      '<td style="white-space:nowrap">' + (t.oculta ? '<button class="btn btn-o btn-sm" onclick="diMostrar(\'' + esc(t.uid) + '\')">Volver a mostrar</button> ' : '<button class="btn btn-o btn-sm" onclick="diOcultar(\'' + esc(t.uid) + '\')">Ocultar</button> ') + '<button class="btn btn-d btn-sm" onclick="diEliminar(\'' + esc(t.uid) + '\')">Eliminar</button></td></tr>'
+    ).join('') || '<tr><td colspan="5" style="text-align:center;padding:26px;color:var(--text-muted);">No hay tarjetas con esos filtros</td></tr>';
+  }
+  async function diOcultar(uid) {
+    const t = dirLista.find(x => x.uid === uid); if (!t) return;
+    const motivo = prompt('Ocultar la tarjeta de ' + (t.nombre || 'este miembro') + '.\nDejará de verse en el directorio aunque su dueño la vuelva a publicar, y se anota en la bitácora.\n\nMotivo (opcional):');
+    if (motivo === null) return;
+    try { await apiAdmin('/api/admin/directorio/' + encodeURIComponent(uid) + '/ocultar', { method: 'POST', body: JSON.stringify({ motivo }) }); toast('Tarjeta oculta'); cargarDirectorio(); }
+    catch (e) { toast('No se pudo ocultar: ' + e.message); }
+  }
+  async function diMostrar(uid) {
+    try { await apiAdmin('/api/admin/directorio/' + encodeURIComponent(uid) + '/mostrar', { method: 'POST', body: '{}' }); toast('La tarjeta vuelve a mostrarse'); cargarDirectorio(); }
+    catch (e) { toast('No se pudo mostrar: ' + e.message); }
+  }
+  async function diEliminar(uid) {
+    const t = dirLista.find(x => x.uid === uid); if (!t) return;
+    if (!confirm('¿Eliminar la tarjeta de ' + (t.nombre || 'este miembro') + '? Se borra del directorio (la persona podrá crear otra). Queda anotado en la bitácora.')) return;
+    const motivo = prompt('Motivo (opcional):'); if (motivo === null) return;
+    try { await apiAdmin('/api/admin/directorio/' + encodeURIComponent(uid) + '/eliminar', { method: 'POST', body: JSON.stringify({ motivo }) }); toast('Tarjeta eliminada'); cargarDirectorio(); }
+    catch (e) { toast('No se pudo eliminar: ' + e.message); }
+  }
+
+  // ===== CURSOS ESCALONADOS (config/club) =====
+  async function cargarEscalonado() {
+    try {
+      const sn = await fbDb.collection('config').doc('club').get(), c = sn.exists ? sn.data() : {};
+      document.getElementById('cfgEscActivo').checked = c.escalonadoActivo === true;
+      document.getElementById('cfgEscDias').value = c.escalonadoDias || 8;
+      document.getElementById('cfgEscRetos').value = c.retosParaAdelantar || 12;
+      document.getElementById('cfgEscDesde').textContent = c.escalonadoActivo === true && c.escalonadoDesde ? 'Activo desde ' + c.escalonadoDesde + '. Quienes empezaron a pagar antes de esa fecha tienen todo abierto.' : 'Apagado: todos los miembros tienen todos los cursos abiertos.';
+    } catch (e) { /* sin permisos o sin conexión */ }
+  }
+  async function guardarEscalonado() {
+    try {
+      const ref = fbDb.collection('config').doc('club'), sn = await ref.get(), previo = sn.exists ? sn.data() : {};
+      const activo = document.getElementById('cfgEscActivo').checked;
+      const dias = Math.max(1, Math.min(60, parseInt(document.getElementById('cfgEscDias').value) || 8));
+      const retos = Math.max(4, Math.min(17, parseInt(document.getElementById("cfgEscRetos").value) || 12));
+      const upd = { escalonadoActivo: activo, escalonadoDias: dias, retosParaAdelantar: retos };
+      // Al encenderlo (o si nunca se fijó) se anota el día: quien ya pagaba antes conserva todo abierto
+      if (activo && (previo.escalonadoActivo !== true || !previo.escalonadoDesde)) upd.escalonadoDesde = new Date().toISOString().split('T')[0];
+      await ref.set(upd, { merge: true });
+      toast(activo ? 'Cursos escalonados activados' : 'Cursos escalonados apagados'); cargarEscalonado();
+    } catch (e) { toast('No se pudo guardar: ' + e.message); }
+  }
+
+  // ===== PRUEBAS GRATUITAS =====
+  function tituloCurso(id) { const c = data.courses.find(x => String(x.id) === String(id)); return c ? c.title : 'Curso ' + id; }
+  function renderPruebas() {
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    const con = firebaseMembers.filter(m => m.trialCourseId !== undefined && m.trialCourseId !== null);
+    const pend = firebaseMembers.filter(m => (m.trialCourseId === undefined || m.trialCourseId === null) && estadoSocio(m) === 'sin');
+    const conv = con.filter(m => estadoSocio(m) === 'activo');
+    set('trElig', con.length); set('trPend', pend.length); set('trConv', conv.length);
+    set('trConvN', con.length ? Math.round(conv.length / con.length * 100) + '% de quienes eligieron' : '\u00a0');
+    const cuenta = {}; con.forEach(m => { const t = tituloCurso(m.trialCourseId); cuenta[t] = (cuenta[t] || 0) + 1; });
+    const orden = Object.entries(cuenta).sort((a, b) => b[1] - a[1]);
+    set('trTop', orden[0] ? orden[0][0] : '—'); set('trTopN', orden[0] ? orden[0][1] + ' persona' + (orden[0][1] === 1 ? '' : 's') : '\u00a0');
+    document.getElementById('trCursos').innerHTML = hbars(orden.map(([t, n]) => ({ t, v: n })), 'Aún nadie elige un curso de prueba');
+    document.getElementById('trTabla').innerHTML = con.sort((a, b) => (fechaDe(b.trialStartedAt) || 0) - (fechaDe(a.trialStartedAt) || 0)).map(m => {
+      const e = estadoSocio(m), d = fechaDe(m.trialStartedAt);
+      return '<tr><td><strong>' + esc(m.name || '—') + '</strong><br><span style="font-size:.78rem;color:var(--text-muted)">' + esc(m.email || '') + '</span></td><td>' + esc(tituloCurso(m.trialCourseId)) + '</td><td>' +
+        (d ? d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' }) : '—') + '</td><td><span class="badge ' + (e === 'activo' ? 'badge-success' : 'badge-info') + '">' + (e === 'activo' ? 'Suscrito' : 'En prueba') + '</span></td>' +
+        '<td><button class="btn btn-o btn-sm" onclick="reiniciarPrueba(\'' + m.uid + '\')">Reiniciar</button></td></tr>';
+    }).join('') || '<tr><td colspan="5" style="text-align:center;padding:26px;color:var(--text-muted);">Aún nadie ha elegido curso de prueba</td></tr>';
+  }
+  async function reiniciarPrueba(uid) {
+    const m = firebaseMembers.find(x => x.uid === uid); if (!m) return;
+    if (!confirm('¿Reiniciar la prueba de ' + (m.name || m.email) + '? Podrá elegir otro curso.')) return;
+    try {
+      await fbDb.collection('members').doc(uid).update({ trialCourseId: firebase.firestore.FieldValue.delete(), trialStartedAt: firebase.firestore.FieldValue.delete() });
+      toast('Prueba reiniciada'); loadFirebaseMembers();
+    } catch (e) { toast('No se pudo reiniciar'); }
+  }
+
+  // ===== SOCIOS: regalar tiempo y CSV =====
+  function descargarCSV(nombre, filas) {
+    const csv = '\ufeff' + filas.map(f => f.map(c => '"' + String(c == null ? '' : c).replace(/"/g, '""') + '"').join(',')).join('\r\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    a.download = nombre; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  }
+  function fmtFecha(d) { return d ? d.toISOString().split('T')[0] : ''; }
+  function exportarSociosCSV() {
+    descargarCSV('miembros-fisioteck.csv', [['Nombre', 'Correo', 'Teléfono', 'Especialidad', 'Plan', 'Estado', 'Vence', 'Registro']].concat(
+      firebaseMembers.map(m => [m.name, m.email, m.phone, m.specialty, m.plan, estadoSocio(m), fmtFecha(fechaDe(m.accessUntil || m.nextPaymentDate)), fmtFecha(fechaDe(m.createdAt || m.startDate))])));
+  }
+  async function regalarTiempo(uid) {
+    const m = firebaseMembers.find(x => x.uid === uid); if (!m) return;
+    if (!confirm('¿Regalar 30 días de acceso a ' + (m.name || m.email) + '?')) return;
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    const base = Math.max(hoy.getTime(), (fechaDe(m.accessUntil || m.nextPaymentDate) || hoy).getTime());
+    const nueva = new Date(base); nueva.setDate(nueva.getDate() + 30);
+    const upd = { status: 'active', nextPaymentDate: fmtFecha(nueva), giftedAt: fmtFecha(hoy) };
+    if (m.accessUntil) upd.accessUntil = fmtFecha(nueva);
+    try { await fbDb.collection('members').doc(uid).update(upd); toast('Se regalaron 30 días'); loadFirebaseMembers(); }
+    catch (e) { toast('No se pudo actualizar'); }
+  }
+
+  // ===== SUSCRIPCIONES Y PAGOS =====
+  let pgVentana = 7, pgBusqueda = '', pgEstado = 'todos', pendientes = [];
+  function listaPagos() {
+    const out = [];
+    firebaseMembers.forEach(m => (m.payments || []).forEach(pg => { const d = fechaDe(pg.date); if (d) out.push({ d, monto: Number(pg.amount) || 0, concepto: pg.concepto || pg.concept || '', estado: pg.status || 'paid', m }); }));
+    return out.sort((a, b) => b.d - a.d);
+  }
+  function pgSetEstado(e) { pgEstado = e; renderPagos(); }
+  async function sincronizarStripe() {
+    const b = document.getElementById('pgSync'); if (b) { b.disabled = true; b.textContent = 'Trayendo pagos…'; }
+    try {
+      const x = await apiAdmin('/api/admin/pagos/sincronizar', { method: 'POST', body: '{}' });
+      toast(x.nuevos || x.rechazados || x.actualizados ? 'Stripe: ' + x.nuevos + ' pago' + (x.nuevos === 1 ? '' : 's') + ' nuevo' + (x.nuevos === 1 ? '' : 's') + ', ' + x.rechazados + ' rechazado' + (x.rechazados === 1 ? '' : 's') + ', ' + x.actualizados + ' miembro' + (x.actualizados === 1 ? '' : 's') + ' al día' + (x.errores ? ' (' + x.errores + ' no se pudieron revisar)' : '') : 'Todo estaba al día con Stripe' + (x.errores ? ' (' + x.errores + ' no se pudieron revisar)' : ''));
+      if (typeof loadFirebaseMembers === 'function') await loadFirebaseMembers();
+      renderPagos();
+    } catch (e) { toast('No se pudieron traer los pagos: ' + e.message); }
+    if (b) { b.disabled = false; b.textContent = 'Traer pagos desde Stripe'; }
+  }
+  function pgBuscar(v) { pgBusqueda = (v || '').toLowerCase(); renderPagos(); }
+  function pgSetVentana(n) { pgVentana = n; renderPagos(); }
+  async function cargarPendientes() {
+    try { const sn = await fbDb.collection('pending_members').get(); pendientes = sn.docs.map(d => ({ id: d.id, ...d.data() })); }
+    catch (e) { pendientes = []; }
+    renderPagos();
+  }
+  function renderPagos() {
+    const pagos = listaPagos(), ok = pagos.filter(x => x.estado !== 'failed');
+    const total = ok.reduce((t, x) => t + x.monto, 0);
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set('pgTotal', dinero(total)); set('pgTotalN', ok.length + ' pago' + (ok.length === 1 ? '' : 's'));
+    set('pgPersonas', new Set(ok.map(x => x.m.uid)).size); set('pgFallidos', pagos.length - ok.length);
+    const cEst = document.getElementById('pgEstadoChips'); if (cEst) cEst.innerHTML = [['todos', 'Todos', pagos.length], ['pagado', 'Pagados', ok.length], ['rechazado', 'Rechazados', pagos.length - ok.length]].map(c => '<button class="ap-chip' + (pgEstado === c[0] ? ' on' : '') + '" onclick="pgSetEstado(\'' + c[0] + '\')">' + c[1] + ' (' + c[2] + ')</button>').join('');
+    const cnt = { mensual: 0, anual: 0 };
+    firebaseMembers.forEach(m => { if (m.plan === 'anual') cnt.anual++; else if (m.plan) cnt.mensual++; });
+    set('pgPlan', cnt.anual === 0 && cnt.mensual === 0 ? '—' : (cnt.anual > cnt.mensual ? 'Anual' : 'Mensual')); set('pgPlanN', cnt.mensual + ' mensual · ' + cnt.anual + ' anual');
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    set('pgCanc', firebaseMembers.filter(m => m.status === 'cancelled' && estadoSocio(m) === 'activo').length);
+
+    document.getElementById('pgVentanaChips').innerHTML = [7, 15, 30].map(n => '<button class="ap-chip' + (pgVentana === n ? ' on' : '') + '" onclick="pgSetVentana(' + n + ')">Próximos ' + n + ' días</button>').join('');
+    const limite = new Date(hoy); limite.setDate(limite.getDate() + pgVentana);
+    const prox = firebaseMembers.filter(m => { if (estadoSocio(m) !== 'activo') return false; const d = fechaDe(m.accessUntil || m.nextPaymentDate); return d && d <= limite; })
+      .sort((a, b) => fechaDe(a.accessUntil || a.nextPaymentDate) - fechaDe(b.accessUntil || b.nextPaymentDate));
+    document.getElementById('pgRenov').innerHTML = prox.map(m => {
+      const d = fechaDe(m.accessUntil || m.nextPaymentDate), dias = Math.round((d - hoy) / 864e5), auto = m.status !== 'cancelled' && m.stripeSubscriptionId;
+      return '<div class="ap-row"><div class="ap-av">' + esc(iniciales(m.name || m.email)) + '</div><div class="who"><strong>' + esc(m.name || m.email || '—') + '</strong><small>' + esc(m.email || '') + ' · ' + esc(m.plan === 'anual' ? 'Anual' : 'Mensual') + '</small></div>' +
+        '<span class="badge ' + (auto ? 'badge-success' : 'badge-danger') + '">' + (auto ? 'Se renueva solo' : 'No se renovará') + '</span><span class="badge badge-warning">' + (dias <= 0 ? 'hoy' : 'en ' + dias + ' d') + '</span></div>';
+    }).join('') || '<div class="ap-empty">Nadie vence en los próximos ' + pgVentana + ' días</div>';
+
+    document.getElementById('pgTabla').innerHTML = pagos.filter(x => (pgEstado === 'todos' || (pgEstado === 'rechazado') === (x.estado === 'failed')) && (!pgBusqueda || ((x.m.name || '') + ' ' + (x.m.email || '')).toLowerCase().includes(pgBusqueda))).slice(0, 200).map(x =>
+      '<tr><td>' + x.d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' }) + '</td><td><strong>' + esc(x.m.name || '—') + '</strong><br><span style="font-size:.78rem;color:var(--text-muted)">' + esc(x.m.email || '') + '</span></td><td>' + esc(x.concepto || '—') + '</td><td>' + dinero(x.monto) + '</td><td><span class="badge ' + (x.estado === 'failed' ? 'badge-danger' : 'badge-success') + '">' + (x.estado === 'failed' ? 'Rechazado' : 'Pagado') + '</span></td></tr>'
+    ).join('') || '<tr><td colspan="5" style="text-align:center;padding:26px;color:var(--text-muted);">Sin pagos registrados</td></tr>';
+
+    document.getElementById('pgPendientes').innerHTML = pendientes.map(x =>
+      '<tr><td>' + esc(x.email || x.id) + '</td><td>' + esc(x.plan === 'anual' ? 'Anual' : 'Mensual') + '</td><td>' + esc(x.lastPaymentDate || x.startDate || '—') + '</td><td>' + esc(x.nextPaymentDate || '—') + '</td></tr>'
+    ).join('') || '<tr><td colspan="4" style="text-align:center;padding:22px;color:var(--text-muted);">No hay pagos pendientes de vincular</td></tr>';
+  }
+  function exportarPagosCSV() {
+    descargarCSV('pagos-fisioteck.csv', [['Fecha', 'Nombre', 'Correo', 'Concepto', 'Monto', 'Estado']].concat(listaPagos().map(x => [fmtFecha(x.d), x.m.name, x.m.email, x.concepto, x.monto, x.estado])));
+  }
+
+  // ===== FORO =====
+  let foroPosts = [], foroFiltro = 'todos';
+  const FORO_CATS = { general: 'General', dudas: 'Dudas', casos: 'Casos clínicos', tips: 'Tips y técnicas', recursos: 'Recursos' };
+  async function cargarForo() {
+    try { const sn = await fbDb.collection('forum_posts').orderBy('createdAt', 'desc').limit(100).get(); foroPosts = sn.docs.map(d => ({ id: d.id, ...d.data() })); }
+    catch (e) { foroPosts = []; document.getElementById('foLista').innerHTML = '<div class="ap-empty">No se pudo leer el foro (' + esc(e.code || e.message) + ')</div>'; return; }
+    renderForo();
+  }
+  function foSetFiltro(f) { foroFiltro = f; renderForo(); }
+  function renderForo() {
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set('foTemas', foroPosts.length); set('foResp', foroPosts.reduce((t, x) => t + (x.replyCount || 0), 0));
+    set('foAutores', new Set(foroPosts.map(x => x.authorId)).size); set('foSin', foroPosts.filter(x => !x.replyCount).length);
+    document.getElementById('foChips').innerHTML = [['todos', 'Todos']].concat(Object.entries(FORO_CATS)).map(([k, t]) =>
+      '<button class="ap-chip' + (foroFiltro === k ? ' on' : '') + '" onclick="foSetFiltro(\'' + k + '\')">' + t + '</button>').join('');
+    const lista = foroPosts.filter(x => foroFiltro === 'todos' || x.category === foroFiltro);
+    document.getElementById('foLista').innerHTML = lista.map(x => {
+      const d = fechaDe(x.createdAt);
+      return '<div class="ap-post"><div class="ap-av">' + esc(iniciales(x.authorName)) + '</div><div class="who"><strong>' + esc(x.title) + '</strong><p>' + esc(x.body) + '</p><small>' + esc(x.authorName || 'Miembro') + ' · ' + (d ? d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }) : '') + ' · ' + (x.replyCount || 0) + ' respuestas · ' + esc(FORO_CATS[x.category] || x.category || '') + '</small>' +
+        '<div id="resp-' + x.id + '"></div></div><div style="display:flex;gap:6px;flex-shrink:0;"><button class="btn btn-o btn-sm" onclick="verRespuestas(\'' + x.id + '\')">Respuestas</button><button class="btn btn-d btn-sm" onclick="borrarTema(\'' + x.id + '\')">Eliminar</button></div></div>';
+    }).join('') || '<div class="ap-empty">No hay temas en esta categoría</div>';
+  }
+  async function verRespuestas(id) {
+    const box = document.getElementById('resp-' + id); if (!box) return;
+    if (box.innerHTML) { box.innerHTML = ''; return; }
+    box.innerHTML = '<div class="ap-replies">Cargando…</div>';
+    try {
+      const sn = await fbDb.collection('forum_posts').doc(id).collection('replies').orderBy('createdAt', 'asc').get();
+      box.innerHTML = '<div class="ap-replies">' + (sn.docs.map(d => { const r = d.data(); return '<div><span><strong>' + esc(r.authorName || 'Miembro') + ':</strong> ' + esc(r.body || r.text || '') + '</span><button class="btn btn-d btn-sm" onclick="borrarRespuesta(\'' + id + '\',\'' + d.id + '\')">Quitar</button></div>'; }).join('') || 'Sin respuestas') + '</div>';
+    } catch (e) { box.innerHTML = '<div class="ap-replies">No se pudieron cargar</div>'; }
+  }
+  async function borrarRespuesta(pid, rid) {
+    if (!confirm('¿Eliminar esta respuesta?')) return;
+    try {
+      const ref = fbDb.collection('forum_posts').doc(pid);
+      await ref.collection('replies').doc(rid).delete();
+      await ref.update({ replyCount: firebase.firestore.FieldValue.increment(-1) });
+      toast('Respuesta eliminada'); cargarForo();
+    } catch (e) { toast('No se pudo eliminar'); }
+  }
+  async function borrarTema(id) {
+    if (!confirm('¿Eliminar este tema y todas sus respuestas?')) return;
+    try {
+      const ref = fbDb.collection('forum_posts').doc(id);
+      const rs = await ref.collection('replies').get();
+      await Promise.all(rs.docs.map(d => d.ref.delete()));
+      await ref.delete(); toast('Tema eliminado'); cargarForo();
+    } catch (e) { toast('No se pudo eliminar'); }
+  }
+  function abrirTemaOficial() {
+    document.getElementById('modalTitle').textContent = 'Tema oficial del equipo';
+    document.getElementById('modalBody').innerHTML = '<div class="form-group"><label class="form-label">Título</label><input class="form-input" id="foNTitulo"></div>' +
+      '<div class="form-group"><label class="form-label">Categoría</label><select class="form-select" id="foNCat">' + Object.entries(FORO_CATS).map(([k, t]) => '<option value="' + k + '">' + t + '</option>').join('') + '</select></div>' +
+      '<div class="form-group"><label class="form-label">Mensaje</label><textarea class="form-textarea" id="foNCuerpo" rows="5"></textarea></div>';
+    document.getElementById('modalSave').onclick = async () => {
+      const title = document.getElementById('foNTitulo').value.trim(), body = document.getElementById('foNCuerpo').value.trim();
+      if (!title || !body) { toast('Completa título y mensaje'); return; }
+      try {
+        await fbDb.collection('forum_posts').add({ title, body, category: document.getElementById('foNCat').value, authorId: firebase.auth().currentUser.uid, authorName: 'Equipo FisioTeck', replyCount: 0, official: true, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+        toast('Tema publicado'); closeModal(); cargarForo();
+      } catch (e) { toast('No se pudo publicar'); }
+    };
+    document.getElementById('modalOverlay').classList.add('active');
+  }
+
+  // ===== MÉTRICAS =====
+  function hbars(items, vacio) {
+    const max = Math.max(1, ...items.map(x => x.v));
+    return items.length ? items.map(x => '<div class="ap-hbar"><span class="t" title="' + esc(x.t) + '">' + esc(x.t) + '</span><span class="b"><i style="width:' + Math.max(2, x.v / max * 100) + '%"></i></span><span class="n">' + x.v + '</span></div>').join('') : '<div class="ap-empty">' + vacio + '</div>';
+  }
+  function renderMetricas() {
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    const ms = firebaseMembers, pagos = listaPagos().filter(x => x.estado !== 'failed');
+    const pagaron = new Set(pagos.map(x => x.m.uid)), activos = ms.filter(m => estadoSocio(m) === 'activo');
+    const conv = ms.length ? Math.round(pagaron.size / ms.length * 100) : 0;
+    set('meReg', ms.length); set('meConv', conv + '%'); set('meConvN', pagaron.size + ' de ' + ms.length + ' registros');
+    const act = ms.filter(m => pagaron.has(m.uid) && estadoSocio(m) === 'activo').length;
+    set('meRet', pagaron.size ? Math.round(act / pagaron.size * 100) + '%' : '0%');
+    set('meTicket', pagos.length ? dinero(pagos.reduce((t, x) => t + x.monto, 0) / pagos.length) : '$0');
+    const hoy = new Date(), meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'], v = new Array(6).fill(0), et = [];
+    for (let k = 0; k < 6; k++) { const d = new Date(hoy.getFullYear(), hoy.getMonth() - (5 - k), 1); et.push(meses[d.getMonth()]); ms.forEach(m => { const f = fechaDe(m.createdAt || m.startDate); if (f && f.getFullYear() === d.getFullYear() && f.getMonth() === d.getMonth()) v[k]++; }); }
+    document.getElementById('meAltas').innerHTML = barChart(v, et, false, n => String(n));
+    document.getElementById('meEmbudo').innerHTML = hbars([{ t: 'Registrados', v: ms.length }, { t: 'Con algún pago', v: pagaron.size }, { t: 'Activos hoy', v: activos.length }], 'Sin datos');
+    const pl = { Mensual: 0, Anual: 0, 'Sin plan': 0 };
+    ms.forEach(m => { if (m.plan === 'anual') pl.Anual++; else if (m.plan) pl.Mensual++; else pl['Sin plan']++; });
+    document.getElementById('mePlanes').innerHTML = donut([{ t: 'Mensual', v: pl.Mensual, c: 'var(--accent)' }, { t: 'Anual', v: pl.Anual, c: 'var(--blue)' }, { t: 'Sin plan', v: pl['Sin plan'], c: 'var(--border-2)' }]);
+    const esp = {}; ms.forEach(m => { const e = (m.specialty || '').trim(); if (e) esp[e] = (esp[e] || 0) + 1; });
+    document.getElementById('meEsp').innerHTML = hbars(Object.entries(esp).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([t, n]) => ({ t, v: n })), 'Los miembros aún no indican su especialidad');
+  }
+
+  // ===== CATEGORY HELPER =====
+  function getCustomCategories() {
+    const all = [...data.courses, ...data.live, ...data.pdfs];
+    const defaults = ['fisioterapia','rehabilitacion','anatomia','especializacion'];
+    const custom = [...new Set(all.map(i => i.category).filter(c => c && !defaults.includes(c)))];
+    return custom;
+  }
+  function categoryFieldHTML(selected) {
+    const defaults = [
+      {value:'fisioterapia', label:'Fisioterapia'},
+      {value:'rehabilitacion', label:'Rehabilitación'},
+      {value:'anatomia', label:'Anatomía'},
+      {value:'especializacion', label:'Especialización'}
+    ];
+    const custom = getCustomCategories();
+    const isCustom = selected && !defaults.find(d => d.value === selected) && selected !== '';
+    let opts = defaults.map(d => `<option value="${d.value}" ${selected===d.value?'selected':''}>${d.label}</option>`).join('');
+    custom.forEach(c => { opts += `<option value="${c}" ${selected===c?'selected':''}>${c.charAt(0).toUpperCase()+c.slice(1)}</option>`; });
+    opts += `<option value="__custom__" ${isCustom && !custom.includes(selected)?'selected':''}>+ Otra categoría...</option>`;
+    return `
+      <select class="form-select" id="mCat" onchange="toggleCustomCat()">
+        ${opts}
+      </select>
+      <input class="form-input" id="mCatCustom" placeholder="Escribe la nueva categoría" style="display:${isCustom && !custom.includes(selected)?'block':'none'};margin-top:8px;" value="${isCustom && !custom.includes(selected)?selected:''}">
+    `;
+  }
+  function toggleCustomCat() {
+    const sel = document.getElementById('mCat');
+    const inp = document.getElementById('mCatCustom');
+    inp.style.display = sel.value === '__custom__' ? 'block' : 'none';
+    if (sel.value !== '__custom__') inp.value = '';
+  }
+  function getCatValue() {
+    const sel = document.getElementById('mCat').value;
+    if (sel === '__custom__') {
+      const custom = document.getElementById('mCatCustom').value.trim().toLowerCase().replace(/\s+/g,'-');
+      return custom || 'general';
+    }
+    return sel;
+  }
+
+  // ===== MODALS =====
+  function openModal(type, item=null) {
+    currentModal = type;
+    document.getElementById('modalSave').onclick = saveModalItem; // otros modales cambian este botón
+    editingId = item ? item.id : null;
+    const isEdit = !!item;
+    const titles = { course:'Curso Grabado', live:'Webinar', pdf:'Material PDF', news:'Noticia', member:'Miembro' };
+    document.getElementById('modalTitle').textContent = (isEdit?'Editar':'Nuevo') + ' ' + titles[type];
+
+    let html = '';
+    if (type === 'course') {
+      const lessonsHTML = (item?.lessons || []).map((l, i) => `
+        <div class="lesson-edit-row" style="display:flex;gap:8px;align-items:start;margin-bottom:8px;padding:10px;background:var(--bg);border-radius:8px;">
+          <div style="flex:1;">
+            <input class="form-input" placeholder="Título de la clase" value="${l.title||''}" data-lesson-field="title" data-lesson-idx="${i}" style="margin-bottom:6px;font-size:.85rem;">
+            <input class="form-input" placeholder="Descripción de la clase (opcional)" value="${l.desc||''}" data-lesson-field="desc" data-lesson-idx="${i}" style="margin-bottom:6px;font-size:.82rem;">
+            <div style="display:flex;gap:8px;">
+              <input class="form-input" placeholder="Duración (ej: 30min)" value="${l.duration||''}" data-lesson-field="duration" data-lesson-idx="${i}" style="font-size:.82rem;">
+              <input class="form-input" placeholder="URL del video" value="${l.videoUrl||''}" data-lesson-field="videoUrl" data-lesson-idx="${i}" style="font-size:.82rem;">
+            </div>
+          </div>
+          <button class="btn btn-d btn-sm" onclick="this.closest('.lesson-edit-row').remove()" style="flex-shrink:0;margin-top:4px;">✕</button>
+        </div>
+      `).join('');
+
+      html = `
+        <div class="form-group"><label class="form-label">Título del curso</label><input class="form-input" id="mTitle" value="${item?.title||''}"></div>
+        <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="mDesc">${item?.desc||''}</textarea></div>
+        <div class="form-group"><label class="form-label">Categoría</label>
+          ${categoryFieldHTML(item?.category||'')}
+        </div>
+        <div class="form-group"><label class="form-label">URL de Thumbnail (imagen de portada)</label><input class="form-input" id="mThumb" value="${item?.thumbnail||''}" placeholder="https://drive.google.com/file/d/.../view"><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">Sube una imagen a Drive → compártela → pega el enlace aquí</p></div>
+        <div class="form-group"><label class="form-label">Badge (Nuevo, Popular, etc. — dejar vacío si no aplica)</label><input class="form-input" id="mBadge" value="${item?.badge||''}"></div>
+        <div class="form-group"><label class="form-label">Fecha de disponibilidad (opcional)</label><input class="form-input" type="date" id="mAvailableDate" value="${item?.availableDate||''}"><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;line-height:1.5;"><strong>Vacío:</strong> El curso se desbloquea automáticamente según el orden de subida (Curso 1 = inmediato, Curso 2 = 15 días después del pago del miembro, Curso 3 = 30 días, etc.).<br><strong>Con fecha:</strong> El curso se abre en esa fecha exacta para todos los miembros, sin importar cuándo pagaron.</p></div>
+        <div class="form-group"><label class="form-label">Imagen del Temario (opcional)</label><input class="form-input" id="mTemario" value="${item?.temarioImg||''}" placeholder="https://drive.google.com/file/d/.../view"><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">Sube la imagen del temario/programa a Drive → compártela → pega el enlace aquí. Se mostrará con el botón "Ver temario".</p></div>
+        <hr style="margin:20px 0;border:none;border-top:2px solid var(--border);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <label class="form-label" style="margin:0;font-size:1rem;font-weight:600;">Clases del curso</label>
+          <button class="btn btn-o btn-sm" onclick="addLessonRow()" type="button">+ Agregar clase</button>
+        </div>
+        <div id="lessonsContainer">${lessonsHTML}</div>
+        <p style="font-size:.72rem;color:var(--text-muted);margin-top:8px;">Agrega las clases en orden. Cada clase necesita título y URL del video.</p>
+      `;
+    } else if (type === 'live') {
+      html = `
+        <div class="form-group"><label class="form-label">Título del webinar</label><input class="form-input" id="mTitle" value="${item?.title||''}"></div>
+        <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="mDesc">${item?.desc||''}</textarea></div>
+        <div class="form-group"><label class="form-label">Categoría</label>
+          ${categoryFieldHTML(item?.category||'')}
+        </div>
+        <div class="form-group"><label class="form-label">Fecha</label><input class="form-input" type="date" id="mDate" value="${item?.date||''}"></div>
+        <div class="form-group"><label class="form-label">Hora</label><input class="form-input" type="time" id="mTime" value="${item?.time||''}"></div>
+        <div class="form-group"><label class="form-label">Enlace de la sesión (Zoom, Meet, etc.)</label><input class="form-input" id="mLink" value="${item?.link||''}" placeholder="https://..."></div>
+        <div class="form-group"><label class="form-label">URL de Thumbnail (imagen de portada)</label><input class="form-input" id="mThumb" value="${item?.thumbnail||''}" placeholder="https://drive.google.com/file/d/.../view"></div>
+        <div class="form-group"><label class="form-label">Badge</label><input class="form-input" id="mBadge" value="${item?.badge||''}"></div>
+        <hr style="margin:16px 0;border:none;border-top:1px solid var(--border);">
+        <p style="font-size:.82rem;font-weight:600;margin-bottom:12px;">Instructor / Ponente</p>
+        <div class="form-group"><label class="form-label">Nombre del instructor</label><input class="form-input" id="mInstructor" value="${item?.instructor||''}" placeholder="Ej: Dr. García López"></div>
+        <div class="form-group"><label class="form-label">Rol / Especialidad</label><input class="form-input" id="mInstructorRole" value="${item?.instructorRole||''}" placeholder="Ej: Especialista en punción seca"></div>
+        <div class="form-group"><label class="form-label">Imagen de semblanza del ponente (Google Drive)</label><input class="form-input" id="mInstructorImg" value="${item?.instructorImg||''}" placeholder="https://drive.google.com/file/d/.../view"></div>
+        <hr style="margin:16px 0;border:none;border-top:1px solid var(--border);">
+        <p style="font-size:.82rem;font-weight:600;margin-bottom:12px;">Grabación (agregar después del evento)</p>
+        <div class="form-group"><label class="form-label">URL de la grabación (Google Drive)</label><input class="form-input" id="mRecordingUrl" value="${item?.recordingUrl||''}" placeholder="https://drive.google.com/file/d/.../view"><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">Después del webinar, sube la grabación a Drive y pega el enlace aquí. Aparecerá en "Grabaciones disponibles".</p></div>
+      `;
+    } else if (type === 'pdf') {
+      html = `
+        <div class="form-group"><label class="form-label">Título</label><input class="form-input" id="mTitle" value="${item?.title||''}"></div>
+        <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="mDesc">${item?.desc||''}</textarea></div>
+        <div class="form-group"><label class="form-label">Categoría</label>
+          ${categoryFieldHTML(item?.category||'')}
+        </div>
+        <div class="form-group"><label class="form-label">Tamaño (ej: 3.2 MB)</label><input class="form-input" id="mSize" value="${item?.size||''}"></div>
+        <div class="form-group"><label class="form-label">Formato del archivo</label><select class="form-select" id="mFormato">${['PDF','Excel','PowerPoint','Word','Otro'].map(f => `<option value="${f}" ${(item?.formato||'PDF')===f?'selected':''}>${f}</option>`).join('')}</select></div>
+        <div class="form-group"><label class="form-label">URL del PDF (Google Drive)</label><input class="form-input" id="mFileUrl" data-estado="${item ? 'cargando' : 'listo'}" value="" placeholder="${item ? 'Cargando el enlace guardado…' : 'https://drive.google.com/file/d/.../view'}"><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">Sube el PDF a Drive → clic derecho → Compartir → "Cualquier persona con el enlace" → Copia el enlace. El enlace se guarda en el servidor (no en el sitio): solo lo reciben los miembros o quien canjee el material con créditos.</p></div>
+        <div class="form-group"><label class="form-label">URL de Thumbnail (imagen de portada)</label><input class="form-input" id="mThumb" value="${item?.thumbnail||''}" placeholder="https://drive.google.com/file/d/.../view"><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">Sube una imagen a Drive → compártela → pega el enlace aquí</p></div>
+      `;
+    } else if (type === 'news') {
+      html = `
+        <div class="form-group"><label class="form-label">Título</label><input class="form-input" id="mTitle" value="${item?.title||''}"></div>
+        <div class="form-group"><label class="form-label">Extracto (resumen corto)</label><textarea class="form-textarea" id="mExcerpt" rows="2">${item?.excerpt||''}</textarea></div>
+        <div class="form-group"><label class="form-label">Contenido del artículo</label><textarea class="form-textarea" id="mContent" rows="8" style="min-height:200px;">${item?.content||''}</textarea><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">Usa saltos de línea para separar párrafos.</p></div>
+        <div class="form-group"><label class="form-label">Categoría</label>
+          <select class="form-select" id="mNewsCat">
+            <option value="Noticias" ${item?.category==='Noticias'?'selected':''}>Noticias</option>
+            <option value="Artículos" ${item?.category==='Artículos'?'selected':''}>Artículos</option>
+            <option value="Tips" ${item?.category==='Tips'?'selected':''}>Tips</option>
+            <option value="Casos clínicos" ${item?.category==='Casos clínicos'?'selected':''}>Casos clínicos</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Imagen de portada (Google Drive)</label><input class="form-input" id="mThumb" value="${item?.thumbnail||''}" placeholder="https://drive.google.com/file/d/.../view"></div>
+        <div class="form-group"><label class="form-label">Link externo (opcional — si redirige a otro sitio)</label><input class="form-input" id="mExtLink" value="${item?.externalLink||''}" placeholder="https://..."></div>
+      `;
+    } else if (type === 'member') {
+      html = `
+        <div class="form-group"><label class="form-label">Nombre completo</label><input class="form-input" id="mName" value="${item?.name||''}"></div>
+        <div class="form-group"><label class="form-label">Correo electrónico</label><input class="form-input" type="email" id="mEmail" value="${item?.email||''}"></div>
+        <div class="form-group"><label class="form-label">Contraseña</label><input class="form-input" id="mPass" value="${item?.password||''}" placeholder="Contraseña para iniciar sesión"></div>
+        <div class="form-group"><label class="form-label">Teléfono</label><input class="form-input" id="mPhone" value="${item?.phone||''}"></div>
+        <div class="form-group"><label class="form-label">Fecha de inicio (YYYY-MM-DD)</label><input class="form-input" type="date" id="mStartDate" value="${item?.startDate||new Date().toISOString().split('T')[0]}"></div>
+        <div class="form-group"><label class="form-label">Estado</label>
+          <select class="form-select" id="mStatus">
+            <option value="active" ${item?.status==='active'?'selected':''}>Activo</option>
+            <option value="inactive" ${item?.status==='inactive'?'selected':''}>Inactivo</option>
+          </select>
+        </div>
+      `;
+    }
+    document.getElementById('modalBody').innerHTML = html;
+    document.getElementById('modalOverlay').classList.add('active');
+    if (type === 'pdf' && item) llenarEnlacePdf(item.id);
+  }
+  function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); currentModal=null; editingId=null; }
+
+  function addLessonRow() {
+    const container = document.getElementById('lessonsContainer');
+    const idx = container.children.length;
+    const row = document.createElement('div');
+    row.className = 'lesson-edit-row';
+    row.style.cssText = 'display:flex;gap:8px;align-items:start;margin-bottom:8px;padding:10px;background:var(--bg);border-radius:8px;';
+    row.innerHTML = `
+      <div style="flex:1;">
+        <input class="form-input" placeholder="Título de la clase" data-lesson-field="title" data-lesson-idx="${idx}" style="margin-bottom:6px;font-size:.85rem;">
+        <input class="form-input" placeholder="Descripción de la clase (opcional)" data-lesson-field="desc" data-lesson-idx="${idx}" style="margin-bottom:6px;font-size:.82rem;">
+        <div style="display:flex;gap:8px;">
+          <input class="form-input" placeholder="Duración (ej: 30min)" data-lesson-field="duration" data-lesson-idx="${idx}" style="font-size:.82rem;">
+          <input class="form-input" placeholder="URL del video" data-lesson-field="videoUrl" data-lesson-idx="${idx}" style="font-size:.82rem;">
+        </div>
+      </div>
+      <button class="btn btn-d btn-sm" onclick="this.closest('.lesson-edit-row').remove()" style="flex-shrink:0;margin-top:4px;">✕</button>`;
+    container.appendChild(row);
+  }
+
+  function saveModalItem() {
+    const type = currentModal;
+    const today = new Date().toISOString().split('T')[0];
+
+    if (type === 'course') {
+      // Collect lessons
+      const lessonRows = document.querySelectorAll('#lessonsContainer .lesson-edit-row');
+      const lessons = [];
+      lessonRows.forEach((row, i) => {
+        const title = row.querySelector('[data-lesson-field="title"]').value.trim();
+        const desc = row.querySelector('[data-lesson-field="desc"]')?.value.trim() || '';
+        const duration = row.querySelector('[data-lesson-field="duration"]').value.trim();
+        const videoUrl = row.querySelector('[data-lesson-field="videoUrl"]').value.trim();
+        if (title) lessons.push({ id: Date.now() + i, title, desc, duration, videoUrl });
+      });
+
+      const item = {
+        id: editingId || Date.now(),
+        title: document.getElementById('mTitle').value,
+        desc: document.getElementById('mDesc').value,
+        category: getCatValue(),
+        date: today,
+        badge: document.getElementById('mBadge').value,
+        thumbnail: document.getElementById('mThumb').value,
+        temarioImg: document.getElementById('mTemario').value,
+        availableDate: document.getElementById('mAvailableDate').value || '',
+        lessons: lessons
+      };
+      if (!item.title) { toast('El título es obligatorio'); return; }
+      if (editingId) { const idx = data.courses.findIndex(c=>c.id===editingId); if(idx>=0) data.courses[idx]=item; }
+      else data.courses.unshift(item);
+      saveData(); renderCourses(); renderDashboard();
+    } else if (type === 'live') {
+      const item = {
+        id: editingId || Date.now(),
+        title: document.getElementById('mTitle').value,
+        desc: document.getElementById('mDesc').value,
+        category: getCatValue(),
+        date: document.getElementById('mDate').value,
+        time: document.getElementById('mTime').value,
+        badge: document.getElementById('mBadge').value,
+        link: document.getElementById('mLink').value,
+        thumbnail: document.getElementById('mThumb').value,
+        instructor: document.getElementById('mInstructor').value,
+        instructorRole: document.getElementById('mInstructorRole').value,
+        instructorImg: document.getElementById('mInstructorImg').value,
+        recordingUrl: document.getElementById('mRecordingUrl').value
+      };
+      if (!item.title) { toast('El título es obligatorio'); return; }
+      if (editingId) { const idx = data.live.findIndex(c=>c.id===editingId); if(idx>=0) data.live[idx]=item; }
+      else data.live.unshift(item);
+      saveData(); renderLive(); renderDashboard();
+    } else if (type === 'pdf') {
+      const item = {
+        id: editingId || Date.now(),
+        title: document.getElementById('mTitle').value,
+        desc: document.getElementById('mDesc').value,
+        category: getCatValue(),
+        size: document.getElementById('mSize').value,
+        formato: (document.getElementById('mFormato') || {}).value || 'PDF',
+        date: today,
+        thumbnail: document.getElementById('mThumb').value
+      };
+      if (!item.title) { toast('El título es obligatorio'); return; }
+      const campoUrl = document.getElementById('mFileUrl');
+      if (campoUrl.dataset.estado === 'cargando') { toast('Espera: se está cargando el enlace guardado'); return; }
+      guardarPdfPrivado(item, campoUrl.value.trim(), campoUrl.dataset.estado === 'listo');
+      if (editingId) { const idx = data.pdfs.findIndex(c=>c.id===editingId); if(idx>=0) data.pdfs[idx]=item; }
+      else data.pdfs.unshift(item);
+      saveData(); renderPdfs(); renderDashboard();
+    } else if (type === 'news') {
+      const item = {
+        id: editingId || Date.now(),
+        title: document.getElementById('mTitle').value,
+        excerpt: document.getElementById('mExcerpt').value,
+        content: document.getElementById('mContent').value,
+        category: document.getElementById('mNewsCat').value,
+        thumbnail: document.getElementById('mThumb').value,
+        externalLink: document.getElementById('mExtLink').value,
+        date: new Date().toISOString().split('T')[0]
+      };
+      if (!item.title) { toast('El título es obligatorio'); return; }
+      if (!data.news) data.news = [];
+      if (editingId) { const idx = data.news.findIndex(c=>c.id===editingId); if(idx>=0) data.news[idx]=item; }
+      else data.news.unshift(item);
+      saveData(); renderNewsList(); renderDashboard();
+    } else if (type === 'member') {
+      const item = {
+        id: editingId || Date.now(),
+        name: document.getElementById('mName').value,
+        email: document.getElementById('mEmail').value,
+        password: document.getElementById('mPass').value,
+        phone: document.getElementById('mPhone').value,
+        startDate: document.getElementById('mStartDate').value,
+        status: document.getElementById('mStatus').value
+      };
+      if (!item.name || !item.email) { toast('Nombre y correo son obligatorios'); return; }
+      if (editingId) { const idx = data.members.findIndex(m=>m.id===editingId); if(idx>=0) data.members[idx]=item; }
+      else data.members.unshift(item);
+      saveData(); renderMembers(); renderDashboard();
+    }
+    closeModal();
+    toast('Guardado correctamente');
+  }
+
+  function editItem(type, id) {
+    const lists = { course:'courses', live:'live', pdf:'pdfs', news:'news', member:'members' };
+    const list = data[lists[type]] || [];
+    const item = list.find(i => i.id === id);
+    if (item) openModal(type, item);
+  }
+  function deleteItem(type, id) {
+    if (!confirm('¿Eliminar este elemento?')) return;
+    const lists = { course:'courses', live:'live', pdf:'pdfs', news:'news', member:'members' };
+    data[lists[type]] = (data[lists[type]] || []).filter(i => i.id !== id);
+    saveData();
+    if (type==='course') renderCourses();
+    else if (type==='live') renderLive();
+    else if (type==='pdf') renderPdfs();
+    else if (type==='news') renderNewsList();
+    else if (type==='member') renderMembers();
+    renderDashboard();
+    toast('Eliminado');
+  }
+
+  // ===== PDF LIBRES: el enlace vive en el servidor, nunca en content.json =====
+  let libresPriv = {};
+  async function cargarLibresPriv() {
+    try {
+      const r = await apiAdmin('/api/admin/materiales-libres');
+      libresPriv = {};
+      (r.materiales || []).filter(m => !m.retirado).forEach(m => { libresPriv[String(m.id).replace(/^pdf-/, '')] = m.url; });
+      if (typeof renderPdfs === 'function' && document.getElementById('pdfsTable')) renderPdfs();
+    } catch (e) { /* sin servidor: la tabla solo muestra "—" */ }
+  }
+  async function llenarEnlacePdf(id) {
+    const campo = document.getElementById('mFileUrl'); if (!campo || campo.dataset.estado !== 'cargando') return;
+    try {
+      const r = await apiAdmin('/api/admin/materiales-libres');
+      const m = (r.materiales || []).find(x => String(x.id) === 'pdf-' + id && !x.retirado);
+      campo.value = m ? m.url : ''; campo.placeholder = 'https://drive.google.com/file/d/.../view'; campo.dataset.estado = 'listo';
+    } catch (e) { campo.placeholder = 'No se pudo cargar (' + e.message + '). Se conservará el enlace guardado.'; campo.dataset.estado = 'error'; }
+  }
+  async function guardarPdfPrivado(item, url, cargado) {
+    const id = 'pdf-' + item.id;
+    try {
+      if (url) {
+        await apiAdmin('/api/admin/materiales-libres', { method: 'POST', body: JSON.stringify({ id, titulo: item.title, desc: item.desc, tipo: 'pdf', url, thumbnail: item.thumbnail, categoria: item.category, size: item.size }) });
+        libresPriv[item.id] = url;
+      } else if (cargado && libresPriv[item.id]) {
+        await apiAdmin('/api/admin/materiales-libres/' + encodeURIComponent(id), { method: 'DELETE' });
+        delete libresPriv[item.id];
+      }
+      if (typeof renderPdfs === 'function') renderPdfs();
+    } catch (e) { toast('PDF guardado en el sitio, pero el enlace no llegó al servidor: ' + e.message); }
+  }
+
+  // ===== PUBLISH =====
+  function publishChanges() {
+    // Generate JSON for download
+    const exportData = {
+      stats: { ...data.stats, members: parseInt(document.getElementById('cfgMembers')?.value || data.stats.members) },
+      courses: data.courses.map(c => ({...c, type:'video', ...(c.materiales ? { materiales: c.materiales.map(m => ({ titulo: m.titulo, desbloqueaEnClase: m.desbloqueaEnClase || 0 })) } : {})})),
+      live: data.live.map(c => ({...c, type:'live'})),
+      pdfs: data.pdfs.map(c => { const { fileUrl, ...resto } = c; return { ...resto, type:'pdf' }; }),
+      news: (data.news || []),
+      members: data.members
+    };
+    const json = JSON.stringify(exportData, null, 2);
+
+    // Try GitHub API first
+    const gitConfig = JSON.parse(localStorage.getItem(GIT_KEY) || '{}');
+    if (gitConfig.repo && gitConfig.token) {
+      publishToGitHub(gitConfig, json);
+    } else {
+      // Download as file
+      const blob = new Blob([json], { type:'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'content.json';
+      a.click(); URL.revokeObjectURL(url);
+      toast('Archivo content.json descargado — súbelo a tu repo en la carpeta data/');
+    }
+  }
+
+  async function publishToGitHub(config, content) {
+    try {
+      toast('Publicando en GitHub...');
+      const path = 'data/content.json';
+      const url = `https://api.github.com/repos/${config.repo}/contents/${path}`;
+
+      // Get current file SHA
+      let sha = '';
+      try {
+        const getRes = await fetch(url, { headers:{ 'Authorization':`token ${config.token}` } });
+        if (getRes.ok) { const d = await getRes.json(); sha = d.sha; }
+      } catch(e) {}
+
+      const body = {
+        message: 'Actualizar contenido del Club FisioTeck',
+        content: btoa(unescape(encodeURIComponent(content))),
+        ...(sha && { sha })
+      };
+      const res = await fetch(url, {
+        method:'PUT',
+        headers:{ 'Authorization':`token ${config.token}`, 'Content-Type':'application/json' },
+        body: JSON.stringify(body)
+      });
+      if (res.ok) {
+        toast('¡Publicado en GitHub exitosamente! Los cambios se verán en minutos.');
+      } else {
+        toast('Error al publicar en GitHub — revisa tu token y repo');
+      }
+    } catch(e) {
+      toast('Error de conexión con GitHub');
+    }
+  }
+
+  // ===== CONFIG SAVES =====
+  function saveConfig() {
+    data.stats.members = parseInt(document.getElementById('cfgMembers').value) || 0;
+    saveData(); renderDashboard();
+    toast('Estadísticas actualizadas');
+  }
+  function saveGitConfig() {
+    const config = { repo:document.getElementById('cfgRepo').value, token:document.getElementById('cfgToken').value };
+    localStorage.setItem(GIT_KEY, JSON.stringify(config));
+    toast('Configuración de GitHub guardada');
+  }
+  function loadGitConfig() {
+    const saved = JSON.parse(localStorage.getItem(GIT_KEY) || 'null');
+    const config = saved || { repo:'teccapitalweb/club-fisioteck', token:'' };
+    document.getElementById('cfgRepo').value = config.repo || '';
+    document.getElementById('cfgToken').value = config.token || '';
+  }
+  function saveWhatsApp() {
+    toast('Número de WhatsApp guardado: ' + document.getElementById('cfgWhatsapp').value);
+  }
+
+  // ===== NAV =====
+  function showSection(sec) {
+    document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
+    document.getElementById('sec-'+sec).classList.add('active');
+    document.querySelectorAll('.admin-nav-item').forEach(n=>n.classList.remove('active'));
+    document.querySelector(`.admin-nav-item[data-section="${sec}"]`).classList.add('active');
+    if (window.innerWidth<=768) toggleAdminSidebar();
+  }
+  function toggleAdminSidebar() {
+    document.getElementById('adminSidebar').classList.toggle('open');
+    document.getElementById('adminOverlay').classList.toggle('open');
+  }
+
+  // ===== UTILS =====
+  function toast(msg) {
+    const t = document.getElementById('adminToast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'), 3000);
+  }
+
+  // ===== NOTIFICATIONS =====
+  let notifications = [];
+  async function loadNotifications() {
+    try {
+      const snap = await fbDb.collection('notifications').where('club', '==', 'fisioteck').orderBy('createdAt', 'desc').limit(50).get();
+      notifications = [];
+      snap.forEach(doc => notifications.push({ id: doc.id, ...doc.data() }));
+      renderNotifications();
+      updateNotifBadge();
+    } catch(e) { console.error('Error loading notifications:', e); }
+  }
+  function renderNotifications() {
+    const container = document.getElementById('notifList');
+    if (notifications.length === 0) {
+      container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);">No hay notificaciones</div>';
+      return;
+    }
+    container.innerHTML = notifications.map(n => {
+      const isUnread = !n.read;
+      const icon = n.type === 'cancellation' ? '<span style="color:var(--warning);font-weight:800;">!</span>' : n.type === 'payment_failed' ? '<span style="color:var(--danger);font-weight:800;">×</span>' : '<span style="color:var(--accent);font-weight:800;">•</span>';
+      const title = n.type === 'cancellation' ? 'Cancelación de membresía' : n.type === 'payment_failed' ? 'Pago fallido' : 'Notificación';
+      const borderColor = n.type === 'cancellation' ? 'var(--warning)' : n.type === 'payment_failed' ? 'var(--danger)' : 'var(--info)';
+      const date = n.createdAt ? new Date(n.createdAt.seconds * 1000).toLocaleString('es-MX', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '';
+      return `<div class="admin-card" style="border-left:4px solid ${borderColor};${isUnread ? 'background:#FFFBEB;' : ''}">
+        <div style="display:flex;justify-content:space-between;align-items:start;gap:12px;">
+          <div style="flex:1;">
+            <div style="font-size:1.1rem;margin-bottom:4px;">${icon} <strong>${title}</strong></div>
+            <div style="font-size:.9rem;color:var(--text);margin-bottom:8px;">
+              <strong>${n.memberName || ''}</strong> — ${n.memberEmail || ''}
+            </div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:.82rem;color:var(--text-light);">
+              ${n.plan ? '<span>Plan: <strong>' + n.plan + '</strong></span>' : ''}
+              ${n.accessUntil ? '<span>Acceso hasta: <strong>' + n.accessUntil + '</strong></span>' : ''}
+              ${n.cancelledAt ? '<span>Cancelado: <strong>' + n.cancelledAt + '</strong></span>' : ''}
+            </div>
+            ${n.type === 'cancellation' ? '<div style="margin-top:10px;"><a href="https://dashboard.stripe.com/test/subscriptions" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--warning);color:#fff;border-radius:6px;font-size:.8rem;font-weight:600;">Ver en Stripe →</a></div>' : ''}
+          </div>
+          <div style="text-align:right;flex-shrink:0;">
+            <div style="font-size:.75rem;color:var(--text-muted);">${date}</div>
+            ${isUnread ? '<span style="display:inline-block;width:10px;height:10px;background:var(--warning);border-radius:50%;margin-top:6px;" title="No leída"></span>' : ''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  function updateNotifBadge() {
+    const unread = notifications.filter(n => !n.read).length;
+    const badge = document.getElementById('notifBadge');
+    if (badge) {
+      badge.textContent = unread;
+      badge.style.display = unread > 0 ? 'inline-block' : 'none';
+    }
+  }
+  async function markAllRead() {
+    try {
+      const unread = notifications.filter(n => !n.read);
+      for (const n of unread) {
+        await fbDb.collection('notifications').doc(n.id).update({ read: true });
+      }
+      toast('Notificaciones marcadas como leídas');
+      loadNotifications();
+    } catch(e) { toast('Error al actualizar'); }
+  }
+
+  async function sendMemberNotification() {
+    const category = document.getElementById('notifCategory').value;
+    const title = document.getElementById('notifTitle').value.trim();
+    const message = document.getElementById('notifMessage').value.trim();
+    const link = document.getElementById('notifLink').value.trim();
+
+    if (!title || !message) { toast('Completa el título y mensaje'); return; }
+
+    try {
+      await fbDb.collection('member_notifications').add({
+        category: category,
+        title: title,
+        message: message,
+        link: link || '',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      toast('Notificación enviada a todos los miembros');
+      document.getElementById('notifTitle').value = '';
+      document.getElementById('notifMessage').value = '';
+      document.getElementById('notifLink').value = '';
+    } catch(e) {
+      toast('Error al enviar notificación');
+      console.error(e);
+    }
+  }
+
+  // ===== TEMA CLARO / OSCURO =====
+  function _pintarTema(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    var esOscuro = (t === 'dark');
+    var luna = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    var sol  = '<circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+    var icono = document.getElementById('themeIcon');
+    if (icono) icono.innerHTML = esOscuro ? sol : luna;
+    var iconoMovil = document.getElementById('themeIconMobile');
+    if (iconoMovil) iconoMovil.innerHTML = esOscuro ? sol : luna;
+    var texto = document.getElementById('themeLabel');
+    if (texto) texto.textContent = esOscuro ? 'Modo claro' : 'Modo oscuro';
+  }
+  function toggleTheme() {
+    var actual = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    var nuevo = actual === 'dark' ? 'light' : 'dark';
+    _pintarTema(nuevo);
+  }
+  window.toggleTheme = toggleTheme;
+  _pintarTema(document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+
+  // ===== PRECIOS DINÁMICOS DE LA MEMBRESÍA (config/club en Firestore) =====
+  async function cargarPreciosMembresia() {
+    try {
+      const snap = await fbDb.collection('config').doc('club').get();
+      const c = snap.exists ? snap.data() : {};
+      const inMes = document.getElementById('cfgPrecioMes');
+      const inAno = document.getElementById('cfgPrecioAno');
+      if (inMes) inMes.value = Number(c.precioMes) > 0 ? Number(c.precioMes) : 199;
+      if (inAno) inAno.value = Number(c.precioAno) > 0 ? Number(c.precioAno) : 1999;
+    } catch (e) {
+      console.warn('[Admin] No se pudieron cargar los precios:', e.message);
+    }
+  }
+
+  async function guardarPreciosMembresia() {
+    try {
+      const precioMes = parseInt(document.getElementById('cfgPrecioMes').value) || 199;
+      const precioAno = parseInt(document.getElementById('cfgPrecioAno').value) || 1999;
+
+      // Stripe no acepta cargos menores a $10 MXN
+      if (precioMes < 10 || precioAno < 10) {
+        toast('El precio mínimo es $10 MXN (límite de Stripe)');
+        return;
+      }
+
+      await fbDb.collection('config').doc('club').set({
+        precioMes,
+        precioAno,
+        actualizadoPor: 'admin-fisioteck',
+        actualizadoEn: new Date().toISOString()
+      }, { merge: true });
+
+      toast('Precios guardados · Se aplican a los nuevos checkouts');
+      console.log('✅ Precios guardados:', { precioMes, precioAno });
+    } catch (e) {
+      toast('Error al guardar: ' + e.message);
+      console.error('Precios error:', e);
+    }
+  }
+
+  // Cargar precios al entrar a Configuración
+  const _origShowSection = showSection;
+  showSection = function(sec) {
+    _origShowSection(sec);
+    if (sec === 'config') { cargarPreciosMembresia(); cargarEscalonado(); }
+    if (sec === 'payments') { renderPagos(); cargarPendientes(); }
+    if (sec === 'certs') cargarCertificados();
+    if (sec === 'trials') renderPruebas();
+    if (sec === 'reviews') cargarResenas();
+    if (sec === 'credits') cargarCreditos();
+    if (sec === 'survey') cargarEncuesta();
+    if (sec === 'referrals') cargarReferidos();
+    if (sec === 'directory') cargarDirectorio();
+    if (sec === 'forum') cargarForo();
+    if (sec === 'metrics') renderMetricas();
+  };
+
+  // El panel entra a Firebase con la cuenta de Google del administrador. Si leemos config antes
+  // de que esa sesión exista, Firestore responde "insufficient permissions".
+  // Por eso esperamos al estado de auth en vez de leer en DOMContentLoaded.
+  firebase.auth().onAuthStateChanged(u => { if (u) cargarPreciosMembresia(); });
+
+  // ===== INIT =====
+  document.addEventListener('DOMContentLoaded', () => {
+    firebase.auth().onAuthStateChanged(manejarSesionAdmin);
+  });
+</script>
+
+<!-- MODIFICADO: Panel Admin Club FisioTeck — creado desde cero -->
+<script src="cursos.js?v=1"></script>
+<script src="paginas.js?v=1"></script>
+<script src="miembros.js?v=2"></script>
+<script src="retos-xp.js?v=1"></script>
+<script src="libros.js?v=2"></script>
+<script src="curiosos.js?v=1"></script>
+<script src="graficas.js?v=1"></script>
+<script src="graficas-paneles.js?v=1"></script>
+<script src="recordatorios.js?v=1"></script>
+<script src="trafico.js?v=1"></script>
+<script src="servidor.js?v=1"></script>
+<script src="exportar.js?v=1"></script>
+<script src="webinars.js?v=1"></script>
+<script src="moderacion.js?v=1"></script>
+<script src="noticias.js?v=1"></script>
+</body>
+</html>

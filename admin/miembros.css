@@ -1,0 +1,48 @@
+/* Panel · Miembros (lista con tarjetas como en Alintec Food) y tablas responsivas */
+.mb-lista { display:flex; flex-direction:column; gap:10px; margin-top:16px; }
+.mb-row { display:flex; align-items:center; gap:16px; padding:14px 18px; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--pc,#94A3B8); border-radius:16px; transition:var(--transition); }
+.mb-row:hover { border-color:var(--border-2); border-left-color:var(--pc,#94A3B8); box-shadow:var(--shadow); transform:translateY(-1px); }
+.mb-av { width:46px; height:46px; flex-shrink:0; border-radius:50%; display:grid; place-items:center; color:#fff; font-family:var(--font-display); font-weight:800; font-size:.95rem; background:linear-gradient(135deg,var(--pc,#94A3B8),color-mix(in srgb,var(--pc,#94A3B8) 55%,#fff)); }
+.mb-body { flex:1; min-width:0; }
+.mb-nombre { font-family:var(--font-display); font-weight:700; font-size:.98rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.mb-meta { display:flex; flex-direction:column; gap:2px; margin-top:3px; font-size:.78rem; color:var(--text-light); }
+.mb-meta .mail { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.mb-meta .sub { font-size:.72rem; color:var(--text-muted); }
+.mb-meta .pago { font-size:.72rem; font-weight:600; color:var(--success); }
+.mb-pills { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+.mb-pill { font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:5px 10px; border-radius:8px; border:1px solid color-mix(in srgb,var(--c) 38%,transparent); background:color-mix(in srgb,var(--c) 11%,transparent); color:var(--c); white-space:nowrap; }
+.mb-mas { width:36px; height:36px; flex-shrink:0; display:grid; place-items:center; border-radius:10px; border:1px solid var(--border-2); background:transparent; color:var(--text-light); transition:var(--transition); }
+.mb-mas:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-ghost); }
+.mb-mas svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; }
+@media(max-width:700px){
+  .mb-row { flex-wrap:wrap; padding:14px; gap:12px; }
+  .mb-body { flex-basis:calc(100% - 110px); }
+  .mb-pills { order:5; width:100%; justify-content:flex-start; }
+  .mb-mas { margin-left:auto; }
+}
+.mb-accion { display:flex; align-items:center; gap:12px; width:100%; padding:13px 14px; border-radius:12px; border:1px solid var(--border-2); background:transparent; color:var(--text); font:inherit; text-align:left; transition:var(--transition); }
+.mb-accion:hover { border-color:var(--c,var(--accent)); background:color-mix(in srgb,var(--c,var(--accent)) 8%,transparent); }
+.mb-accion i { width:36px; height:36px; flex-shrink:0; border-radius:10px; display:grid; place-items:center; background:color-mix(in srgb,var(--c,var(--accent)) 16%,transparent); color:var(--c,var(--accent)); font-style:normal; }
+.mb-accion svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.mb-accion strong { display:block; font-size:.9rem; } .mb-accion span { font-size:.76rem; color:var(--text-muted); }
+.mb-ficha { display:flex; align-items:center; gap:12px; padding:14px; margin-bottom:14px; border-radius:14px; background:var(--surface-2); border:1px solid var(--border); }
+.mb-acciones { display:flex; flex-direction:column; gap:8px; }
+
+/* ══ Tablas responsivas: en pantallas angostas cada fila se vuelve una tarjeta con sus etiquetas ══ */
+.admin-card { max-width:100%; }
+.admin-table td .btn { white-space:nowrap; }
+@media(max-width:760px){
+  .admin-card[style*="overflow-x"] { overflow-x:visible !important; }
+  .admin-table, .admin-table tbody { display:block; width:100%; }
+  .admin-table thead { display:none; }
+  .admin-table tbody tr { display:block; margin-bottom:12px; padding:6px 14px; border:1px solid var(--border); border-radius:14px; background:var(--surface-2); }
+  .admin-table tbody tr:hover { background:var(--surface-2); }
+  .admin-table tbody td { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; padding:9px 0 !important; border-bottom:1px solid var(--border); text-align:right; font-size:.84rem; word-break:break-word; }
+  .admin-table tbody td:last-child { border-bottom:none; }
+  .admin-table tbody td::before { content:attr(data-label); flex-shrink:0; max-width:42%; text-align:left; font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); padding-top:3px; }
+  .admin-table tbody td:not([data-label])::before, .admin-table tbody td[data-label=""]::before { display:none; }
+  .admin-table tbody td[colspan] { display:block; text-align:center; }
+  .admin-table tbody td[data-acciones] { flex-wrap:wrap; justify-content:flex-end; }
+  .admin-table tbody td[data-acciones]::before { width:100%; max-width:none; }
+  .admin-table tbody td[data-acciones] .btn { flex:1 1 auto; justify-content:center; }
+}

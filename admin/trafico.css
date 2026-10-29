@@ -1,0 +1,15 @@
+/* Panel FisioTeck — Tráfico del sitio */
+#sec-traffic .tr-acciones { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+#sec-traffic .tr-seg { display: inline-flex; border: 1px solid var(--border-2); border-radius: 10px; overflow: hidden; }
+#sec-traffic .tr-seg button { background: transparent; border: 0; padding: 7px 14px; font: inherit; font-size: .8rem; color: var(--text-light); cursor: pointer; }
+#sec-traffic .tr-seg button.on { background: var(--accent-ghost); color: var(--accent); font-weight: 700; }
+#sec-traffic .tr-cab { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+#sec-traffic .tr-nota { font-size: .82rem; color: var(--text-light); line-height: 1.55; margin: 8px 0 0; }
+#sec-traffic .tr-vacio { text-align: center; color: var(--text-muted); padding: 22px 8px; }
+#sec-traffic .tr-estado { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-sm); margin-bottom: 16px; background: var(--surface); border: 1px solid var(--border); font-size: .84rem; }
+#sec-traffic .tr-estado i { width: 10px; height: 10px; border-radius: 50%; background: var(--text-muted); }
+#sec-traffic .tr-estado.ok i { background: var(--success); box-shadow: 0 0 0 4px rgba(15, 157, 108, .18); }
+#sec-traffic .tr-estado.off i { background: var(--danger); }
+#sec-traffic .tr-estado .btn { margin-left: auto; }
+#sec-traffic code { font-size: .78rem; background: var(--surface-2); padding: 1px 6px; border-radius: 6px; }
+#sec-traffic .admin-card { margin-bottom: 18px; }

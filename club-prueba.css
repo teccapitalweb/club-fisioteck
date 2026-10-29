@@ -1,0 +1,117 @@
+/* Club FisioTeck — prueba gratuita (club-prueba.js), con el mismo diseño que Alintec Food y Zoorigen.
+   Usa los tokens del tema (--surface, --text, --accent…), así sigue claro/oscuro. */
+
+.ftp-overlay {
+  position: fixed; inset: 0; z-index: 9996;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; overflow-y: auto;
+  background: rgba(7, 12, 22, .62); backdrop-filter: blur(7px);
+  animation: ftpFade .25s ease;
+}
+@keyframes ftpFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ftpUp { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+
+/* Ventana: cabecera con icono, título y X · cuerpo · pie con botones */
+.ftm-card {
+  width: 100%; max-width: 440px; margin: auto; overflow: hidden;
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--border-2); border-radius: 22px;
+  box-shadow: var(--shadow-lg); animation: ftpUp .3s ease;
+}
+.ftm-cab { display: flex; align-items: center; gap: 12px; padding: 16px 18px; background: var(--surface-2); border-bottom: 1px solid var(--border); }
+.ftm-ic { flex: 0 0 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; background: var(--accent-ghost); color: var(--accent); }
+.ftm-ic svg { width: 18px; height: 18px; }
+:root[data-theme="dark"] .ftm-ic { color: var(--accent-soft); }
+.ftm-tit { flex: 1; min-width: 0; }
+.ftm-tit h2 { margin: 0; font-size: 1rem; font-weight: 800; line-height: 1.25; }
+.ftm-tit small { display: block; margin-top: 2px; font-size: .76rem; color: var(--text-muted); }
+.ftm-x { flex: 0 0 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border-2); background: var(--surface); color: var(--text-light); display: grid; place-items: center; cursor: pointer; }
+.ftm-x svg { width: 15px; height: 15px; }
+.ftm-x:hover { background: var(--surface-3); color: var(--text); }
+.ftm-cuerpo { padding: 20px 22px 6px; }
+.ftm-pie { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; padding: 14px 20px 18px; border-top: 1px solid var(--border); margin-top: 14px; background: var(--surface); }
+.ftm-btn {
+  padding: 10px 18px; border-radius: 12px; border: 1px solid var(--accent); background: var(--accent); color: var(--on-accent);
+  font: inherit; font-size: .86rem; font-weight: 700; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease, filter .15s;
+}
+.ftm-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-accent); }
+.ftm-btn:disabled { opacity: .6; cursor: wait; transform: none; box-shadow: none; }
+.ftm-btn.suave { background: transparent; color: var(--text-light); border-color: var(--border-2); }
+.ftm-btn.suave:hover { background: var(--surface-2); box-shadow: none; }
+.ftm-btn.brillo { position: relative; overflow: hidden; }
+.ftm-btn.brillo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, .45) 50%, transparent 65%); transform: translateX(-130%); animation: pgBrilloBtn 3.2s ease-in-out 1.2s infinite; }
+
+.prueba-aviso { margin: 0 0 10px; font-size: .92rem; line-height: 1.6; color: var(--text-light); }
+.prueba-aviso strong { color: var(--text); }
+.prueba-portada-wrap { position: relative; }
+.prueba-portada { height: 170px; border-radius: 14px; background: var(--surface-3) center / cover no-repeat; }
+.prueba-curso { margin: 12px 0 6px; font-weight: 800; font-size: 1.02rem; line-height: 1.35; }
+.ftp-error { color: var(--danger); font-size: .84rem; margin: 0 0 6px; min-height: 1em; }
+
+/* Abanico de portadas con la etiqueta GRATIS */
+.pg-art { position: relative; height: 128px; width: 250px; max-width: 100%; margin: 2px auto 14px; }
+.pg-cover { position: absolute; top: 10px; left: 50%; width: 116px; height: 90px; margin-left: -58px; border-radius: 14px; background: linear-gradient(135deg, var(--accent), var(--blue)) center / cover no-repeat; border: 3px solid var(--surface); box-shadow: 0 12px 26px rgba(0, 0, 0, .24); }
+.pg-cover--0 { transform: translateX(-72px) rotate(-10deg) scale(.92); animation: pgAbreI .75s cubic-bezier(.2, 1.2, .4, 1) .15s both, pgFlota 5.5s ease-in-out 1.2s infinite; }
+.pg-cover--1 { z-index: 2; transform: translateY(-6px); animation: pgSube .6s cubic-bezier(.2, 1.2, .4, 1) .05s both, pgFlota 5s ease-in-out 1.3s infinite reverse; }
+.pg-cover--2 { transform: translateX(72px) rotate(10deg) scale(.92); animation: pgAbreD .75s cubic-bezier(.2, 1.2, .4, 1) .25s both, pgFlota 6s ease-in-out 1s infinite; }
+.pg-badge {
+  position: absolute; z-index: 3; left: 50%; bottom: 0; transform: translateX(-50%);
+  display: inline-flex; align-items: center; padding: 6px 14px; border-radius: 999px;
+  background: linear-gradient(135deg, #ffd166, #F5A623); color: #2a1a02;
+  font: 800 11px/1 'JetBrains Mono', monospace; letter-spacing: .1em; text-transform: uppercase;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, .22); animation: pgPop .5s cubic-bezier(.2, 1.4, .4, 1) .7s both;
+}
+.pg-badge--esquina { left: auto; right: 12px; top: 12px; bottom: auto; transform: none; animation: pgPopEsq .5s cubic-bezier(.2, 1.4, .4, 1) .3s both; }
+@keyframes pgAbreI { from { transform: translateX(0) rotate(0) scale(.8); opacity: 0; } }
+@keyframes pgAbreD { from { transform: translateX(0) rotate(0) scale(.8); opacity: 0; } }
+@keyframes pgSube { from { transform: translateY(14px) scale(.85); opacity: 0; } }
+@keyframes pgFlota { 0%, 100% { translate: 0 0; } 50% { translate: 0 -6px; } }
+@keyframes pgPop { from { opacity: 0; transform: translateX(-50%) scale(.6); } }
+@keyframes pgPopEsq { from { opacity: 0; transform: scale(.6); } }
+@keyframes pgBrilloBtn { 0%, 55% { transform: translateX(-130%); } 100% { transform: translateX(130%); } }
+
+/* Tarjeta "Selecciona tu prueba gratuita" en Mis cursos */
+.prueba-card {
+  display: flex; align-items: center; gap: 16px; margin: 0 0 20px; padding: 16px 20px; border-radius: 18px;
+  border: 1.5px solid color-mix(in srgb, var(--accent) 55%, transparent); position: relative; overflow: hidden;
+  background: radial-gradient(120% 160% at 0% 0%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 58%), var(--surface);
+  animation: pgPulso 1.6s ease .5s 2;
+}
+.prueba-card h3 { margin: 0 0 4px; font-size: 1rem; font-weight: 800; line-height: 1.3; }
+.prueba-card p { margin: 0; font-size: .86rem; line-height: 1.55; color: var(--text-light); }
+.prueba-card__kick { display: block; margin-bottom: 5px; font: 800 10.5px/1 'JetBrains Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+:root[data-theme="dark"] .prueba-card__kick { color: var(--accent-soft); }
+.prueba-card__art { flex: 0 0 172px; width: 172px; height: 100px; margin: 0; }
+.prueba-card__art .pg-cover { top: 6px; width: 86px; height: 66px; margin-left: -43px; border-width: 2px; }
+.prueba-card__art .pg-cover--0 { transform: translateX(-54px) rotate(-10deg) scale(.92); }
+.prueba-card__art .pg-cover--2 { transform: translateX(54px) rotate(10deg) scale(.92); }
+.prueba-card__art .pg-badge { padding: 4px 11px; font-size: 10px; }
+@keyframes pgPulso { 50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 22%, transparent); } }
+
+/* Tarjetas de Mis cursos mientras no se elige la prueba: solo título y botón */
+.ftd-curso.prueba .pie { bottom: 14px; }
+.ftd-curso.prueba:hover .pie { transform: none; }
+.ftd-curso.prueba .ftd-elegir {
+  display: block; margin: 10px 0 0 auto; padding: 8px 14px; border: 0; border-radius: 10px;
+  background: var(--accent); color: var(--on-accent); font: inherit; font-size: .74rem; font-weight: 800; cursor: pointer;
+  transition: filter .15s, transform .15s;
+}
+.ftd-curso.prueba .ftd-elegir:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.ftd-curso.prueba .ftd-elegir[disabled] { background: rgba(255, 255, 255, .22); color: rgba(255, 255, 255, .8); cursor: not-allowed; transform: none; filter: none; }
+
+/* Banner dorado de la barra superior */
+.ftp-banner-btn {
+  padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, .5);
+  background: transparent; color: #fff; font: inherit; font-size: .85rem; font-weight: 700; cursor: pointer; white-space: nowrap;
+}
+.ftp-banner-btn:hover { background: rgba(255, 255, 255, .16); }
+
+@media (max-width: 560px) {
+  .ftm-card { max-width: 100%; border-radius: 18px; }
+  .ftm-cuerpo { padding: 16px 16px 4px; }
+  .prueba-card { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .prueba-card__art { align-self: center; flex: 0 0 auto; margin: 0 auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ftp-overlay, .ftm-card, .pg-cover, .pg-badge, .prueba-card, .ftm-btn.brillo::after { animation: none !important; }
+}

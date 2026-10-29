@@ -1,0 +1,55 @@
+/* Gráficas del panel (SVG y HTML propios, sin librerías). Colores sólidos, legibles en modo claro y oscuro. */
+:root, :root[data-theme="light"] { --zg-1:#0D5FA0; --zg-2:#159E92; --zg-3:#C2760B; --zg-4:#7C3AED; --zg-5:#DC2D3F; --zg-6:#0F9D58; --zg-7:#0891B2; --zg-8:#B45309; --zg-grid:rgba(11,58,102,.10); --zg-eje:#6C8299; }
+:root[data-theme="dark"] { --zg-1:#4CA6DE; --zg-2:#2FD1C6; --zg-3:#FBBF24; --zg-4:#A78BFA; --zg-5:#F87171; --zg-6:#34D399; --zg-7:#22D3EE; --zg-8:#FB923C; --zg-grid:rgba(140,190,230,.12); --zg-eje:#8CA3BC; }
+
+.zg { margin:0; }
+.zg-svg { width:100%; height:auto; display:block; overflow:visible; }
+.zg-svg text { font-family:var(--font-body); font-size:9px; fill:var(--zg-eje); }
+.zg-svg .zg-v { fill:var(--text); font-weight:700; }
+.zg-grid { stroke:var(--zg-grid); stroke-width:1; }
+.zg-linea { fill:none; stroke-width:2.2; stroke-linejoin:round; stroke-linecap:round; }
+.zg-area { opacity:.16; }
+.zg-punto { stroke:var(--surface); stroke-width:1.5; transition:r .15s; }
+.zg-hit { fill:transparent; cursor:default; }
+.zg-hit:hover { fill:var(--accent-ghost); }
+.zg-barra { transition:opacity .15s; }
+.zg-barra:hover { opacity:.78; }
+.zg-leyenda { display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:10px; font-size:.76rem; color:var(--text-light); }
+.zg-leyenda span { display:inline-flex; align-items:center; gap:6px; }
+.zg-leyenda i { width:10px; height:10px; border-radius:3px; display:inline-block; }
+
+.zg-anillo { display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
+.zg-anillo svg { width:150px; height:150px; flex-shrink:0; }
+.zg-anillo .zg-arco { transition:opacity .15s; } .zg-anillo .zg-arco:hover { opacity:.8; }
+.zg-fila { display:flex; align-items:center; gap:9px; font-size:.84rem; padding:3px 0; }
+.zg-fila i { width:10px; height:10px; border-radius:3px; flex-shrink:0; }
+.zg-fila b { margin-left:auto; font-family:var(--font-display); } .zg-fila em { font-style:normal; color:var(--text-muted); font-size:.74rem; min-width:38px; text-align:right; }
+.zg-lista { flex:1; min-width:160px; }
+
+.zg-h { display:flex; align-items:center; gap:10px; margin:9px 0; font-size:.84rem; }
+.zg-h .t { width:36%; min-width:92px; color:var(--text-light); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.zg-h .b { flex:1; height:12px; background:var(--surface-2); border-radius:8px; overflow:hidden; }
+.zg-h .b i { display:block; height:100%; border-radius:8px; }
+.zg-h .n { min-width:46px; text-align:right; font-weight:700; font-family:var(--font-display); }
+
+.zg-spark { width:100%; height:34px; display:block; margin-top:6px; }
+.zg-spark polyline { fill:none; stroke-width:1.8; stroke-linejoin:round; stroke-linecap:round; }
+
+.zg-calor { display:grid; gap:3px; font-size:.64rem; color:var(--zg-eje); }
+.zg-calor .c { aspect-ratio:1; border-radius:3px; background:var(--zg-c); min-width:0; }
+.zg-calor .col, .zg-calor .fila { display:flex; align-items:center; justify-content:center; }
+.zg-calor .fila { justify-content:flex-end; padding-right:4px; }
+
+.zg-embudo { display:flex; flex-direction:column; gap:8px; }
+.zg-paso { position:relative; }
+.zg-paso .barra { height:38px; border-radius:10px; display:flex; align-items:center; justify-content:space-between; padding:0 14px; color:#fff; font-size:.82rem; font-weight:700; min-width:96px; transition:width .5s ease; }
+.zg-paso .barra b { font-family:var(--font-display); font-size:1rem; }
+.zg-paso .conv { font-size:.72rem; color:var(--text-muted); margin:3px 0 0 4px; }
+
+.zg-vacio { padding:34px 12px; text-align:center; color:var(--text-muted); font-size:.84rem; border:1px dashed var(--border-2); border-radius:12px; }
+.zg-tip { position:fixed; z-index:99999; pointer-events:none; max-width:240px; padding:8px 11px; border-radius:10px; background:var(--text); color:var(--bg); font-size:.76rem; line-height:1.45; box-shadow:var(--shadow-lg); opacity:0; transition:opacity .12s; }
+.zg-tip.on { opacity:1; } .zg-tip b { display:block; margin-bottom:2px; } .zg-tip span { display:flex; align-items:center; gap:6px; } .zg-tip i { width:8px; height:8px; border-radius:2px; display:inline-block; }
+.zg-solo-lector { position:absolute; left:-9999px; }
+.ap-kpi .zg-spark { margin-top:8px; }
+.zg-fila-graficas { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:20px; } .zg-fila-graficas > * { min-width:0; }
+@media(max-width:900px){ .zg-fila-graficas { grid-template-columns:1fr; gap:0; } .zg-anillo { gap:14px; } .zg-h .t { width:42%; } }

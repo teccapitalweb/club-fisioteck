@@ -1,0 +1,88 @@
+/* Club FisioTeck — Retos (club-retos.js). Usa los tokens del tema claro/oscuro. */
+.rt-nuevo { margin-left: auto; padding: 2px 8px; border-radius: 999px; font-size: .62rem; font-weight: 700; background: var(--accent); color: var(--on-accent); }
+
+.rt-hero {
+  position: relative; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 22px 24px 28px; margin-bottom: 18px; border-radius: 20px; color: var(--text);
+  background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow);
+}
+.rt-hero-nivel { font-size: 1.35rem; font-weight: 700; }
+.rt-hero-xp { font-size: .85rem; color: var(--text-light); margin-top: 2px; }
+.rt-hero-cifra { text-align: right; }
+.rt-hero-cifra strong { display: block; font-size: 1.5rem; }
+.rt-hero-cifra strong { color: var(--accent); }
+.rt-hero-cifra span { font-size: .75rem; color: var(--text-muted); }
+.rt-barra { position: absolute; left: 24px; right: 24px; bottom: 12px; height: 6px; border-radius: 3px; background: var(--border-2); overflow: hidden; }
+.rt-barra div { height: 100%; background: var(--accent); border-radius: 3px; transition: width .6s ease; }
+
+.rt-aviso { margin-bottom: 16px; padding: 12px 16px; border-radius: 14px; background: var(--accent-ghost); border: 1px solid var(--border-2); font-size: .86rem; color: var(--text-light); }
+.rt-aviso button { margin-left: 6px; background: none; border: 0; color: var(--accent); font: inherit; font-weight: 700; cursor: pointer; text-decoration: underline; }
+
+.rt-h { margin: 26px 0 12px; font-size: 1rem; font-weight: 600; }
+.rt-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+
+.rt-card, .rt-dia {
+  display: flex; flex-direction: column; gap: 6px; text-align: left; font: inherit; color: var(--text); cursor: pointer;
+  padding: 18px; border-radius: 18px; background: var(--surface); border: 1px solid var(--border);
+  box-shadow: var(--shadow); transition: transform .18s ease, border-color .18s ease;
+}
+.rt-card:hover, .rt-dia:hover, .rt-card:focus-visible, .rt-dia:focus-visible { transform: translateY(-3px); border-color: var(--accent); outline: none; }
+.rt-dia { width: 100%; background: linear-gradient(135deg, var(--accent-ghost), var(--blue-ghost)); border-color: var(--border-2); }
+.rt-card-tipo { font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+:root[data-theme="dark"] .rt-card-tipo { color: var(--accent-soft); }
+.rt-card strong, .rt-dia strong { font-size: 1rem; line-height: 1.3; }
+.rt-card-desc { font-size: .82rem; color: var(--text-light); }
+.rt-card-estado { margin-top: auto; padding-top: 6px; font-size: .75rem; font-weight: 600; color: var(--text-muted); }
+.rt-card-estado.is-ok { color: var(--success); }
+
+.rt-volver { margin-bottom: 14px; padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border-2); background: var(--surface); color: var(--text-light); font: inherit; font-size: .85rem; cursor: pointer; }
+.rt-panel { max-width: 720px; padding: 26px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow); }
+.rt-progreso { font-size: .76rem; font-weight: 600; letter-spacing: .04em; color: var(--text-muted); margin-bottom: 10px; }
+.rt-pregunta { margin: 0 0 18px; font-size: 1.2rem; line-height: 1.35; }
+.rt-opciones { display: grid; gap: 10px; margin-bottom: 14px; }
+.rt-op {
+  text-align: left; padding: 14px 16px; border-radius: 14px; font: inherit; font-size: .92rem; color: var(--text); cursor: pointer;
+  background: var(--surface-2); border: 1px solid var(--border-2); transition: border-color .15s ease, background .15s ease;
+}
+.rt-op:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-ghost); }
+.rt-op:disabled { cursor: default; }
+.rt-op.is-ok { border-color: var(--success); background: rgba(15, 157, 88, .14); }
+.rt-op.is-mal { border-color: var(--danger); background: rgba(220, 45, 63, .12); }
+.rt-explica { margin: 0 0 14px; padding: 12px 14px; border-radius: 12px; font-size: .88rem; line-height: 1.5; background: var(--surface-2); }
+.rt-explica.is-ok strong { color: var(--success); }
+.rt-explica.is-mal strong { color: var(--danger); }
+.rt-secuencia { margin: 0 0 16px; padding-left: 22px; display: grid; gap: 6px; font-size: .92rem; }
+.rt-secuencia li::marker { color: var(--accent); font-weight: 700; }
+
+.rt-btn { padding: 12px 22px; border-radius: 12px; border: 1px solid var(--accent); background: var(--accent); color: var(--on-accent); font: inherit; font-size: .9rem; font-weight: 600; cursor: pointer; }
+.rt-btn.is-ghost { background: transparent; color: var(--text-light); border-color: var(--border-2); }
+.rt-acciones { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+
+.rt-fin { text-align: center; margin-inline: auto; }
+.rt-fin-num { font-size: 3rem; font-weight: 800; color: var(--accent); line-height: 1; margin-bottom: 8px; }
+.rt-fin .rt-secuencia { text-align: left; }
+.rt-fin .rt-acciones { justify-content: center; }
+.rt-xp { font-size: 1.3rem; font-weight: 700; color: var(--success); margin: 4px 0 12px; }
+.rt-nota { color: var(--text-light); font-size: .88rem; }
+
+.rt-carta {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 200px;
+  margin-bottom: 16px; padding: 24px; border-radius: 18px; font: inherit; color: var(--text); cursor: pointer; text-align: center;
+  background: var(--surface-2); border: 1px solid var(--border-2);
+}
+.rt-carta strong { font-size: 1.5rem; }
+.rt-carta small { color: var(--text-muted); }
+.rt-carta span { font-size: 1.05rem; line-height: 1.5; }
+.rt-carta.is-vuelta { background: var(--accent-ghost); border-color: var(--accent); }
+
+@media (max-width: 560px) {
+  .rt-hero { padding: 18px 18px 26px; }
+  .rt-panel { padding: 20px 16px; }
+  .rt-barra { left: 18px; right: 18px; }
+}
+@media (prefers-reduced-motion: reduce) { .rt-card, .rt-dia, .rt-barra div { transition: none; } }
+
+/* Imagen opcional de cada reto (assets/retos/<id>.webp) */
+.rt-img { display: block; margin: -18px -18px 8px; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 18px 18px 0 0; background: var(--surface-3); }
+.rt-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.rt-dia .rt-img { aspect-ratio: 21 / 8; }

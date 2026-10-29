@@ -1,0 +1,36 @@
+/* Reseñas de cursos (club-resenas.js) */
+.ft-resena { margin-top:14px; padding-top:12px; border-top:1px solid var(--border); }
+.ftr-fila { display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:.82rem; color:var(--text-muted); }
+.ftr-estrellas { color:#E8A317; font-size:1rem; letter-spacing:2px; }
+.ftr-fila button { margin-left:auto; padding:7px 14px; border-radius:var(--radius-sm); border:1px solid var(--border-2); background:transparent; color:var(--text); font:inherit; font-size:.78rem; font-weight:600; cursor:pointer; }
+.ftr-fila button:hover { border-color:var(--primary); color:var(--primary); }
+.ftr-fila button.ftr-cta { background:var(--primary); border-color:var(--primary); color:#fff; }
+
+.ftr-overlay { position:fixed; inset:0; z-index:9998; display:none; align-items:center; justify-content:center; padding:20px; background:rgba(6,11,18,.65); backdrop-filter:blur(4px); }
+.ftr-overlay.is-abierto { display:flex; }
+.ftr-caja { width:100%; max-width:440px; background:var(--surface,var(--bg)); color:var(--text); border:1px solid var(--border); border-radius:var(--radius); padding:26px; box-shadow:var(--shadow-lg); }
+.ftr-caja h3 { font-size:1.2rem; margin:0 0 4px; }
+.ftr-caja p { font-size:.88rem; color:var(--text-muted); margin:0 0 14px; }
+.ftr-estrellas-grandes { display:flex; gap:6px; margin-bottom:14px; }
+.ftr-estrellas-grandes button { background:none; border:0; font-size:2.2rem; line-height:1; color:var(--border-2); cursor:pointer; padding:2px; transition:transform .15s, color .15s; }
+.ftr-estrellas-grandes button.on { color:#E8A317; }
+.ftr-estrellas-grandes button:hover { transform:scale(1.15); }
+.ftr-caja textarea { width:100%; padding:12px 14px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--bg); color:var(--text); font:inherit; font-size:.92rem; resize:vertical; }
+.ftr-error { color:var(--danger); font-size:.82rem; margin-top:10px; }
+.ftr-acciones { display:flex; gap:10px; justify-content:flex-end; margin-top:16px; }
+.ftr-acciones button { padding:10px 20px; border-radius:var(--radius-sm); border:1px solid var(--border); background:transparent; color:var(--text); font:inherit; font-weight:600; cursor:pointer; }
+.ftr-acciones .ftr-cta { background:var(--primary); border-color:var(--primary); color:#fff; }
+.ftr-acciones button:disabled { opacity:.6; cursor:default; }
+
+/* Curso terminado: invitación al certificado y a calificar */
+.ftr-fin { text-align: center; }
+.ftr-fin small { display: block; margin-bottom: 6px; font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; font-weight: 800; color: var(--accent); }
+.ftr-fin h3 { margin: 0 0 8px; font-size: 1.3rem; line-height: 1.25; }
+.ftr-fin p { margin: 0 0 18px; color: var(--text-light); font-size: .92rem; line-height: 1.55; }
+.ftr-trofeo { width: 64px; height: 64px; margin: 0 auto 12px; border-radius: 50%; display: grid; place-items: center; background: radial-gradient(circle at 35% 30%, #F5B83D, #E5A117); color: #3b2a00; box-shadow: 0 10px 26px rgba(229, 161, 23, .4); }
+.ftr-trofeo svg { width: 32px; height: 32px; }
+.ftr-nombre { margin: 4px 0 14px !important; font-size: 1.35rem !important; font-weight: 800; color: var(--accent) !important; word-break: break-word; }
+.ftr-input { width: 100%; box-sizing: border-box; margin: 0 0 8px; padding: 13px 14px; border-radius: 12px; border: 1.5px solid var(--border-2); background: var(--surface-2); color: var(--text); font: inherit; font-size: 1rem; text-align: center; }
+.ftr-input:focus { outline: none; border-color: var(--accent); }
+.ftr-pie { margin: 14px 0 0 !important; font-size: .74rem !important; line-height: 1.5; color: var(--text-muted) !important; }
+.ftr-fin .ftr-acciones { justify-content: center; }

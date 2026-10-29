@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Verificar certificado — Club FisioTeck</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#EEF5FC;--card:#fff;--text:#0B2A4A;--muted:#5B7186;--accent:#0D5FA0;--ok:#0F9D58;--bad:#DC2D3F;--border:rgba(11,58,102,.12)}
+  @media(prefers-color-scheme:dark){:root{--bg:#0B121F;--card:#101A2C;--text:#EAF2FA;--muted:#A9BBD1;--accent:#4CA6DE;--ok:#34D399;--bad:#F87171;--border:rgba(140,190,230,.16)}}
+  *{box-sizing:border-box;margin:0}
+  body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:grid;place-items:center;padding:20px}
+  main{width:100%;max-width:520px;background:var(--card);border:1px solid var(--border);border-radius:22px;padding:30px 26px;box-shadow:0 18px 50px rgba(11,58,102,.12)}
+  .brand{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;letter-spacing:.02em;text-transform:uppercase;font-size:1rem}
+  .brand span{color:var(--accent)}
+  h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.5rem;margin:18px 0 6px}
+  p{color:var(--muted);font-size:.92rem;line-height:1.5}
+  form{display:flex;gap:8px;margin:18px 0 4px}
+  input{flex:1;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text);font:inherit;text-transform:uppercase}
+  button{padding:12px 18px;border-radius:12px;border:0;background:var(--accent);color:#fff;font-weight:600;font:inherit;cursor:pointer}
+  .res{margin-top:22px;padding:18px;border-radius:16px;border:1px solid var(--border)}
+  .res.ok{border-color:var(--ok)} .res.bad{border-color:var(--bad)}
+  .tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:99px;margin-bottom:10px}
+  .ok .tag{background:rgba(15,157,88,.14);color:var(--ok)} .bad .tag{background:rgba(220,45,63,.12);color:var(--bad)}
+  .nombre{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.3rem;font-weight:800;margin-bottom:4px}
+</style>
+</head>
+<body>
+<main>
+  <div class="brand">Club Fisio<span>Teck</span></div>
+  <h1>Verificar certificado</h1>
+  <p>Escribe el folio que aparece en el certificado o escanea su código QR.</p>
+  <form id="f"><input id="folio" placeholder="FT-XXXX-XXXX" maxlength="20" autocomplete="off"><button type="submit">Verificar</button></form>
+  <div id="out"></div>
+</main>
+<script>
+  var API = (location.hostname === 'localhost' || location.hostname === '127.0.0.1') ? 'http://localhost:3000' : 'https://web-production-cd020.up.railway.app';
+  function esc(t){return String(t==null?'':t).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function mostrar(clase, html){ document.getElementById('out').innerHTML = '<div class="res ' + clase + '">' + html + '</div>'; }
+  async function verificar(folio){
+    folio = (folio||'').trim(); if(!folio) return;
+    mostrar('', '<p>Verificando…</p>');
+    try{
+      var r = await fetch(API + '/api/certificados/' + encodeURIComponent(folio));
+      var d = await r.json();
+      if(d.valido){
+        var c = d.certificado, f = new Date(c.emitidoEn).toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
+        mostrar('ok','<span class="tag">Certificado válido</span><div class="nombre">'+esc(c.nombre)+'</div><p>Completó el curso <strong>'+esc(c.curso)+'</strong><br>Emitido el '+f+' · Folio '+esc(c.folio)+'</p>');
+      } else {
+        mostrar('bad','<span class="tag">No válido</span><p>'+esc(d.revocado ? 'Este certificado fue revocado.' : (d.error || 'No encontramos un certificado con ese folio.'))+'</p>');
+      }
+    }catch(e){ mostrar('bad','<span class="tag">Sin conexión</span><p>No pudimos consultar el servidor. Intenta de nuevo en unos minutos.</p>'); }
+  }
+  document.getElementById('f').addEventListener('submit',function(e){e.preventDefault();verificar(document.getElementById('folio').value)});
+  var q = new URLSearchParams(location.search).get('folio');
+  if(q){ document.getElementById('folio').value = q; verificar(q); }
+</script>
+<script>(function(){if(location.hostname!=='club.fisioteck.com')return;try{if(navigator.doNotTrack==='1'||navigator.globalPrivacyControl===true)return;var k='ft_vis_verificar',t=Number(sessionStorage.getItem(k)||0);if(t&&Date.now()-t<1800000)return;sessionStorage.setItem(k,String(Date.now()));fetch('https://web-production-cd020.up.railway.app/api/visita',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pagina:'verificar',ref:document.referrer||''}),keepalive:true}).catch(function(){});}catch(e){}})();</script>
+</body>
+</html>

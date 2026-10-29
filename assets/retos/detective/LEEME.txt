@@ -1,0 +1,2 @@
+Fotografias del modo Detective (4:3, WebP): d-sala, d-higiene, d-traslado, d-bandas.
+Las posiciones de los errores estan en club-fisioteck-webhooks/data/retos-claves.json (clave detective, en % de la imagen).

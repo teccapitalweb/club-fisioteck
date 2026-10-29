@@ -1,0 +1,43 @@
+/* Club FisioTeck — tarjeta de título unificada por sección, menú agrupado y barra móvil (club-seccion.js).
+   Misma idea que Zoorigen/Alintec: cada pantalla abre con una tarjeta con píldora, título, subtítulo y cifras. */
+
+.section > .page-header {
+  position: relative; overflow: hidden; gap: 8px; margin-bottom: 24px; padding: 24px 28px;
+  border-radius: 24px; color: #fff;
+  background: linear-gradient(120deg, var(--accent-deep), var(--accent) 60%, var(--blue));
+  box-shadow: var(--shadow-accent);
+}
+.section > .page-header::after {
+  content: ""; position: absolute; top: -45%; right: -6%; width: 240px; height: 240px; border-radius: 50%;
+  background: rgba(255, 255, 255, .07); pointer-events: none;
+}
+.section > .page-header > * { position: relative; z-index: 1; }
+.section > .page-header .page-title { color: #fff; font-size: clamp(1.5rem, 2.4vw, 2rem); }
+.section > .page-header .page-subtitle {
+  order: 0; font-family: inherit; font-size: .92rem; font-weight: 400; letter-spacing: 0; text-transform: none;
+  color: rgba(255, 255, 255, .82); display: block;
+}
+.section > .page-header .page-subtitle::before { display: none; }
+
+.cs-pill {
+  align-self: flex-start; display: inline-flex; align-items: center; gap: 7px; padding: 5px 12px; border-radius: 999px;
+  background: rgba(255, 255, 255, .16); border: 1px solid rgba(255, 255, 255, .22);
+  font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #fff;
+}
+.cs-pill svg { width: 14px; height: 14px; }
+.cs-cifras { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.cs-cifras span { padding: 5px 12px; border-radius: 999px; background: rgba(255, 255, 255, .14); font-size: .78rem; color: #fff; }
+.cs-cifras b { font-weight: 800; margin-right: 4px; }
+
+/* Menú agrupado */
+.sidebar-nav .nav-section { margin-top: 4px; }
+.sidebar-nav .nav-section:first-child { margin-top: 0; }
+
+/* Barra inferior móvil: Retos en lugar de Material PDF (PDF sigue en el menú "Más") */
+.mobile-bottom-item[data-page="retos"] svg { stroke-width: 2; }
+
+@media (max-width:880px) {
+  .section > .page-header { padding: 18px 18px 20px; border-radius: 20px; margin-bottom: 18px; }
+  .section > .page-header .page-title { font-size: clamp(1.35rem, 6vw, 1.7rem); }
+  .section > .page-header .page-subtitle { font-size: .84rem; }
+}

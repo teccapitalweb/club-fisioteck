@@ -1,0 +1,101 @@
+/* =============================================
+   CLUB FISIOTECK — Acceso (login / registro)
+   Diseño guiado por Alintec: a la izquierda la foto con el
+   titular y los beneficios; a la derecha el formulario claro.
+   Solo presentación: la lógica de acceso no cambia.
+   ============================================= */
+:root { --au-azul: #1A3E8F; --au-azul2: #2a5bbf; --au-verde: #1DB898; --au-acc: #4fe3c6; --au-ink: #0b2347; --au-line: #dbe5f0; }
+
+/* Elementos de venta originales: se conservan en el DOM (su código sigue activo) pero ya no se muestran */
+#splash-screen .splash-sell .splash-logo, #splash-screen .splash-sell .splash-marquee, #splash-screen .splash-sell .splash-proofrow,
+#splash-screen .splash-sell .splash-price, #splash-screen .splash-sell .splash-reviews, #splash-screen .splash-sell .splash-trust,
+#splash-screen .auth-card .auth-brand, #splash-screen .auth-card .splash-free { display: none !important; }
+
+/* ---------- Panel izquierdo (foto + beneficios) ---------- */
+#splash-screen .splash-sell.au-sell {
+  position: relative; isolation: isolate; display: flex; flex-direction: column; gap: 0; padding: 32px 36px 36px; color: #fff; text-align: left;
+  border-radius: 26px; overflow: hidden;
+  background: linear-gradient(180deg, rgba(8, 25, 60, .55) 0%, rgba(8, 25, 60, .78) 38%, rgba(10, 33, 78, .93) 100%), linear-gradient(90deg, rgba(10, 33, 78, .55), rgba(10, 33, 78, 0)), url('img/splash/auth-bg.webp') center / cover no-repeat;
+}
+.au-brand { display: flex; align-items: center; gap: 14px; }
+.au-brand__logo { width: 52px; height: 52px; flex: none; display: grid; place-items: center; border-radius: 14px; background: #fff; overflow: hidden; box-shadow: 0 8px 20px rgba(0, 0, 0, .25); }
+.au-brand__logo img { width: 100%; height: 100%; object-fit: contain; }
+.au-brand__txt { display: grid; gap: 4px; }
+.au-brand__txt b { font: 800 1.2rem 'Plus Jakarta Sans', 'Inter', sans-serif; letter-spacing: -.01em; color: #fff; }
+.au-brand__txt b span { color: var(--au-acc); }
+.au-brand__txt small { font: 600 .56rem 'JetBrains Mono', ui-monospace, monospace; letter-spacing: .16em; text-transform: uppercase; color: rgba(255, 255, 255, .72); }
+#splash-screen .au-sell h1 { margin: auto 0 0; padding-top: 40px; max-width: 520px; color: #fff; font-size: clamp(2.2rem, 3.6vw, 3.3rem); line-height: 1.04; letter-spacing: -.045em; }
+#splash-screen .au-sell h1 span { display: block; margin: 0; background: linear-gradient(105deg, #a9dcff, #6ff0d3); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+#splash-screen .au-sell .sell-sub { margin: 16px 0 22px; max-width: 480px; color: rgba(255, 255, 255, .86); font-size: .96rem; line-height: 1.65; }
+.au-benef { list-style: none; display: grid; gap: 10px; max-width: 520px; }
+.au-benef li { display: flex; align-items: center; gap: 13px; padding: 11px 14px; border: 1px solid rgba(255, 255, 255, .3); border-radius: 13px; background: rgba(8, 25, 60, .35); backdrop-filter: blur(6px); font-size: .82rem; line-height: 1.4; color: rgba(255, 255, 255, .88); opacity: 0; transform: translateY(12px); animation: au-in .6s cubic-bezier(.2, .7, .2, 1) forwards; transition: background .25s, border-color .25s; }
+.au-benef li:nth-child(1) { animation-delay: .25s; } .au-benef li:nth-child(2) { animation-delay: .35s; } .au-benef li:nth-child(3) { animation-delay: .45s; } .au-benef li:nth-child(4) { animation-delay: .55s; }
+.au-benef li:hover { background: rgba(255, 255, 255, .12); border-color: rgba(111, 240, 211, .7); }
+.au-benef b { color: #fff; font-weight: 700; }
+.au-ck { flex: none; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; background: #fff; color: var(--au-azul); }
+.au-ck svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
+@keyframes au-in { to { opacity: 1; transform: none; } }
+
+/* ---------- Formulario (derecha) ---------- */
+.auth-card .auth-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; margin: 0 0 18px; border: 1px solid #e3eaf3; border-radius: 14px; background: #f1f5fa; }
+.auth-card .splash-tab { margin: 0; padding: 12px 8px; border: 0; border-radius: 10px; color: #6b7f9e; font-weight: 700; font-size: .86rem; transition: background .25s, color .25s, box-shadow .25s; }
+.auth-card .splash-tab:hover { color: var(--au-ink); }
+.auth-card .splash-tab.active { background: #fff; color: var(--au-ink); box-shadow: 0 4px 12px rgba(26, 62, 143, .14); border: 0; }
+.au-head h2 { font: 800 2rem/1.1 'Plus Jakarta Sans', 'Inter', sans-serif; letter-spacing: -.035em; color: var(--au-ink); margin: 0 0 6px; text-align: left; }
+.au-head p { font-size: .88rem; color: #6b7f9e; margin: 0 0 16px; text-align: left; }
+.auth-card .splash-form { gap: 13px; }
+.auth-card .auth-field__label { color: #33476b; font-size: .72rem; font-weight: 800; }
+.auth-card .auth-field { position: relative; }
+.auth-card .splash-input { min-height: 52px; padding: 14px 46px 14px 46px; border-radius: 13px; border: 1.5px solid var(--au-line); background-color: #f4f7fb; background-repeat: no-repeat !important; background-position: 16px 50% !important; background-size: 18px !important; color: var(--au-ink); transition: border-color .2s, box-shadow .2s, background-color .2s; }
+.auth-card .splash-input:hover { border-color: #b9cde6; background-color: #f8fbfe; }
+.auth-card .splash-input:focus { border-color: var(--au-azul2); background-color: #fff; box-shadow: 0 0 0 4px rgba(42, 91, 191, .13); }
+.auth-card #reg-name { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232a5bbf' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M4 21c0-4 3.5-7 8-7s8 3 8 7'/%3E%3C/svg%3E"); }
+.auth-card #login-email, .auth-card #reg-email { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232a5bbf' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='14' rx='2'/%3E%3Cpath d='m3 7 9 6 9-6'/%3E%3C/svg%3E"); }
+.auth-card #login-pass, .auth-card #reg-pass, .auth-card #reg-pass-confirm { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232a5bbf' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='11' width='16' height='10' rx='2'/%3E%3Cpath d='M8 11V7a4 4 0 0 1 8 0v4'/%3E%3C/svg%3E"); }
+.auth-eye { position: absolute; right: 8px; bottom: 7px; width: 38px; height: 38px; display: grid; place-items: center; border: 0; border-radius: 10px; background: transparent; color: #7a8ba6; cursor: pointer; transition: background .2s, color .2s; }
+.auth-eye:hover { background: #e8eff8; color: var(--au-azul); }
+.auth-eye svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.au-hint { margin: -6px 2px 0; font-size: .72rem; color: #7a8ba6; text-align: left; }
+.au-hint b { color: var(--au-ink); }
+.auth-card .auth-terms { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border: 1.5px solid var(--au-line); border-radius: 13px; background: #f8fbfe; }
+.auth-card #reg-terms:checked { border-color: var(--au-azul); background-color: var(--au-azul); }
+.auth-card .auth-terms a { color: var(--au-azul) !important; font-weight: 700; }
+.auth-card .btn-splash { position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 54px; border-radius: 13px; background: linear-gradient(135deg, var(--au-azul), var(--au-azul2)); box-shadow: 0 12px 26px rgba(26, 62, 143, .3); font-weight: 700; transition: transform .2s, box-shadow .2s; }
+.auth-card .btn-splash:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 16px 32px rgba(26, 62, 143, .38); background: linear-gradient(135deg, #1f4aa6, #3169cf); }
+.auth-card .btn-splash::after { content: ''; position: absolute; top: 0; bottom: 0; width: 50%; left: -70%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .35), transparent); transform: skewX(-20deg); animation: au-brillo 4.5s ease-in-out infinite; pointer-events: none; }
+@keyframes au-brillo { 0%, 55% { left: -70%; } 100% { left: 130%; } }
+.auth-card .btn-splash:disabled::after { display: none; }
+.au-arrow svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; display: block; transition: transform .2s; }
+.auth-card .btn-splash:hover .au-arrow svg { transform: translateX(4px); }
+.au-note { margin: -4px 0 0; text-align: center; font-size: .72rem; color: #7a8ba6; }
+.auth-card .btn-google { min-height: 52px; border: 1.5px solid var(--au-line); border-radius: 13px; font-weight: 600; transition: border-color .2s, box-shadow .2s, transform .2s; }
+.auth-card .btn-google:hover { border-color: #aac4e4; box-shadow: 0 8px 18px rgba(26, 62, 143, .1); transform: translateY(-1px); }
+/* Como en Alintec: acceso con Google arriba y el formulario después */
+.auth-card .splash-form .btn-google { order: -2; }
+.auth-card .splash-form .auth-divider { order: -1; margin: 0 0 2px; }
+.auth-card .auth-divider { color: #8a9bb4; font-size: .74rem; letter-spacing: 0; text-transform: none; }
+.au-switch { margin: 18px 0 0; text-align: center; font-size: .86rem; color: #5d7396; }
+.au-switch button { background: none; border: 0; padding: 0; font: inherit; font-weight: 800; color: var(--au-azul); cursor: pointer; }
+.au-switch button:hover { text-decoration: underline; }
+.au-legal { margin: 18px 0 0; text-align: center; font: 500 .62rem/1.7 'JetBrains Mono', ui-monospace, monospace; letter-spacing: .06em; color: #8a9bb4; }
+
+/* ---------- Tarjeta dividida (escritorio) ---------- */
+@media (min-width: 981px) {
+  #splash-screen { align-items: center; padding: clamp(20px, 4vh, 44px) 0; background: linear-gradient(145deg, #f7f4ee, #f1efe9); }
+  #splash-screen .splash-grid {
+    position: relative; width: min(94%, 1180px); max-width: 1180px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; align-items: stretch;
+    border-radius: 28px; overflow: hidden; background: #fff; box-shadow: 0 40px 90px rgba(11, 35, 71, .22), 0 3px 12px rgba(11, 35, 71, .06); animation: fadeUp .8s cubic-bezier(.16, 1, .3, 1);
+  }
+  #splash-screen .splash-sell.au-sell { border-radius: 0; min-height: 680px; padding: 38px 42px 42px; }
+  #splash-screen .splash-grid .auth-card { order: 0; max-width: none !important; width: 100%; margin: 0 !important; padding: 44px 56px 32px; border: 0; border-radius: 0; background: #fffefb; box-shadow: none; backdrop-filter: none; display: flex; flex-direction: column; justify-content: center; }
+}
+/* ---------- Celular y tablet: formulario arriba y panel de beneficios debajo ---------- */
+@media (max-width: 980px) {
+  #splash-screen .splash-sell.au-sell { padding: 26px 22px 28px; border-radius: 22px; }
+  #splash-screen .au-sell h1 { margin-top: 0; padding-top: 26px; font-size: clamp(1.9rem, 7vw, 2.5rem); }
+  .au-head h2 { font-size: 1.7rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .auth-card .btn-splash::after { animation: none !important; }
+  .au-benef li { animation: none; opacity: 1; transform: none; }
+}
