@@ -3690,6 +3690,7 @@
     auth.signInWithPopup(provider)
       .then(async (result) => {
         const user = result.user;
+        showToast('Entrando con Google…');
         const nuevaEnAuth = !!(result.additionalUserInfo && result.additionalUserInfo.isNewUser);
         const docRef = db.collection('members').doc(user.uid);
         const doc = await docRef.get();
@@ -3750,11 +3751,20 @@
         } else if (err.code === 'auth/account-exists-with-different-credential') {
           avisoAcceso('login', 'Este correo ya tiene una cuenta con contraseña. Inicia sesión con tu correo y contraseña.');
         } else {
-          showToast('Error al continuar con Google. Intenta de nuevo.');
+          showToast('Error al continuar con Google (' + (err.code || err.message || 'desconocido') + '). Intenta de nuevo.');
           console.error('Google login error:', err);
         }
       })
-      .finally(() => { window.__ftRegistrando = false; });
+      .finally(() => {
+        window.__ftRegistrando = false;
+        // Si la sesión de Google ya quedó abierta pero el panel no apareció, se recarga: al arrancar, el panel entra solo con esa sesión
+        setTimeout(() => {
+          try {
+            const sp = document.getElementById('splash-screen');
+            if (auth.currentUser && sp && !sp.classList.contains('hidden') && !document.body.classList.contains('ft-gate')) location.reload();
+          } catch (e) { /* sin recarga */ }
+        }, 2500);
+      });
   }
 
   // ===== LEGAL MODAL (splash) =====
