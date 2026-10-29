@@ -9,7 +9,7 @@
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
   // ---------- Cola: ¿hay otra ventana encima? ----------
-  const BLOQUEOS = ['.fpi-ov', '#ftGateCorreo', '#paywallOverlay', '#certModal', '#videoModal.active', '.ftp-overlay.is-open', '.ftj-ov', '.rf-overlay.on', '.rf-overlay.is-open', '.ftr-overlay.is-open', '.ftr-overlay.on', '#pwaPop.on', '#ftbOv.on', '#stripeCheckoutModal.active', '#celebrationPopup.active', '.ft-nombre-ov', '.ft-avatar-ov', '#ftTourOv', '#ftBienvOv', '#ftVipOv', '.fcu-ov'];
+  const BLOQUEOS = ['.fpi-ov', '#ftGateCorreo', '#paywallOverlay', '#certModal', '#videoModal.active', '.ftp-overlay.is-open', '.ftj-ov', '.rf-overlay.on', '.rf-overlay.is-open', '.ftr-overlay.is-open', '.ftr-overlay.on', '#pwaPop.on', '#ftbOv.on', '#stripeCheckoutModal.active', '#celebrationPopup.active', '.ft-nombre-ov', '.ft-avatar-ov', '#ftTourOv', '#ftBienvOv', '#ftVipOv', '#ftXpOv', '.fcu-ov'];
   function visible(el) { const cs = getComputedStyle(el); return cs.display !== 'none' && cs.visibility !== 'hidden' && el.getBoundingClientRect().width > 0; }
   function hayVentana() {
     const splash = $('splash-screen');

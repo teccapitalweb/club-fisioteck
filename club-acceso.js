@@ -110,7 +110,11 @@
       }
       await A.cargar();
       return r;
-    } catch (e) { return null; /* sin servidor: no se gana XP; el reto se puede repetir */ }
+    } catch (e) {
+      // Antes fallaba en silencio y el reto parecía resuelto sin contar: ahora se dice el motivo
+      try { showToast(e && e.message ? e.message : 'No se pudo guardar tu reto. Intenta de nuevo.'); } catch (_) { /* sin aviso */ }
+      return null; /* sin servidor: no se gana XP; el reto se puede repetir */
+    }
   };
 
   auth.onAuthStateChanged(u => { if (u) A.cargar(); else aplicar(null); });

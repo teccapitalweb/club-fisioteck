@@ -7126,7 +7126,16 @@
   function recordarCierre(dias){
     try { localStorage.setItem(KEY, String(Date.now() + dias*24*60*60*1000)); } catch(e){}
   }
-  function show(){ pop.classList.add('show'); }
+  // El aviso de instalar espera a que termine la secuencia de tarjetas de la cuenta nueva (bienvenida, regalo, perfil, recorrido): nunca se encima
+  function show(){
+    var intentos = 0;
+    (function turno(){
+      var ocupado = (window.ftBienvenida && ftBienvenida.secuenciaPendiente && ftBienvenida.secuenciaPendiente()) ||
+        document.getElementById('ftXpOv') || document.getElementById('ftBienvOv') || document.querySelector('.fpi-ov');
+      if (!ocupado) pop.classList.add('show');
+      else if (intentos++ < 300) setTimeout(turno, 2000);
+    })();
+  }
   function hide(){ pop.classList.remove('show'); }
 
   if (isStandalone() || silenciado()) return;
@@ -7176,10 +7185,10 @@
 <script src="club-retos-zona.js?v=20261030"></script>
 <script src="club-secciones.js?v=20261026"></script>
 <script src="club-cupon-barra.js?v=20261026"></script>
-<script src="club-paginas.js?v=20261026"></script>
+<script src="club-paginas.js?v=20261140"></script>
 <script src="club-foro.js?v=20261101"></script>
 <script src="club-logros.js?v=20261130"></script>
-<script src="club-acceso.js?v=20261126"></script>
+<script src="club-acceso.js?v=20261140"></script>
 <script src="club-resenas.js?v=20261107"></script>
 <script src="club-referidos.js?v=20261104"></script>
 <script src="club-juegos.js?v=20261026"></script>
@@ -7199,8 +7208,8 @@
 <script src="club-detalle.js?v=20261122"></script>
 <script src="club-visor.js?v=20261104"></script>
 <script src="club-inicio.js?v=20261129"></script>
-<script src="club-recorrido.js?v=20261132"></script>
-<script src="club-bienvenida.js?v=20261132"></script>
+<script src="club-recorrido.js?v=20261140"></script>
+<script src="club-bienvenida.js?v=20261140"></script>
 <script src="club-perfil-inicial.js?v=20261132"></script>
 <script src="club-vip.js?v=20261027"></script>
 <script src="club-cupones.js?v=20261132"></script>

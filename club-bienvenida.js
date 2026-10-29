@@ -162,7 +162,8 @@
   // ---------- 2) Regalo de bienvenida: +100 XP (tarjeta con la barra de nivel). El servidor decide si corresponde y lo da una sola vez ----------
   const clavePremio = () => 'ft_premio_' + ((auth.currentUser || {}).uid || 'x');
   let premioSesion = false, premioEnCurso = false;
-  const premioListo = () => { if (premioSesion) return true; try { if (localStorage.getItem(clavePremio()) === '1') return true; } catch (_) { /* sin almacenamiento */ } return typeof achievementData !== 'undefined' && achievementData.bienvenida === true; };
+  // Mientras se pide el regalo o la tarjeta está abierta NO está listo (aunque el servidor ya haya marcado el premio): así el perfil y el recorrido no se le encima
+  const premioListo = () => { if (premioEnCurso || document.getElementById('ftXpOv')) return false; if (premioSesion) return true; try { if (localStorage.getItem(clavePremio()) === '1') return true; } catch (_) { /* sin almacenamiento */ } return typeof achievementData !== 'undefined' && achievementData.bienvenida === true; };
   function guardarPremio() { premioSesion = true; try { localStorage.setItem(clavePremio(), '1'); } catch (_) { /* modo privado */ } }
   const REGALO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8C9.5 8 8 7 8 5.5S9.5 3 12 8zM12 8c2.5 0 4-1 4-2.5S14.5 3 12 8z"/></svg>';
   const ESTRELLA = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>';
@@ -212,7 +213,7 @@
   const estiloXp = document.createElement('style');
   estiloXp.textContent = `
   .fxp-ov { position:fixed; inset:0; z-index:10091; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(6,14,26,.66); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); overflow:auto; }
-  .fxp-caja { width:min(420px,100%); display:grid; gap:12px; justify-items:center; text-align:center; padding:28px 26px 24px; border-radius:28px; background:linear-gradient(160deg,var(--surface),var(--accent-ghost)); color:var(--text); border:1.5px solid var(--accent); box-shadow:0 30px 80px rgba(0,0,0,.4); animation:fxpEntra .5s cubic-bezier(.2,1.3,.4,1) both; }
+  .fxp-caja { width:min(420px,100%); display:grid; gap:12px; justify-items:center; text-align:center; padding:28px 26px 24px; border-radius:28px; background:linear-gradient(160deg,transparent,var(--accent-ghost)),var(--surface); color:var(--text); border:1.5px solid var(--accent); box-shadow:0 30px 80px rgba(0,0,0,.4); animation:fxpEntra .5s cubic-bezier(.2,1.3,.4,1) both; }
   @keyframes fxpEntra { from { opacity:0; transform:scale(.9) translateY(14px); } to { opacity:1; transform:none; } }
   .fxp-regalo { width:64px; height:64px; border-radius:50%; display:grid; place-items:center; background:linear-gradient(135deg,#F5C75B,#E6A23C); color:#fff; box-shadow:0 10px 24px rgba(230,162,60,.45); animation:fxpFlota 2.4s ease-in-out infinite; } .fxp-regalo svg { width:32px; height:32px; }
   @keyframes fxpFlota { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }

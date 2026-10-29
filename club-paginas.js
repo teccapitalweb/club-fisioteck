@@ -68,7 +68,7 @@
       '<p>' + (sig ? 'Te faltan <b>' + (sig.min - xp) + ' XP</b> para llegar a ' + sig.min + ' XP. Cada insignia y reto completado acerca tu perfil al siguiente rango.' : 'Llegaste al nivel más alto del Club.') + '</p>' +
       '<div class="ftl-chips"><span>' + xp + ' XP actuales</span>' + (sig ? '<span>' + sig.min + ' XP objetivo</span>' : '') + '</div></div></div></section>' +
       bloquePremios(xp) + bloqueReferidos() +
-      '<div class="ftl-kpis"><div style="--k:#0F9D58"><small>Logros ganados</small><b>' + ganadas.size + '<em> /' + BADGES.length + '</em></b></div><div style="--k:#0D5FA0"><small>XP de logros</small><b>' + xpInsignias + '</b></div>' +
+      '<div class="ftl-kpis"><div style="--k:#0F9D58"><small>Logros ganados</small><b>' + ganadas.size + '<em> /' + BADGES.length + '</em></b></div><div style="--k:#0D5FA0"><small>XP total</small><b>' + xp + '</b></div>' +
       '<div style="--k:#C2760B"><small>Clases vistas</small><b>' + st.totalLessons + '</b></div><div style="--k:#7C3AED"><small>Cursos completos</small><b>' + st.completedCourses + '</b></div></div>' +
       cats.map(c => {
         const lista = BADGES.filter(b => b.cat === c), ok = lista.filter(b => ganadas.has(b.id)).length;
