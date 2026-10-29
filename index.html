@@ -2598,24 +2598,22 @@
         <div class="sub-status"><div class="dot"></div> Activa</div>
       </div>
 
-      <!-- SELECTOR DE PLANES — visible cuando el socio NO tiene suscripción activa.
-           Puede elegir mensual o anual libremente (como Dermalysse y SYNOVA). -->
+      <!-- SELECTOR DE PLANES (como Alintec): se elige el plan y el formulario de pago de Stripe se dibuja aquí mismo, sin ventanas.
+           Visible cuando el socio NO tiene suscripción activa. Lo maneja club-suscripcion.js -->
       <div id="subPlanesElegir" style="display:none;margin-bottom:24px;">
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;">
-          <div class="card" style="text-align:center;padding:28px 22px;">
-            <div style="font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;">Mensual</div>
-            <div style="font-family:var(--font-display);font-size:2.2rem;font-weight:800;letter-spacing:-.03em;line-height:1;" id="subplan-precio-mes">$199</div>
-            <div style="font-size:.8rem;color:var(--text-muted);margin:6px 0 18px;">MXN / mes · cancela cuando quieras</div>
-            <button class="btn-primary" style="width:100%;" onclick="openStripeCheckout('mensual')">Elegir Mensual</button>
-          </div>
-          <div class="card" style="text-align:center;padding:28px 22px;position:relative;border-color:var(--accent);border-width:1.5px;">
-            <div id="subplan-ahorro" style="position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--accent);color:var(--on-accent);font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:100px;white-space:nowrap;box-shadow:0 6px 16px color-mix(in srgb,var(--accent) 35%,transparent);">Ahorras $989</div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">Anual</div>
-            <div style="font-family:var(--font-display);font-size:2.2rem;font-weight:800;letter-spacing:-.03em;line-height:1;" id="subplan-precio-ano">$1,999</div>
-            <div style="font-size:.8rem;color:var(--text-muted);margin:6px 0 18px;" id="subplan-equivale">MXN / año · equivale a $167/mes</div>
-            <button class="btn-primary" style="width:100%;" onclick="openStripeCheckout('anual')">Elegir Anual</button>
-          </div>
+        <h3 class="ftsp-tit">Elige tu plan</h3>
+        <div class="ftsp-picker" id="ftspPicker">
+          <button type="button" class="ftsp-card" data-plan="mensual">
+            <div><div class="ftsp-name">VIP Mensual</div><div class="ftsp-sub">Cancela cuando quieras</div></div>
+            <div class="ftsp-der"><div class="ftsp-precio" id="subplan-precio-mes">$199</div><div class="ftsp-uni">MXN/mes</div></div>
+          </button>
+          <button type="button" class="ftsp-card" data-plan="anual">
+            <div><div class="ftsp-name">VIP Anual</div><div class="ftsp-sub" id="subplan-ahorro">Ahorras $389</div></div>
+            <div class="ftsp-der"><div class="ftsp-precio" id="subplan-precio-ano">$1,999</div><div class="ftsp-uni">MXN/año</div></div>
+          </button>
         </div>
+        <span id="subplan-equivale" style="display:none"></span>
+        <div id="ftspMontaje" class="ftsp-montaje"><div class="ftsp-cargando"><div class="ftsp-spin"></div><div>Preparando tu plan…</div></div></div>
       </div>
       <div class="sub-details">
         <div class="sub-detail-item">
@@ -7244,6 +7242,7 @@
 <script src="club-creditos.js?v=20261027"></script>
 <script src="club-directorio.js?v=20261124"></script>
 <script src="club-lector.js?v=20261150"></script>
+<script src="club-suscripcion.js?v=20261160"></script>
 <script src="club-libros.js?v=20261150"></script>
 <script src="club-cuenta.js?v=20261111"></script>
 <script src="club-seccion.js?v=20261026"></script>
