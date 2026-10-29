@@ -9,7 +9,10 @@
   const LLAVE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
   const OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
 
-  const activo = () => typeof memberIsPaid !== 'undefined' && memberIsPaid && window.ftAcceso && ftAcceso.escalonado === true && (ftAcceso.orden || []).length > 0;
+  // El historial de cursos se ve SIEMPRE a los miembros; el calendario con fechas y contador solo cuando el administrador enciende los cursos escalonados
+  const hayMiembro = () => typeof memberIsPaid !== 'undefined' && memberIsPaid && window.ftAcceso && ftAcceso.cargado === true && ((typeof siteData !== 'undefined' && siteData.courses) || []).length > 0;
+  const escalonado = () => hayMiembro() && ftAcceso.escalonado === true && (ftAcceso.orden || []).length > 0;
+  const activo = escalonado;
   const curso = id => ((typeof siteData !== 'undefined' && siteData.courses) || []).find(c => String(c.id) === String(id));
   const fecha = iso => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('es-MX', { day: 'numeric', month: 'long' }); };
   const enDias = n => n <= 1 ? 'mañana' : 'en ' + n + ' días';
@@ -17,8 +20,9 @@
   // Estado de cada curso, en el orden del calendario
   function filas() {
     const A = ftAcceso;
-    return (A.orden || []).map((id, k) => {
-      const c = curso(id), a = A.cursos[String(id)] || { abierto: true };
+    const ids = escalonado() ? (A.orden || []) : ((typeof siteData !== 'undefined' && siteData.courses) || []).map(c => c.id);
+    return ids.map((id, k) => {
+      const c = curso(id), a = escalonado() ? (A.cursos[String(id)] || { abierto: true }) : { abierto: true };
       if (!c) return null;
       const total = (c.lessons || []).length, hechas = Math.min(total, (((typeof getCourseProgress === 'function' && getCourseProgress(c.id)) || {}).completed || []).length);
       const completo = total > 0 && hechas >= total;
@@ -30,7 +34,7 @@
 
   function resumen(f) {
     const n = e => f.filter(x => x.estado === e).length;
-    return [['completo', 'Completados'], ['progreso', 'En progreso'], ['abierto', 'Abiertos sin empezar'], ['espera', 'En espera']].map(p => '<div class="fcal-n fcal-' + p[0] + '"><b>' + n(p[0]) + '</b><span>' + p[1] + '</span></div>').join('');
+    return [['completo', 'Completados'], ['progreso', 'En progreso'], ['abierto', 'Abiertos sin empezar'], ['espera', 'En espera']].filter(p => escalonado() || p[0] !== 'espera').map(p => '<div class="fcal-n fcal-' + p[0] + '"><b>' + n(p[0]) + '</b><span>' + p[1] + '</span></div>').join('');
   }
 
   function fila(x) {
@@ -45,12 +49,21 @@
   }
 
   function html() {
-    if (!activo()) return '';
+    if (!hayMiembro()) return '';
+    if (!escalonado()) return historial();
     const A = ftAcceso, f = filas(), prox = A.proximo && A.proximo(), pc = prox ? curso(prox.id) : null;
     const dias = A.diasEntreCursos || 8;
     return '<section class="fcal" id="ftCalendario"><div class="fcal-cab"><div class="fcal-txt"><span class="fcal-kick">Tu calendario de cursos</span><h3>' + (A.diaMembresia ? 'Día ' + A.diaMembresia + ' de tu membresía' : 'Tu calendario de cursos') + '</h3>' +
       '<p>Cada ' + dias + ' días se abre un curso nuevo. También puedes abrir el siguiente antes superando retos.</p></div>' +
       '<div class="fcal-prox">' + (prox ? '<small>Siguiente curso</small><b>' + enDias(prox.dias || 1) + '</b><span>' + esc(fecha(prox.abreEn)) + (pc ? ' · ' + esc(pc.title) : '') + '</span>' : '<small>Todo al día</small><b>Cursos abiertos</b><span>Ya tienes todos tus cursos disponibles.</span>') + '</div></div>' +
+      '<div class="fcal-res">' + resumen(f) + '</div><ol class="fcal-lista">' + f.map(fila).join('') + '</ol></section>';
+  }
+
+  // Sin cursos escalonados: solo el historial (qué cursos ya completó, cuáles lleva y cuáles aún no empieza); todos están abiertos
+  function historial() {
+    const f = filas(); if (!f.length) return '';
+    return '<section class="fcal" id="ftCalendario"><div class="fcal-cab"><div class="fcal-txt"><span class="fcal-kick">Tu historial de cursos</span><h3>Tu avance en el Club</h3>' +
+      '<p>Hoy tienes todos tus cursos abiertos. Aquí ves los que ya completaste, los que llevas y los que aún no empiezas.</p></div></div>' +
       '<div class="fcal-res">' + resumen(f) + '</div><ol class="fcal-lista">' + f.map(fila).join('') + '</ol></section>';
   }
 

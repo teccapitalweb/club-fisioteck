@@ -8,7 +8,7 @@
 .fcal-prox { flex: 0 1 260px; display: grid; gap: 3px; padding: 14px 16px; border-radius: 18px; background: color-mix(in srgb, #C2760B 10%, var(--surface)); border: 1px solid color-mix(in srgb, #C2760B 30%, var(--border)); }
 .fcal-prox small { font: 800 .6rem var(--ftd-mono, 'JetBrains Mono', monospace); letter-spacing: .14em; text-transform: uppercase; color: #A36C35; }
 .fcal-prox b { font: 800 1.35rem var(--ftd-display, inherit); } .fcal-prox span { font-size: .8rem; color: var(--text-light); line-height: 1.4; }
-.fcal-res { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 18px 0 14px; }
+.fcal-res { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin: 18px 0 14px; }
 .fcal-n { padding: 10px 12px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--border); }
 .fcal-n b { display: block; font: 800 1.4rem var(--ftd-display, inherit); } .fcal-n span { font-size: .72rem; color: var(--text-muted); font-weight: 600; }
 .fcal-n.fcal-completo b { color: #0F9D58; } .fcal-n.fcal-progreso b { color: var(--accent); } .fcal-n.fcal-abierto b { color: #159E92; } .fcal-n.fcal-espera b { color: #C2760B; }
