@@ -9,7 +9,7 @@
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const clave = () => 'ft_splash_' + ((auth.currentUser || {}).uid || 'x');
   const AUTO_MS = 3200;
-  let ov = null, idx = 0, reloj = null, lam = [];
+  let ov = null, idx = 0, reloj = null, lam = [], variante = 'nuevo', datosVip = null;
 
   function vista() { try { return localStorage.getItem(clave()) === '1'; } catch (_) { return false; } }
   function marcar() {
@@ -17,6 +17,7 @@
     try { if (auth.currentUser && window.db) db.collection('members').doc(auth.currentUser.uid).set({ onboarding: { bienvenidaVista: true } }, { merge: true }); } catch (_) { /* sin conexión: queda la marca local */ }
   }
   function laminas() {
+    if (variante === 'vip') return laminasVip();
     const nombre = (((auth.currentUser || {}).displayName || '').trim().split(/\s+/)[0]) || 'colega', paga = typeof memberIsPaid !== 'undefined' && memberIsPaid;
     return [
       { pose: 'celebra', eyebrow: '¡Cuenta creada!', t: 'Bienvenido al Club FisioTeck', d: nombre + ', ya eres parte de la comunidad de fisioterapia y rehabilitación.' },
@@ -40,7 +41,8 @@
     if (reloj) { clearTimeout(reloj); reloj = null; }
     if (ov) { ov.remove(); ov = null; }
     document.removeEventListener('keydown', tecla, true);
-    marcar();
+    if (variante === 'vip') marcarVip();
+    else { marcar(); if (typeof memberIsPaid !== 'undefined' && memberIsPaid) marcarVip(); } // quien paga desde el inicio ya vio su bienvenida
   }
   function tecla(e) {
     if (!ov) return;
@@ -48,20 +50,21 @@
     else if (e.key === 'ArrowRight' || e.key === 'Enter') { e.preventDefault(); sig(); }
     else if (e.key === 'ArrowLeft') { e.preventDefault(); ir(idx - 1); }
   }
-  function sig() { if (idx >= lam.length - 1) cerrar(); else ir(idx + 1); }
+  function sig() { if (idx >= lam.length - 1) { const vip = variante === 'vip'; cerrar(); if (vip) { try { showPage('library'); } catch (_) { /* sin panel */ } } } else ir(idx + 1); }
   function ir(n) {
     if (!ov) return; idx = Math.max(0, Math.min(lam.length - 1, n));
     const l = lam[idx], ultima = idx === lam.length - 1;
     ov.querySelector('.fbv-cont').innerHTML = '<div class="fbv-mascota">' + (window.ftMascota ? ftMascota.html('home', { pose: l.pose, burbuja: false, ancho: 150 }) : '') + '</div><small>' + esc(l.eyebrow) + '</small><h2>' + esc(l.t) + '</h2><p>' + esc(l.d) + '</p>';
     ov.querySelector('.fbv-puntos').innerHTML = lam.map((_, i) => '<i class="' + (i === idx ? 'on' : i < idx ? 'hecho' : '') + '"></i>').join('');
-    const b = ov.querySelector('.fbv-sig'); b.textContent = ultima ? 'Comenzar recorrido' : 'Siguiente';
+    const b = ov.querySelector('.fbv-sig'); b.textContent = ultima ? (variante === 'vip' ? 'Ver mis cursos' : 'Comenzar recorrido') : 'Siguiente';
     const barra = ov.querySelector('.fbv-barra i'); barra.style.transition = 'none'; barra.style.width = '0'; void barra.offsetWidth;
     if (reloj) clearTimeout(reloj);
     if (!ultima) { barra.style.transition = 'width ' + AUTO_MS + 'ms linear'; barra.style.width = '100%'; reloj = setTimeout(sig, AUTO_MS); }
     else barra.style.width = '100%';
   }
-  function mostrar() {
+  function mostrar(v) {
     if (ov || !auth.currentUser) return;
+    variante = v === 'vip' ? 'vip' : 'nuevo';
     lam = laminas(); idx = 0;
     ov = document.createElement('div'); ov.id = 'ftBienvOv'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Bienvenida al Club FisioTeck');
     ov.innerHTML = '<div class="fbv-caja">' + confeti() + '<div class="fbv-barra"><i></i></div><div class="fbv-cont"></div><div class="fbv-puntos"></div>' +
@@ -97,5 +100,61 @@
     if (window.ftCola) ftCola.cuandoLibre(() => { if (!vista()) mostrar(); }, 'bienvenida');
   }
   setInterval(intentar, 2500);
-  window.ftBienvenida = { mostrar, vista };
+  // ---------- Bienvenida VIP (como Alintec): al volverse miembro, por pago o por activación del administrador ----------
+  const claveVip = () => 'ft_vip_bienvenida_' + ((auth.currentUser || {}).uid || 'x');
+  const vipVista = () => { try { return localStorage.getItem(claveVip()) === '1'; } catch (_) { return false; } };
+  function marcarVip() {
+    try { localStorage.setItem(claveVip(), '1'); } catch (_) { /* modo privado */ }
+    try { if (auth.currentUser && window.db) db.collection('members').doc(auth.currentUser.uid).set({ onboarding: { vipBienvenidaVista: true } }, { merge: true }); } catch (_) { /* sin conexión */ }
+  }
+  const aMs = v => { if (!v) return 0; if (typeof v.toMillis === 'function') return v.toMillis(); if (typeof v.seconds === 'number') return v.seconds * 1000; const t = new Date(String(v).length === 10 ? v + 'T12:00:00' : v).getTime(); return isNaN(t) ? 0 : t; };
+  // La membresía es NUEVA si su primer pago, o su activación o regalo, fue en los últimos 7 días (así a los miembros de siempre no se les muestra)
+  function esReciente(m) {
+    const pagos = (Array.isArray(m.payments) ? m.payments : []).map(p => aMs(p && (p.date || p.fecha || p.createdAt))).filter(Boolean);
+    const inicio = pagos.length ? Math.min.apply(null, pagos) : Math.max(aMs(m.activadoEn), aMs(m.giftedAt));
+    return !!inicio && Date.now() - inicio <= 7 * 864e5;
+  }
+  function laminasVip() {
+    const d = datosVip || {}, plan = String(d.plan || 'mensual').toLowerCase(), regalo = plan === 'regalo' || d.regalo === true;
+    const nombre = (((auth.currentUser || {}).displayName || '').trim().split(/\s+/)[0]) || 'colega';
+    const A = window.ftAcceso || {}, esc8 = A.escalonado === true, dias = A.diasEntreCursos || 8;
+    const portada = regalo ? { eyebrow: 'Acceso de cortesía', t: 'FisioTeck te regaló acceso VIP', d: nombre + ', disfruta el Club completo durante tu periodo de cortesía. Esto es lo que tienes desbloqueado:' }
+      : plan === 'anual' ? { eyebrow: '¡Bienvenido al Club VIP!', t: 'Bienvenido al Club VIP Anual', d: nombre + ', te uniste por todo un año a la comunidad de fisioterapia. Esto es tuyo:' }
+      : { eyebrow: '¡Membresía VIP activa!', t: 'Bienvenido al Club VIP Mensual', d: nombre + ', ya eres parte de la comunidad de fisioterapia y rehabilitación. Esto es tuyo:' };
+    return [
+      Object.assign({ pose: 'celebra' }, portada),
+      { pose: 'libro', eyebrow: 'Cursos con certificado', t: 'Cursos premium', d: esc8 ? 'Tu primer curso ya está abierto y cada ' + dias + ' días se abre el siguiente. También puedes abrir el que sigue antes superando retos.' : 'Catálogo completo con clases grabadas, material descargable y certificado al terminar.' },
+      { pose: 'senala', eyebrow: 'En vivo', t: 'Clases en vivo', d: 'Webinars con especialistas y acceso a las grabaciones cuando quieras.' },
+      { pose: 'lupa', eyebrow: 'Biblioteca', t: 'PDF, material y libros', d: 'Guías y plantillas descargables, y libros de lectura que se abren al superar retos.' },
+      { pose: 'trofeo', eyebrow: 'Herramientas y retos', t: 'Herramientas clínicas y retos', d: 'Calculadora, atlas muscular, escala EVA y más. Gana XP, sube de nivel y presume tu tarjeta en el Directorio VIP.' },
+      { pose: 'diploma', eyebrow: 'Certificados', t: 'Certificados con folio verificable', d: 'Con código QR que cualquiera puede verificar, para respaldar lo que aprendes.' },
+      { pose: 'saluda', eyebrow: 'Todo listo', t: regalo ? 'Aprovecha tu acceso de cortesía' : 'Todo esto ya es tuyo', d: regalo ? 'Cuando termine tu cortesía podrás volverte miembro VIP para no perder el acceso.' : 'Explora a tu ritmo. Tu panel completo te está esperando.' }
+    ];
+  }
+  async function mostrarVip(o) {
+    if (ov || !auth.currentUser) return;
+    if (!(o && o.datos)) { try { const s = await db.collection('members').doc(auth.currentUser.uid).get(); datosVip = s.exists ? (s.data() || {}) : {}; } catch (_) { datosVip = {}; } } else datosVip = o.datos;
+    if (ov) return;
+    mostrar('vip');
+  }
+  // Arranque automático: miembro con membresía vigente y RECIENTE que todavía no ha visto su bienvenida VIP, una sola vez
+  let revisandoVip = false;
+  async function intentarVip() {
+    const u = auth.currentUser;
+    if (revisandoVip || ov || !u || typeof memberIsPaid === 'undefined' || !memberIsPaid || vipVista()) return;
+    if (window.ftBienvenida && !vista() && nueva()) return; // cuenta nueva: primero su bienvenida normal (ya incluye la variante de miembro)
+    revisandoVip = true;
+    try {
+      const s = await db.collection('members').doc(u.uid).get(), m = s.exists ? (s.data() || {}) : {};
+      if ((m.onboarding && m.onboarding.vipBienvenidaVista) || !esReciente(m)) { try { localStorage.setItem(claveVip(), '1'); } catch (_) { /* modo privado */ } return; }
+      datosVip = m;
+      if (window.ftCola) ftCola.cuandoLibre(() => { if (!vipVista() && !ov) mostrar('vip'); }, 'bienvenida-vip');
+    } catch (_) { /* sin conexión: se intenta de nuevo */ } finally { revisandoVip = false; }
+  }
+  const nueva = () => { const u = auth.currentUser, c = u && u.metadata && u.metadata.creationTime ? new Date(u.metadata.creationTime).getTime() : 0; return !!c && Date.now() - c <= 3 * 864e5; };
+  setInterval(intentarVip, 4000);
+  // Al volver del pago (?checkout=success) el aviso viejo de pantalla completa se cambia por esta tarjeta
+  const celebracionVieja = window.showCelebration;
+  window.showCelebration = function () { if (auth.currentUser) mostrarVip({}); else if (celebracionVieja) celebracionVieja(); };
+  window.ftBienvenida = { mostrar, vista, mostrarVip, vipVista };
 })();

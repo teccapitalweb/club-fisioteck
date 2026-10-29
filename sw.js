@@ -1,7 +1,7 @@
 /* Club FisioTeck — Service Worker
    Estrategia: network-first SOLO para recursos del mismo origen (online = siempre fresco,
    offline = respaldo de caché). Firebase / gstatic / CDNs NO se interceptan. */
-const CACHE = 'fisioteck-v39-perfil-inicial';
+const CACHE = 'fisioteck-v40-bienvenida-vip';
 const SHELL = [
   './',
   './index.html',
