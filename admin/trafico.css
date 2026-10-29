@@ -41,3 +41,7 @@
 @media (max-width: 640px) { #sec-traffic .tr-seg { width: 100%; overflow-x: auto; } #sec-traffic .tr-miembro { align-items: flex-start; } }
 #sec-traffic .tr-desc { margin: 8px 0 0; max-width: 70ch; font-size: .92rem; line-height: 1.55; color: var(--text-light); text-transform: none; letter-spacing: 0; font-family: inherit; }
 #sec-traffic .tr-eyebrow { display: block; }
+
+/* Las Métricas de visitas (copia de Alintec) usan estos nombres de variables */
+.mx2 { --primary: var(--accent); --highlight: var(--accent); --text-2: var(--text-light); --text-3: var(--text-muted); --surface-3: var(--surface-2); }
+.tr-sub { margin: 34px 0 14px; font-size: 1.15rem; }
