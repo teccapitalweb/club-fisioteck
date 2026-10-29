@@ -3746,6 +3746,8 @@
           showToast('Tu navegador bloqueó la ventana. Permite los popups e intenta de nuevo.');
         } else if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
           // La persona cerró la ventana: no pasa nada
+        } else if (err.code === 'auth/user-disabled') {
+          avisoAcceso('login', 'Esta cuenta fue dada de baja por el administrador. Escríbenos si crees que es un error.');
         } else if (err.code === 'auth/unauthorized-domain') {
           showToast('Dominio no autorizado. Contacta al administrador.');
         } else if (err.code === 'auth/account-exists-with-different-credential') {
