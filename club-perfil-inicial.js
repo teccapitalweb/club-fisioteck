@@ -18,7 +18,7 @@
   const marcado = () => { try { return localStorage.getItem(clave()) === '1'; } catch (_) { return false; } };
   function marcar() {
     try { localStorage.setItem(clave(), '1'); } catch (_) { /* modo privado */ }
-    try { if (auth.currentUser && window.db) db.collection('members').doc(uid()).set({ onboarding: { perfilVisto: true } }, { merge: true }); } catch (_) { /* sin conexión */ }
+    try { if (auth.currentUser && typeof db !== 'undefined') db.collection('members').doc(uid()).set({ onboarding: { perfilVisto: true } }, { merge: true }); } catch (_) { /* sin conexión */ }
   }
   // Solo las cuentas nuevas que todavía no la han visto
   const pendiente = () => !!auth.currentUser && nueva() && !marcado();

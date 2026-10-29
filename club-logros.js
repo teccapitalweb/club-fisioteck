@@ -5,6 +5,9 @@
    Depende de index.html: auth, achievementData, BADGES, showToast, showPage, updateXpWidget, renderAchievements, renderHome. */
 (function () {
   'use strict';
+  // achievementData se declara con let en index.html, así que NO es propiedad de window. La zona de retos, el Modo historia y el perfil lo leen como
+  // window.achievementData: sin esto veían un objeto vacío y mostraban «0 de 25 superados», los mundos sin avance y la racha en 0 aunque el servidor ya los tenía.
+  try { Object.defineProperty(window, 'achievementData', { get: () => achievementData, set: v => { achievementData = v; }, configurable: true }); } catch (_) { /* ya definido */ }
   const API = (location.hostname === 'localhost' || location.hostname === '127.0.0.1') ? 'http://localhost:3000' : WEBHOOK_URL;
 
   async function pedir(ruta, cuerpo) {

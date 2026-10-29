@@ -14,7 +14,7 @@
   function vista() { try { return localStorage.getItem(clave()) === '1'; } catch (_) { return false; } }
   function marcar() {
     try { localStorage.setItem(clave(), '1'); } catch (_) { /* modo privado */ }
-    try { if (auth.currentUser && window.db) db.collection('members').doc(auth.currentUser.uid).set({ onboarding: { bienvenidaVista: true } }, { merge: true }); } catch (_) { /* sin conexión: queda la marca local */ }
+    try { if (auth.currentUser && typeof db !== 'undefined') db.collection('members').doc(auth.currentUser.uid).set({ onboarding: { bienvenidaVista: true } }, { merge: true }); } catch (_) { /* sin conexión: queda la marca local */ }
   }
   function laminas() {
     if (variante === 'vip') return laminasVip();
@@ -105,7 +105,7 @@
   const vipVista = () => { try { return localStorage.getItem(claveVip()) === '1'; } catch (_) { return false; } };
   function marcarVip() {
     try { localStorage.setItem(claveVip(), '1'); } catch (_) { /* modo privado */ }
-    try { if (auth.currentUser && window.db) db.collection('members').doc(auth.currentUser.uid).set({ onboarding: { vipBienvenidaVista: true } }, { merge: true }); } catch (_) { /* sin conexión */ }
+    try { if (auth.currentUser && typeof db !== 'undefined') db.collection('members').doc(auth.currentUser.uid).set({ onboarding: { vipBienvenidaVista: true } }, { merge: true }); } catch (_) { /* sin conexión */ }
   }
   const aMs = v => { if (!v) return 0; if (typeof v.toMillis === 'function') return v.toMillis(); if (typeof v.seconds === 'number') return v.seconds * 1000; const t = new Date(String(v).length === 10 ? v + 'T12:00:00' : v).getTime(); return isNaN(t) ? 0 : t; };
   // La membresía es NUEVA si su primer pago, o su activación o regalo, fue en los últimos 7 días (así a los miembros de siempre no se les muestra)
