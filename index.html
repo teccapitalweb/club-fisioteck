@@ -3432,6 +3432,8 @@
         });
         document.getElementById('splash-screen').classList.add('hidden');
         memberIsPaid = false;
+        // Cuenta de correo y contraseña: primero se verifica el correo (tarjeta "Verifica tu correo"), después se entra al panel
+        if (!cred.user.emailVerified && window.ftMostrarVerificacion) { ftMostrarVerificacion(cred.user, true); return; }
         loadUserProfile();
         showExplorationBanner();
         showToast('¡Cuenta creada! Explora el club y elige tu plan para desbloquear todo el contenido.');
@@ -6871,6 +6873,15 @@
             }
           }
 
+          // Cuenta de correo y contraseña sin verificar (y que todavía no es miembro): no se entra al panel hasta confirmar el correo
+          const exigeCorreo = !user.emailVerified && (user.providerData || []).some(p => p.providerId === 'password') && !esAdminEmail && !(memberData && (['active', 'paid', 'cancelled'].indexOf(memberData.status) !== -1 || (Array.isArray(memberData.payments) && memberData.payments.length > 0)));
+          if (exigeCorreo && window.ftMostrarVerificacion) {
+            document.getElementById('splash-screen').classList.add('hidden');
+            ftMostrarVerificacion(user);
+            finishAuthBoot(false);
+            return;
+          }
+
           const status = memberData?.status || '';
           const now = new Date();
 
@@ -7172,7 +7183,7 @@
 <script src="club-referidos.js?v=20261104"></script>
 <script src="club-juegos.js?v=20261026"></script>
 <script src="club-materiales.js?v=20261026"></script>
-<script src="club-correo.js?v=20261026"></script>
+<script src="club-correo.js?v=20261123"></script>
 <script src="club-recordatorios.js?v=20261026"></script>
 <script src="club-visitas.js?v=20261026"></script>
 <script src="club-barra.js?v=20261114"></script>
@@ -7188,7 +7199,7 @@
 <script src="club-visor.js?v=20261104"></script>
 <script src="club-inicio.js?v=20261122"></script>
 <script src="club-recorrido.js?v=20261026"></script>
-<script src="club-bienvenida.js?v=20261026"></script>
+<script src="club-bienvenida.js?v=20261123"></script>
 <script src="club-vip.js?v=20261027"></script>
 <script src="club-cupones.js?v=20261028"></script>
 <script src="club-certificado.js?v=20261026"></script>

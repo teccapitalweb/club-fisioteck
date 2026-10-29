@@ -64,7 +64,7 @@
     if (ov || !auth.currentUser) return;
     lam = laminas(); idx = 0;
     ov = document.createElement('div'); ov.id = 'ftBienvOv'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Bienvenida al Club FisioTeck');
-    ov.innerHTML = confeti() + '<div class="fbv-caja"><div class="fbv-barra"><i></i></div><div class="fbv-cont"></div><div class="fbv-puntos"></div>' +
+    ov.innerHTML = '<div class="fbv-caja">' + confeti() + '<div class="fbv-barra"><i></i></div><div class="fbv-cont"></div><div class="fbv-puntos"></div>' +
       '<div class="fbv-acc"><button type="button" class="fbv-saltar">Saltar e ir al panel</button><button type="button" class="fbv-sig">Siguiente</button></div></div>';
     document.body.appendChild(ov);
     ov.querySelector('.fbv-saltar').onclick = cerrar; ov.querySelector('.fbv-sig').onclick = sig;
@@ -74,12 +74,13 @@
 
   const estilo = document.createElement('style');
   estilo.textContent = `
-  #ftBienvOv { position:fixed; inset:0; z-index:10090; display:flex; align-items:center; justify-content:center; padding:20px; background:radial-gradient(circle at 30% 20%,#0F5C95,#082A4A 70%); overflow:hidden; }
-  .fbv-confeti { position:absolute; inset:0; pointer-events:none; } .fbv-confeti i { position:absolute; top:-6%; border-radius:2px; opacity:.9; animation:fbvCae linear infinite; }
-  @keyframes fbvCae { 0% { transform:translateY(0) rotate(0); } 100% { transform:translateY(115vh) rotate(540deg); } }
-  .fbv-caja { position:relative; width:min(520px,100%); display:grid; gap:18px; justify-items:center; text-align:center; color:#fff; }
+  #ftBienvOv { position:fixed; inset:0; z-index:10090; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(6,14,26,.66); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); overflow:auto; }
+  .fbv-confeti { position:absolute; inset:0; pointer-events:none; overflow:hidden; border-radius:inherit; } .fbv-confeti i { position:absolute; top:-6%; border-radius:2px; opacity:.9; animation:fbvCae linear infinite; }
+  @keyframes fbvCae { 0% { transform:translateY(0) rotate(0); } 100% { transform:translateY(640px) rotate(540deg); } }
+  .fbv-caja { position:relative; width:min(480px,100%); max-height:calc(100vh - 40px); max-height:calc(100dvh - 40px); overflow:hidden auto; display:grid; gap:16px; justify-items:center; text-align:center; color:#fff; padding:28px 26px 26px; border-radius:28px; background:radial-gradient(circle at 30% 15%,#0F5C95,#082A4A 72%); box-shadow:0 30px 80px rgba(0,0,0,.45); }
+  .fbv-caja > :not(.fbv-confeti) { position:relative; z-index:1; }
   .fbv-barra { width:100%; height:4px; border-radius:999px; background:rgba(255,255,255,.2); overflow:hidden; } .fbv-barra i { display:block; height:100%; width:0; background:#F5C75B; }
-  .fbv-cont { min-height:310px; display:grid; align-content:center; justify-items:center; gap:8px; animation:fbvEntra .45s both; } @keyframes fbvEntra { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+  .fbv-cont { min-height:290px; display:grid; align-content:center; justify-items:center; gap:8px; animation:fbvEntra .45s both; } @keyframes fbvEntra { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
   .fbv-cont small { font-family:'JetBrains Mono',monospace; font-size:.66rem; letter-spacing:.18em; text-transform:uppercase; color:#F5C75B; font-weight:700; }
   .fbv-cont h2 { margin:0; font-family:'Plus Jakarta Sans',system-ui,sans-serif; font-size:clamp(1.7rem,6vw,2.4rem); letter-spacing:-.03em; line-height:1.08; } .fbv-cont p { margin:0; max-width:420px; font-size:.98rem; line-height:1.55; opacity:.9; }
   .fbv-puntos { display:flex; gap:8px; } .fbv-puntos i { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.3); } .fbv-puntos i.hecho { background:rgba(255,255,255,.7); } .fbv-puntos i.on { width:24px; border-radius:999px; background:#F5C75B; }

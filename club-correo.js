@@ -34,6 +34,52 @@
     try { await user.sendEmailVerification(); return 'firebase'; } catch (_) { return 'error'; }
   };
 
+  // ---------- Verifica tu correo: tarjeta que bloquea el panel hasta que se confirme el correo ----------
+  // Aplica a cuentas de correo y contraseña que todavía no son miembros; con Google el correo ya viene verificado.
+  // Se actualiza sola cada 4 segundos y al volver a la pestaña; cuando el correo queda confirmado se recarga el Club.
+  window.ftMostrarVerificacion = function (user, recienCreada) {
+    if (document.getElementById('ftGateCorreo')) return;
+    window.__ftGateActivo = true;
+    const ov = document.createElement('div');
+    ov.id = 'ftGateCorreo'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-labelledby', 'ftGateTitulo');
+    ov.style.cssText = 'position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(6,14,26,.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);overflow:auto;';
+    const btn = 'width:100%;border:0;border-radius:12px;padding:13px 16px;font:inherit;font-size:.92rem;font-weight:700;cursor:pointer;';
+    ov.innerHTML = '<div style="width:100%;max-width:420px;background:var(--surface,#fff);color:var(--text,#0B1A30);border-radius:24px;padding:30px 26px;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.45);border:1px solid var(--border,#D8E3EE);">' +
+      '<div aria-hidden="true" style="width:58px;height:58px;margin:0 auto 14px;border-radius:18px;display:grid;place-items:center;background:var(--accent-ghost,#E6F0FA);color:var(--accent,#0D5FA0);"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></div>' +
+      '<h2 id="ftGateTitulo" style="margin:0 0 10px;font-size:1.4rem;font-weight:800;letter-spacing:-.02em;">Verifica tu correo</h2>' +
+      '<p style="margin:0 0 8px;font-size:.95rem;line-height:1.55;color:var(--text-light,#33475B);">Te enviamos un enlace a <strong id="ftGateCorreo2"></strong>. Ábrelo para activar tu cuenta y entrar al Club.</p>' +
+      '<p style="margin:0 0 20px;font-size:.82rem;line-height:1.5;color:var(--text-muted,#6C8299);">Si no lo ves, revisa Spam o Promociones. Esta tarjeta se actualiza sola cuando lo verifiques.</p>' +
+      '<button type="button" id="ftGateListo" style="' + btn + 'background:var(--accent,#0D5FA0);color:#fff;margin-bottom:10px;">Ya verifiqué</button>' +
+      '<button type="button" id="ftGateReenviar" style="' + btn + 'background:var(--surface-2,#EEF4FB);color:var(--text,#0B1A30);margin-bottom:10px;">Reenviar correo</button>' +
+      '<button type="button" id="ftGateSalir" style="' + btn + 'background:transparent;color:var(--text-muted,#6C8299);font-weight:600;font-size:.82rem;padding:8px;">Cerrar sesión / usar otra cuenta</button>' +
+      '<div id="ftGateAviso" role="status" style="min-height:18px;margin-top:8px;font-size:.82rem;color:var(--text-light,#33475B);"></div></div>';
+    document.body.appendChild(ov);
+    ov.querySelector('#ftGateCorreo2').textContent = user.email || 'tu correo';
+    const listo = ov.querySelector('#ftGateListo'), reenviar = ov.querySelector('#ftGateReenviar'), salir = ov.querySelector('#ftGateSalir'), msg = ov.querySelector('#ftGateAviso');
+    let terminado = false, espera = 0;
+    const revisar = async manual => {
+      if (terminado) return;
+      try {
+        await user.reload();
+        if (user.emailVerified) { terminado = true; await user.getIdToken(true); location.reload(); return; }
+        if (manual) msg.textContent = 'Aún no aparece verificado. Abre el enlace del correo y vuelve a intentar.';
+      } catch (_) { if (manual) msg.textContent = 'No pudimos comprobarlo. Intenta de nuevo.'; }
+    };
+    listo.onclick = async () => { listo.disabled = true; await revisar(true); listo.disabled = false; };
+    const reloj = setInterval(() => revisar(false), 4000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) revisar(false); });
+    const enfriar = () => { if (espera <= 0) { reenviar.disabled = false; reenviar.textContent = 'Reenviar correo'; return; } reenviar.textContent = 'Reenviar correo (' + espera + ' s)'; espera -= 1; setTimeout(enfriar, 1000); };
+    reenviar.onclick = async () => {
+      reenviar.disabled = true; msg.textContent = 'Enviando…';
+      const r = await window.ftEnviarVerificacion(user);
+      msg.textContent = r === 'limite' ? 'Espera un momento antes de pedir otro correo.' : r === 'error' ? 'No pudimos enviarlo ahora. Intenta más tarde.' : 'Correo enviado. Revisa tu bandeja y spam.';
+      espera = 60; enfriar();
+    };
+    salir.onclick = async () => { clearInterval(reloj); try { await auth.signOut(); } catch (_) { /* sin sesión */ } location.reload(); };
+    if (recienCreada) { msg.textContent = 'Cuenta creada. Te enviamos el correo de confirmación.'; espera = 60; enfriar(); }
+    setTimeout(() => listo.focus({ preventScroll: true }), 50);
+  };
+
   // ---------- Olvidé mi contraseña ----------
   window.ftOlvideContrasena = function () {
     const previo = (document.getElementById('login-email') || {}).value || '';
