@@ -9,6 +9,7 @@
 (function () {
   'use strict';
 
+  const T0 = Date.now();
   const estado = { cargado: false, estado: null, cursoId: null };
   window.ftPrueba = estado;
   window.ftEsPrueba = function (cursoId) {
@@ -203,7 +204,7 @@
   function recorridoListo() {
     const u = auth.currentUser;
     try { if (localStorage.getItem('ft_tour_' + u.uid) === '1') return true; } catch (_) { /* sin almacenamiento */ }
-    if (typeof achievementData !== 'undefined' && achievementData.bienvenida) return true;
+    if (Date.now() - T0 > 10 * 60 * 1000) return true; // tope de seguridad: si el recorrido no sale, no se bloquea la prueba
     const creada = u.metadata && u.metadata.creationTime ? new Date(u.metadata.creationTime).getTime() : 0;
     return !creada || Date.now() - creada > 3 * 864e5;
   }

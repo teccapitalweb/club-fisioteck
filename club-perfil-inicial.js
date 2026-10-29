@@ -13,6 +13,7 @@
   const clave = () => 'ft_perfil_' + uid();
   const AVATARES = Array.from({ length: 16 }, (_, i) => 'a' + String(i + 1).padStart(2, '0'));
   let ov = null;
+  const T0 = Date.now(), TOPE = 15 * 60 * 1000; // tope de seguridad: si no se muestra, no bloquea el recorrido para siempre
 
   const nueva = () => { const u = auth.currentUser, c = u && u.metadata && u.metadata.creationTime ? new Date(u.metadata.creationTime).getTime() : 0; return !!c && Date.now() - c <= 3 * 864e5; };
   const marcado = () => { try { return localStorage.getItem(clave()) === '1'; } catch (_) { return false; } };
@@ -21,7 +22,7 @@
     try { if (auth.currentUser && typeof db !== 'undefined') db.collection('members').doc(uid()).set({ onboarding: { perfilVisto: true } }, { merge: true }); } catch (_) { /* sin conexión */ }
   }
   // Solo las cuentas nuevas que todavía no la han visto
-  const pendiente = () => !!auth.currentUser && nueva() && !marcado();
+  const pendiente = () => !!auth.currentUser && nueva() && !marcado() && Date.now() - T0 <= TOPE;
 
   function tourListo() {
     try { if (localStorage.getItem('ft_tour_' + uid()) === '1') return true; } catch (_) { /* sin almacenamiento */ }
@@ -120,7 +121,7 @@
   function intentar() {
     if (!pendiente() || ov || !window.ftCola) return;
     if (window.ftBienvenida && !ftBienvenida.vista()) return;
-    if (!tourListo()) return;
+    if (!(window.ftBienvenida && ftBienvenida.premioListo && ftBienvenida.premioListo())) return; // primero el regalo de bienvenida
     ftCola.cuandoLibre(() => { if (pendiente() && !ov) mostrar(); }, 'perfil');
   }
   setInterval(intentar, 3000);

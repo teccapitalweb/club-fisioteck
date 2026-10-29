@@ -54,7 +54,6 @@
     if (ov) { ov.remove(); ov = null; }
     document.removeEventListener('keydown', tecla, true); window.removeEventListener('resize', pintar);
     try { localStorage.setItem('ft_tour_' + ((auth.currentUser || {}).uid || 'x'), '1'); } catch (_) { /* modo privado */ }
-    if (terminado && primeraVez) premio();
   }
   async function premio() {
     try {
@@ -124,12 +123,16 @@
 
   // ---------- Arranque automático: una sola vez, cuando ya no hay otra ventana ----------
   function yaVisto() { try { return localStorage.getItem('ft_tour_' + ((auth.currentUser || {}).uid || 'x')) === '1'; } catch (_) { return false; } }
+  // Solo cuentas nuevas (como Alintec): a las antiguas no se les muestra solo; lo ven desde Ayuda (?)
+  const cuentaNueva = () => { const u = auth.currentUser, c = u && u.metadata && u.metadata.creationTime ? new Date(u.metadata.creationTime).getTime() : 0; return !!c && Date.now() - c <= 3 * 864e5; };
   function intentar() {
-    if (!auth.currentUser || yaVisto() || !achievementData.estadoServidor || achievementData.bienvenida) return;
-    if (window.ftBienvenida && !ftBienvenida.vista()) return; // primero la bienvenida con confeti
+    if (!auth.currentUser || yaVisto() || !achievementData.estadoServidor || !cuentaNueva()) return;
+    // Orden: 1) bienvenida con confeti  2) regalo de +100 XP  3) completa tu perfil  4) este recorrido  5) prueba gratuita
+    if (window.ftBienvenida && !(ftBienvenida.vista() && ftBienvenida.premioListo())) return;
+    if (window.ftPerfilInicial && ftPerfilInicial.pendiente()) return;
     const barra = $('ftBarra');
     if (!barra && !document.querySelector('.mobile-header')) return;
-    window.ftCola.cuandoLibre(() => { if (!yaVisto() && !achievementData.bienvenida) iniciar(false); }, 'recorrido');
+    window.ftCola.cuandoLibre(() => { if (!yaVisto()) iniciar(false); }, 'recorrido');
   }
   setInterval(intentar, 5000);
 })();

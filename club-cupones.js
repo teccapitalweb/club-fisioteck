@@ -93,7 +93,7 @@
       // Después de la bienvenida, el recorrido y la presentación de la prueba gratuita
       for (let i = 0; i < 200; i++) {
         const u = auth.currentUser, nueva = u && u.metadata && u.metadata.creationTime && Date.now() - new Date(u.metadata.creationTime).getTime() < 3 * 864e5;
-        const tourPend = nueva && !almacen.get('ft_tour_' + uid()) && !(typeof achievementData !== 'undefined' && achievementData.bienvenida);
+        const tourPend = !!(window.ftBienvenida && ftBienvenida.secuenciaPendiente && ftBienvenida.secuenciaPendiente());
         const ocupado = (window.ftBienvenida && !ftBienvenida.vista()) || tourPend || document.visibilityState === 'hidden' || document.getElementById('ftpIntro');
         const pruebaPend = window.ftPrueba && ftPrueba.estado === 'pendiente' && !memberIsPaid && (() => { try { return sessionStorage.getItem('ft_prueba_intro_' + uid()) !== '1'; } catch (_) { return false; } })();
         if (!ocupado && !pruebaPend && !(window.ftCola && ftCola.hayVentana())) break;

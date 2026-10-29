@@ -10,6 +10,7 @@
   const clave = () => 'ft_splash_' + ((auth.currentUser || {}).uid || 'x');
   const AUTO_MS = 3200;
   let ov = null, idx = 0, reloj = null, lam = [], variante = 'nuevo', datosVip = null;
+  const T0 = Date.now(), TOPE_PERFIL = 15 * 60 * 1000; // tope de seguridad: ninguna tarjeta pendiente puede bloquear el panel para siempre
 
   function vista() { try { return localStorage.getItem(clave()) === '1'; } catch (_) { return false; } }
   function marcar() {
@@ -41,8 +42,9 @@
     if (reloj) { clearTimeout(reloj); reloj = null; }
     if (ov) { ov.remove(); ov = null; }
     document.removeEventListener('keydown', tecla, true);
-    if (variante === 'vip') marcarVip();
-    else { marcar(); if (typeof memberIsPaid !== 'undefined' && memberIsPaid) marcarVip(); } // quien paga desde el inicio ya vio su bienvenida
+    if (variante === 'vip') { marcarVip(); marcar(); } // quien paga desde el inicio ya vio su bienvenida: sigue el resto del recorrido
+    else { marcar(); if (typeof memberIsPaid !== 'undefined' && memberIsPaid) marcarVip(); }
+    if (nueva()) darPremio(); // 2) regalo de bienvenida: +100 XP (lo decide el servidor)
   }
   function tecla(e) {
     if (!ov) return;
@@ -94,7 +96,9 @@
 
   // Arranque automático: cuenta nueva (creada hace menos de 3 días) que aún no ha reclamado el premio de bienvenida, una sola vez
   function intentar() {
-    const u = auth.currentUser; if (!u || vista() || !achievementData.estadoServidor || achievementData.bienvenida) return;
+    const u = auth.currentUser; if (!u || vista() || !achievementData.estadoServidor) return;
+    if (achievementData.bienvenida) { marcar(); return; } // ya recibió su regalo de bienvenida: no se repite el recorrido
+    if (typeof memberIsPaid !== 'undefined' && memberIsPaid) return; // con membresía desde el inicio le toca la bienvenida VIP
     const creada = u.metadata && u.metadata.creationTime ? new Date(u.metadata.creationTime).getTime() : 0;
     if (!creada || Date.now() - creada > 3 * 864e5) { marcar(); return; } // cuenta antigua: no se muestra
     if (window.ftCola) ftCola.cuandoLibre(() => { if (!vista()) mostrar(); }, 'bienvenida');
@@ -142,11 +146,10 @@
   async function intentarVip() {
     const u = auth.currentUser;
     if (revisandoVip || ov || !u || typeof memberIsPaid === 'undefined' || !memberIsPaid || vipVista()) return;
-    if (window.ftBienvenida && !vista() && nueva()) return; // cuenta nueva: primero su bienvenida normal (ya incluye la variante de miembro)
     revisandoVip = true;
     try {
       const s = await db.collection('members').doc(u.uid).get(), m = s.exists ? (s.data() || {}) : {};
-      if ((m.onboarding && m.onboarding.vipBienvenidaVista) || !esReciente(m)) { try { localStorage.setItem(claveVip(), '1'); } catch (_) { /* modo privado */ } return; }
+      if ((m.onboarding && m.onboarding.vipBienvenidaVista) || !esReciente(m)) { try { localStorage.setItem(claveVip(), '1'); } catch (_) { /* modo privado */ } if (nueva() && !vista()) marcar(); return; }
       datosVip = m;
       if (window.ftCola) ftCola.cuandoLibre(() => { if (!vipVista() && !ov) mostrar('vip'); }, 'bienvenida-vip');
     } catch (_) { /* sin conexión: se intenta de nuevo */ } finally { revisandoVip = false; }
@@ -156,5 +159,73 @@
   // Al volver del pago (?checkout=success) el aviso viejo de pantalla completa se cambia por esta tarjeta
   const celebracionVieja = window.showCelebration;
   window.showCelebration = function () { if (auth.currentUser) mostrarVip({}); else if (celebracionVieja) celebracionVieja(); };
-  window.ftBienvenida = { mostrar, vista, mostrarVip, vipVista };
+  // ---------- 2) Regalo de bienvenida: +100 XP (tarjeta con la barra de nivel). El servidor decide si corresponde y lo da una sola vez ----------
+  const clavePremio = () => 'ft_premio_' + ((auth.currentUser || {}).uid || 'x');
+  let premioSesion = false, premioEnCurso = false;
+  const premioListo = () => { if (premioSesion) return true; try { if (localStorage.getItem(clavePremio()) === '1') return true; } catch (_) { /* sin almacenamiento */ } return typeof achievementData !== 'undefined' && achievementData.bienvenida === true; };
+  function guardarPremio() { premioSesion = true; try { localStorage.setItem(clavePremio(), '1'); } catch (_) { /* modo privado */ } }
+  const REGALO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8C9.5 8 8 7 8 5.5S9.5 3 12 8zM12 8c2.5 0 4-1 4-2.5S14.5 3 12 8z"/></svg>';
+  const ESTRELLA = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>';
+  function tarjetaXp(r) {
+    return new Promise(resolve => {
+      const xp = Number(r.xp) || 0, gan = Number(r.xpBienvenida) || 100;
+      const niveles = typeof LEVELS !== 'undefined' ? LEVELS : [], nivel = typeof getLevel === 'function' ? getLevel(xp) : null, sig = nivel ? niveles[niveles.indexOf(nivel) + 1] : null;
+      const pct = nivel && sig ? Math.min(100, Math.round((xp - nivel.min) / (sig.min - nivel.min) * 100)) : 100;
+      const o = document.createElement('div');
+      o.id = 'ftXpOv'; o.className = 'fxp-ov'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true'); o.setAttribute('aria-label', 'Regalo de bienvenida');
+      o.innerHTML = '<div class="fxp-caja"><div class="fxp-regalo">' + REGALO + '</div><small>Regalo de bienvenida</small><div class="fxp-num">+' + gan + ' XP</div>' +
+        '<p>Es tu primer paso en el Club. Cada clase, reto y día que entras suma más XP y te acerca al siguiente nivel.</p>' +
+        '<div class="fxp-ruta" aria-hidden="true">' + Array.from({ length: 10 }, (_, i) => '<i class="' + (i === 0 ? 'on' : i === 9 ? 'premio' : '') + '">' + (i === 9 ? ESTRELLA : '') + '</i>').join('') + '</div><span class="fxp-ruta-t">Tu ruta de logros · la última casilla es un premio especial</span>' +
+        '<div class="fxp-nivel"><div class="fxp-nivel-f"><b>' + esc(nivel ? nivel.name : 'Estudiante') + '</b><span>' + xp + ' XP' + (sig ? ' · faltan ' + (sig.min - xp) + ' para ' + esc(sig.name) : ' · nivel máximo') + '</span></div><div class="fxp-barra"><i style="width:0"></i></div></div>' +
+        '<button type="button" class="fxp-ok">¡Gracias! Continuar →</button></div>';
+      document.body.appendChild(o);
+      const cerrarXp = () => { document.removeEventListener('keydown', tecla2, true); o.remove(); resolve(); };
+      const tecla2 = e => { if (e.key === 'Escape' || e.key === 'Enter') { e.preventDefault(); cerrarXp(); } };
+      document.addEventListener('keydown', tecla2, true);
+      o.querySelector('.fxp-ok').onclick = cerrarXp;
+      setTimeout(() => { const b = o.querySelector('.fxp-barra i'); if (b) b.style.width = pct + '%'; }, 350);
+      setTimeout(() => { const b = o.querySelector('.fxp-ok'); if (b) b.focus({ preventScroll: true }); }, 80);
+    });
+  }
+  async function darPremio() {
+    if (premioEnCurso || premioListo() || !auth.currentUser || !window.ftLogros) return;
+    premioEnCurso = true;
+    try {
+      const r = await ftLogros.pedir('/api/logros/bienvenida', {});
+      ftLogros.aplicar(r); ftLogros.repintar();
+      if (r.premioNuevo) { if (window.ftCola) await new Promise(res => ftCola.cuandoLibre(res, 'premio-xp')); await tarjetaXp(r); }
+      guardarPremio();
+    } catch (_) { premioSesion = true; /* sin servidor: no se bloquea el panel; se vuelve a intentar la próxima vez */ }
+    finally { premioEnCurso = false; }
+  }
+  // Mientras una cuenta NUEVA no termina su recorrido de bienvenida, nada más (avisos de regalo, cupones) se le encima
+  function secuenciaPendiente() {
+    const u = auth.currentUser; if (!u || !nueva() || Date.now() - T0 > TOPE_PERFIL) return false;
+    const paga = typeof memberIsPaid !== 'undefined' && memberIsPaid;
+    if (paga ? !vipVista() : !vista()) return true;
+    if (!premioListo()) return true;
+    if (window.ftPerfilInicial && ftPerfilInicial.pendiente()) return true;
+    try { if (!localStorage.getItem('ft_tour_' + u.uid)) return true; } catch (_) { /* sin almacenamiento */ }
+    try { if (window.ftPrueba && ftPrueba.estado === 'pendiente' && !paga && sessionStorage.getItem('ft_prueba_intro_' + u.uid) !== '1') return true; } catch (_) { /* sin almacenamiento */ }
+    return false;
+  }
+  const estiloXp = document.createElement('style');
+  estiloXp.textContent = `
+  .fxp-ov { position:fixed; inset:0; z-index:10091; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(6,14,26,.66); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); overflow:auto; }
+  .fxp-caja { width:min(420px,100%); display:grid; gap:12px; justify-items:center; text-align:center; padding:28px 26px 24px; border-radius:28px; background:linear-gradient(160deg,var(--surface),var(--accent-ghost)); color:var(--text); border:1.5px solid var(--accent); box-shadow:0 30px 80px rgba(0,0,0,.4); animation:fxpEntra .5s cubic-bezier(.2,1.3,.4,1) both; }
+  @keyframes fxpEntra { from { opacity:0; transform:scale(.9) translateY(14px); } to { opacity:1; transform:none; } }
+  .fxp-regalo { width:64px; height:64px; border-radius:50%; display:grid; place-items:center; background:linear-gradient(135deg,#F5C75B,#E6A23C); color:#fff; box-shadow:0 10px 24px rgba(230,162,60,.45); animation:fxpFlota 2.4s ease-in-out infinite; } .fxp-regalo svg { width:32px; height:32px; }
+  @keyframes fxpFlota { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
+  .fxp-caja small { font:800 .64rem var(--ftd-mono,'JetBrains Mono',monospace); letter-spacing:.16em; text-transform:uppercase; color:var(--text-muted); }
+  .fxp-num { font:800 54px/1 var(--ftd-display,inherit); letter-spacing:-.03em; background:linear-gradient(135deg,var(--accent),#159E92); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .fxp-caja p { margin:0; font-size:.9rem; line-height:1.5; color:var(--text-light); }
+  .fxp-ruta { display:grid; grid-template-columns:repeat(10,1fr); gap:5px; width:100%; margin-top:4px; } .fxp-ruta i { aspect-ratio:1; border-radius:7px; background:var(--border-2); display:grid; place-items:center; } .fxp-ruta i.on { background:var(--accent); }
+  .fxp-ruta i.premio { background:#FFF1D6; color:#C2760B; } .fxp-ruta i svg { width:70%; height:70%; }
+  .fxp-ruta-t { font-size:.72rem; color:var(--text-muted); }
+  .fxp-nivel { width:100%; display:grid; gap:6px; } .fxp-nivel-f { display:flex; justify-content:space-between; gap:8px; font-size:.78rem; color:var(--text-muted); } .fxp-nivel-f b { color:var(--text); }
+  .fxp-barra { height:8px; border-radius:999px; background:var(--border-2); overflow:hidden; } .fxp-barra i { display:block; height:100%; border-radius:inherit; background:linear-gradient(90deg,var(--accent),#159E92); transition:width 1.1s ease; }
+  .fxp-ok { margin-top:6px; width:100%; padding:13px 16px; border-radius:14px; border:0; background:var(--accent); color:var(--on-accent,#fff); font:inherit; font-weight:800; font-size:.95rem; cursor:pointer; }
+  @media (prefers-reduced-motion:reduce) { .fxp-caja, .fxp-regalo { animation:none; } .fxp-barra i { transition:none; } }`;
+  document.head.appendChild(estiloXp);
+  window.ftBienvenida = { mostrar, vista, mostrarVip, vipVista, premioListo, secuenciaPendiente };
 })();
