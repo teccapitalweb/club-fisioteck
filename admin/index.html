@@ -1067,6 +1067,7 @@
           <div class="pg-cab"><i><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></i><h3>Cursos escalonados</h3></div>
           <p class="sub">Con membresía, el primer curso (el que eligió en su prueba gratuita) está abierto y los demás se abren uno cada cierto número de días, o antes si el miembro supera retos. Al encenderlo, quienes ya pagaban conservan todo abierto.</p>
           <div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="cfgEscActivo"> Activar cursos escalonados</label></div>
+          <div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="cfgEscNuevos"> Solo para miembros nuevos (quienes ya pagaban conservan todo abierto)</label><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">Si lo dejas sin marcar, la regla aplica a TODOS: cada miembro cuenta sus días desde que empezó su membresía y se le conserva abierto lo que ya empezó a ver.</p></div>
           <div class="form-group"><label class="form-label">Días entre cursos</label><input class="form-input" type="number" min="1" max="60" id="cfgEscDias" value="8"></div>
           <div class="form-group"><label class="form-label">Retos superados para abrir el siguiente curso antes (una sola vez por socio, mínimo 2 de cada tipo)</label><input class="form-input" type="number" min="4" max="17" id="cfgEscRetos" value="12"></div>
           <p id="cfgEscDesde" style="font-size:.78rem;color:var(--text-muted);margin-bottom:12px;"></p>
@@ -1707,9 +1708,10 @@
     try {
       const sn = await fbDb.collection('config').doc('club').get(), c = sn.exists ? sn.data() : {};
       document.getElementById('cfgEscActivo').checked = c.escalonadoActivo === true;
+      document.getElementById('cfgEscNuevos').checked = c.escalonadoSoloNuevos === true;
       document.getElementById('cfgEscDias').value = c.escalonadoDias || 8;
       document.getElementById('cfgEscRetos').value = c.retosParaAdelantar || 12;
-      document.getElementById('cfgEscDesde').textContent = c.escalonadoActivo === true && c.escalonadoDesde ? 'Activo desde ' + c.escalonadoDesde + '. Quienes empezaron a pagar antes de esa fecha tienen todo abierto.' : 'Apagado: todos los miembros tienen todos los cursos abiertos.';
+      document.getElementById('cfgEscDesde').textContent = c.escalonadoActivo === true ? 'Activo' + (c.escalonadoDesde ? ' desde ' + c.escalonadoDesde : '') + (c.escalonadoSoloNuevos === true ? '. Quienes empezaron a pagar antes de esa fecha tienen todo abierto.' : '. Aplica a todos los miembros, contando desde el inicio de su membresía.') : 'Apagado: todos los miembros tienen todos los cursos abiertos.';
     } catch (e) { /* sin permisos o sin conexión */ }
   }
   async function guardarEscalonado() {
@@ -1718,7 +1720,7 @@
       const activo = document.getElementById('cfgEscActivo').checked;
       const dias = Math.max(1, Math.min(60, parseInt(document.getElementById('cfgEscDias').value) || 8));
       const retos = Math.max(4, Math.min(17, parseInt(document.getElementById("cfgEscRetos").value) || 12));
-      const upd = { escalonadoActivo: activo, escalonadoDias: dias, retosParaAdelantar: retos };
+      const upd = { escalonadoActivo: activo, escalonadoDias: dias, retosParaAdelantar: retos, escalonadoSoloNuevos: document.getElementById('cfgEscNuevos').checked };
       // Al encenderlo (o si nunca se fijó) se anota el día: quien ya pagaba antes conserva todo abierto
       if (activo && (previo.escalonadoActivo !== true || !previo.escalonadoDesde)) upd.escalonadoDesde = new Date().toISOString().split('T')[0];
       await ref.set(upd, { merge: true });

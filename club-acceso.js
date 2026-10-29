@@ -39,6 +39,8 @@
     A.retosParaAdelantar = (d && d.retosParaAdelantar) || 12;
     A.adelanto = (d && d.adelanto) || null;
     A.orden = (d && d.orden) || [];
+    A.inicio = (d && d.inicio) || null;
+    A.diaMembresia = (d && d.diaMembresia) || 0;
   }
 
   function refrescarVistas() {
