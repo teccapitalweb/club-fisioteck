@@ -73,7 +73,7 @@
       '<div class="etq"><span>' + esc(area) + '</span><span>' + esc(c.nivel || 'Intermedio') + '</span></div><h2>' + esc(c.title) + '</h2>' +
       '<div class="meta"><span>' + I.usuario + ' ' + esc(c.instructor || 'Equipo FisioTeck') + '</span>' + (c.duration ? '<span>' + I.reloj + ' ' + esc(c.duration) + '</span>' : '') + '<span>' + I.libro + ' ' + total + ' clase' + (total === 1 ? '' : 's') + '</span></div>' +
       '<div class="pie"><div class="aut"><i>' + esc((c.instructor || 'Equipo FisioTeck').split(/\s+/).slice(-2).map(x => x[0]).join('').toUpperCase()) + '</i><div><b>' + esc(c.instructor || 'Equipo FisioTeck') + '</b><small>Curso especializado · FisioTeck</small></div></div>' + cta + '</div></div></section>' +
-      (est.prueba ? '<div class="fd-aviso fd-prueba"><span><b>Tu prueba gratuita.</b> Puedes ver todas las clases y materiales de este curso, menos la última clase y el último material. Con la membresía se abre todo.</span></div>' : '') + (c.desc ? '<p class="fd-desc">' + esc(c.desc) + '</p>' : '') + aviso + terminado +
+      (est.prueba ? '<div class="fd-aviso fd-prueba"><span><b>Tu prueba gratuita: ' + Math.max(0, total - 1) + ' clase' + (total - 1 === 1 ? '' : 's') + ' gratis.</b> Puedes ver todas las clases y materiales de este curso, menos la última clase y el último material. Con la membresía se abre todo.</span></div>' : '') + (c.desc ? '<p class="fd-desc">' + esc(c.desc) + '</p>' : '') + aviso + terminado +
       (total ? '<section class="fd-clases"><div class="cab"><small>Clases del curso</small><span>' + nHechas + '/' + total + ' · ' + pct + '%</span></div><div class="fd-prog"><i style="width:' + pct + '%"></i></div><ol>' + filas + '</ol></section>' : '<p class="fd-desc">Próximamente se agregarán las clases.</p>') +
       '<section id="fdMateriales"></section></div>';
   }
@@ -100,7 +100,8 @@
     window.currentCourseIdDetalle = courseId; materiales = null;
     quitar();
     const o = document.createElement('div'); o.id = 'ftDetalle'; o.className = 'fd-ov'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true'); o.setAttribute('aria-label', 'Detalle del curso');
-    o.innerHTML = html(c, estadoCurso(c));
+    o.innerHTML = '<div class="fd-ventana">' + html(c, estadoCurso(c)) + '</div>';
+    o.addEventListener('mousedown', e => { if (e.target === o) cerrar(); });
     document.body.appendChild(o); document.body.classList.add('fd-abierto');
     document.addEventListener('keydown', teclaEsc, true);
     const cuerpo = o.querySelector('.fd-cuerpo'); if (cuerpo) cuerpo.scrollTop = 0;
@@ -110,7 +111,7 @@
     const id = window.currentCourseIdDetalle, o = $('ftDetalle'); if (!id || !o) return;
     const c = siteData.courses.find(x => x.id === id); if (!c) return;
     const sc = o.querySelector('.fd-cuerpo') ? o.querySelector('.fd-cuerpo').scrollTop : 0;
-    o.innerHTML = html(c, estadoCurso(c)); const cu = o.querySelector('.fd-cuerpo'); if (cu) cu.scrollTop = sc;
+    o.innerHTML = '<div class="fd-ventana">' + html(c, estadoCurso(c)) + '</div>'; const cu = o.querySelector('.fd-cuerpo'); if (cu) cu.scrollTop = sc;
     pintarMateriales(); cargarMateriales(id);
   }
   window.addEventListener('ft:clase-completada', repintar);

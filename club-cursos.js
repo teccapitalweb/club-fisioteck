@@ -45,7 +45,8 @@
     if (soloTitulos()) return tarjetaPrueba(c);
     const e = estado(c), color = COLORES[Math.abs(String(c.category || c.title).split('').reduce((a, ch) => a + ch.charCodeAt(0), 0)) % COLORES.length];
     const img = imagen(c), clic = !e.bloq || e.modo === 'goteo';
-    const badge = e.bloq ? '<div class="estado">Restan ' + e.dias + ' día' + (e.dias === 1 ? '' : 's') + ' para su desbloqueo</div>' : e.completo ? '<div class="estado ok">Completado</div>' : (c.badge ? '<div class="estado ok">' + esc(c.badge) + '</div>' : '');
+    const esPrueba = !memberIsPaid && typeof ftEsPrueba === 'function' && ftEsPrueba(c.id), gratis = Math.max(0, e.total - 1);
+    const badge = esPrueba ? '<div class="estado ok">Tu prueba gratuita · ' + gratis + ' clase' + (gratis === 1 ? '' : 's') + ' gratis</div>' : e.bloq ? '<div class="estado">Restan ' + e.dias + ' día' + (e.dias === 1 ? '' : 's') + ' para su desbloqueo</div>' : e.completo ? '<div class="estado ok">Completado</div>' : (c.badge ? '<div class="estado ok">' + esc(c.badge) + '</div>' : '');
     const A = window.ftAcceso, ad = A && A.adelanto, d = ad && ad.estado === 'disponible' && e.modo === 'goteo' && String(ad.cursoId) === String(c.id) && A.desglose ? A.desglose() : null;
     const adel = d ? '<div class="adel">' + (A.iconoRayo || '') + '<b>Ábrelo antes con ' + d.necesarios + ' retos</b><em>' + d.total + '/' + d.necesarios + '</em><i class="b"><i style="width:' + Math.round(d.total / d.necesarios * 100) + '%"></i></i></div>' : '';
     return '<button type="button" class="ftd-curso' + (e.bloq ? ' bloq' : '') + '" style="--vp-c:' + color + '" data-id="' + esc(c.id) + '" ' + (clic ? '' : 'aria-disabled="true"') + ' aria-label="' + esc(c.title) + (e.bloq ? ' (bloqueado)' : '') + '">' +
@@ -60,7 +61,9 @@
     const q = texto.toLowerCase();
     cursos = cursos.filter(c => (area === 'todas' || c.category === area) && (!q || (c.title + ' ' + (c.instructor || '') + ' ' + (c.desc || '')).toLowerCase().includes(q)));
     cursos = cursos.filter(c => { const e = estado(c); return tab === 'todos' || (tab === 'progreso' && e.hechas > 0 && !e.completo) || (tab === 'completados' && e.completo); });
-    cursos.sort((a, b) => { const x = estado(a), y = estado(b); return (x.bloq ? 1 : 0) - (y.bloq ? 1 : 0) || (x.dias || 0) - (y.dias || 0); });
+    // Sin membresía, el curso que eligió como prueba gratuita va siempre primero
+    const suyo = c => (!memberIsPaid && typeof ftEsPrueba === 'function' && ftEsPrueba(c.id)) ? 0 : 1;
+    cursos.sort((a, b) => suyo(a) - suyo(b) || (() => { const x = estado(a), y = estado(b); return (x.bloq ? 1 : 0) - (y.bloq ? 1 : 0) || (x.dias || 0) - (y.dias || 0); })());
     return cursos;
   }
 

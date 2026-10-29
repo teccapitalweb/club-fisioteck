@@ -34,9 +34,24 @@
         if (hechas > 0 && (!actual || hechas / total > actual.hechas / actual.total)) actual = { c, hechas, total, sigIdx };
       }
     });
+    // Sin membresía: el curso actual es SIEMPRE el que eligió como prueba (con sus clases gratis: todas menos la última); si aún no elige, no se le sugiere ninguno
+    let pruebaPend = false;
+    if (typeof memberIsPaid !== 'undefined' && !memberIsPaid && window.ftPrueba) {
+      if (ftPrueba.estado === 'pendiente') { pruebaPend = true; primero = null; actual = null; }
+      else if (ftPrueba.estado === 'elegida') {
+        const t = cursos.find(c => String(c.id) === String(ftPrueba.cursoId));
+        if (t) {
+          const lecc = t.lessons || [], gratis = Math.max(0, lecc.length - 1), comp = (getCourseProgress(t.id).completed) || [];
+          const hechas = Math.min(comp.length, gratis);
+          const sigIdx = Math.min(Math.max(0, gratis - 1), Math.max(0, lecc.findIndex((l, i) => !(comp.includes(i) || (l && l.id !== undefined && comp.includes(l.id))))));
+          primero = { c: t, hechas, total: gratis, sigIdx, prueba: true };
+          actual = hechas > 0 && hechas < gratis ? primero : null;
+        }
+      }
+    }
     const R = (typeof achievementData !== 'undefined' && achievementData.retos) || {};
     const D = window.FT_RETOS;
-    return { cursos, clases, totalClases, completos, curso: actual || primero, enProgreso: !!actual, todoCompleto: cursos.length > 0 && completos === cursos.length,
+    return { cursos, clases, totalClases, completos, pruebaPend, curso: actual || primero, enProgreso: !!actual, todoCompleto: cursos.length > 0 && completos === cursos.length,
       proximo: window.ftAcceso && ftAcceso.proximo ? ftAcceso.proximo() : null,
       retosHechos: Object.keys(R.hechos || {}).length, retosTotal: D ? (D.quiz.length + D.orden.length) : 0,
       ins: ((typeof achievementData !== 'undefined' && achievementData.unlocked) || []).length, totalIns: (typeof BADGES !== 'undefined' ? BADGES.length : 0),
@@ -54,8 +69,8 @@
     return {
       titulo: d.enProgreso ? 'Continúa «' + c.c.title + '»' : 'Comienza «' + c.c.title + '»',
       pasos: [['Ahora', d.enProgreso ? 'Sigue con la clase ' + sig + ' de ' + c.total : 'Comienza «' + c.c.title + '»'],
-        ['Después', sig < c.total ? 'Avanza a la clase ' + (sig + 1) + ' de ' + c.total : 'Termina el curso y pide tu certificado'],
-        ['Al completar', 'Obtén tu certificado y desbloquea el siguiente curso']],
+        ['Después', sig < c.total ? 'Avanza a la clase ' + (sig + 1) + ' de ' + c.total : (c.prueba ? 'Activa tu membresía para abrir la última clase' : 'Termina el curso y pide tu certificado')],
+        ['Al completar', c.prueba ? 'Activa tu membresía para terminar el curso y obtener tu certificado' : 'Obtén tu certificado y desbloquea el siguiente curso']],
       accion: abrirClase
     };
   }
@@ -116,8 +131,9 @@
       '<section class="ftd-hero"><div class="ftd-icono">' + (h >= 7 && h < 19 ? SOL : LUNA) + '</div><div><div class="ftd-eyebrow"><i></i> Tu espacio de aprendizaje</div><h1>' + esc(saludo) + ', <em>' + esc(nombre) + '</em></h1>' +
       '<p>' + (memberIsPaid ? 'Tu acceso a cursos con certificado, herramientas clínicas y una comunidad de profesionales de la fisioterapia.' : 'Estás explorando el Club FisioTeck. Activa tu membresía para abrir todos los cursos, el material y los retos.') + '</p></div>' +
       '<div style="display:grid;gap:10px;justify-items:end"><div class="ftd-hoy"><small>HOY</small><b>' + esc(hoy) + '</b></div><div class="ftd-mascota">' + (window.ftMascota ? ftMascota.html('home', { ancho: 92, burbuja: false, pose: !memberIsPaid ? 'saluda' : d.enProgreso ? 'animo' : 'saluda' }) : '') + '</div></div></section>' +
-      '<div class="ftd-fila"><section class="ftd-continua"><div class="fondo"' + (img ? ' style="background-image:url(\'' + esc(img) + '\')"' : '') + '></div><h2>Continúa tu curso.</h2>' +
-      (c ? '<div class="ftd-vidrio"><div class="ftd-eyebrow">Curso actual</div><h3>' + esc(c.c.title) + '</h3><div class="ftd-clase"><small>' + (d.enProgreso ? 'SIGUIENTE CLASE' : 'PRIMERA CLASE') + '</small><b>' + esc(clase.title || 'Clase ' + (c.hechas + 1)) + '</b></div><div class="ftd-prog" role="progressbar" aria-label="Avance del curso" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i style="width:' + pct + '%"></i></div><div class="ftd-pie"><span>' + c.hechas + ' de ' + c.total + ' clases vistas</span><span>' + pct + '%</span></div><button type="button" class="ftd-btn claro" id="ftdSeguir">' + ic('f-play', 14) + ' ' + (d.enProgreso ? 'Continuar' : 'Comenzar') + '</button></div>'
+      '<div class="ftd-fila"><section class="ftd-continua"><div class="fondo"' + (img ? ' style="background-image:url(\'' + esc(img) + '\')"' : '') + '></div><h2>' + (d.pruebaPend ? 'Elige tu curso de prueba.' : 'Continúa tu curso.') + '</h2>' +
+      (d.pruebaPend ? '<div class="ftd-vidrio"><div class="ftd-eyebrow">Prueba gratuita</div><h3>Aún no eliges tu curso</h3><div class="ftd-clase"><small>SIGUIENTE PASO</small><b>Elige el curso de tu preferencia</b></div><p class="ftd-sub">Verás todas sus clases menos la última. Solo puedes elegir uno.</p><button type="button" class="ftd-btn claro" data-p="library">' + ic('f-play', 14) + ' Elegir mi curso</button></div>'
+      : c ? '<div class="ftd-vidrio"><div class="ftd-eyebrow">' + (c.prueba ? 'Tu prueba gratuita · ' + c.total + ' clase' + (c.total === 1 ? '' : 's') + ' gratis' : 'Curso actual') + '</div><h3>' + esc(c.c.title) + '</h3><div class="ftd-clase"><small>' + (d.enProgreso ? 'SIGUIENTE CLASE' : 'PRIMERA CLASE') + '</small><b>' + esc(clase.title || 'Clase ' + (c.hechas + 1)) + '</b></div><div class="ftd-prog" role="progressbar" aria-label="Avance del curso" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i style="width:' + pct + '%"></i></div><div class="ftd-pie"><span>' + c.hechas + ' de ' + c.total + ' clases vistas</span><span>' + pct + '%</span></div><button type="button" class="ftd-btn claro" id="ftdSeguir">' + ic('f-play', 14) + ' ' + (d.enProgreso ? 'Continuar' : 'Comenzar') + '</button></div>'
         : d.todoCompleto ? '<div class="ftd-vidrio"><div class="ftd-eyebrow">¡Al día!</div><h3>Completaste tus cursos.</h3><p class="ftd-sub">Descarga tus certificados y sigue practicando con los retos.</p><button type="button" class="ftd-btn claro" data-p="certificates">Ver mis certificados</button></div>'
         : d.proximo ? '<div class="ftd-vidrio"><div class="ftd-eyebrow">Próximo desbloqueo</div><h3>Espera tu próximo curso.</h3><div class="ftd-clase"><small>SE ABRE EN</small><b>' + d.proximo.dias + ' día' + (d.proximo.dias === 1 ? '' : 's') + (d.proximo.abreEn ? ' · ' + esc(new Date(d.proximo.abreEn).toLocaleDateString('es-MX', { day: 'numeric', month: 'long' })) : '') + '</b></div>' + (ftAcceso.adelanto && ftAcceso.adelanto.estado === 'disponible' ? '<p class="ftd-sub">Llevas ' + ftAcceso.adelanto.total + ' de ' + ftAcceso.adelanto.necesarios + ' retos para abrirlo antes (solo aplica una vez).</p><button type="button" class="ftd-btn claro" data-p="retos">Abrir antes con retos</button>' : '<button type="button" class="ftd-btn claro" data-p="library">Ver mis cursos</button>') + '</div>'
         : '<div class="ftd-vidrio"><div class="ftd-eyebrow">Biblioteca</div><h3>Aún no hay un curso en marcha</h3><button type="button" class="ftd-btn claro" data-p="library">Ver los cursos</button></div>') +
