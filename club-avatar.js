@@ -12,6 +12,7 @@
   let actual = '';
   window.ftAvatarUrl = id => (IDS.includes(id) ? url(id) : '');
   window.ftAvatarActual = () => actual;
+  window.ftAvatarElegir = id => elegir(id);
 
   // Pone la imagen (o la inicial) en un elemento solo si cambió, para no reescribir en bucle
   function pintar(el) {

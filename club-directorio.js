@@ -10,6 +10,7 @@
   const $ = id => document.getElementById(id);
   const ESPECIALIDADES = ['Fisioterapia deportiva', 'Ortopedia y traumatología', 'Neurorrehabilitación', 'Cardiopulmonar y respiratoria',
     'Geriatría', 'Pediatría', 'Dolor y terapia manual', 'Estética y liberación miofascial', 'Suelo pélvico', 'Otra'];
+  window.ftDirEspecialidades = ESPECIALIDADES;
   const PORTADAS = {
     azul: ['Azul', 'linear-gradient(135deg,#cfe3f7,#5aa6e0)'], marino: ['Marino', 'linear-gradient(135deg,#0A3E68,#2f7fbf)'], turquesa: ['Turquesa', 'linear-gradient(135deg,#c9f0ea,#2fb8a8)'],
     dorado: ['Dorado', 'linear-gradient(135deg,#f6e2b3,#e8b64d)'], violeta: ['Violeta', 'linear-gradient(135deg,#ddd0f7,#8b6fe0)'], coral: ['Coral', 'linear-gradient(135deg,#f9d3cf,#e8705f)'],

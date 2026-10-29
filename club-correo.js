@@ -42,7 +42,10 @@
     window.__ftGateActivo = true;
     const ov = document.createElement('div');
     ov.id = 'ftGateCorreo'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-labelledby', 'ftGateTitulo');
-    ov.style.cssText = 'position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(6,14,26,.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);overflow:auto;';
+    ov.style.cssText = 'position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 30% 15%,#0F5C95,#082A4A 72%);overflow:auto;';
+    // Mientras no se verifique el correo no se ve nada del panel (ni se carga): solo esta tarjeta sobre el fondo de la marca
+    if (!document.getElementById('ftGateEstilo')) { const st = document.createElement('style'); st.id = 'ftGateEstilo'; st.textContent = 'body.ft-gate .app-wrapper, body.ft-gate .mobile-header, body.ft-gate .mobile-bottom-nav, body.ft-gate #splash-screen { display:none !important; }'; document.head.appendChild(st); }
+    document.body.classList.add('ft-gate');
     const btn = 'width:100%;border:0;border-radius:12px;padding:13px 16px;font:inherit;font-size:.92rem;font-weight:700;cursor:pointer;';
     ov.innerHTML = '<div style="width:100%;max-width:420px;background:var(--surface,#fff);color:var(--text,#0B1A30);border-radius:24px;padding:30px 26px;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.45);border:1px solid var(--border,#D8E3EE);">' +
       '<div aria-hidden="true" style="width:58px;height:58px;margin:0 auto 14px;border-radius:18px;display:grid;place-items:center;background:var(--accent-ghost,#E6F0FA);color:var(--accent,#0D5FA0);"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></div>' +

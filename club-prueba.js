@@ -216,6 +216,7 @@
       if (!pendiente() || ++intentos > 400) { clearInterval(t); return; }
       if (window.ftBienvenida && !ftBienvenida.vista()) return; // primero la bienvenida con confeti
       if (!recorridoListo()) return; // después el recorrido guiado
+      if (window.ftPerfilInicial && ftPerfilInicial.pendiente()) return; // después la tarjeta "Completa tu perfil profesional"
       clearInterval(t);
       try { sessionStorage.setItem(k, '1'); } catch (_) { /* sin almacenamiento */ }
       const mostrar = () => { if (pendiente() && !document.getElementById('ftpIntro')) intro(); };
