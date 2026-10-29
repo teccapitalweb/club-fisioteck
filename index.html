@@ -3697,13 +3697,10 @@
         if (!registro) {
           // INICIAR SESIÓN: si no hay cuenta, no se entra ni se crea
           if ((nuevaEnAuth || !doc.exists) && !(await cuentaPorCorreo(user))) { await rechazarSinCuenta(user); return; }
-        } else if (doc.exists && !nuevaEnAuth) {
-          // CREAR CUENTA con un correo que ya tiene cuenta
-          await auth.signOut();
-          memberIsPaid = false;
-          avisoAcceso('login', 'Este correo ya tiene una cuenta. Inicia sesión.');
-          return;
         }
+        // CREAR CUENTA con un correo que ya tiene cuenta: Google ya comprobó que el correo es de la persona, así que simplemente entra a su panel
+        // (antes se le cerraba la sesión con un aviso y parecía que el botón no hacía nada). Con Google NO se pide verificar el correo.
+        if (registro && doc.exists) showToast('Ya tenías cuenta: te dimos acceso con Google.');
 
         if (!doc.exists) {
           await docRef.set({
