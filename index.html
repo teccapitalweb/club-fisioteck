@@ -1913,6 +1913,7 @@
   <link rel="stylesheet" href="club-resenas.css?v=20261106">
   <link rel="stylesheet" href="club-referidos.css?v=20261112">
   <link rel="stylesheet" href="club-juegos.css?v=20261026">
+  <link rel="stylesheet" href="club-juegos-clase.css?v=20261201">
   <link rel="stylesheet" href="club-retos.css?v=20261026">
   <link rel="stylesheet" href="club-directorio.css?v=20261112">
   <link rel="stylesheet" href="club-libros.css?v=20261120">
@@ -2160,7 +2161,7 @@
       </div>
       <div class="nav-item" data-page="library" onclick="showPage('library')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        Biblioteca
+        Cursos
       </div>
       <div class="nav-item" data-page="courses-live" onclick="showPage('courses-live')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
@@ -2455,7 +2456,7 @@
     <!-- LIBRARY -->
     <section class="section" id="page-library">
       <div class="page-header">
-        <h1 class="page-title">Biblioteca de Cursos</h1>
+        <h1 class="page-title">Cursos</h1>
         <p class="page-subtitle">Todos los cursos grabados disponibles</p>
       </div>
       <div class="search-bar">
@@ -2471,7 +2472,7 @@
       <div style="margin-bottom:20px;">
         <button onclick="backToLibrary()" style="background:none;border:none;color:var(--primary);font-size:.9rem;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:inherit;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18"><polyline points="15 18 9 12 15 6"/></svg>
-          Volver a Biblioteca
+          Volver a Cursos
         </button>
       </div>
       <div id="courseDetailHeader"></div>
@@ -6892,6 +6893,17 @@
             return;
           }
 
+          // Administrador viendo el panel como usuario (?como=user): ve TODO desbloqueado (cursos, materiales, libros, retos), sin membresía ni calendario
+          if (esAdminEmail) {
+            memberIsPaid = true;
+            window.ftVistaAdmin = true;
+            document.getElementById('splash-screen').classList.add('hidden');
+            hideExplorationBanner();
+            loadUserProfile();
+            finishAuthBoot(false);
+            return;
+          }
+
           const status = memberData?.status || '';
           const now = new Date();
 
@@ -7213,7 +7225,7 @@
 <script src="club-mascota.js?v=20261026"></script>
 <script src="club-noticias.js?v=20261118"></script>
 <script src="club-cursos.js?v=20261129"></script>
-<script src="club-material.js?v=20261121"></script>
+<script src="club-material.js?v=20261143"></script>
 <script src="club-detalle.js?v=20261122"></script>
 <script src="club-visor.js?v=20261104"></script>
 <script src="club-inicio.js?v=20261141"></script>
@@ -7228,5 +7240,6 @@
 <script src="club-libros.js?v=20261110"></script>
 <script src="club-cuenta.js?v=20261111"></script>
 <script src="club-seccion.js?v=20261026"></script>
+<script src="club-juegos-clase.js?v=20261201"></script>
 </body>
 </html>

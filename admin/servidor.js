@@ -47,14 +47,10 @@
     if ($('sec-server')) return;
     const nav = document.querySelector('.admin-nav-item[data-section="config"]'), sec = $('sec-config');
     if (!nav || !sec) return;
-    const item = document.createElement('div');
-    item.className = 'admin-nav-item'; item.dataset.section = 'server'; item.setAttribute('onclick', "showSection('server')");
-    item.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="6" rx="1"/><rect x="3" y="14" width="18" height="6" rx="1"/><path d="M7 7h.01M7 17h.01"/></svg>Servidor y bitácora';
-    nav.insertAdjacentElement('beforebegin', item);
-    const s = document.createElement('section');
-    s.className = 'admin-section'; s.id = 'sec-server';
+    const s = document.createElement('div');
+    s.className = 'sv-bloque'; s.id = 'sec-server';
     s.innerHTML =
-      '<div class="admin-page-header"><div><div class="admin-page-title">Servidor y bitácora</div><div class="admin-page-sub">Si el servidor falló y quién hizo qué desde el panel</div></div>' +
+      '<div class="admin-page-header" style="margin-top:28px"><div><div class="admin-page-title" style="font-size:1.25rem">Servidor y bitácora</div><div class="admin-page-sub">Si el servidor falló y quién hizo qué desde el panel</div></div>' +
       '<div class="sv-acciones"><div class="sv-seg"><button type="button" id="svT1" class="on" onclick="svTab(1)">Historial del servidor</button><button type="button" id="svT2" onclick="svTab(2)">Acciones del equipo</button></div></div></div>' +
       '<div id="svP1"><div id="svEstado"></div><div class="ap-kpis" id="svKpis"></div>' +
       '<div class="sv-barra"><label>Periodo <select class="form-select" id="svDias" onchange="svCargar()"><option value="7">7 días</option><option value="30" selected>30 días</option><option value="90">90 días</option><option value="365">1 año</option></select></label>' +
@@ -64,7 +60,7 @@
       '<div class="admin-card"><h3>Avisos de Stripe</h3><div id="svStripe"></div></div></div>' +
       '<div id="svP2" style="display:none"><div class="admin-card" style="overflow-x:auto"><h3>Acciones del equipo</h3><p class="sv-nota">Cada activación, regalo o cancelación hecha desde el panel queda aquí con quién la hizo y cuándo. Nada de esto se borra.</p>' +
       '<table class="admin-table"><thead><tr><th>Cuándo</th><th>Quién</th><th>Acción</th><th>Miembro</th><th>Detalle</th></tr></thead><tbody id="svAcciones"></tbody></table></div></div>';
-    sec.insertAdjacentElement('beforebegin', s);
+    sec.appendChild(s);
   }
 
   let tab = 1;
@@ -105,6 +101,6 @@
   };
 
   const showOriginal = window.showSection;
-  window.showSection = function (sec) { showOriginal.apply(this, arguments); if (sec === 'server') svCargar(); };
+  window.showSection = function (sec) { showOriginal.apply(this, arguments); if (sec === 'config') svCargar(); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', montar); else montar();
 })();

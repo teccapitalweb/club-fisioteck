@@ -178,8 +178,10 @@
     D.materiales = [];
     D._matsEstado = c ? 'cargando' : 'listo'; // los enlaces de los materiales viven en el servidor, no en el sitio
     D._pregEstado = c ? 'cargando' : 'listo'; // las respuestas correctas del quiz también viven en el servidor
-    if (c) { cargarMateriales(c.id); cargarRespuestas(c.id); }
-    D.lessons.forEach(l => { l.videoRef = l.bunnyVideoId || l.videoUrl || ''; l.preguntas = l.preguntas || []; });
+    D._juegoEstado = c ? 'cargando' : 'listo'; // los datos de los juegos de cada clase también viven en el servidor (solo se entregan a quien tiene acceso)
+    D._teniaJuego = D.lessons.some(l => l && l.juego);
+    if (c) { cargarMateriales(c.id); cargarRespuestas(c.id); cargarJuegos(c.id); }
+    D.lessons.forEach(l => { l.videoRef = l.bunnyVideoId || l.videoUrl || ''; l.preguntas = l.preguntas || []; if (l.juego && l.juego.tipo && !l.juego.datos && PLANTILLAS[l.juego.tipo]) l.juego = { tipo: l.juego.tipo, datos: PLANTILLAS[l.juego.tipo]() }; });
     abiertos = {};
     pintarEditor();
     overlay().classList.add('on');
@@ -205,6 +207,16 @@
       D.lessons.forEach((l, i) => ((r.clases || {})[i] || []).forEach((q, k) => { if (l.preguntas[k]) l.preguntas[k].correcta = q.correcta; }));
       D._pregEstado = 'listo';
     } catch (e) { if (D !== mio) return; D._pregEstado = 'error'; D._pregMsg = e.message; }
+    if (D === mio && $('cueOverlay').classList.contains('on')) pintarEditor();
+  }
+  async function cargarJuegos(id) {
+    const mio = D;
+    try {
+      const r = await apiAdmin('/api/admin/juegos-curso/' + encodeURIComponent(id));
+      if (D !== mio) return;
+      D.lessons.forEach((l, i) => { const j = (r.clases || {})[i]; if (j && j.tipo && PLANTILLAS[j.tipo]) l.juego = { tipo: j.tipo, datos: Object.assign(PLANTILLAS[j.tipo](), j.datos || {}) }; });
+      D._juegoEstado = 'listo';
+    } catch (e) { if (D !== mio) return; D._juegoEstado = 'error'; D._juegoMsg = e.message; }
     if (D === mio && $('cueOverlay').classList.contains('on')) pintarEditor();
   }
   function cerrarEditor() { overlay().classList.remove('on'); D = null; }
@@ -347,7 +359,7 @@
     } else if (j && j.tipo === 'ahorcado') {
       cuerpo = '<label class="form-label" style="margin-top:12px">Palabras y pistas (mínimo 1)</label>' + (j.datos.palabras || []).map((p, n) => '<div class="cue-opc"><input class="form-input" placeholder="Palabra" value="' + val(p.palabra) + '" oninput="cueJuegoPar(' + i + ',' + n + ',\'palabra\',this.value)"><input class="form-input" placeholder="Pista" value="' + val(p.pista) + '" oninput="cueJuegoPar(' + i + ',' + n + ',\'pista\',this.value)"><button type="button" class="cue-mini del" onclick="cueJuegoQuitar(' + i + ',' + n + ')">✕</button></div>').join('') + '<button type="button" class="btn btn-o btn-sm" style="margin-top:8px" onclick="cueJuegoAgregar(' + i + ')">+ Palabra</button>';
     }
-    return '<div class="cue-panel"><label class="form-label">Juego dinámico al terminar la clase</label>' + sel + cuerpo + '<p class="cue-nota">Aparece después de las preguntas y hay que completarlo para continuar. No afecta el certificado.</p></div>';
+    return '<div class="cue-panel"><label class="form-label">Juego dinámico al terminar la clase</label>' + sel + cuerpo + '<p class="cue-nota">Aparece después de las preguntas y hay que completarlo para poder marcar la clase como vista. No afecta el certificado. Sus datos se guardan en el servidor y solo los recibe quien tiene acceso al curso.</p></div>';
   }
   const PLANTILLAS = { sopa_letras: () => ({ palabras: [] }), memorama: () => ({ pares: [{ termino: '', definicion: '' }, { termino: '', definicion: '' }, { termino: '', definicion: '' }] }), rompecabezas: () => ({ dificultad: '3', imagenUrl: '' }), ahorcado: () => ({ palabras: [{ palabra: '', pista: '' }] }) };
   window.cueJuegoTipo = (i, t) => { D.lessons[i].juego = t ? { tipo: t, datos: PLANTILLAS[t]() } : null; pintarEditor(); };
@@ -420,6 +432,12 @@
     if (D._pregEstado === 'cargando') return falla('Espera a que carguen las respuestas guardadas de las preguntas.');
     if (D._pregEstado === 'error' && hayPreguntas) return falla('No se pudieron cargar las respuestas guardadas de las preguntas (' + (D._pregMsg || 'servidor apagado') + '). Enciende el servidor y vuelve a abrir el curso para no perderlas.');
     const guardarPreg = D._pregEstado === 'listo';
+    // los datos de cada juego van al servidor; en el sitio solo queda el tipo (así las palabras y los pares no son públicos)
+    const clasesConJuego = {};
+    lessons.forEach((l, i) => { if (l.juego && l.juego.tipo) { clasesConJuego[i] = l.juego; l.juego = { tipo: l.juego.tipo }; } });
+    if (D._juegoEstado === 'cargando') return falla('Espera a que carguen los juegos guardados de las clases.');
+    if (D._juegoEstado === 'error' && (Object.keys(clasesConJuego).length || D._teniaJuego)) return falla('No se pudieron cargar los juegos guardados (' + (D._juegoMsg || 'servidor apagado') + '). Enciende el servidor y vuelve a abrir el curso para no perderlos.');
+    const guardarJuegos = D._juegoEstado === 'listo';
     const materiales = [];
     for (let i = 0; i < (D.materiales || []).length; i++) {
       const m = D.materiales[i], t = String(m.titulo || '').trim(), u = String(m.url || '').trim();
@@ -435,18 +453,22 @@
     // en el sitio (content.json) solo viaja el título y la clase; el enlace va al servidor
     const publicos = guardarMats ? materiales.map(m => ({ titulo: m.titulo, desbloqueaEnClase: m.desbloqueaEnClase })) : null;
     const item = Object.assign({}, D, { materiales: publicos || [], title: String(D.title).trim(), desc: String(D.desc || '').trim(), lessons, type: 'video', activo: activo(D) });
-    delete item._nuevo; delete item._matsEstado; delete item._matsMsg; delete item._pregEstado; delete item._pregMsg;
+    delete item._nuevo; delete item._matsEstado; delete item._matsMsg; delete item._pregEstado; delete item._pregMsg; delete item._juegoEstado; delete item._juegoMsg; delete item._teniaJuego;
     if (!item.materiales.length) delete item.materiales;
     if (!item.duration) item.duration = textoDuracion(lessons.reduce((t, l) => t + minutos(l.duration), 0));
     const idx = data.courses.findIndex(c => c.id === item.id);
     if (idx >= 0) data.courses[idx] = item; else data.courses.unshift(item);
     saveData(); renderCourses(); renderDashboard(); cerrarEditor();
     toast(idx >= 0 ? 'Curso guardado' : 'Curso creado');
-    registrarEnServidor(item).then(() => Promise.all([guardarMats ? guardarMaterialesEnServidor(item.id, materiales) : null, guardarPreg ? guardarRespuestasEnServidor(item.id, clasesConPreguntas) : null]));
+    registrarEnServidor(item).then(() => Promise.all([guardarMats ? guardarMaterialesEnServidor(item.id, materiales) : null, guardarPreg ? guardarRespuestasEnServidor(item.id, clasesConPreguntas) : null, guardarJuegos ? guardarJuegosEnServidor(item.id, clasesConJuego) : null]));
   };
   async function guardarRespuestasEnServidor(id, clases) {
     try { await apiAdmin('/api/admin/preguntas-curso/' + encodeURIComponent(id), { method: 'PUT', body: JSON.stringify({ clases }) }); }
     catch (e) { toast('Curso guardado, pero las respuestas de las preguntas no se guardaron en el servidor: ' + e.message); }
+  }
+  async function guardarJuegosEnServidor(id, clases) {
+    try { await apiAdmin('/api/admin/juegos-curso/' + encodeURIComponent(id), { method: 'PUT', body: JSON.stringify({ clases }) }); }
+    catch (e) { toast('Curso guardado, pero los juegos de las clases no se guardaron en el servidor: ' + e.message); }
   }
   async function guardarMaterialesEnServidor(id, lista) {
     try { await apiAdmin('/api/admin/materiales-curso/' + encodeURIComponent(id), { method: 'PUT', body: JSON.stringify({ materiales: lista }) }); }

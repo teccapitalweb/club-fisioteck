@@ -60,9 +60,13 @@
       let etiqueta, accion, accion2 = '';
       if (abierto) { etiqueta = m.desbloqueado ? 'Desbloqueado con créditos' : 'Desbloqueado con tus retos'; accion = 'abrir'; }
       else if (!m) { etiqueta = 'Con membresía'; accion = 'paywall'; }
-      else if (memberIsPaid) { etiqueta = 'Te faltan ' + falta + ' reto' + (falta === 1 ? '' : 's') + ' · ' + (pedidos - falta) + ' de ' + pedidos; accion = 'retos'; accion2 = 'canjear'; }
+      else if (memberIsPaid) {
+        etiqueta = 'Te faltan ' + falta + ' reto' + (falta === 1 ? '' : 's') + ' · ' + (pedidos - falta) + ' de ' + pedidos;
+        // Con créditos suficientes lo natural es tocar la portada para canjear; los retos quedan como la otra forma de abrirlo
+        if (D && D.saldo >= m.costo) { accion = 'canjear'; accion2 = 'retos'; } else { accion = 'retos'; accion2 = 'canjear'; }
+      }
       else { etiqueta = m.costo + ' créditos · o ' + pedidos + ' retos con membresía'; accion = 'canjear'; }
-      out.push({ grupo: 'pdf', id: p.id, formato: p.formato || '', titulo: p.title, desc: p.desc, cat: p.category || 'general', mini: p.thumbnail, abierto, costo: m ? m.costo : null, etiqueta, accion, accion2 });
+      out.push({ grupo: 'pdf', puede: !abierto && !!m && !!D && D.saldo >= m.costo, falta, id: p.id, formato: p.formato || '', titulo: p.title, desc: p.desc, cat: p.category || 'general', mini: p.thumbnail, abierto, costo: m ? m.costo : null, etiqueta, accion, accion2 });
     });
     cursosMat.lista.forEach(x => {
       const ab = x.estado === 'abierto';
@@ -74,9 +78,9 @@
 
   function tarjeta(it) {
     const acc = it.accion === 'abrir' ? 'Abrir' : it.accion === 'abrir-curso' ? 'Abrir' : it.accion === 'canjear' ? 'Canjear por ' + it.costo + ' créditos' : it.accion === 'retos' ? 'Ir a los retos' : it.accion === 'paywall' ? 'Ver membresía' : 'Bloqueado';
-    return '<article class="ftd-mat' + (it.abierto ? '' : ' cerrado') + '" data-g="' + it.grupo + '"><button type="button" class="ftd-mat-top" data-acc="' + it.accion + '" data-id="' + esc(it.id) + '" aria-label="' + esc(acc) + ': ' + esc(it.titulo) + '"' + (it.accion === 'ninguna' ? ' disabled' : '') + '>' + portada(it.titulo, it.cat, it.mini, it.formato) + '</button>' +
+    return '<article class="ftd-mat' + (it.abierto ? '' : ' cerrado') + '" data-g="' + it.grupo + '"><button type="button" class="ftd-mat-top" data-acc="' + it.accion + '" data-id="' + esc(it.id) + '" aria-label="' + esc(acc) + ': ' + esc(it.titulo) + '"' + (it.accion === 'ninguna' ? ' disabled' : '') + '>' + portada(it.titulo, it.cat, it.mini, it.formato) + (it.puede ? '<span class="ftd-mat-canje">Canjear por ' + it.costo + ' créditos</span>' : '') + '</button>' +
       '<div class="ftd-mat-cuerpo"><div class="fila"><span class="tipo">' + esc(it.formato || 'PDF') + '</span><span class="area">' + esc(nombreArea(it.cat)) + (it.grupo === 'curso' ? ' · ' + esc(it.desc) : '') + '</span></div>' +
-      '<div class="fila"><span class="tag ' + (it.abierto ? 'ok' : '') + '">' + esc(it.etiqueta) + '</span>' + (it.accion !== 'ninguna' ? '<button type="button" class="ftd-btn suave pequeno" data-acc="' + it.accion + '" data-id="' + esc(it.id) + '">' + esc(acc) + '</button>' : '') + '</div>' + (it.accion2 === 'canjear' ? '<div class="fila"><button type="button" class="ftd-enlace" data-acc="canjear" data-id="' + esc(it.id) + '">o canjéalo por ' + it.costo + ' créditos</button></div>' : '') + '</div></article>';
+      '<div class="fila"><span class="tag ' + (it.abierto ? 'ok' : '') + '">' + esc(it.etiqueta) + '</span>' + (it.accion !== 'ninguna' ? '<button type="button" class="ftd-btn suave pequeno" data-acc="' + it.accion + '" data-id="' + esc(it.id) + '">' + esc(acc) + '</button>' : '') + '</div>' + (it.accion2 === 'canjear' ? '<div class="fila"><button type="button" class="ftd-enlace" data-acc="canjear" data-id="' + esc(it.id) + '">o canjéalo por ' + it.costo + ' créditos</button></div>' : it.accion2 === 'retos' ? '<div class="fila"><button type="button" class="ftd-enlace" data-acc="retos" data-id="' + esc(it.id) + '">o ábrelo superando ' + it.falta + ' reto' + (it.falta === 1 ? '' : 's') + '</button></div>' : '') + '</div></article>';
   }
 
   function accion(acc, id) {
@@ -125,3 +129,5 @@
   cargar(); setTimeout(cargar, 1500);
   window.ftMaterial = { pintar };
 })();
+
+(function () { const s = document.createElement('style'); s.textContent = '.ftd-mat-top{position:relative}.ftd-mat-canje{position:absolute;left:8px;right:8px;bottom:6px;padding:5px 8px;border-radius:12px;background:#E5A117;color:#2A1B00;font-weight:800;font-size:.7rem;line-height:1.2;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,.28)}.ftd-mat-top:hover .ftd-mat-canje{filter:brightness(1.06)}'; document.head.appendChild(s); })();

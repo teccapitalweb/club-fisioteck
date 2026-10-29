@@ -13,3 +13,31 @@
 #sec-traffic .tr-estado .btn { margin-left: auto; }
 #sec-traffic code { font-size: .78rem; background: var(--surface-2); padding: 1px 6px; border-radius: 6px; }
 #sec-traffic .admin-card { margin-bottom: 18px; }
+
+/* Métricas de visitas (estructura de Alintec) */
+#sec-traffic .tr-eyebrow { font: 700 .66rem var(--font-mono, monospace); letter-spacing: .16em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+#sec-traffic .tr-control { display: grid; gap: 14px; }
+#sec-traffic .tr-nav { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+#sec-traffic .tr-flechas { display: inline-flex; align-items: center; gap: 10px; }
+#sec-traffic .tr-flechas button { width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--border-2); background: var(--surface); color: var(--text); font-size: 1.2rem; line-height: 1; cursor: pointer; }
+#sec-traffic .tr-flechas button:disabled { opacity: .35; cursor: default; }
+#sec-traffic .tr-fecha { display: grid; text-align: center; min-width: 120px; }
+#sec-traffic .tr-fecha small { font: 700 .62rem var(--font-mono, monospace); letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); }
+#sec-traffic .tr-delta { display: inline-block; margin-top: 6px; padding: 2px 8px; border-radius: 6px; font: 700 .68rem var(--font-mono, monospace); background: var(--surface-2); color: var(--text-light); }
+#sec-traffic .tr-delta.sube { background: rgba(15, 157, 108, .13); color: var(--success); }
+#sec-traffic .tr-delta.baja { background: rgba(220, 53, 69, .12); color: var(--danger); }
+#sec-traffic .tr-top { display: flex; gap: 14px; align-items: center; padding: 14px; border: 1px solid var(--border); border-radius: 14px; margin: 10px 0 14px; }
+#sec-traffic .tr-top p { margin: 0; font-size: .92rem; }
+#sec-traffic .tr-ini { flex: 0 0 auto; width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: var(--accent); color: #fff; font-weight: 800; }
+#sec-traffic .tr-lista { display: grid; }
+#sec-traffic .tr-miembro { display: flex; gap: 14px; align-items: center; padding: 12px 0; border-top: 1px solid var(--border); }
+#sec-traffic .tr-miembro:first-child { border-top: 0; }
+#sec-traffic .tr-miembro > div { min-width: 0; flex: 1; display: grid; gap: 2px; }
+#sec-traffic .tr-miembro small { color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; }
+#sec-traffic .tr-miembro em { justify-self: start; font-style: normal; font: 700 .64rem var(--font-mono, monospace); padding: 2px 8px; border-radius: 6px; background: var(--surface-2); color: var(--text-light); }
+#sec-traffic .tr-vis { display: grid; text-align: right; font-size: .76rem; color: var(--text-muted); }
+#sec-traffic .tr-vis b { color: var(--text); }
+#sec-traffic .tr-sub { margin: 34px 0 14px; font-size: 1.15rem; }
+@media (max-width: 640px) { #sec-traffic .tr-seg { width: 100%; overflow-x: auto; } #sec-traffic .tr-miembro { align-items: flex-start; } }
+#sec-traffic .tr-desc { margin: 8px 0 0; max-width: 70ch; font-size: .92rem; line-height: 1.55; color: var(--text-light); text-transform: none; letter-spacing: 0; font-family: inherit; }
+#sec-traffic .tr-eyebrow { display: block; }
