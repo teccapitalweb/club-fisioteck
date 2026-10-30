@@ -941,6 +941,17 @@
         <div class="ap-kpi" style="--k:var(--danger)"><div class="lbl">Cancelados con acceso</div><div class="val" id="pgCanc">0</div><div class="note">No renovarán</div></div>
         <div class="ap-kpi" style="--k:var(--warning)"><div class="lbl">Cobros rechazados</div><div class="val" id="pgFallidos">0</div><div class="note">Tarjeta sin fondos o rechazada</div></div>
       </div>
+      <div class="admin-card" id="emCard" style="overflow-x:auto;">
+        <h3>Estado de las membresías</h3>
+        <p style="font-size:.84rem;color:var(--text-light);margin:-6px 0 12px;">Quién tiene la membresía activa, quién la canceló, a quién se le venció y quién todavía no se suscribe.</p>
+        <div class="ap-kpis" id="emKpis"></div>
+        <div class="ap-chips" id="emChips"></div>
+        <div class="ap-toolbar"><input class="form-input" type="search" placeholder="Buscar por nombre o correo" oninput="emBuscar(this.value)"></div>
+        <table class="admin-table">
+          <thead><tr><th>Miembro</th><th>Plan</th><th>Estado</th><th>Se suscribió</th><th>Vence o acceso hasta</th><th>Pagos</th></tr></thead>
+          <tbody id="emTabla"></tbody>
+        </table>
+      </div>
       <div class="admin-card">
         <h3>Próximas renovaciones</h3>
         <div class="ap-chips" id="pgVentanaChips"></div>
@@ -1844,7 +1855,36 @@
     catch (e) { pendientes = []; }
     renderPagos();
   }
+  // ===== ESTADO DE LAS MEMBRESÍAS (quién está activo y quién no) =====
+  let emFiltro = 'todos', emBusqueda = '';
+  const EM_ESTADOS = { activo: ['Activa', 'badge-success'], cancelado: ['Cancelada con acceso', 'badge-warning'], vencido: ['Vencida', 'badge-danger'], sin: ['Sin membresía', 'badge-info'] };
+  function estadoMembresia(m) {
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    const vence = fechaDe(m.accessUntil || m.nextPaymentDate), vigente = !vence || vence >= hoy;
+    if ((m.status === 'active' || m.status === 'paid') && vigente) return 'activo';
+    if (m.status === 'cancelled' && vigente && vence) return 'cancelado';
+    if (m.status === 'active' || m.status === 'paid' || m.status === 'inactive' || m.status === 'cancelled') return 'vencido';
+    return (Array.isArray(m.payments) && m.payments.length) ? 'vencido' : 'sin';
+  }
+  function emBuscar(v) { emBusqueda = (v || '').toLowerCase(); renderEstadoMembresias(); }
+  function emFiltrar(f) { emFiltro = f; renderEstadoMembresias(); }
+  function renderEstadoMembresias() {
+    const caja = document.getElementById('emTabla'); if (!caja) return;
+    const lista = (firebaseMembers || []).filter(m => !m.eliminadoEn).map(m => ({ m, e: estadoMembresia(m) }));
+    const cuenta = { todos: lista.length, activo: 0, cancelado: 0, vencido: 0, sin: 0 }; lista.forEach(x => cuenta[x.e]++);
+    const pagan = lista.filter(x => x.e === 'activo' || x.e === 'cancelado').length;
+    const kpi = (l, v, n, c) => '<div class="ap-kpi" style="--k:' + c + '"><div class="lbl">' + l + '</div><div class="val">' + v + '</div><div class="note">' + n + '</div></div>';
+    document.getElementById('emKpis').innerHTML = kpi('Activos', cuenta.activo, 'Membresía vigente', 'var(--success)') + kpi('Cancelados con acceso', cuenta.cancelado, 'No renovarán', 'var(--warning)') + kpi('Vencidos', cuenta.vencido, 'Tuvieron membresía y ya no', 'var(--danger)') + kpi('Sin membresía', cuenta.sin, 'Cuentas gratuitas', 'var(--blue)') + kpi('Con acceso hoy', pagan, 'De ' + lista.length + ' cuentas (' + (lista.length ? Math.round(pagan / lista.length * 100) : 0) + '%)', 'var(--accent)');
+    document.getElementById('emChips').innerHTML = [['todos', 'Todos'], ['activo', 'Activos'], ['cancelado', 'Cancelados con acceso'], ['vencido', 'Vencidos'], ['sin', 'Sin membresía']].map(([k, n]) => '<button class="ap-chip' + (emFiltro === k ? ' on' : '') + '" onclick="emFiltrar(\'' + k + '\')">' + n + ' (' + cuenta[k] + ')</button>').join('');
+    const orden = { activo: 0, cancelado: 1, vencido: 2, sin: 3 };
+    const f = lista.filter(x => (emFiltro === 'todos' || x.e === emFiltro) && (!emBusqueda || ((x.m.name || '') + ' ' + (x.m.email || '')).toLowerCase().includes(emBusqueda))).sort((a, b) => orden[a.e] - orden[b.e] || String(a.m.name || a.m.email || '').localeCompare(String(b.m.name || b.m.email || ''), 'es'));
+    caja.innerHTML = f.slice(0, 300).map(({ m, e }) => {
+      const vence = fechaDe(m.accessUntil || m.nextPaymentDate), desde = fechaDe(m.startDate), pagos = Array.isArray(m.payments) ? m.payments.length : 0;
+      return '<tr><td><strong>' + esc(m.name || '—') + '</strong><br><span style="font-size:.78rem;color:var(--text-muted)">' + esc(m.email || '') + '</span></td><td>' + (e === 'sin' ? '—' : (m.plan === 'anual' ? 'Anual' : 'Mensual')) + '</td><td><span class="badge ' + EM_ESTADOS[e][1] + '">' + EM_ESTADOS[e][0] + '</span></td><td>' + (desde ? fmtFecha(desde) : '—') + '</td><td>' + (e === 'sin' ? '—' : (vence ? fmtFecha(vence) : '—')) + '</td><td>' + pagos + '</td></tr>';
+    }).join('') || '<tr><td colspan="6" style="text-align:center;padding:26px;color:var(--text-muted);">No hay cuentas en este grupo</td></tr>';
+  }
   function renderPagos() {
+    try { renderEstadoMembresias(); } catch (e) { /* sin datos todavía */ }
     const pagos = listaPagos(), ok = pagos.filter(x => x.estado !== 'failed');
     const total = ok.reduce((t, x) => t + x.monto, 0);
     const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
