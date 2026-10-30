@@ -6140,7 +6140,7 @@
     const fullDate = d.toLocaleDateString('es-MX', { day:'numeric', month:'long', year:'numeric' });
     const now = new Date();
     const diffDays = Math.ceil((d - now) / (1000*60*60*24));
-    const hasRecording = w.recordingUrl && w.recordingUrl.trim() !== '';
+    const hasRecording = w.tieneGrabacion || (w.recordingUrl && w.recordingUrl.trim() !== '');
     const instructorImg = w.instructorImg ? driveImageUrl(w.instructorImg) : '';
 
     let statusHTML = '';
@@ -6160,12 +6160,12 @@
       } else {
         statusHTML = '<div class="webinar-status upcoming">Próximamente</div>';
       }
-      actionHTML = w.link ? `<button class="webinar-btn primary" onclick="joinLive('${w.link}')">Unirse al webinar</button>` : `<button class="webinar-btn secondary" disabled style="opacity:.6;cursor:default;">Enlace próximamente</button>`;
+      actionHTML = (w.tieneEnlace || w.link) ? `<button class="webinar-btn primary" onclick="joinLive('${w.id}')">Unirse al webinar</button>` : `<button class="webinar-btn secondary" disabled style="opacity:.6;cursor:default;">Enlace próximamente</button>`;
       actionHTML += `<button class="webinar-btn secondary" onclick="event.stopPropagation();agendarWebinar('${w.title.replace(/'/g,"\\'")}','${w.date}','${w.time||''}','${w.desc?w.desc.replace(/'/g,"\\'"):''}')">Agendar</button>`;
     } else {
       if (hasRecording) {
         statusHTML = '<div class="webinar-status recorded">Grabación</div>';
-        actionHTML = `<button class="webinar-btn primary" onclick="openVideo('${w.title.replace(/'/g,"\\'")}','${w.recordingUrl}')">▶ Ver grabación</button>`;
+        actionHTML = `<button class="webinar-btn primary" onclick="verGrabacion('${w.id}')">▶ Ver grabación</button>`;
       } else {
         statusHTML = '<div class="webinar-status finished">Finalizado</div>';
         actionHTML = `<button class="webinar-btn secondary" disabled style="opacity:.5;cursor:default;">Sin grabación</button>`;
@@ -6279,7 +6279,7 @@
     const actions = {
       video: `<button class="content-action" onclick="openVideo('${item.title.replace(/'/g,"\\'")}','${item.videoUrl||''}')">Reproducir</button>`,
       pdf: `<button class="content-action" onclick="downloadPdf('${item.id||''}','${item.title.replace(/'/g,"\\'")}')">Descargar</button>`,
-      live: `<button class="content-action" onclick="joinLive('${item.link||''}')">Unirse</button>`
+      live: `<button class="content-action" onclick="joinLive('${item.id||''}')">Unirse</button>`
     };
     const meta = type === 'video' ? (item.duration||'') : type === 'pdf' ? (item.size||'') : (item.time||'');
     const thumbUrl = item.thumbnail ? driveImageUrl(item.thumbnail) : '';
@@ -6392,14 +6392,32 @@
       if (e.status === 402) showPaywallOverlay(); else showToast(e.message);
     }
   }
-  function joinLive(link) {
+  // Clases en vivo: el enlace y la grabación NO están en content.json (es público); el servidor los da solo con membresía.
+  async function enlaceWebinar(id, tipo) {
+    const w = (siteData.live || []).find(x => String(x.id) === String(id)) || {};
+    const viejo = tipo === 'grabacion' ? w.recordingUrl : w.link; // contenido publicado antes de este cambio
+    if (viejo) return viejo;
+    const r = await certFetch('/api/webinars/' + encodeURIComponent(String(id)) + '/enlace?tipo=' + tipo);
+    return r.url;
+  }
+  async function joinLive(id) {
     if (!memberIsPaid) { showPaywallOverlay(); return; }
-    if (link) {
-      incrementarStatLogro('webinarsAttended', link);
-      window.open(link, '_blank');
-    } else {
-      showToast('El enlace de la sesión se habilitará antes de la clase');
+    // La ventana se abre en el clic (si se abre después de esperar al servidor, el navegador la bloquea)
+    const win = window.open('about:blank', '_blank');
+    try {
+      const link = await enlaceWebinar(id, 'vivo');
+      incrementarStatLogro('webinarsAttended', id);
+      if (win) { win.opener = null; win.location.href = link; } else window.open(link, '_blank', 'noopener');
+    } catch (e) {
+      if (win) win.close();
+      if (e.status === 402) showPaywallOverlay(); else showToast(e.status === 404 ? 'El enlace de la sesión se habilitará antes de la clase' : e.message);
     }
+  }
+  async function verGrabacion(id) {
+    if (!memberIsPaid) { showPaywallOverlay(); return; }
+    const w = (siteData.live || []).find(x => String(x.id) === String(id)) || {};
+    try { openVideo(w.title || 'Grabación', await enlaceWebinar(id, 'grabacion')); }
+    catch (e) { if (e.status === 402) showPaywallOverlay(); else showToast(e.message); }
   }
 
   // Helper compartido: incrementa un stat de logro y dispara checkAchievements
@@ -6838,12 +6856,9 @@
 
     // Check for certificate verification
     const certParam = urlParams.get('cert');
-    if (certParam && certParam.startsWith('FTCK-')) {
-      document.getElementById('certVerifyId').textContent = certParam;
-      document.getElementById('certVerifyScreen').style.display = 'flex';
-      document.getElementById('splash-screen').style.display = 'none';
-      document.querySelector('.app-wrapper').style.display = 'none';
-      finishAuthBoot(false);
+    if (certParam) {
+      // Nunca se da por válido un folio sin preguntarle al servidor: la página pública de verificación lo consulta
+      location.replace('verificar/?folio=' + encodeURIComponent(certParam.trim().slice(0, 40)));
       return;
     }
     init(); // Load content data

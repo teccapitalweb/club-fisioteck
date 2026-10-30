@@ -1213,6 +1213,7 @@
     renderLive();
     renderPdfs();
     cargarLibresPriv();
+    cargarWebinarsPriv();
     renderNewsList();
     loadFirebaseMembers();
     loadGitConfig();
@@ -2156,6 +2157,7 @@
         recordingUrl: document.getElementById('mRecordingUrl').value
       };
       if (!item.title) { toast('El título es obligatorio'); return; }
+      guardarWebinarPrivado(item);
       if (editingId) { const idx = data.live.findIndex(c=>c.id===editingId); if(idx>=0) data.live[idx]=item; }
       else data.live.unshift(item);
       saveData(); renderLive(); renderDashboard();
@@ -2223,6 +2225,7 @@
     const lists = { course:'courses', live:'live', pdf:'pdfs', news:'news', member:'members' };
     data[lists[type]] = (data[lists[type]] || []).filter(i => i.id !== id);
     saveData();
+    if (type==='live') apiAdmin('/api/admin/webinars-enlaces/' + encodeURIComponent(String(id)), { method: 'DELETE' }).catch(() => {});
     if (type==='course') renderCourses();
     else if (type==='live') renderLive();
     else if (type==='pdf') renderPdfs();
@@ -2230,6 +2233,26 @@
     else if (type==='member') renderMembers();
     renderDashboard();
     toast('Eliminado');
+  }
+
+  // ===== CLASES EN VIVO: el enlace y la grabación viven en el servidor, nunca en content.json =====
+  // (content.json es público: solo lleva tieneEnlace / tieneGrabacion y el Club pide el enlace al servidor con membresía)
+  async function cargarWebinarsPriv() {
+    try {
+      const r = await apiAdmin('/api/admin/webinars-enlaces');
+      const mapa = {}; (r.webinars || []).forEach(w => { mapa[String(w.id)] = w; });
+      let cambio = false;
+      (data.live || []).forEach(s => {
+        const w = mapa[String(s.id)]; if (!w) return;
+        if (!s.link && w.link) { s.link = w.link; cambio = true; }
+        if (!s.recordingUrl && w.recordingUrl) { s.recordingUrl = w.recordingUrl; cambio = true; }
+      });
+      if (cambio) { saveData(); renderLive(); }
+    } catch (e) { /* sin servidor: el editor muestra lo que haya en este navegador */ }
+  }
+  async function guardarWebinarPrivado(item) {
+    try { await apiAdmin('/api/admin/webinars-enlaces', { method: 'POST', body: JSON.stringify({ id: String(item.id), titulo: item.title, link: (item.link || '').trim(), recordingUrl: (item.recordingUrl || '').trim() }) }); return true; }
+    catch (e) { toast('La sesión se guardó, pero el enlace no llegó al servidor: ' + e.message); return false; }
   }
 
   // ===== PDF LIBRES: el enlace vive en el servidor, nunca en content.json =====
@@ -2265,12 +2288,16 @@
   }
 
   // ===== PUBLISH =====
-  function publishChanges() {
+  async function publishChanges() {
+    // Antes de publicar, los enlaces de las clases en vivo se guardan en el servidor; si no llegan, no se publica (se perderían)
+    for (const s of (data.live || [])) {
+      if ((s.link || s.recordingUrl) && !(await guardarWebinarPrivado(s))) { toast('No se publicó: el enlace de «' + (s.title || 'una sesión') + '» no llegó al servidor. Intenta de nuevo.'); return; }
+    }
     // Generate JSON for download
     const exportData = {
       stats: { ...data.stats, members: parseInt(document.getElementById('cfgMembers')?.value || data.stats.members) },
       courses: data.courses.map(c => ({...c, type:'video', ...(c.materiales ? { materiales: c.materiales.map(m => ({ titulo: m.titulo, desbloqueaEnClase: m.desbloqueaEnClase || 0 })) } : {})})),
-      live: data.live.map(c => ({...c, type:'live'})),
+      live: data.live.map(c => { const { link, recordingUrl, ...resto } = c; return { ...resto, tieneEnlace: !!(link && link.trim()), tieneGrabacion: !!(recordingUrl && recordingUrl.trim()), type:'live' }; }),
       pdfs: data.pdfs.map(c => { const { fileUrl, ...resto } = c; return { ...resto, type:'pdf' }; }),
       news: (data.news || []),
       members: data.members
