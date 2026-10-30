@@ -1912,7 +1912,7 @@
     const db = firebase.firestore();
   </script>
   <link rel="stylesheet" href="club-prueba.css?v=20261027">
-  <link rel="stylesheet" href="club-resenas.css?v=20261106">
+  <link rel="stylesheet" href="club-resenas.css?v=20261160">
   <link rel="stylesheet" href="club-referidos.css?v=20261112">
   <link rel="stylesheet" href="club-juegos.css?v=20261026">
   <link rel="stylesheet" href="club-juegos-clase.css?v=20261201">
@@ -5493,7 +5493,7 @@
     if (progress.completed.length >= totalLessons && totalLessons > 0) {
       showToast('¡Felicidades! Has completado todo el curso.');
       setTimeout(() => launchConfetti(), 500);
-      if (premioCurso) setTimeout(() => { const ver = () => { if (window.ftCursoPremio) ftCursoPremio.mostrar(premioCurso, course); else showToast('+' + premioCurso.xp + ' XP por tu curso número ' + premioCurso.ordinal); }; if (window.ftCola && ftCola.cuandoLibre) ftCola.cuandoLibre(ver, 'curso-premio'); else ver(); }, 2200);
+      if (premioCurso && !window.ftFinCursoActivo) setTimeout(() => { const ver = () => { if (window.ftCursoPremio) ftCursoPremio.mostrar(premioCurso, course); else showToast('+' + premioCurso.xp + ' XP por tu curso número ' + premioCurso.ordinal); }; if (window.ftCola && ftCola.cuandoLibre) ftCola.cuandoLibre(ver, 'curso-premio'); else ver(); }, 2200);
     } else {
       showToast('Clase completada. ¡Sigue así!');
     }
@@ -7373,9 +7373,9 @@
 <script src="club-cupon-barra.js?v=20261026"></script>
 <script src="club-paginas.js?v=20261140"></script>
 <script src="club-foro.js?v=20261101"></script>
-<script src="club-logros.js?v=20261130"></script>
+<script src="club-logros.js?v=20261160"></script>
 <script src="club-acceso.js?v=20261140"></script>
-<script src="club-resenas.js?v=20261173"></script>
+<script src="club-resenas.js?v=20261160"></script>
 <script src="club-referidos.js?v=20261104"></script>
 <script src="club-insignias-extra.js?v=20261150"></script>
 <script src="club-juegos.js?v=20261026"></script>
@@ -7407,7 +7407,7 @@
 <script src="club-suscripcion.js?v=20261172"></script>
 <script src="club-config.js?v=20261170"></script>
 <script src="club-soporte.js?v=20261190"></script>
-<script src="club-curso-premio.js?v=20261173"></script>
+<script src="club-curso-premio.js?v=20261160"></script>
 <script src="club-libros.js?v=20261150"></script>
 <script src="club-cuenta.js?v=20261112"></script>
 <script src="club-seccion.js?v=20261026"></script>

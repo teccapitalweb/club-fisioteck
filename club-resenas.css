@@ -34,3 +34,24 @@
 .ftr-input:focus { outline: none; border-color: var(--accent); }
 .ftr-pie { margin: 14px 0 0 !important; font-size: .74rem !important; line-height: 1.5; color: var(--text-muted) !important; }
 .ftr-fin .ftr-acciones { justify-content: center; }
+
+/* Tarjeta del certificado al terminar un curso (como Alintec) y tarjeta de insignia nueva */
+.ftr-caja--cert { max-width: 580px; }
+.ftr-certc { text-align: center; }
+.ftr-certc small, .ftr-fin small { display: block; margin-bottom: 6px; font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; font-weight: 800; color: var(--accent); }
+.ftr-papel { margin: 14px 0 16px; padding: 22px 18px 16px; border-radius: 14px; border: 1px solid var(--border-2); border-top: 5px solid var(--accent); background: var(--surface-2, var(--bg)); text-align: center; }
+.ftr-papel-marca { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; color: var(--accent); }
+.ftr-papel-eyebrow { margin-top: 10px; font-size: .78rem; font-weight: 700; color: var(--text-muted); }
+.ftr-papel-otorga, .ftr-papel-por { margin-top: 12px; font-size: .78rem; color: var(--text-muted); }
+.ftr-papel-nombre { margin: 4px 0 0; font-size: 1.5rem; font-weight: 800; line-height: 1.2; color: var(--text); letter-spacing: -.02em; }
+.ftr-papel-curso { margin: 4px 0 0; font-size: 1.05rem; font-weight: 700; line-height: 1.3; color: var(--text); }
+.ftr-papel-pie { display: flex; justify-content: space-between; gap: 12px; margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--border-2); font-size: .78rem; color: var(--text); text-align: left; }
+.ftr-papel-pie b { display: block; font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px; }
+.ftr-compartir { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin: 0 0 12px; }
+.ftr-compartir[hidden] { display: none; }
+.ftr-compartir button { padding: 8px 13px; border-radius: var(--radius-sm); border: 1px solid var(--border-2); background: none; color: var(--text); font: inherit; font-size: .8rem; cursor: pointer; }
+.ftr-acciones--cert { justify-content: center; flex-wrap: wrap; }
+.ftr-acciones--cert button { padding: 10px 16px; }
+.ftr-insignia { width: 76px; height: 76px; margin: 6px auto 12px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-ghost, rgba(13,95,160,.12)); color: var(--accent); }
+.ftr-insignia svg { width: 36px !important; height: 36px !important; }
+.ftr-insignia-xp { font-weight: 800; color: var(--accent); }

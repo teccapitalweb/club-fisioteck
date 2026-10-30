@@ -36,8 +36,13 @@
     achievementData.bienvenida = d.bienvenida === true;
     achievementData.estadoServidor = true;
   }
+  // Mientras se termina un curso (club-resenas.js) las insignias nuevas se guardan aquí para enseñarlas en su tarjeta, antes de calificar el curso
+  const colaInsignias = window.ftInsigniasCola = { retener: false, ids: [] };
   function anunciar(nuevas) {
-    (nuevas || []).forEach(id => { const b = (typeof BADGES !== 'undefined' ? BADGES : []).find(x => x.id === id); if (b) showToast('¡Insignia desbloqueada! ' + b.name + ' (+' + b.xp + ' XP)'); });
+    (nuevas || []).forEach(id => {
+      if (colaInsignias.retener) { if (colaInsignias.ids.indexOf(id) === -1) colaInsignias.ids.push(id); return; }
+      const b = (typeof BADGES !== 'undefined' ? BADGES : []).find(x => x.id === id); if (b) showToast('¡Insignia desbloqueada! ' + b.name + ' (+' + b.xp + ' XP)');
+    });
   }
   function repintar() {
     try { updateXpWidget(); } catch (_) { /* widget no listo */ }

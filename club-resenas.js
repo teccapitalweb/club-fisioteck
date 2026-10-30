@@ -187,11 +187,46 @@
       ok.onclick = emitir; inp.addEventListener('keydown', ev => { if (ev.key === 'Enter') emitir(); });
     });
   }
-  // Paso 3: felicitación con el certificado
+  // Paso 3: tarjeta del certificado (como Alintec): vista del certificado y, abajo, Cerrar · Verificar · Compartir · Descargar PDF
   async function felicitar(cert, curso) {
-    const r = await tarjeta('<small>Curso terminado</small><h3>¡Terminaste «' + esc(curso) + '»!</h3><p>Tu certificado a nombre de <b>' + esc(cert.nombre) + '</b> ya está listo, con folio verificable y código QR. Te lo enviamos también por correo.</p>' +
-      '<div class="ftr-acciones"><button type="button" class="ftr-sec" data-fin="luego">Continuar</button><button type="button" class="ftr-cta" data-fin="ver">Ver mi certificado</button></div>');
-    if (r === 'ver') { try { showPage('certificates'); } catch (_) { /* sin página */ } }
+    const fecha = new Date(cert.emitidoEn || Date.now()).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+    const html = '<div class="ftr-certc"><small>Curso terminado</small><h3>Tu certificado está listo</h3>' +
+      '<div class="ftr-papel"><div class="ftr-papel-marca">FisioTeck · IPCIL Latinoamericano</div><div class="ftr-papel-eyebrow">Certificado de aprovechamiento</div>' +
+      '<div class="ftr-papel-otorga">Se otorga el presente certificado a</div><div class="ftr-papel-nombre">' + esc(cert.nombre) + '</div>' +
+      '<div class="ftr-papel-por">por haber completado satisfactoriamente el curso</div><div class="ftr-papel-curso">' + esc(curso) + '</div>' +
+      '<div class="ftr-papel-pie"><span><b>Emitido</b>' + esc(fecha) + '</span><span><b>Folio</b>' + esc(cert.folio) + '</span></div></div>' +
+      '<div class="ftr-compartir" id="ftrCompartir" hidden><button type="button" data-d="linkedin">LinkedIn</button><button type="button" data-d="whatsapp">WhatsApp</button><button type="button" data-d="facebook">Facebook</button><button type="button" data-d="copiar">Copiar enlace</button></div>' +
+      '<div class="ftr-acciones ftr-acciones--cert"><button type="button" class="ftr-sec" data-fin="cerrar">Cerrar</button><button type="button" class="ftr-sec" id="ftrVerificar">Verificar</button><button type="button" class="ftr-sec" id="ftrCompartirBtn">Compartir</button><button type="button" class="ftr-cta" id="ftrPdf">Descargar PDF</button></div>' +
+      '<p class="ftr-pie">También te lo enviamos por correo y lo encuentras siempre en Certificados.</p></div>';
+    await tarjeta(html, (cuerpo) => {
+      cuerpo.parentNode.classList.add('ftr-caja--cert');
+      cuerpo.querySelector('#ftrVerificar').onclick = () => window.open('verificar/?folio=' + encodeURIComponent(cert.folio), '_blank', 'noopener');
+      cuerpo.querySelector('#ftrPdf').onclick = () => window.open(CERT_API + '/api/certificados/' + encodeURIComponent(cert.folio) + '/pdf', '_blank', 'noopener');
+      const menu = cuerpo.querySelector('#ftrCompartir');
+      cuerpo.querySelector('#ftrCompartirBtn').onclick = () => { menu.hidden = !menu.hidden; };
+      menu.querySelectorAll('button').forEach(b => { b.onclick = () => { if (window.ftCompartirCert) ftCompartirCert(cert.folio, curso, cert.emitidoEn, b.dataset.d); }; });
+    });
+    const caja = document.querySelector('#ftrFin .ftr-caja'); if (caja) caja.classList.remove('ftr-caja--cert');
+  }
+  // Premio por terminar el curso (XP), la primera tarjeta de la secuencia
+  async function mostrarPremio(bono, curso) {
+    if (!bono || !bono.xp) return;
+    if (window.ftCursoPremio) await ftCursoPremio.mostrar(bono, curso);
+    else showToast('+' + bono.xp + ' XP por tu curso número ' + bono.ordinal);
+  }
+  // Insignias ganadas al terminar el curso: una tarjeta por insignia, antes de calificar
+  async function mostrarInsignias() {
+    const cola = window.ftInsigniasCola; if (!cola) return;
+    try { if (window.ftLogros) await ftLogros.actualizar('/api/logros'); } catch (_) { /* se muestran las que ya se conocen */ }
+    const ids = cola.ids.slice(); cola.ids = [];
+    const lista = ids.map(id => (typeof BADGES !== 'undefined' ? BADGES : []).find(x => x.id === id)).filter(Boolean);
+    for (let i = 0; i < lista.length; i++) {
+      const b = lista[i];
+      if (i >= 4) { showToast('¡Insignia desbloqueada! ' + b.name + ' (+' + b.xp + ' XP)'); continue; }
+      await promesaLibre(600);
+      await tarjeta('<small>Nueva insignia</small><div class="ftr-insignia" aria-hidden="true">' + (b.icon || '') + '</div><h3>' + esc(b.name) + '</h3><p>' + esc(b.desc) + '</p><p class="ftr-insignia-xp">+' + b.xp + ' XP</p>' +
+        '<div class="ftr-acciones" style="justify-content:center"><button type="button" class="ftr-cta" data-fin="ok">Continuar</button></div>');
+    }
   }
   // Paso 4: tarjeta para calificar
   S.alTerminar = async function (cursoId, datos) {
@@ -199,16 +234,21 @@
     try {
       const curso = (((typeof siteData !== 'undefined' && siteData.courses) || []).find(c => String(c.id) === id) || {}).title || 'tu curso';
       await promesaLibre(2200);
+      // Orden: 1) premio de XP  2) confirmar el nombre (solo en el primer certificado)  3) certificado  4) insignias ganadas  5) calificar el curso
+      const cursoObj = ((typeof siteData !== 'undefined' && siteData.courses) || []).find(c => String(c.id) === id);
+      await mostrarPremio(datos && datos.bono, cursoObj);
       let cert = datos && datos.certificado;
       if (datos && datos.requiereNombre) cert = await pedirNombreYEmitir(cursoId, curso);
       else if (cert && datos.confirmarNombre) cert = await confirmarNombre(cert, curso);
+      if (cert && typeof cert === 'object' && cert.nombre) await felicitar(cert, curso);
+      await mostrarInsignias();
       if (!cert || typeof cert !== 'object' || !cert.nombre) return;
-      await felicitar(cert, curso);
       await S.cargar();
       if (S.mias[id] || omisiones(id) >= MAX_OMISIONES) return;
       await promesaLibre(2500);
       S.abrir(id);
     } catch (e) { console.warn('[curso terminado]', e && e.message); }
+    finally { const c = window.ftInsigniasCola; if (c) { c.retener = false; c.ids = []; } }
   };
 
   // En visitas posteriores: un curso con certificado, sin calificar y al que se le ha preguntado menos de 3 veces
@@ -231,7 +271,7 @@
   if (typeof certFetchOriginal === 'function') {
     window.certFetch = async function (ruta) {
       const r = await certFetchOriginal.apply(this, arguments);
-      try { if (/^\/api\/cursos\/[^/]+\/progreso/.test(String(ruta)) && r && r.completo && (r.certificado || r.requiereNombre)) ultimoFin = { cursoId: r.cursoId, datos: r }; } catch (_) { /* sin datos */ }
+      try { if (/^\/api\/cursos\/[^/]+\/progreso/.test(String(ruta)) && r && r.completo && (r.certificado || r.requiereNombre || r.bono)) ultimoFin = { cursoId: r.cursoId, datos: r }; } catch (_) { /* sin datos */ }
       return r;
     };
   }
@@ -239,8 +279,17 @@
   if (typeof marcarOriginal === 'function') {
     window.markLessonComplete = async function (cursoId) {
       ultimoFin = null;
-      const r = await marcarOriginal.apply(this, arguments);
+      // Las insignias nuevas se retienen para enseñarlas en su tarjeta si la clase cierra el curso; si no, se sueltan como avisos
+      const cola = window.ftInsigniasCola; if (cola) { cola.retener = true; cola.ids = []; }
+      window.ftFinCursoActivo = true;
+      let r;
+      try { r = await marcarOriginal.apply(this, arguments); } finally { window.ftFinCursoActivo = false; }
       if (ultimoFin && String(ultimoFin.cursoId) === String(cursoId)) { const f = ultimoFin; ultimoFin = null; setTimeout(() => S.alTerminar(cursoId, f.datos), 600); }
+      else if (cola) setTimeout(() => {
+        cola.retener = false;
+        const ids = cola.ids.slice(); cola.ids = [];
+        ids.forEach(id => { const b = (typeof BADGES !== 'undefined' ? BADGES : []).find(x => x.id === id); if (b) showToast('¡Insignia desbloqueada! ' + b.name + ' (+' + b.xp + ' XP)'); });
+      }, 4000);
       return r;
     };
   }

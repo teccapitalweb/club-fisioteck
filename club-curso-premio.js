@@ -29,12 +29,12 @@
         '<div class="fxp-ruta" aria-hidden="true">' + casillas + '</div><span class="fxp-ruta-t">Tu ruta de premios · la casilla 10 vale ' + RECOMPENSA[9] + ' XP</span>' +
         '<div class="fxp-nivel"><div class="fxp-nivel-f"><b id="fcpNivel">Tu nivel</b><span id="fcpXp"></span></div><div class="fxp-barra"><i style="width:0"></i></div></div>' +
         '<p class="fcp-sig">El siguiente curso que termines te regala <b>+' + sig + ' XP</b>.</p>' +
-        '<div class="fcp-bot"><button type="button" class="fxp-ok" id="fcpCert">Ver mi certificado</button><button type="button" class="fcp-sec" id="fcpSeguir">Seguir aprendiendo</button></div></div>';
+        '<div class="fcp-bot"><button type="button" class="fxp-ok" id="fcpSeguir">Continuar</button></div></div>';
       document.body.appendChild(o);
       const cerrar = ir => { document.removeEventListener('keydown', tecla, true); o.remove(); if (ir) { try { showPage('certificates'); } catch (_) { /* sin página */ } } resolve(); };
       const tecla = e => { if (e.key === 'Escape') { e.preventDefault(); cerrar(false); } };
       document.addEventListener('keydown', tecla, true);
-      o.querySelector('#fcpCert').onclick = () => cerrar(true); o.querySelector('#fcpSeguir').onclick = () => cerrar(false);
+      o.querySelector('#fcpSeguir').onclick = () => cerrar(false);
       // El nivel se pinta con el XP real que acaba de calcular el servidor
       (async () => {
         try { if (window.ftLogros) await ftLogros.actualizar('/api/logros'); } catch (_) { /* se queda con lo último */ }
