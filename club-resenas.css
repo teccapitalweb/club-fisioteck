@@ -36,7 +36,7 @@
 .ftr-fin .ftr-acciones { justify-content: center; }
 
 /* Tarjeta del certificado al terminar un curso (como Alintec) y tarjeta de insignia nueva */
-.ftr-caja--cert { max-width: 580px; }
+.ftr-caja--cert { max-width: 780px; }
 .ftr-certc { text-align: center; }
 .ftr-certc small, .ftr-fin small { display: block; margin-bottom: 6px; font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; font-weight: 800; color: var(--accent); }
 .ftr-papel { margin: 14px 0 16px; padding: 22px 18px 16px; border-radius: 14px; border: 1px solid var(--border-2); border-top: 5px solid var(--accent); background: var(--surface-2, var(--bg)); text-align: center; }
@@ -55,3 +55,10 @@
 .ftr-insignia { width: 76px; height: 76px; margin: 6px auto 12px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-ghost, rgba(13,95,160,.12)); color: var(--accent); }
 .ftr-insignia svg { width: 36px !important; height: 36px !important; }
 .ftr-insignia-xp { font-weight: 800; color: var(--accent); }
+
+/* Vista del certificado: lienzo 1040 x 735 igual al PDF, escalado al ancho de la tarjeta */
+.fc-marco { position: relative; width: 100%; aspect-ratio: 1040 / 735; overflow: hidden; margin: 14px 0 16px; border: 1px solid var(--border-2); border-radius: 8px; background: #fff; box-shadow: 0 6px 22px rgba(7, 32, 55, .14); }
+.fc-lienzo { position: absolute; left: 0; top: 0; width: 1040px; height: 735px; transform-origin: 0 0; background: #fff; text-align: left; }
+.fc-lienzo .fc-t { position: absolute; left: 0; width: 1040px; text-align: center; white-space: nowrap; line-height: 1; }
+.fc-lienzo .fc-l, .fc-lienzo .fc-i { position: absolute; }
+.fc-lienzo img.fc-i { max-width: none; }

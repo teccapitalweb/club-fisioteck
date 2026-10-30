@@ -187,19 +187,62 @@
       ok.onclick = emitir; inp.addEventListener('keydown', ev => { if (ev.key === 'Enter') emitir(); });
     });
   }
+  // Vista del certificado: la MISMA composición del PDF (services/certificado-pdf.js) dibujada en un lienzo de 1040 x 735 que se escala al ancho de la tarjeta
+  function vistaCertificado(cert, curso, fecha) {
+    const A = '#0A3E68', B = '#0D5FA0', T = '#159E92', G = '#5B7186', L = '#C9D8E6';
+    const nombre = String(cert.nombre || 'ALUMNO').toUpperCase();
+    let tn = 44; while (tn > 22 && nombre.length * (0.74 * tn + 2) > 700) tn--;
+    const titulo = String(cert.curso || curso || 'Programa académico');
+    let tc = 28; const lineas = s => Math.max(1, Math.ceil(titulo.length * 0.47 * s / 800)); while (tc > 16 && lineas(tc) * tc * 1.15 > 66) tc--;
+    const altoC = lineas(tc) * tc * 1.15, sesiones = Number(cert.clases) || 0;
+    const txt = (top, css, s) => '<div class="fc-t" style="top:' + top + 'px;' + css + '">' + s + '</div>';
+    const hueco = (848 - (150 + 256 + 256 + 100)) / 3, xQr = 96, xF1 = xQr + 150 + hueco, xF2 = xF1 + 256 + hueco, xSello = xF2 + 256 + hueco;
+    const firma = (x, img, nom, rol, inst) => '<img class="fc-i" src="assets/cert/' + img + '" alt="" style="left:' + (x + (256 - 194.56) / 2) + 'px;top:520px;width:194.56px;height:60px;object-fit:contain;object-position:center bottom">' +
+      '<div class="fc-l" style="left:' + x + 'px;top:590px;width:256px;border-top:1px solid #9AA9B8"></div>' +
+      '<div class="fc-t" style="left:' + x + 'px;width:256px;top:600px;font:700 15px Times,\'Times New Roman\',serif;color:' + A + '">' + nom + '</div>' +
+      '<div class="fc-t" style="left:' + x + 'px;width:256px;top:622px;font:700 8.5px Helvetica,Arial,sans-serif;letter-spacing:1.2px;color:' + G + '">' + rol + '</div>' +
+      (inst ? '<div class="fc-t" style="left:' + x + 'px;width:256px;top:636px;font:8.5px Helvetica,Arial,sans-serif;color:' + G + '">' + inst + '</div>' : '');
+    return '<div class="fc-marco" id="ftrCertMarco"><div class="fc-lienzo" id="ftrCertLienzo">' +
+      '<div class="fc-l" style="left:26px;top:26px;width:988px;height:683px;border:2.5px solid ' + A + ';box-sizing:border-box"></div>' +
+      '<div class="fc-l" style="left:33px;top:33px;width:974px;height:669px;border:1px solid ' + T + ';box-sizing:border-box"></div>' +
+      '<div class="fc-l" style="left:26px;top:26px;width:988px;height:8px;background:' + A + '"></div><div class="fc-l" style="left:26px;top:701px;width:988px;height:8px;background:' + T + '"></div>' +
+      '<img class="fc-i" src="assets/cert/logo.png" alt="" style="left:402px;top:54px;height:48px">' +
+      txt(110, 'font:10.5px Helvetica,Arial,sans-serif;letter-spacing:2.2px;color:' + G, 'FORMACIÓN CONSTANTE, RESULTADOS EXCELENTES') +
+      '<div class="fc-l" style="left:393px;top:154px;width:90px;border-top:1px solid ' + L + '"></div><div class="fc-l" style="left:557px;top:154px;width:90px;border-top:1px solid ' + L + '"></div>' +
+      '<svg class="fc-i" style="left:507px;top:141px;width:26px;height:30px" viewBox="0 0 26 30" fill="none" stroke-linejoin="round"><circle cx="13" cy="10" r="7" stroke="' + A + '" stroke-width="1.3"/><circle cx="13" cy="10" r="4" stroke="' + T + '" stroke-width=".8"/><path d="M9 16L7 25L13 21L19 25L17 16" stroke="' + A + '" stroke-width="1.3"/></svg>' +
+      txt(176, 'font:700 34px Times,\'Times New Roman\',serif;letter-spacing:4px;color:' + A, 'CERTIFICADO DE ACREDITACIÓN') +
+      '<div class="fc-l" style="left:475px;top:226px;width:90px;height:2px;background:' + T + '"></div>' +
+      txt(252, 'font:14px Helvetica,Arial,sans-serif;color:' + G, 'Se otorga la presente constancia a') +
+      txt(282 + (44 - tn) / 2, 'font:700 ' + tn + 'px Times,\'Times New Roman\',serif;letter-spacing:2px;color:' + A, esc(nombre)) +
+      '<div class="fc-l" style="left:290px;top:344px;width:460px;height:1px;background:' + B + ';opacity:.55"></div>' +
+      txt(368, 'font:13px Helvetica,Arial,sans-serif;color:' + G, 'Por haber acreditado satisfactoriamente el programa académico denominado:') +
+      '<div class="fc-t" style="left:120px;width:800px;top:396px;white-space:normal;line-height:1.15;font:italic 700 ' + tc + 'px/1.15 Times,\'Times New Roman\',serif;color:' + B + '">' + esc(titulo) + '</div>' +
+      txt(396 + altoC + 18, 'font:700 10.5px Helvetica,Arial,sans-serif;letter-spacing:1.4px;color:' + G, 'CARGA ACADÉMICA: ' + sesiones + (sesiones === 1 ? ' SESIÓN' : ' SESIONES') + '   |   MODALIDAD: EN LÍNEA') +
+      txt(396 + altoC + 38, 'font:italic 11px Helvetica,Arial,sans-serif;color:' + G, 'Emitido el ' + esc(fecha)) +
+      '<img class="fc-i" src="' + CERT_API + '/api/certificados/' + encodeURIComponent(cert.folio) + '/qr.png" alt="" style="left:' + (xQr + 27) + 'px;top:512px;width:96px;height:96px">' +
+      '<div class="fc-t" style="left:' + xQr + 'px;width:150px;top:616px;font:700 8px/1.6 Helvetica,Arial,sans-serif;letter-spacing:1.6px;color:' + G + '">ESCANEA<br>PARA VALIDAR</div>' +
+      firma(xF1, 'firma-directora.png', 'Lic. Paulina Torres Montalvo', 'DIRECTORA ACADÉMICA', 'Club FisioTeck') +
+      firma(xF2, 'firma-coordinacion.png', 'Coordinación de Certificación', 'IPCIL LATINOAMERICANO', '') +
+      '<svg class="fc-i" style="left:' + (xSello + 7) + 'px;top:528px;width:86px;height:101px" viewBox="0 0 90 106" fill="none"><circle cx="45" cy="40" r="34" stroke="' + A + '" stroke-width="1.4"/><circle cx="45" cy="40" r="27" stroke="' + T + '" stroke-width=".8"/><text x="45" y="49" text-anchor="middle" font-family="Times,\'Times New Roman\',serif" font-weight="700" font-size="24" fill="' + A + '">FT</text><path d="M30 66L24 104L45 90L66 104L60 66Z" fill="' + A + '"/><path d="M33 68L29 96L45 85L61 96L57 68Z" fill="' + B + '"/><circle cx="45" cy="40" r="34" stroke="' + T + '" stroke-width=".5" stroke-dasharray=".5 3"/></svg>' +
+      '<div class="fc-l" style="left:48px;top:668px;width:944px;border-top:1px solid ' + L + '"></div>' +
+      txt(678, 'font:9px Helvetica,Arial,sans-serif;color:' + G, 'Folio: <b>' + esc(cert.folio) + '</b>  ·  club.fisioteck.com  ·  Certificado emitido digitalmente por Club FisioTeck / IPCIL Latinoamericano') +
+      '</div></div>';
+  }
+  function ajustarVistaCertificado(cuerpo) {
+    const marco = cuerpo.querySelector('#ftrCertMarco'), lienzo = cuerpo.querySelector('#ftrCertLienzo'); if (!marco || !lienzo) return;
+    const ajustar = () => { if (!marco.isConnected) { window.removeEventListener('resize', ajustar); return; } lienzo.style.transform = 'scale(' + (marco.clientWidth / 1040) + ')'; };
+    ajustar(); window.addEventListener('resize', ajustar);
+  }
   // Paso 3: tarjeta del certificado (como Alintec): vista del certificado y, abajo, Cerrar · Verificar · Compartir · Descargar PDF
   async function felicitar(cert, curso) {
-    const fecha = new Date(cert.emitidoEn || Date.now()).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
-    const html = '<div class="ftr-certc"><small>Curso terminado</small><h3>Tu certificado está listo</h3>' +
-      '<div class="ftr-papel"><div class="ftr-papel-marca">FisioTeck · IPCIL Latinoamericano</div><div class="ftr-papel-eyebrow">Certificado de aprovechamiento</div>' +
-      '<div class="ftr-papel-otorga">Se otorga el presente certificado a</div><div class="ftr-papel-nombre">' + esc(cert.nombre) + '</div>' +
-      '<div class="ftr-papel-por">por haber completado satisfactoriamente el curso</div><div class="ftr-papel-curso">' + esc(curso) + '</div>' +
-      '<div class="ftr-papel-pie"><span><b>Emitido</b>' + esc(fecha) + '</span><span><b>Folio</b>' + esc(cert.folio) + '</span></div></div>' +
+    const fecha = new Date(cert.emitidoEn || Date.now()).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'America/Mexico_City' });
+    const html = '<div class="ftr-certc"><small>Curso terminado</small><h3>Tu certificado está listo</h3>' + vistaCertificado(cert, curso, fecha) +
       '<div class="ftr-compartir" id="ftrCompartir" hidden><button type="button" data-d="linkedin">LinkedIn</button><button type="button" data-d="whatsapp">WhatsApp</button><button type="button" data-d="facebook">Facebook</button><button type="button" data-d="copiar">Copiar enlace</button></div>' +
       '<div class="ftr-acciones ftr-acciones--cert"><button type="button" class="ftr-sec" data-fin="cerrar">Cerrar</button><button type="button" class="ftr-sec" id="ftrVerificar">Verificar</button><button type="button" class="ftr-sec" id="ftrCompartirBtn">Compartir</button><button type="button" class="ftr-cta" id="ftrPdf">Descargar PDF</button></div>' +
       '<p class="ftr-pie">También te lo enviamos por correo y lo encuentras siempre en Certificados.</p></div>';
     await tarjeta(html, (cuerpo) => {
       cuerpo.parentNode.classList.add('ftr-caja--cert');
+      ajustarVistaCertificado(cuerpo);
       cuerpo.querySelector('#ftrVerificar').onclick = () => window.open('verificar/?folio=' + encodeURIComponent(cert.folio), '_blank', 'noopener');
       cuerpo.querySelector('#ftrPdf').onclick = () => window.open(CERT_API + '/api/certificados/' + encodeURIComponent(cert.folio) + '/pdf', '_blank', 'noopener');
       const menu = cuerpo.querySelector('#ftrCompartir');
