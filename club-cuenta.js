@@ -40,6 +40,7 @@
       ok.disabled = true; ok.dataset.ocupado = '1'; ok.textContent = 'Eliminando…'; err.hidden = true;
       try {
         const uid = auth.currentUser.uid;
+        try { await auth.currentUser.getIdToken(true); } catch (_) { /* si la sesión caducó, se avisa abajo */ }
         await certFetch('/api/cuenta/eliminar', { method: 'POST', body: JSON.stringify({ confirmar: inp.value.trim() }) });
         try { Object.keys(localStorage).filter(k => k.indexOf(uid) !== -1 || k.indexOf('ft_') === 0 || k.indexOf('ft:') === 0).forEach(k => localStorage.removeItem(k)); } catch (_) { /* modo privado */ }
         cerrar();
@@ -48,7 +49,9 @@
         setTimeout(() => location.reload(), 1200);
       } catch (e) {
         delete ok.dataset.ocupado; ok.textContent = 'Eliminar para siempre'; ok.disabled = false;
-        err.textContent = esc(e.message || 'No se pudo eliminar la cuenta. Inténtalo de nuevo.').replace(/&#39;/g, "'"); err.hidden = false;
+        const caducada = /token-expired|no longer valid|requires-recent-login|must sign in again/i.test(String((e && (e.code || '')) + ' ' + (e && e.message || '')));
+        const msg = caducada ? 'Tu sesión caducó. Cierra sesión, vuelve a entrar y repite este paso.' : (e.message || 'No se pudo eliminar la cuenta. Inténtalo de nuevo.');
+        err.textContent = esc(msg).replace(/&#39;/g, "'"); err.hidden = false;
       }
     };
   }
