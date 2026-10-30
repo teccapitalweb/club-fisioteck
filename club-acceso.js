@@ -52,9 +52,11 @@
   const claveCache = () => 'ft_acceso_' + ((auth.currentUser || {}).uid || 'x');
   function guardarCache(d) { try { localStorage.setItem(claveCache(), JSON.stringify({ d, ms: Date.now() })); } catch (_) { /* modo privado */ } }
   function leerCache() { try { const c = JSON.parse(localStorage.getItem(claveCache()) || 'null'); return c && c.d && Date.now() - c.ms < 7 * 864e5 ? c.d : null; } catch (_) { return null; } }
-  let reintentos = 0;
+  let reintentos = 0, ultimoOk = 0;
+  // Al cambiar de vista solo se vuelve a preguntar si pasaron más de 30 segundos (ahorra lecturas de la base de datos)
+  A.cargarSiToca = function () { if (Date.now() - ultimoOk > 30000) A.cargar(); };
   A.cargar = async function () {
-    try { const d = await pedir('/api/acceso'); aplicar(d); guardarCache(d); reintentos = 0; refrescarVistas(); }
+    try { const d = await pedir('/api/acceso?f=1'); aplicar(d); guardarCache(d); ultimoOk = Date.now(); reintentos = 0; refrescarVistas(); }
     catch (e) {
       // Sin respuesta: se muestra lo último que se sabía (candados incluidos) y se vuelve a intentar en unos segundos
       { const c = leerCache(); if (c) { aplicar(c); refrescarVistas(); } }
@@ -130,7 +132,7 @@
   const sp = window.showPage;
   window.showPage = function (page) {
     const r = sp.apply(this, arguments);
-    if (['library', 'home', 'retos'].indexOf(page) !== -1 && auth.currentUser) A.cargar();
+    if (['library', 'home', 'retos'].indexOf(page) !== -1 && auth.currentUser) A.cargarSiToca();
     return r;
   };
 })();
