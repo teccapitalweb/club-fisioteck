@@ -43,7 +43,7 @@
 
 /* Celular: la tarjeta es una ventana con márgenes (no ocupa toda la pantalla); las fotos van en una fila deslizable */
 @media (max-width: 600px) {
-  .fpi-ov { padding: 16px 14px; }
+  .fpi-ov { padding: 16px 14px; align-items: center; }
   .fpi-caja { max-height: min(84vh, 620px); max-height: min(84dvh, 620px); border-radius: 22px; }
   .fpi-portada { padding: 16px 18px 14px; }
   .fpi-portada h2 { font-size: 1.2rem; } .fpi-portada p { font-size: .8rem; }

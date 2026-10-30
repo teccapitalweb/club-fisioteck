@@ -19,7 +19,7 @@
     return achievementData.retos;
   }
   function puedeJugar() {
-    return memberIsPaid || (window.ftPrueba && window.ftPrueba.estado === 'elegida');
+    return !!memberIsPaid;
   }
   // El XP ya viene sumado desde el servidor; aquí solo se refresca lo que se ve
   function sumar(xp) { if (xp > 0 && window.ftLogros) ftLogros.actualizar('/api/logros'); }
@@ -86,7 +86,7 @@
       '<div class="rt-hero-xp">' + xp + ' XP' + (sig ? ' · faltan ' + (sig.min - xp) + ' para ' + esc(sig.name) : ' · nivel máximo') + '</div></div>' +
       '<div class="rt-hero-cifra"><strong>' + nHechos + '/' + total + '</strong><span>retos superados</span></div>' +
       '<div class="rt-barra"><div style="width:' + pct + '%"></div></div></div>' +
-      (puedeJugar() ? '' : '<div class="rt-aviso">Los retos son para miembros y para quien ya eligió su curso de prueba. <button type="button" onclick="showPaywallOverlay()">Ver membresía</button></div>') +
+      (puedeJugar() ? '' : '<div class="rt-aviso">Los retos son solo para miembros. <button type="button" onclick="showPaywallOverlay()">Ver membresía</button></div>') +
       '<button type="button" class="rt-dia" onclick="ftRetoDia()">' + imagen('dia') + '<span class="rt-card-tipo">Reto del día</span>' +
       '<strong>' + (yaDia ? 'Ya lo completaste hoy' : '5 preguntas · 6 XP, 10 si es perfecto') + '</strong>' +
       '<span class="rt-card-desc">' + (yaDia ? 'Vuelve mañana por uno nuevo.' : esc(q.cat)) + '</span></button>' +

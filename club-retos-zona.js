@@ -112,12 +112,12 @@
     const d = datos(), h = d.hechos, total = D.quiz.length + D.orden.length + (window.FT_DETECTIVE || []).length + (window.FT_HISTORIA || []).length, hechosN = Object.keys(h).length;
     const yaDia = d.A.retos && d.A.retos.dia && d.A.retos.dia.fecha === hoy() && d.A.retos.dia.hecho;
     const mis = misiones(h), siguiente = D.quiz.find(r => !h[r.id]) || D.orden.find(r => !h[r.id]);
-    const puede = typeof memberIsPaid !== 'undefined' && (memberIsPaid || (window.ftPrueba && ftPrueba.estado === 'elegida'));
+    const puede = typeof memberIsPaid !== 'undefined' && !!memberIsPaid;
     cont.innerHTML =
       window.ftdHero('Zona de retos', 'Pon a prueba lo <em>que sabes.</em>', 'Gana XP, sube de nivel y escala en la clasificación del club.', 'retos',
         '<div class="rz-nivel"><div class="rz-nivel-cab"><strong>' + esc(d.nivel.name) + '</strong><span>' + d.xp + ' XP' + (d.sig ? ' · faltan ' + (d.sig.min - d.xp) + ' para ' + esc(d.sig.name) : ' · nivel máximo') + '</span></div>' +
         '<div class="rz-barra" role="progressbar" aria-valuenow="' + d.pct + '" aria-valuemin="0" aria-valuemax="100"><i style="width:' + d.pct + '%"></i></div></div>') +
-      (puede ? '' : '<div class="rt-aviso">Los retos son para miembros y para quien ya eligió su curso de prueba. <button type="button" onclick="showPaywallOverlay()">Ver membresía</button></div>') +
+      (puede ? '' : '<div class="rt-aviso">Los retos son solo para miembros. <button type="button" onclick="showPaywallOverlay()">Ver membresía</button></div>') +
       bloqueHistoria(h) + filaDia(yaDia) +
       (window.ftAcceso && ftAcceso.bannerRetos ? ftAcceso.bannerRetos() : '') +
       '<h3 class="rz-h">Elige tu reto</h3><div class="rz-mis">' + mis.map((m, k) =>
