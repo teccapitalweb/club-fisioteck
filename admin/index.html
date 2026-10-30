@@ -1071,6 +1071,15 @@
           <button class="btn btn-p" onclick="guardarContacto()">Guardar contacto</button>
         </div>
         <div class="pg-card">
+          <div class="pg-cab"><i><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></i><h3>Aviso para todo el Club</h3></div>
+          <p class="sub">Una franja arriba del Club para todos los miembros (por ejemplo, «mañana hay clase en vivo»). Se lee desde el servidor y se actualiza sola en unos minutos.</p>
+          <div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="cfgAvisoActivo"> Mostrar el aviso</label></div>
+          <div class="form-group"><label class="form-label">Texto (máx. 240 letras)</label><textarea class="form-textarea" id="cfgAvisoTexto" rows="3" maxlength="240" placeholder="Escribe el aviso corto para todos"></textarea></div>
+          <div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="cfgAvisoTono"><option value="info">Informativo (azul)</option><option value="aviso">Importante (ámbar)</option></select></div>
+          <div class="form-group"><label class="form-label">«Clases en vivo pronto» en la sección Webinar</label><select class="form-select" id="cfgVivoPronto"><option value="auto">Automático (según las clases programadas)</option><option value="si">Mostrar siempre «Pronto»</option><option value="no">No mostrar</option></select></div>
+          <button class="btn btn-p" onclick="guardarAvisoClub()">Guardar aviso</button>
+        </div>
+        <div class="pg-card">
           <div class="pg-cab"><i><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></i><h3>Cursos escalonados</h3></div>
           <p class="sub">Con membresía, el primer curso (el que eligió en su prueba gratuita) está abierto y los demás se abren uno cada cierto número de días, o antes si el miembro supera retos. Al encenderlo, quienes ya pagaban conservan todo abierto.</p>
           <div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="cfgEscActivo"> Activar cursos escalonados</label></div>
@@ -1714,6 +1723,25 @@
   }
 
   // ===== CURSOS ESCALONADOS (config/club) =====
+  async function cargarAvisoClub() {
+    try {
+      const c = await apiAdmin('/api/admin/config');
+      document.getElementById('cfgAvisoActivo').checked = !!(c.avisoGlobal && c.avisoGlobal.activo);
+      document.getElementById('cfgAvisoTexto').value = (c.avisoGlobal && c.avisoGlobal.texto) || '';
+      document.getElementById('cfgAvisoTono').value = (c.avisoGlobal && c.avisoGlobal.tono) || 'info';
+      document.getElementById('cfgVivoPronto').value = c.clasesEnVivoPronto === true ? 'si' : c.clasesEnVivoPronto === false ? 'no' : 'auto';
+    } catch (e) { /* sin servidor: se queda como está */ }
+  }
+  async function guardarAvisoClub() {
+    const v = document.getElementById('cfgVivoPronto').value;
+    try {
+      await apiAdmin('/api/admin/config', { method: 'POST', body: JSON.stringify({
+        avisoGlobal: { activo: document.getElementById('cfgAvisoActivo').checked, texto: document.getElementById('cfgAvisoTexto').value, tono: document.getElementById('cfgAvisoTono').value },
+        clasesEnVivoPronto: v === 'si' ? true : v === 'no' ? false : null
+      }) });
+      toast('Aviso guardado. Los miembros lo verán en unos minutos.');
+    } catch (e) { toast(e.message || 'No se pudo guardar el aviso'); }
+  }
   async function cargarEscalonado() {
     try {
       const sn = await fbDb.collection('config').doc('club').get(), c = sn.exists ? sn.data() : {};
@@ -1885,20 +1913,16 @@
   async function borrarRespuesta(pid, rid) {
     if (!confirm('¿Eliminar esta respuesta?')) return;
     try {
-      const ref = fbDb.collection('forum_posts').doc(pid);
-      await ref.collection('replies').doc(rid).delete();
-      await ref.update({ replyCount: firebase.firestore.FieldValue.increment(-1) });
+      await apiAdmin('/api/admin/foro/temas/' + encodeURIComponent(pid) + '/respuestas/' + encodeURIComponent(rid), { method: 'DELETE' });
       toast('Respuesta eliminada'); cargarForo();
-    } catch (e) { toast('No se pudo eliminar'); }
+    } catch (e) { toast(e.message || 'No se pudo eliminar'); }
   }
   async function borrarTema(id) {
     if (!confirm('¿Eliminar este tema y todas sus respuestas?')) return;
     try {
-      const ref = fbDb.collection('forum_posts').doc(id);
-      const rs = await ref.collection('replies').get();
-      await Promise.all(rs.docs.map(d => d.ref.delete()));
-      await ref.delete(); toast('Tema eliminado'); cargarForo();
-    } catch (e) { toast('No se pudo eliminar'); }
+      await apiAdmin('/api/admin/foro/temas/' + encodeURIComponent(id), { method: 'DELETE' });
+      toast('Tema eliminado'); cargarForo();
+    } catch (e) { toast(e.message || 'No se pudo eliminar'); }
   }
   function abrirTemaOficial() {
     document.getElementById('modalTitle').textContent = 'Tema oficial del equipo';
@@ -1909,9 +1933,9 @@
       const title = document.getElementById('foNTitulo').value.trim(), body = document.getElementById('foNCuerpo').value.trim();
       if (!title || !body) { toast('Completa título y mensaje'); return; }
       try {
-        await fbDb.collection('forum_posts').add({ title, body, category: document.getElementById('foNCat').value, authorId: firebase.auth().currentUser.uid, authorName: 'Equipo FisioTeck', replyCount: 0, official: true, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+        await apiAdmin('/api/admin/foro/temas', { method: 'POST', body: JSON.stringify({ titulo: title, mensaje: body, categoria: document.getElementById('foNCat').value }) });
         toast('Tema publicado'); closeModal(); cargarForo();
-      } catch (e) { toast('No se pudo publicar'); }
+      } catch (e) { toast(e.message || 'No se pudo publicar'); }
     };
     document.getElementById('modalOverlay').classList.add('active');
   }
@@ -2564,7 +2588,7 @@
   const _origShowSection = showSection;
   showSection = function(sec) {
     _origShowSection(sec);
-    if (sec === 'config') { cargarPreciosMembresia(); cargarEscalonado(); }
+    if (sec === 'config') { cargarPreciosMembresia(); cargarEscalonado(); cargarAvisoClub(); }
     if (sec === 'payments') { renderPagos(); cargarPendientes(); }
     if (sec === 'certs') cargarCertificados();
     if (sec === 'trials') renderPruebas();
@@ -2590,7 +2614,7 @@
 
 <!-- MODIFICADO: Panel Admin Club FisioTeck — creado desde cero -->
 <script src="cursos.js?v=3"></script>
-<script src="paginas.js?v=1"></script>
+<script src="paginas.js?v=2"></script>
 <script src="miembros.js?v=2"></script>
 <script src="retos-xp.js?v=1"></script>
 <script src="libros.js?v=2"></script>

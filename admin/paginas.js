@@ -56,7 +56,7 @@
     if (link && !/^https?:\/\//i.test(link)) { toast('El enlace debe empezar con http:// o https://'); return; }
     const btn = $('pgEnviar'); btn.disabled = true;
     try {
-      await fbDb.collection('member_notifications').add({ category: F.tipo, title, message, link, createdAt: firebase.firestore.FieldValue.serverTimestamp(), createdBy: (firebase.auth().currentUser || {}).email || '' });
+      await apiAdmin('/api/admin/avisos', { method: 'POST', body: JSON.stringify({ categoria: F.tipo, titulo: title, mensaje: message, enlace: link }) }); // lo valida y lo guarda el servidor
       toast('Notificación enviada a todos los miembros');
       $('notifTitle').value = ''; $('notifMessage').value = ''; $('notifLink').value = ''; pgVista(); cargarAvisos();
     } catch (e) { toast('No se pudo enviar: ' + (e.code || e.message)); }
@@ -64,7 +64,7 @@
   };
   window.pgBorrarAviso = async id => {
     if (!confirm('¿Eliminar esta notificación? Dejará de verse en la campana de los miembros.')) return;
-    try { await fbDb.collection('member_notifications').doc(id).delete(); toast('Notificación eliminada'); cargarAvisos(); }
+    try { await apiAdmin('/api/admin/avisos/' + encodeURIComponent(id), { method: 'DELETE' }); toast('Notificación eliminada'); cargarAvisos(); }
     catch (e) { toast('No se pudo eliminar: ' + (e.code || e.message)); }
   };
   async function cargarAvisos() {

@@ -5477,11 +5477,12 @@
       if (!(await ftActividad(courseId, lessonIndex))) return;
     }
     // El avance lo valida y guarda el servidor (clases en orden, solo las que tu plan permite).
-    let progress;
+    let progress, premioCurso = null;
     try {
       const r = await certFetch('/api/cursos/' + encodeURIComponent(courseId) + '/progreso', { method: 'POST', body: JSON.stringify({ leccion: lessonIndex }) });
       progress = { completed: r.completed };
       userProgress['c_' + courseId] = progress;
+      if (r.bono && r.bono.xp) premioCurso = r.bono;
     } catch (e) {
       // Sin respuesta del servidor (se cayó la red): el avance queda pendiente y se reintenta solo (como Alintec)
       if (!e.status) { encolarAvance(courseId, lessonIndex); showToast('Sin conexión: tu clase quedó anotada y se guardará sola cuando vuelva el internet.'); return; }
@@ -5494,6 +5495,7 @@
     if (progress.completed.length >= totalLessons && totalLessons > 0) {
       showToast('¡Felicidades! Has completado todo el curso.');
       setTimeout(() => launchConfetti(), 500);
+      if (premioCurso) setTimeout(() => showToast('+' + premioCurso.xp + ' XP por tu curso número ' + premioCurso.ordinal), 2200);
     } else {
       showToast('Clase completada. ¡Sigue así!');
     }
@@ -7375,6 +7377,7 @@
 <script src="club-directorio.js?v=20261124"></script>
 <script src="club-lector.js?v=20261150"></script>
 <script src="club-suscripcion.js?v=20261162"></script>
+<script src="club-config.js?v=20261170"></script>
 <script src="club-libros.js?v=20261150"></script>
 <script src="club-cuenta.js?v=20261111"></script>
 <script src="club-seccion.js?v=20261026"></script>
