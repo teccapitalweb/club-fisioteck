@@ -223,9 +223,9 @@ body.fd-abierto { overflow:hidden; }
 .fd-ventana .fd-cuerpo { max-width: none; }
 @media (max-width: 640px) { .fd-ov { padding: 0; align-items: flex-end; } .fd-ventana { max-height: 94vh; max-height: 94dvh; border-radius: 24px 24px 0 0; } }
 
-/* Inicio: una sola columna a todo el ancho; las tarjetas laterales (clases en vivo, comunidad, actividad, directorio) van abajo, antes de las noticias */
+/* Inicio: una sola columna a todo el ancho; las tarjetas laterales (clases en vivo, comunidad, actividad, directorio) van hasta abajo, después de las noticias */
 #ftHome { grid-template-columns: minmax(0, 1fr); }
 .ftd-izq { display: contents; }
 .ftd-izq > * { order: 1; }
-.ftd-der { order: 2; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); align-items: stretch; }
+.ftd-der { order: 4; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); align-items: stretch; }
 .ftd-izq > section:last-child { order: 3; }

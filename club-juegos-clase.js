@@ -361,7 +361,12 @@
     const curso = (siteData.courses || []).find(c => c.id === courseId);
     const l = curso && curso.lessons && curso.lessons[lessonIndex];
     if (!l) return true;
-    const preguntas = (l.preguntas || []).map((q, k) => q && q.pregunta ? Object.assign({}, q, { _k: k }) : null).filter(Boolean); // _k = lugar de la pregunta en la clase
+    let preguntas = (l.preguntas || []).map((q, k) => q && q.pregunta ? Object.assign({}, q, { _k: k }) : null).filter(Boolean); // _k = lugar de la pregunta en la clase
+    // Si el sitio público no trae las preguntas de esta clase, las entrega el servidor (el mismo que las califica y las exige para marcarla como vista)
+    if (!preguntas.length) {
+      try { const r = await certFetch('/api/cursos/' + encodeURIComponent(courseId) + '/clases/' + lessonIndex + '/preguntas'); preguntas = ((r && r.preguntas) || []).filter(q => q && q.pregunta); }
+      catch (e) { if (e && e.status === 402 && window.showPaywallOverlay) { showPaywallOverlay(); return false; } /* sin preguntas en el servidor o sin conexión: se sigue sin ellas */ }
+    }
     const cargado = await cargarJuego(courseId, lessonIndex, l);
     if (!cargado) return false;
     const juego = cargado.juego;
