@@ -276,6 +276,7 @@
     const id = String(cursoId);
     try {
       const curso = (((typeof siteData !== 'undefined' && siteData.courses) || []).find(c => String(c.id) === id) || {}).title || 'tu curso';
+      try { if (window.ftCerrarDetalle) ftCerrarDetalle(); } catch (_) { /* sin ventana de detalle */ }
       await promesaLibre(2200);
       // Orden: 1) premio de XP  2) confirmar el nombre (solo en el primer certificado)  3) certificado  4) insignias ganadas  5) calificar el curso
       const cursoObj = ((typeof siteData !== 'undefined' && siteData.courses) || []).find(c => String(c.id) === id);

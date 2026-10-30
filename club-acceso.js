@@ -48,9 +48,18 @@
     try { if (document.getElementById('page-home') && document.getElementById('page-home').classList.contains('active') && typeof renderHome === 'function') renderHome(); } catch (e) { /* vista no lista */ }
   }
 
+  // Lo último que respondió el servidor se guarda por cuenta: si al recargar el servidor no contesta, los candados se quedan como estaban
+  const claveCache = () => 'ft_acceso_' + ((auth.currentUser || {}).uid || 'x');
+  function guardarCache(d) { try { localStorage.setItem(claveCache(), JSON.stringify({ d, ms: Date.now() })); } catch (_) { /* modo privado */ } }
+  function leerCache() { try { const c = JSON.parse(localStorage.getItem(claveCache()) || 'null'); return c && c.d && Date.now() - c.ms < 7 * 864e5 ? c.d : null; } catch (_) { return null; } }
+  let reintentos = 0;
   A.cargar = async function () {
-    try { aplicar(await pedir('/api/acceso')); refrescarVistas(); }
-    catch (e) { /* sin servidor: el Club sigue como antes (sin candados por días) */ }
+    try { const d = await pedir('/api/acceso'); aplicar(d); guardarCache(d); reintentos = 0; refrescarVistas(); }
+    catch (e) {
+      // Sin respuesta: se muestra lo último que se sabía (candados incluidos) y se vuelve a intentar en unos segundos
+      { const c = leerCache(); if (c) { aplicar(c); refrescarVistas(); } }
+      if (reintentos++ < 6) setTimeout(() => { if (auth.currentUser) A.cargar(); }, 5000 * reintentos);
+    }
   };
 
   // ¿Está cerrado por el escalonado? (solo aplica con membresía; la prueba gratuita y la vista previa no pasan por aquí)
@@ -117,7 +126,7 @@
     }
   };
 
-  auth.onAuthStateChanged(u => { if (u) A.cargar(); else aplicar(null); });
+  auth.onAuthStateChanged(u => { if (u) { const c = leerCache(); if (c) aplicar(c); A.cargar(); } else aplicar(null); });
   const sp = window.showPage;
   window.showPage = function (page) {
     const r = sp.apply(this, arguments);

@@ -7313,16 +7313,21 @@
     try { localStorage.setItem(KEY, String(Date.now() + dias*24*60*60*1000)); } catch(e){}
   }
   // El aviso de instalar espera a que termine la secuencia de tarjetas de la cuenta nueva (bienvenida, regalo, perfil, recorrido): nunca se encima
+  // Solo en la pantalla de inicio de sesión / registro (sin sesión iniciada); dentro del Club no se muestra nunca
+  function enLogin(){
+    var s = document.getElementById('splash-screen');
+    var sesion = false; try { sesion = !!(window.auth && auth.currentUser); } catch(e){}
+    return !!s && !s.classList.contains('hidden') && !document.body.classList.contains('auth-checking') && !sesion;
+  }
   function show(){
     var intentos = 0;
     (function turno(){
-      var ocupado = (window.ftBienvenida && ftBienvenida.secuenciaPendiente && ftBienvenida.secuenciaPendiente()) ||
-        document.getElementById('ftXpOv') || document.getElementById('ftBienvOv') || document.querySelector('.fpi-ov');
-      if (!ocupado) pop.classList.add('show');
-      else if (intentos++ < 300) setTimeout(turno, 2000);
+      if (enLogin()) { pop.classList.add('show'); return; }
+      if (intentos++ < 20) setTimeout(turno, 800);
     })();
   }
   function hide(){ pop.classList.remove('show'); }
+  try { auth.onAuthStateChanged(function(u){ if (u) hide(); }); } catch(e){}
 
   if (isStandalone() || silenciado()) return;
 
@@ -7374,8 +7379,8 @@
 <script src="club-paginas.js?v=20261140"></script>
 <script src="club-foro.js?v=20261101"></script>
 <script src="club-logros.js?v=20261160"></script>
-<script src="club-acceso.js?v=20261140"></script>
-<script src="club-resenas.js?v=20261170"></script>
+<script src="club-acceso.js?v=20261180"></script>
+<script src="club-resenas.js?v=20261180"></script>
 <script src="club-referidos.js?v=20261104"></script>
 <script src="club-insignias-extra.js?v=20261150"></script>
 <script src="club-juegos.js?v=20261026"></script>
@@ -7394,7 +7399,7 @@
 <script src="club-material.js?v=20261143"></script>
 <script src="club-detalle.js?v=20261122"></script>
 <script src="club-visor.js?v=20261104"></script>
-<script src="club-inicio.js?v=20261141"></script>
+<script src="club-inicio.js?v=20261180"></script>
 <script src="club-recorrido.js?v=20261140"></script>
 <script src="club-bienvenida.js?v=20261195"></script>
 <script src="club-perfil-inicial.js?v=20261132"></script>
