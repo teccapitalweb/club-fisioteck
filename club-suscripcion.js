@@ -228,7 +228,16 @@
   // La página se vuelve a dibujar al entrar y cuando el perfil termina de cargar los datos de la cuenta
   const perfilOriginal = window.loadUserProfile;
   if (typeof perfilOriginal === 'function') window.loadUserProfile = async function () { const r = await perfilOriginal.apply(this, arguments); try { if ($('page-subscription') && $('page-subscription').classList.contains('active')) pintar(); } catch (_) { /* sin página */ } return r; };
+  // El administrador viendo el panel como usuario es solo para revisar contenido: no tiene suscripción, así que ese apartado no existe para él
+  const ocultarParaAdmin = () => {
+    if (!window.ftVistaAdmin) return;
+    document.querySelectorAll('[data-page="subscription"], [data-ir="subscription"], [onclick*="subscription"]').forEach(e => { e.style.display = 'none'; });
+  };
+  setInterval(ocultarParaAdmin, 1500);
   const paginaPintar = window.showPage;
-  window.showPage = function (page) { const r = paginaPintar.apply(this, arguments); if (page === 'subscription') pintar(); return r; };
+  window.showPage = function (page) {
+    if (page === 'subscription' && window.ftVistaAdmin) page = 'home';
+    const r = paginaPintar.call(this, page); if (page === 'subscription') pintar(); ocultarParaAdmin(); return r;
+  };
   marcar();
 })();
