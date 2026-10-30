@@ -920,8 +920,8 @@
         <div class="ap-kpi" style="--k:var(--blue)"><div class="lbl">Verificación pública</div><div class="val" style="font-size:1.05rem;">/verificar/</div><div class="note">Con folio o código QR</div></div>
       </div>
       <div class="admin-card" id="cePendCard" style="display:none;overflow-x:auto;">
-        <h3 style="margin:0 0 4px;font-size:1rem;">Pendientes por emitir</h3>
-        <p style="font-size:.84rem;color:var(--text-muted);margin:0 0 12px;">Miembros que terminaron cursos antes de los certificados automáticos. Cada uno confirma su nombre y emite desde su cuenta (Certificados).</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;"><h3 style="margin:0 0 4px;font-size:1rem;">Pendientes por emitir</h3><button class="btn btn-p btn-sm" id="cePendBtn" onclick="emitirPendientesTodos()">Emitir todos con el nombre de su cuenta</button></div>
+        <p style="font-size:.84rem;color:var(--text-muted);margin:0 0 12px;">Miembros que terminaron cursos antes de los certificados automáticos. Se emiten con el nombre de su cuenta y la fecha en que terminaron, y aparecen en su apartado de Certificados. No se envían correos.</p>
         <table class="admin-table"><thead><tr><th>Miembro</th><th>Cursos terminados sin certificado</th><th>Nombre</th></tr></thead><tbody id="cePendTabla"></tbody></table>
       </div>
       <div class="admin-card" style="overflow-x:auto;">
@@ -1530,6 +1530,16 @@
     }
     renderCertificados();
     cargarPendientesCert();
+  }
+  async function emitirPendientesTodos() {
+    if (!confirm('¿Emitir los certificados pendientes con el nombre que cada miembro tiene en su cuenta? Revisa que los nombres sean correctos.')) return;
+    const b = document.getElementById('cePendBtn'); b.disabled = true;
+    try {
+      const r = await apiAdmin('/api/admin/certificados/emitir-pendientes', { method: 'POST' });
+      toast(r.emitidos + ' certificado' + (r.emitidos === 1 ? '' : 's') + ' emitido' + (r.emitidos === 1 ? '' : 's') + (r.sinNombre.length ? '. ' + r.sinNombre.length + ' sin nombre y apellido: ' + r.sinNombre.map(m => m.email).join(', ') : ''));
+      cargarCertificados();
+    } catch (e) { toast(e.message); }
+    b.disabled = false;
   }
   async function cargarPendientesCert() {
     const card = document.getElementById('cePendCard');
