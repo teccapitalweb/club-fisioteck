@@ -96,6 +96,8 @@
   [
     { id: 'cert_1', name: 'Primer Certificado', desc: 'Obtén tu primer certificado', xp: 150, check: s => s.certificados >= 1 },
     { id: 'cert_3', name: 'Coleccionista de Certificados', desc: 'Obtén 3 certificados', xp: 400, check: s => s.certificados >= 3 },
+    { id: 'curso_5', name: 'Cinco Cursos', desc: 'Termina 5 cursos', xp: 250, check: s => s.completedCourses >= 5 },
+    { id: 'premio_curso', name: 'Cazador de Premios', desc: 'Gana 100 XP en premios por terminar cursos', xp: 150, check: s => (s.xpCursos || 0) >= 100 },
     { id: 'resena_1', name: 'Voz del Club', desc: 'Califica un curso que terminaste', xp: 50, check: s => s.resenasHechas >= 1 }
   ].forEach(b => { if (!BADGES.some(x => x.id === b.id)) BADGES.push(Object.assign({ icon: ic, cat: 'cursos' }, b)); });
 

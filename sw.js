@@ -1,7 +1,7 @@
 /* Club FisioTeck — Service Worker
    Estrategia: network-first SOLO para recursos del mismo origen (online = siempre fresco,
    offline = respaldo de caché). Firebase / gstatic / CDNs NO se interceptan. */
-const CACHE = 'fisioteck-v61-xp-curso-avisos';
+const CACHE = 'fisioteck-v63-premio-curso';
 const SHELL = [
   './',
   './index.html',
@@ -76,21 +76,17 @@ self.addEventListener('fetch', (e) => {
   // Solo GET y mismo origen; lo demás (Firebase, gstatic, jsdelivr, POST) pasa directo a la red.
   if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
 
-  e.respondWith(
-    fetch(req)
-      .then((res) => {
-        // Guardar únicamente respuestas válidas para no fijar errores en caché.
-        if (res.ok) {
-          const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
-        }
-        return res;
-      })
-      .catch(async () => {
-        const hit = await caches.match(req);
-        if (hit) return hit;
-        if (req.mode === 'navigate') return caches.match('./index.html');
-        return new Response('', { status: 503, statusText: 'Sin conexión' });
-      })
-  );
+  // Red primero, pero sin esperar de más: si la red tarda más de 3.5 s y hay copia guardada, se usa la copia (antes una conexión lenta dejaba el Club cargando mucho tiempo)
+  e.respondWith((async () => {
+    const copia = await caches.match(req);
+    try {
+      const res = await Promise.race([fetch(req), new Promise((_, no) => setTimeout(() => no(new Error('lento')), copia ? 3500 : 20000))]);
+      if (res.ok) { const guardar = res.clone(); caches.open(CACHE).then((c) => c.put(req, guardar)).catch(() => {}); }
+      return res;
+    } catch (_) {
+      if (copia) return copia;
+      if (req.mode === 'navigate') { const inicio = await caches.match('./index.html'); if (inicio) return inicio; }
+      return new Response('', { status: 503, statusText: 'Sin conexión' });
+    }
+  })());
 });

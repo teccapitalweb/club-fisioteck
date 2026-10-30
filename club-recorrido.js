@@ -52,6 +52,7 @@
   function objetivo(p) { for (const s of p.sel) { const el = document.querySelector(s); if (el && visible(el)) return el; } return null; }
   function cerrar(terminado) {
     if (ov) { ov.remove(); ov = null; }
+    try { if (document.body.classList.contains('nav-open') && window.innerWidth <= 900 && typeof toggleSidebar === 'function') toggleSidebar(false); } catch (_) { /* sin menú */ }
     document.removeEventListener('keydown', tecla, true); window.removeEventListener('resize', pintar);
     try { localStorage.setItem('ft_tour_' + ((auth.currentUser || {}).uid || 'x'), '1'); } catch (_) { /* modo privado */ }
   }
@@ -76,6 +77,10 @@
     let guard = 0; while (!objetivo(PASOS[paso]) && paso < PASOS.length - 1 && guard++ < PASOS.length) paso++;
     const p = PASOS[paso], el = objetivo(p);
     const foco = ov.querySelector('.ftt-foco'), tarjeta = ov.querySelector('.ftt-card');
+    // En el celular el menú lateral está cerrado (fuera de pantalla): se abre cuando el paso señala algo del menú y se cierra en los demás
+    const menu = document.getElementById('sidebar'), enMenu = !!(el && menu && menu.contains(el)), menuCerrado = !!menu && menu.getBoundingClientRect().right <= 4, menuAbierto = !!menu && document.body.classList.contains('nav-open');
+    if (enMenu && menuCerrado && typeof toggleSidebar === 'function') { toggleSidebar(true); clearTimeout(pintar._t); pintar._t = setTimeout(pintar, 340); return; }
+    if (!enMenu && menuAbierto && typeof toggleSidebar === 'function') { toggleSidebar(false); clearTimeout(pintar._t); pintar._t = setTimeout(pintar, 340); return; }
     if (el) {
       el.scrollIntoView({ block: 'nearest', behavior: 'instant' in document.documentElement.style ? 'instant' : 'auto' });
       const r = el.getBoundingClientRect(), m = 6;
@@ -83,8 +88,10 @@
       const ancho = Math.min(340, window.innerWidth - 24);
       tarjeta.style.width = ancho + 'px';
       let x = Math.min(Math.max(12, r.left + r.width / 2 - ancho / 2), window.innerWidth - ancho - 12);
+      const abajoFijo = enMenu && window.innerWidth <= 900;
       const abajo = r.bottom + 14 + 190 < window.innerHeight;
-      tarjeta.style.left = x + 'px'; tarjeta.style.top = abajo ? (r.bottom + 14) + 'px' : 'auto'; tarjeta.style.bottom = abajo ? 'auto' : (window.innerHeight - r.top + 14) + 'px';
+      if (abajoFijo) { tarjeta.style.left = '12px'; tarjeta.style.top = 'auto'; tarjeta.style.bottom = '14px'; }
+      else { tarjeta.style.left = x + 'px'; tarjeta.style.top = abajo ? (r.bottom + 14) + 'px' : 'auto'; tarjeta.style.bottom = abajo ? 'auto' : (window.innerHeight - r.top + 14) + 'px'; }
     } else { foco.style.cssText = 'display:none'; tarjeta.style.cssText = 'width:min(340px,calc(100vw - 24px));left:50%;top:50%;transform:translate(-50%,-50%)'; }
     ov.querySelector('.ftt-n').textContent = 'Paso ' + (paso + 1) + ' de ' + PASOS.length;
     ov.querySelector('.ftt-t').textContent = p.t; ov.querySelector('.ftt-d').textContent = typeof p.d === 'function' ? p.d() : p.d;

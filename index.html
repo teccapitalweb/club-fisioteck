@@ -2073,6 +2073,7 @@
 
     <!-- REGISTER FORM -->
     <div id="formRegister" class="splash-form" role="tabpanel" aria-labelledby="tabRegister">
+      <div class="splash-error" id="register-error" role="alert" style="margin:0 0 14px;font-weight:700;"></div>
       <label class="auth-field" for="reg-name"><span class="auth-field__label">Nombre completo</span><input type="text" class="splash-input" id="reg-name" name="full-name" placeholder="Tu nombre completo" aria-label="Nombre completo" autocomplete="name"></label>
       <label class="auth-field" for="reg-email"><span class="auth-field__label">Correo electrónico</span><input type="email" class="splash-input" id="reg-email" name="register-email" placeholder="nombre@correo.com" aria-label="Correo electrónico" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false"></label>
       <label class="auth-field" for="reg-pass"><span class="auth-field__label">Contraseña</span><input type="password" class="splash-input" id="reg-pass" name="new-password" placeholder="Mínimo 6 caracteres" aria-label="Contraseña" autocomplete="new-password"></label>
@@ -2087,8 +2088,6 @@
       </div>
 
       <button type="button" class="btn-splash" id="btnRegister" onclick="handleRegister()" disabled style="opacity:.4;cursor:not-allowed;">Crear Cuenta</button>
-      <div class="splash-error" id="register-error"></div>
-
       <div class="auth-divider">o continúa con</div>
 
       <button type="button" class="btn-google" onclick="handleGoogleLogin('register')">
@@ -3651,7 +3650,8 @@
   function showRegError(msg) {
     const el = document.getElementById('register-error');
     el.textContent = msg; el.style.display = 'block';
-    setTimeout(() => el.style.display = 'none', 3000);
+    try { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) { /* sin scroll */ }
+    clearTimeout(showRegError._t); showRegError._t = setTimeout(() => el.style.display = 'none', 6000);
   }
   // ===== REGLAS DE ACCESO (iguales con correo y con Google) =====
   // · Iniciar sesión: solo con una cuenta que ya existe (documento de socio). Si no existe, no se crea: se invita a crearla.
@@ -5495,7 +5495,7 @@
     if (progress.completed.length >= totalLessons && totalLessons > 0) {
       showToast('¡Felicidades! Has completado todo el curso.');
       setTimeout(() => launchConfetti(), 500);
-      if (premioCurso) setTimeout(() => showToast('+' + premioCurso.xp + ' XP por tu curso número ' + premioCurso.ordinal), 2200);
+      if (premioCurso) setTimeout(() => { const ver = () => { if (window.ftCursoPremio) ftCursoPremio.mostrar(premioCurso, course); else showToast('+' + premioCurso.xp + ' XP por tu curso número ' + premioCurso.ordinal); }; if (window.ftCola && ftCola.cuandoLibre) ftCola.cuandoLibre(ver, 'curso-premio'); else ver(); }, 2200);
     } else {
       showToast('Clase completada. ¡Sigue así!');
     }
@@ -7016,8 +7016,12 @@
           // y hay UN único doc alterno con pagos (evita fusionar cuentas ajenas)
           if ((!memberData || !memberData.payments || memberData.payments.length === 0) && user.emailVerified) {
             try {
-              const v = await certFetch('/api/cuenta/vincular', { method: 'POST', body: '{}' });
-              if (v && v.vinculado) { doc = await docRef.get(); memberData = doc.exists ? doc.data() : null; }
+              // El panel no espera más de 2.5 s a esta consulta (con el servidor lento dejaba la pantalla de carga mucho tiempo).
+              // Si tarda y al final sí vincula pagos, se recarga una sola vez para mostrar la membresía.
+              const consulta = certFetch('/api/cuenta/vincular', { method: 'POST', body: '{}' });
+              const v = await Promise.race([consulta, new Promise(res => setTimeout(() => res('tarde'), 2500))]);
+              if (v === 'tarde') { consulta.then(r => { if (r && r.vinculado && !sessionStorage.getItem('ft_vinculado_recarga')) { sessionStorage.setItem('ft_vinculado_recarga', '1'); location.reload(); } }).catch(() => {}); }
+              else if (v && v.vinculado) { doc = await docRef.get(); memberData = doc.exists ? doc.data() : null; }
             } catch(mergeErr) {
               console.error('[merge] Error al vincular pagos por email:', mergeErr);
             }
@@ -7348,7 +7352,7 @@
 <script src="club-foro.js?v=20261101"></script>
 <script src="club-logros.js?v=20261130"></script>
 <script src="club-acceso.js?v=20261140"></script>
-<script src="club-resenas.js?v=20261107"></script>
+<script src="club-resenas.js?v=20261173"></script>
 <script src="club-referidos.js?v=20261104"></script>
 <script src="club-juegos.js?v=20261026"></script>
 <script src="club-materiales.js?v=20261026"></script>
@@ -7367,7 +7371,7 @@
 <script src="club-detalle.js?v=20261122"></script>
 <script src="club-visor.js?v=20261104"></script>
 <script src="club-inicio.js?v=20261141"></script>
-<script src="club-recorrido.js?v=20261140"></script>
+<script src="club-recorrido.js?v=20261171"></script>
 <script src="club-bienvenida.js?v=20261140"></script>
 <script src="club-perfil-inicial.js?v=20261132"></script>
 <script src="club-vip.js?v=20261027"></script>
@@ -7376,8 +7380,9 @@
 <script src="club-creditos.js?v=20261027"></script>
 <script src="club-directorio.js?v=20261124"></script>
 <script src="club-lector.js?v=20261150"></script>
-<script src="club-suscripcion.js?v=20261162"></script>
+<script src="club-suscripcion.js?v=20261172"></script>
 <script src="club-config.js?v=20261170"></script>
+<script src="club-curso-premio.js?v=20261173"></script>
 <script src="club-libros.js?v=20261150"></script>
 <script src="club-cuenta.js?v=20261111"></script>
 <script src="club-seccion.js?v=20261026"></script>

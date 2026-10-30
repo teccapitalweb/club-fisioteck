@@ -239,5 +239,16 @@
     if (page === 'subscription' && window.ftVistaAdmin) page = 'home';
     const r = paginaPintar.call(this, page); if (page === 'subscription') pintar(); ocultarParaAdmin(); return r;
   };
+  // Lo que es solo para miembros ya no abre una tarjeta de aviso: lleva directo a Suscripción, donde se elige el plan y se paga (como Alintec)
+  window.showPaywallOverlay = function () {
+    if (window.ftVistaAdmin) return;
+    try { if (typeof closePaywallOverlay === 'function') closePaywallOverlay(); } catch (_) { /* sin tarjeta */ }
+    try { if (document.body.classList.contains('nav-open') && typeof toggleSidebar === 'function') toggleSidebar(false); } catch (_) { /* sin menú */ }
+    const ya = $('page-subscription') && $('page-subscription').classList.contains('active');
+    showPage('subscription');
+    if (!ya) setTimeout(() => { try { showToast('Eso es para miembros: elige tu plan para activarlo.'); } catch (_) { /* sin aviso */ } }, 400);
+  };
+  // Red de seguridad: si por algún motivo la pantalla «Preparando tu espacio…» sigue ahí a los 9 s, se quita y se deja usar el Club
+  setTimeout(() => { try { if (typeof authBootComplete !== 'undefined' && !authBootComplete && typeof finishAuthBoot === 'function') finishAuthBoot(!auth.currentUser); } catch (_) { /* sin pantalla */ } }, 9000);
   marcar();
 })();
