@@ -37,7 +37,7 @@
 .pg-vacio { text-align:center; padding:44px 16px; color:var(--text-muted); font-size:.88rem; }
 
 /* ----- Configuración ----- */
-.pg-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:18px; }
+.pg-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr)); gap:18px; }
 .pg-grid .full { grid-column:1/-1; }
 .pg-cab { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
 .pg-cab i { width:34px; height:34px; border-radius:10px; display:grid; place-items:center; background:var(--accent-ghost); color:var(--accent); }
@@ -50,6 +50,6 @@
 .pg-serv .tx { flex:1; min-width:0; } .pg-serv .tx strong { display:block; font-size:.88rem; } .pg-serv .tx span { font-size:.78rem; color:var(--text-light); }
 .pg-serv .et { font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:700; letter-spacing:.1em; padding:3px 9px; border-radius:6px; background:color-mix(in srgb, var(--c) 16%, transparent); color:var(--c); }
 .pg-acciones { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
-.pg-enlaces { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.pg-enlaces { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
 .pg-enlaces a { display:block; padding:14px; border-radius:12px; border:1px solid var(--border-2); color:var(--text); font-size:.84rem; transition:var(--transition); }
 .pg-enlaces a:hover { border-color:var(--accent); background:var(--accent-ghost); } .pg-enlaces a strong { display:block; margin-bottom:2px; } .pg-enlaces a span { color:var(--text-light); font-size:.76rem; }
