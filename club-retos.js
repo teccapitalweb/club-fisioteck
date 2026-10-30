@@ -88,7 +88,7 @@
       '<div class="rt-barra"><div style="width:' + pct + '%"></div></div></div>' +
       (puedeJugar() ? '' : '<div class="rt-aviso">Los retos son para miembros y para quien ya eligió su curso de prueba. <button type="button" onclick="showPaywallOverlay()">Ver membresía</button></div>') +
       '<button type="button" class="rt-dia" onclick="ftRetoDia()">' + imagen('dia') + '<span class="rt-card-tipo">Reto del día</span>' +
-      '<strong>' + (yaDia ? 'Ya lo completaste hoy' : 'Una pregunta, +25 XP') + '</strong>' +
+      '<strong>' + (yaDia ? 'Ya lo completaste hoy' : '5 preguntas · 6 XP, 10 si es perfecto') + '</strong>' +
       '<span class="rt-card-desc">' + (yaDia ? 'Vuelve mañana por uno nuevo.' : esc(q.cat)) + '</span></button>' +
       (window.ftAcceso ? ftAcceso.bannerRetos() : '') +
       '<h3 class="rt-h">Quiz por tema</h3><div class="rt-grid">' +
@@ -128,6 +128,7 @@
   window.ftRetoResponder = function (k) {
     if (quiz.respondida) return;
     quiz.respondida = true; quiz.ultimaK = k;
+    if (quiz.dia) quiz.listaK.push(k);
     const p = quiz.orden[quiz.i];
     const bien = k === p.c;
     if (bien) quiz.ok++;
@@ -166,38 +167,43 @@
     if (ganado) showToast('+' + ganado + ' XP por superar el reto');
   };
 
-  // ---------- Reto del día ----------
+  // ---------- Reto del día (como Alintec y Zoorigen: 5 preguntas, un intento al día, se supera con 60 %) ----------
   function retoDelDia() {
+    // Solo para la tarjeta de la portada: la primera categoría de hoy (las preguntas reales las elige el servidor)
     const todas = [];
     D.quiz.forEach(t => t.preguntas.forEach(p => todas.push(Object.assign({ cat: t.titulo }, p))));
     const dia = Math.floor(new Date(hoy() + 'T00:00:00Z').getTime() / 86400000);
-    return todas[dia % todas.length];
+    return todas[(dia * 5) % todas.length];
   }
   window.ftRetoDia = async function () {
     if (!guardia()) return;
     if (R().dia && R().dia.fecha === hoy() && R().dia.hecho) { showToast('Ya hiciste el reto de hoy. ¡Vuelve mañana!'); return; }
-    // la pregunta del día la elige el servidor
-    let p = null;
+    // las preguntas del día las elige el servidor
+    let lista = [];
     try {
       const s = await ftLogros.pedir('/api/retos/dia');
       if (s.hecho) { R().dia = { fecha: s.fecha, hecho: true }; showToast('Ya hiciste el reto de hoy. ¡Vuelve mañana!'); return; }
-      const t = D.quiz.find(x => x.id === s.retoId);
-      if (t && t.preguntas[s.indice]) p = Object.assign({ cat: t.titulo }, t.preguntas[s.indice]);
+      (s.preguntas || []).forEach(x => {
+        const t = D.quiz.find(y => y.id === x.retoId);
+        if (t && t.preguntas[x.indice]) lista.push(Object.assign({ cat: t.titulo }, t.preguntas[x.indice]));
+      });
+      if (lista.length !== (s.preguntas || []).length) lista = [];
     } catch (e) { showToast(e.message || 'No se pudo cargar el reto del día.'); return; }
-    if (!p) { showToast('No se pudo cargar el reto del día.'); return; }
-    quiz = { r: { id: 'dia', titulo: 'Reto del día' }, orden: [p], i: 0, ok: 0, respondida: false, dia: true };
+    if (!lista.length) { showToast('No se pudo cargar el reto del día.'); return; }
+    quiz = { r: { id: 'dia', titulo: 'Reto del día' }, orden: lista, i: 0, ok: 0, respondida: false, dia: true, listaK: [] };
     pregunta();
   };
   async function finDia() {
-    let ganado = 0, bien = false, error = '';
+    let r = null, error = '';
     try {
-      const r = await ftLogros.pedir('/api/retos/dia', { respuesta: quiz.ultimaK });
-      bien = !!r.acertada; ganado = r.xp || 0;
+      r = await ftLogros.pedir('/api/retos/dia', { respuestas: quiz.listaK });
       if (r.hecho) R().dia = { fecha: hoy(), hecho: true };
       if (r.estado) { ftLogros.aplicar(r.estado); ftLogros.repintar(); }
     } catch (e) { error = e.message || 'No se pudo guardar tu respuesta.'; }
-    jugar('<div class="rt-panel rt-fin"><h2>' + (bien ? '¡Reto del día cumplido!' : 'Hoy no fue') + '</h2>' +
-      (ganado ? '<p class="rt-xp">+' + ganado + ' XP</p>' : '<p class="rt-nota">' + esc(error || (bien ? 'Ya habías ganado el XP de hoy.' : 'Puedes intentarlo otra vez hoy.')) + '</p>') +
+    const supera = !!(r && r.supera), ganado = (r && r.xp) || 0;
+    jugar('<div class="rt-panel rt-fin">' + (r ? '<div class="rt-fin-num">' + r.ok + '/' + r.total + '</div>' : '') +
+      '<h2>' + (supera ? '¡Reto del día cumplido!' : r ? 'Hoy no fue' : 'Algo salió mal') + '</h2>' +
+      (ganado ? '<p class="rt-xp">+' + ganado + ' XP</p>' : '<p class="rt-nota">' + esc(error || (r && r.repetido ? 'Ya habías hecho el reto de hoy.' : supera ? 'Ya habías ganado el XP de hoy.' : 'El intento de hoy ya quedó. ¡Mañana hay uno nuevo!')) + '</p>') +
       '<div class="rt-acciones"><button type="button" class="rt-btn" onclick="ftRetosInicio()">Más retos</button></div></div>');
   }
 

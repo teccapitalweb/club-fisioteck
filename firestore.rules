@@ -146,7 +146,8 @@ service cloud.firestore {
 
       match /replies/{replyId} {
         allow read: if signedIn();
-        allow create: if esSocioActivo()
+        // El administrador puede responder aunque su cuenta no tenga membresía (igual que al crear temas)
+        allow create: if (esSocioActivo() || isAdmin())
           && request.resource.data.authorId == request.auth.uid
           && request.resource.data.body is string && request.resource.data.body.size() <= 2000;
         allow update: if isAdmin()

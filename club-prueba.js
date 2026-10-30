@@ -94,14 +94,30 @@
   }
   window.ftPruebaElegir = irACursos;
 
+  // Curso que la persona eligió en la encuesta de la portada (llega en ?cursoPref= y queda guardado en este navegador)
+  function cursoPreferido() {
+    try {
+      const p = JSON.parse(localStorage.getItem('ft_curso_pref') || 'null');
+      if (!p || !p.nombre) return null;
+      const n = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9ñ ]+/g, ' ').replace(/\s+/g, ' ').trim();
+      const buscado = n(p.nombre);
+      if (!buscado) return null;
+      const c = (siteData.courses || []).find(x => { const t = n(x.title); return t === buscado || t.includes(buscado) || buscado.includes(t); });
+      return elegible(c) ? c : null;
+    } catch (_) { return null; }
+  }
+
   // ---------- Presentación "Tu prueba gratuita" (una vez por visita de cada cuenta) ----------
   function intro() {
     let llevado = false;
-    const ir = () => { if (llevado) return; llevado = true; irACursos(); };
+    const pref = cursoPreferido();
+    // Si en la encuesta de la portada ya eligió un curso, se le propone ese directamente (puede decir «No, ver otros cursos»)
+    const ir = () => { if (llevado) return; llevado = true; if (pref) setTimeout(() => ftPruebaConfirmar(pref.id), 200); else irACursos(); };
     modal({
       id: 'ftpIntro', titulo: 'Tu prueba gratuita', sub: 'Una función para usuarios nuevos', fondo: false, alCerrar: ir,
-      cuerpo: arte() + '<p class="prueba-aviso">Al ser un usuario nuevo, <strong>te damos a elegir un curso de tu interés como prueba gratuita</strong>.</p><p class="prueba-aviso">Lo eliges en <strong>Mis cursos</strong>.</p>',
-      pie: [{ texto: 'Elegir mi curso', brillo: true, clic: () => cerrar('ftpIntro') }]
+      cuerpo: arte() + '<p class="prueba-aviso">Al ser un usuario nuevo, <strong>te damos a elegir un curso de tu interés como prueba gratuita</strong>.</p>' +
+        (pref ? '<p class="prueba-aviso">En la encuesta elegiste <strong>' + esc(pref.title) + '</strong>: te lo proponemos primero.</p>' : '<p class="prueba-aviso">Lo eliges en <strong>Mis cursos</strong>.</p>'),
+      pie: [{ texto: pref ? 'Ver mi curso' : 'Elegir mi curso', brillo: true, clic: () => cerrar('ftpIntro') }]
     });
   }
 

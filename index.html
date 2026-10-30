@@ -237,6 +237,7 @@
     }
     @keyframes fadeUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
     @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+    .notif-card.is-nueva { background:var(--accent-ghost); } /* legible también en modo oscuro */
 
     .splash-logo {
       font-family:var(--font-display); font-size:2.6rem; font-weight:800;
@@ -2017,7 +2018,7 @@
           <small>MXN al mes<br>Cancela cuando quieras</small>
         </div>
         <div class="opt opt--star">
-          <span class="badge" id="splash-ahorro">Ahorras $989</span>
+          <span class="badge" id="splash-ahorro">Ahorras $389</span>
           <b id="splash-precio-ano">$1,999</b>
           <small>MXN al año · sale en <span class="tachado" id="splash-tachado">$199</span><strong style="color:var(--accent-light);" id="splash-equivale">$167/mes</strong><br>Acceso completo los 365 días</small>
         </div>
@@ -3245,7 +3246,7 @@
       </div>
       <!-- PLAN ANUAL -->
       <div style="background:rgba(76,166,222,.10);border:2px solid #4CA6DE;border-radius:16px;padding:28px 24px;width:220px;text-align:center;position:relative;transition:all .3s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
-        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#4CA6DE;color:#06121F;font-size:.7rem;font-weight:700;padding:4px 14px;border-radius:20px;white-space:nowrap;text-transform:uppercase;letter-spacing:1px;" id="paywall-ahorro">Ahorras $989</div>
+        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#4CA6DE;color:#06121F;font-size:.7rem;font-weight:700;padding:4px 14px;border-radius:20px;white-space:nowrap;text-transform:uppercase;letter-spacing:1px;" id="paywall-ahorro">Ahorras $389</div>
         <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.45);margin-bottom:8px;">Anual</div>
         <div style="font-size:2.2rem;font-weight:700;color:#fff;margin-bottom:4px;letter-spacing:2px;" id="paywall-precio-ano">$1,999</div>
         <div style="font-size:.8rem;color:rgba(255,255,255,.4);margin-bottom:20px;">MXN / año</div>
@@ -3889,6 +3890,7 @@
   async function loadUserProfile() {
     const user = auth.currentUser;
     if (!user) return;
+    try { ajustarTarjetaPassword(); } catch (_) { /* la tarjeta queda como está */ }
     let userData = { name: user.displayName || '', email: user.email || '', phone:'', specialty:'', startDate:'', plan:'', payments:[], nextPaymentDate:'', paymentMethod:'', status:'' };
     try {
       const doc = await db.collection('members').doc(user.uid).get();
@@ -4059,14 +4061,20 @@
       showToast('Perfil actualizado correctamente');
     } catch(e) { showToast('Error al guardar'); }
   }
+  // ¿La cuenta entra con Google (y no tiene contraseña propia)?
+  function cuentaSoloGoogle(user) {
+    const proveedores = (user && user.providerData ? user.providerData : []).map(p => p && p.providerId);
+    return proveedores.includes('google.com') && !proveedores.includes('password');
+  }
   function changePassword() {
+    const user = auth.currentUser;
+    if (cuentaSoloGoogle(user)) { showToast('Tu cuenta entra con Google y no tiene contraseña propia. Tu acceso se administra desde tu cuenta de Google.'); return; }
     const curr = document.getElementById('accPassCurrent').value;
     const newP = document.getElementById('accPassNew').value;
     const conf = document.getElementById('accPassConfirm').value;
     if (!curr || !newP || !conf) { showToast('Completa todos los campos'); return; }
     if (newP !== conf) { showToast('Las contraseñas no coinciden'); return; }
     if (newP.length < 6) { showToast('La contraseña debe tener al menos 6 caracteres'); return; }
-    const user = auth.currentUser;
     const credential = firebase.auth.EmailAuthProvider.credential(user.email, curr);
     user.reauthenticateWithCredential(credential)
       .then(() => user.updatePassword(newP))
@@ -4077,9 +4085,20 @@
         document.getElementById('accPassConfirm').value = '';
       })
       .catch(err => {
-        if (err.code === 'auth/wrong-password') showToast('Contraseña actual incorrecta');
-        else showToast('Error al cambiar contraseña');
+        // Firebase 10 responde auth/invalid-credential (antes auth/wrong-password) cuando la contraseña actual no es la correcta
+        if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential' || err.code === 'auth/invalid-login-credentials') showToast('La contraseña actual es incorrecta');
+        else if (err.code === 'auth/too-many-requests') showToast('Demasiados intentos. Espera un momento y vuelve a probar.');
+        else if (err.code === 'auth/requires-recent-login') showToast('Por seguridad, cierra sesión y vuelve a entrar antes de cambiar tu contraseña.');
+        else showToast('No se pudo cambiar la contraseña' + (err.code ? ' (' + err.code + ')' : ''));
       });
+  }
+  // A quien entra con Google no se le muestra el formulario de contraseña: se le explica
+  function ajustarTarjetaPassword() {
+    const btn = document.querySelector('[onclick="changePassword()"]');
+    const tarjeta = btn && btn.closest('.card');
+    if (!tarjeta || !cuentaSoloGoogle(auth.currentUser)) return;
+    tarjeta.innerHTML = '<h3 style="font-size:1rem;font-weight:600;margin-bottom:12px;">Contraseña</h3>' +
+      '<p style="color:var(--text-light);font-size:.9rem;line-height:1.6;">Tu cuenta entra con <strong>Google</strong>, así que no tiene contraseña propia en el Club. Si quieres cambiarla, hazlo desde tu cuenta de Google.</p>';
   }
   async function cancelSubscription() {
     if (!memberIsPaid) { showPaywallOverlay(); return; }
@@ -6352,8 +6371,10 @@
     return data.embedUrl;
   }
 
+  let _videoSesion = 0; // si el reproductor se cierra mientras carga, la respuesta tardía ya no inserta el video (evita audio oculto)
   async function openVideo(title, url, options = {}) {
     if (!memberIsPaid && !options.preview) { showPaywallOverlay(); return; }
+    const sesion = ++_videoSesion;
     document.getElementById('videoTitle').textContent = title;
     const container = document.getElementById('videoContainer');
     document.getElementById('videoModal').classList.add('active');
@@ -6366,6 +6387,7 @@
       } else if (url) {
         embedUrl = driveVideoEmbed(url);
       }
+      if (sesion !== _videoSesion || !document.getElementById('videoModal').classList.contains('active')) return; // ya se cerró
       if (embedUrl) {
       container.innerHTML = `<iframe src="${embedUrl}" style="width:100%;height:100%;border:none;" allow="autoplay;encrypted-media" allowfullscreen></iframe>`;
       } else {
@@ -6377,6 +6399,7 @@
     }
   }
   function closeVideo() {
+    _videoSesion++; // cancela cualquier carga de video que siga en camino
     document.getElementById('videoModal').classList.remove('active');
     document.getElementById('videoContainer').innerHTML = '';
     document.body.classList.remove('modal-open');
@@ -6701,17 +6724,10 @@
 
       snap.forEach(d => {
         if (ocultos.has(d.id)) return; // la persona ya la quitó de su lista
-        const data = d.data();
-        // Los avisos con más de 1 día ya no se muestran (el administrador es quien los borra)
-        if (data.createdAt) {
-          const notifTime = data.createdAt.seconds * 1000;
-          const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
-          if (notifTime < oneDayAgo) {
-            return;
-          }
-        }
-        memberNotifs.push({ id: d.id, ...data, read: readIds.has(d.id) });
+        memberNotifs.push({ id: d.id, ...d.data(), read: readIds.has(d.id) });
       });
+      // Como Zoorigen: se conservan los últimos 15 avisos (ya no desaparecen a las 24 horas sin leerse)
+      memberNotifs = memberNotifs.slice(0, 15);
       renderMemberNotifs();
       updateBellBadge();
     } catch(e) { console.error('Notif error:', e); }
@@ -6719,7 +6735,10 @@
 
   function renderMemberNotifs() {
     const container = document.getElementById('memberNotifList');
-    const filtered = memberNotifs.filter(n => {
+    const escN = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    // La misma lista que la campana: avisos del administrador + foro, clases en vivo y cursos nuevos (ftAvisos)
+    const todas = memberNotifs.concat(window.ftAvisos ? ftAvisos.lista() : []);
+    const filtered = todas.filter(n => {
       if (n.category === 'course' && !notifPrefs.courses) return false;
       if (n.category === 'live' && !notifPrefs.live) return false;
       if (n.category === 'pdf' && !notifPrefs.pdfs) return false;
@@ -6732,26 +6751,35 @@
     }
     container.innerHTML = filtered.map(n => {
       const icon = n.category === 'course' ? '<svg class="ic" style="width:16px;height:16px;"><use href="#f-book"/></svg>' : n.category === 'live' ? '<svg class="ic" style="width:16px;height:16px;"><use href="#f-live"/></svg>' : n.category === 'pdf' ? '<svg class="ic" style="width:16px;height:16px;"><use href="#f-file"/></svg>' : n.category === 'promo' ? '<svg class="ic" style="width:16px;height:16px;"><use href="#f-gift"/></svg>' : '<svg class="ic" style="width:16px;height:16px;"><use href="#f-bell"/></svg>';
-      const date = n.createdAt ? new Date(n.createdAt.seconds * 1000).toLocaleDateString('es-MX', { day:'numeric', month:'short', year:'numeric' }) : '';
+      const date = n.createdAt && n.createdAt.seconds ? new Date(n.createdAt.seconds * 1000).toLocaleDateString('es-MX', { day:'numeric', month:'short', year:'numeric' }) : '';
       const isNew = !n.read;
-      return `<div class="card" id="notif-${n.id}" style="margin-bottom:12px;${isNew ? 'border-left:4px solid var(--primary);background:#E6F1FB;' : ''}" onclick="markNotifRead('${n.id}',this)">
+      // El enlace solo se muestra si es una dirección http(s); nunca se ejecuta otro tipo de enlace
+      const linkOk = n.link && /^https?:\/\//i.test(String(n.link));
+      return `<div class="card notif-card${isNew ? ' is-nueva' : ''}" id="notif-${escN(n.id)}" style="margin-bottom:12px;${isNew ? 'border-left:4px solid var(--primary);' : ''}" onclick="abrirNotif('${escN(n.id)}',this)">
         <div style="display:flex;gap:14px;align-items:start;">
           <div style="font-size:1.5rem;flex-shrink:0;margin-top:2px;">${icon}</div>
           <div style="flex:1;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-              <h4 style="font-size:.95rem;font-weight:600;">${n.title || 'Notificación'}</h4>
+              <h4 style="font-size:.95rem;font-weight:600;">${escN(n.title || 'Notificación')}</h4>
               <div style="display:flex;align-items:center;gap:8px;">
-                <span style="font-size:.75rem;color:var(--text-muted);">${date}</span>
-                <button onclick="event.stopPropagation();deleteNotif('${n.id}')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1rem;padding:2px 4px;border-radius:4px;transition:all .2s;" onmouseover="this.style.color='#E24B4A';this.style.background='rgba(226,75,74,.08)'" onmouseout="this.style.color='var(--text-muted)';this.style.background='none'" title="Eliminar notificación">&times;</button>
+                <span style="font-size:.75rem;color:var(--text-muted);">${escN(date)}</span>
+                ${n.sintetico ? '' : `<button onclick="event.stopPropagation();deleteNotif('${escN(n.id)}')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1rem;padding:2px 4px;border-radius:4px;transition:all .2s;" onmouseover="this.style.color='#E24B4A';this.style.background='rgba(226,75,74,.08)'" onmouseout="this.style.color='var(--text-muted)';this.style.background='none'" title="Eliminar notificación">&times;</button>`}
               </div>
             </div>
-            <p style="font-size:.85rem;color:var(--text-light);line-height:1.5;">${n.message || ''}</p>
-            ${n.link ? '<a href="' + n.link + '" style="display:inline-block;margin-top:8px;font-size:.82rem;color:var(--primary);font-weight:500;">Ver contenido →</a>' : ''}
+            <p style="font-size:.85rem;color:var(--text-light);line-height:1.5;">${escN(n.message || '')}</p>
+            ${linkOk ? '<a href="' + escN(n.link) + '" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="display:inline-block;margin-top:8px;font-size:.82rem;color:var(--primary);font-weight:500;">Ver contenido →</a>' : ''}
           </div>
           ${isNew ? '<div style="width:10px;height:10px;background:var(--primary);border-radius:50%;flex-shrink:0;margin-top:6px;"></div>' : ''}
         </div>
       </div>`;
     }).join('');
+  }
+
+  // Un clic en la página de notificaciones: los avisos de la campana (foro, en vivo, cursos) abren su sección; los demás solo se marcan leídos
+  function abrirNotif(id, el) {
+    const s = (window.ftAvisos ? ftAvisos.lista() : []).find(x => String(x.id) === String(id));
+    if (s && s.sintetico) { ftAvisos.marcar(s.id); if (s.accion) s.accion(); renderMemberNotifs(); updateBellBadge(); return; }
+    markNotifRead(id, el);
   }
 
   function updateBellBadge() {
@@ -6791,7 +6819,7 @@
       await db.collection('members').doc(user.uid).collection('read_notifs').doc(notifId).set({ readAt: new Date().toISOString() });
       const n = memberNotifs.find(x => x.id === notifId);
       if (n) n.read = true;
-      if (el) { el.style.borderLeft = ''; el.style.background = ''; }
+      if (el) { el.style.borderLeft = ''; el.style.background = ''; el.classList.remove('is-nueva'); }
       updateBellBadge();
     } catch(e) {}
   }
@@ -6846,12 +6874,63 @@
     const urlParams = new URLSearchParams(window.location.search);
     const authMode = urlParams.get('mode');
     if (authMode === 'login' || authMode === 'register') switchAuthTab(authMode);
+    // Curso elegido en la encuesta de la portada (?cursoPref=nombre): se guarda para proponerlo como prueba gratuita
+    const cursoPref = urlParams.get('cursoPref');
+    if (cursoPref) { try { localStorage.setItem('ft_curso_pref', JSON.stringify({ nombre: String(cursoPref).slice(0, 120), t: Date.now() })); } catch (_) { /* modo privado */ } }
     const sessionId = urlParams.get('session_id');
     if (sessionId) {
       // Clean URL
       window.history.replaceState({}, '', window.location.pathname);
       // Mark that we need to show celebration after auth loads
       window._showCelebration = true;
+      window._checkoutSession = sessionId; // para «Confirmando tu pago…» si el aviso de Stripe tarda
+    }
+
+    // «Confirmando tu pago…»: el pago ya se hizo pero el aviso de Stripe al servidor puede tardar unos segundos.
+    // Se revisa solo cada 4 s (hasta 3 minutos) y, cuando la membresía queda activa, se recarga el Club.
+    function esperarConfirmacionDePago(user) {
+      document.getElementById('splash-screen').classList.add('hidden');
+      let caja = document.getElementById('pagoConfirmando');
+      if (!caja) {
+        caja = document.createElement('div');
+        caja.id = 'pagoConfirmando';
+        caja.style.cssText = 'position:fixed;inset:0;z-index:99999;background:linear-gradient(150deg,#070B12,#11315B);display:flex;align-items:center;justify-content:center;padding:20px;';
+        caja.innerHTML = '<div style="text-align:center;color:#fff;max-width:420px;">' +
+          '<div style="width:56px;height:56px;margin:0 auto 18px;border:4px solid rgba(255,255,255,.2);border-top-color:#4CA6DE;border-radius:50%;animation:spin 1s linear infinite;"></div>' +
+          '<h2 style="font-size:1.3rem;margin-bottom:8px;">Confirmando tu pago…</h2>' +
+          '<p id="pagoConfirmandoTxt" style="color:rgba(255,255,255,.65);font-size:.92rem;line-height:1.5;">Tu pago está siendo procesado por Stripe. Esto tarda unos segundos; no cierres esta página.</p>' +
+          '<div id="pagoConfirmandoAcciones" style="margin-top:18px;"></div></div>';
+        document.body.appendChild(caja);
+      }
+      let intentos = 0;
+      const MAX = 45; // 45 × 4 s = 3 minutos
+      const revisar = async () => {
+        intentos++;
+        try {
+          const doc = await db.collection('members').doc(user.uid).get();
+          const st = doc.exists ? (doc.data().status || '') : '';
+          if (st === 'active' || st === 'paid') { location.reload(); return; }
+        } catch (e) { /* sin conexión: se vuelve a intentar */ }
+        if (intentos === 4 && window._checkoutSession) {
+          // A los ~16 s se pregunta a Stripe si el pago realmente se completó
+          try {
+            const s = await certFetch('/api/checkout-status/' + encodeURIComponent(window._checkoutSession));
+            if (s.payment_status && s.payment_status !== 'paid' && s.status !== 'complete') {
+              document.getElementById('pagoConfirmandoTxt').textContent = 'Parece que el pago no se completó. Si cerraste la ventana de pago antes de terminar, vuelve a intentarlo desde Membresía.';
+              document.getElementById('pagoConfirmandoAcciones').innerHTML = '<button type="button" onclick="location.reload()" style="padding:12px 26px;background:#4CA6DE;border:none;border-radius:8px;color:#06121F;font-weight:700;cursor:pointer;">Entrar al Club</button>';
+              return; // ya no se sigue revisando
+            }
+            document.getElementById('pagoConfirmandoTxt').textContent = 'Tu pago ya fue recibido. Estamos activando tu membresía; esto puede tardar un poco más.';
+          } catch (e) { /* si no se puede consultar, se sigue esperando */ }
+        }
+        if (intentos >= MAX) {
+          document.getElementById('pagoConfirmandoTxt').innerHTML = 'Tu pago está registrado pero la activación está tardando más de lo normal. Entra al Club y, si en unos minutos no ves tu membresía, escríbenos por WhatsApp y la activamos de inmediato.';
+          document.getElementById('pagoConfirmandoAcciones').innerHTML = '<button type="button" onclick="location.reload()" style="padding:12px 26px;background:#4CA6DE;border:none;border-radius:8px;color:#06121F;font-weight:700;cursor:pointer;">Volver a revisar</button>';
+          return;
+        }
+        setTimeout(revisar, 4000);
+      };
+      revisar();
     }
 
     // Check for certificate verification
@@ -6976,10 +7055,9 @@
             loadUserProfile();
             showExplorationBanner('expirado');
           } else if (memberData && status === 'registered') {
-            // Check if returning from payment - webhook might not have processed yet
+            // Vuelve del pago pero el aviso de Stripe no ha llegado: «Confirmando tu pago…» (como «Verificar mi pago» de Zoorigen)
             if (window._showCelebration) {
-              console.log('Payment may be processing, retrying in 3s...');
-              setTimeout(() => location.reload(), 3000);
+              esperarConfirmacionDePago(user);
               return;
             }
             memberIsPaid = false;

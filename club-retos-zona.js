@@ -103,7 +103,7 @@
       '<div class="rz-hist-vis" aria-hidden="true"><div class="rz-hist-mundos">' + vista + '</div><div class="rz-hist-fisi">' + (window.ftMascota ? ftMascota.html('retos', { pose: 'senala', burbuja: false, ancho: 132 }) : '') + '</div></div></section>';
   }
   function filaDia(yaDia) {
-    return '<button type="button" class="rz-dia' + (yaDia ? ' hecho' : '') + '" onclick="ftRetoDia()"><span class="ico">' + CALENDARIO + '</span><span class="tx"><strong>Reto del día</strong><em>' + (yaDia ? 'Ya lo completaste hoy. Vuelve mañana por uno nuevo.' : 'Una pregunta nueva cada día · +25 XP') + '</em></span><i>' + FLECHA + '</i></button>';
+    return '<button type="button" class="rz-dia' + (yaDia ? ' hecho' : '') + '" onclick="ftRetoDia()"><span class="ico">' + CALENDARIO + '</span><span class="tx"><strong>Reto del día</strong><em>' + (yaDia ? 'Ya lo completaste hoy. Vuelve mañana por uno nuevo.' : '5 preguntas nuevas cada día · 6 XP, 10 si es perfecto') + '</em></span><i>' + FLECHA + '</i></button>';
   }
 
   function pintar() {
