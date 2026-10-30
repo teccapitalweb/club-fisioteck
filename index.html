@@ -1402,6 +1402,8 @@
       box-shadow:var(--shadow-lg);
     }
     .toast.show { transform:translateY(0); opacity:1; }
+    /* El aviso nunca debe interceptar toques: oculto (opacidad 0) se quedaba encima de la barra inferior del celular y los botones dejaban de responder */
+    .toast, .pwa-pop:not(.show) { pointer-events:none; }
 
     /* ── RESPONSIVE ── */
     @media(max-width:600px) {
@@ -1920,14 +1922,14 @@
   <link rel="stylesheet" href="club-libros.css?v=20261120">
   <link rel="stylesheet" href="club-cuenta.css?v=20261111">
   <link rel="stylesheet" href="club-perfil.css?v=20261117">
-  <link rel="stylesheet" href="club-perfil-inicial.css?v=20261124">
+  <link rel="stylesheet" href="club-perfil-inicial.css?v=20261180">
   <link rel="stylesheet" href="club-seccion.css?v=20261026">
   <link rel="stylesheet" href="club-auth.css?v=20261028">
   <script src="club-auth.js?v=20261027" defer></script>
   <link rel="stylesheet" href="club-diseno.css?v=20261105">
   <link rel="stylesheet" href="club-diseno-2.css?v=20261105">
   <link rel="stylesheet" href="club-diseno-3.css?v=20261105">
-  <link rel="stylesheet" href="club-diseno-4.css?v=20261105">
+  <link rel="stylesheet" href="club-diseno-4.css?v=20261181">
   <link rel="stylesheet" href="club-diseno-5.css?v=20261105">
   <link rel="stylesheet" href="club-diseno-6.css?v=20261105">
   <link rel="stylesheet" href="club-diseno-7.css?v=20261122">

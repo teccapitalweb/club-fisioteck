@@ -99,3 +99,13 @@ a.ftd-cert-ver { border-radius:999px !important; background:linear-gradient(135d
 .ftl-ref .acc { display:flex; flex-wrap:wrap; gap:10px; }
 @media (max-width:880px) { .ftl-premios > header { flex-wrap:wrap; padding:20px; } .ftl-premios .cuenta { margin-left:auto; } .ftl-ref { padding:18px; } }
 @media (prefers-reduced-motion:reduce) { .ftl-barra i { transition:none; } }
+
+/* Celular: la tarjeta de premios no se aprieta en una columna estrecha: icono y contador arriba, el texto debajo a todo el ancho */
+@media (max-width:640px) {
+  .ftl-premios > header { display:grid; grid-template-columns:auto minmax(0,1fr); grid-template-areas:"ico cuenta" "txt txt"; gap:14px; padding:18px; align-items:center; }
+  .ftl-premios > header .ico { grid-area:ico; width:48px; height:48px; border-radius:14px; }
+  .ftl-premios > header > div:nth-child(2) { grid-area:txt; }
+  .ftl-premios .cuenta { grid-area:cuenta; margin:0; display:flex; align-items:center; justify-content:center; gap:12px; padding:10px 14px; border-radius:14px; }
+  .ftl-premios .cuenta b { font-size:1.7rem; display:inline; }
+  .ftl-premios header h3 { font-size:1.35rem; }
+}
