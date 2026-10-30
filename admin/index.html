@@ -910,7 +910,7 @@
     <section class="admin-section" id="sec-certs">
       <div class="admin-page-header">
         <div><div class="admin-page-title">Certificados</div><div class="admin-page-sub">Emitidos al terminar un curso</div></div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-o" id="ceRetro" onclick="emitirRetroactivos()">Emitir los de cursos ya terminados</button><button class="btn btn-p" onclick="abrirEmisionManual()">+ Emitir certificado</button></div>
+        <button class="btn btn-p" onclick="abrirEmisionManual()">+ Emitir certificado</button>
       </div>
       <div id="certEstado"></div>
       <div class="ap-kpis">
@@ -1533,17 +1533,6 @@
       '<a class="btn btn-o btn-sm" target="_blank" rel="noopener" href="' + ADMIN_API + '/api/certificados/' + encodeURIComponent(c.folio) + '/pdf">PDF</a> ' +
       (c.revocado ? '' : '<button class="btn btn-d btn-sm" onclick="revocarCertificado(\'' + esc(c.folio) + '\')">Revocar</button>') + '</td></tr>'
     ).join('') || '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-muted);">Aún no hay certificados emitidos</td></tr>';
-  }
-  // Miembros que terminaron cursos ANTES de los certificados automáticos (el PDF se armaba en el navegador y no quedaba registro): se emiten de una vez, sin correos
-  async function emitirRetroactivos() {
-    if (!confirm('Se emitirán los certificados de todos los cursos que los miembros ya terminaron y todavía no tienen certificado registrado. No se envían correos. ¿Continuar?')) return;
-    const b = document.getElementById('ceRetro'); b.disabled = true; const txt = b.textContent; b.textContent = 'Emitiendo…';
-    try {
-      const r = await apiAdmin('/api/admin/certificados/retroactivos', { method: 'POST', body: '{}' });
-      toast(r.emitidos + ' certificado' + (r.emitidos === 1 ? '' : 's') + ' emitido' + (r.emitidos === 1 ? '' : 's') + (r.sinNombreValido ? ' · ' + r.sinNombreValido + ' sin nombre y apellido válidos (lo confirman al entrar a Certificados)' : '') + (r.yaExistian ? ' · ' + r.yaExistian + ' ya existían' : ''));
-      cargarCertificados();
-    } catch (e) { toast(e.message || 'No se pudo emitir'); }
-    b.disabled = false; b.textContent = txt;
   }
   async function revocarCertificado(folio) {
     if (!confirm('¿Revocar el certificado ' + folio + '? Dejará de verificar.')) return;

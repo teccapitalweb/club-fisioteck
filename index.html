@@ -5552,12 +5552,37 @@
     } catch (e) { err.textContent = e.message; err.style.display = 'block'; }
     btn.disabled = false; btn.textContent = 'Generar certificado';
   }
+  // Miembros que terminaron cursos antes de los certificados automáticos: confirman su nombre y emiten todos de una vez (con la fecha en que terminaron).
+  function certTarjetaPendientes(p) {
+    if (!p || !p.pendientes || !p.pendientes.length) return '';
+    const lista = p.pendientes.map(x => '<li>' + escCert(x.titulo) + (x.terminadoEn ? ' <span style="color:var(--text-muted);">· terminado el ' + new Date(x.terminadoEn).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }) + '</span>' : '') + '</li>').join('');
+    return '<div id="certPend" style="background:var(--surface,var(--bg));border:1px solid var(--primary);border-radius:var(--radius);padding:20px;margin-bottom:18px;">' +
+      '<div style="font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--primary);font-weight:700;margin-bottom:8px;">Cursos ya terminados</div>' +
+      '<strong style="display:block;font-size:1.02rem;margin-bottom:8px;">Tienes ' + p.pendientes.length + (p.pendientes.length === 1 ? ' curso terminado sin certificado' : ' cursos terminados sin certificado') + '</strong>' +
+      '<ul style="margin:0 0 14px;padding-left:18px;font-size:.88rem;line-height:1.6;">' + lista + '</ul>' +
+      '<label style="display:block;font-size:.84rem;font-weight:600;margin-bottom:6px;">Este es el nombre que saldrá en tus certificados. Si no es correcto, modifícalo.</label>' +
+      '<input id="certPendNombre" type="text" maxlength="80" value="' + escCert(p.nombreSugerido || '') + '" placeholder="Nombre y apellido" style="width:100%;box-sizing:border-box;padding:11px 12px;border:1px solid var(--border-2);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:.95rem;">' +
+      '<div id="certPendError" style="display:none;color:var(--danger,#c0392b);font-size:.84rem;margin-top:8px;"></div>' +
+      '<button id="certPendBtn" onclick="emitirCertPendientes()" style="margin-top:12px;padding:11px 20px;border:0;border-radius:var(--radius-sm);background:var(--primary);color:#fff;font-weight:600;font-size:.9rem;cursor:pointer;">Emitir mis certificados</button></div>';
+  }
+  async function emitirCertPendientes() {
+    const btn = document.getElementById('certPendBtn'), err = document.getElementById('certPendError');
+    btn.disabled = true; btn.textContent = 'Generando…'; err.style.display = 'none';
+    try {
+      const r = await certFetch('/api/certificados/emitir-pendientes', { method: 'POST', body: JSON.stringify({ nombre: document.getElementById('certPendNombre').value }) });
+      try { await auth.currentUser.reload(); loadUserProfile(); } catch (e) { /* el nombre se verá al recargar */ }
+      showToast(r.emitidos === 1 ? '¡Certificado emitido!' : '¡' + r.emitidos + ' certificados emitidos!');
+      loadCertificates();
+    } catch (e) { err.textContent = e.message; err.style.display = 'block'; btn.disabled = false; btn.textContent = 'Emitir mis certificados'; }
+  }
   async function loadCertificates() {
     const box = document.getElementById('certList');
     try {
       const { certificados } = await certFetch('/api/certificados/mios');
-      if (!certificados.length) { box.innerHTML = '<div style="text-align:center;padding:48px 20px;color:var(--text-muted);">Aún no tienes certificados.<br>Termina todas las clases de un curso y aparecerá aquí.</div>'; return; }
-      box.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">' + certificados.map(c => {
+      let pend = null; try { pend = await certFetch('/api/certificados/pendientes'); } catch (e) { /* sin tarjeta de pendientes */ }
+      const tarjeta = certTarjetaPendientes(pend);
+      if (!certificados.length) { if (tarjeta) { box.innerHTML = tarjeta; return; } box.innerHTML = '<div style="text-align:center;padding:48px 20px;color:var(--text-muted);">Aún no tienes certificados.<br>Termina todas las clases de un curso y aparecerá aquí.</div>'; return; }
+      box.innerHTML = tarjeta + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">' + certificados.map(c => {
         const f = new Date(c.emitidoEn).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
         return '<div style="background:var(--surface,var(--bg));border:1px solid var(--border);border-radius:var(--radius);padding:20px;">' +
           '<div style="font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--primary);font-weight:700;margin-bottom:8px;">Certificado</div>' +
