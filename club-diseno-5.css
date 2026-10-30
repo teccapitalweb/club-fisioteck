@@ -37,3 +37,8 @@
 .rz-escena b { align-self:flex-start; margin:4px 14px 14px; }
 @media (max-width:640px) { .rz-mis { grid-template-columns:minmax(0,1fr); } .rz-pan { padding:18px; } .paso { padding:12px 14px; } .paso b { display:none; } .rz-camino li { gap:12px; } }
 @media (prefers-reduced-motion:reduce) { .rz-mision, .rz-pan, .rz-escena, .paso { transition:none; animation:none; } }
+
+/* Ejercicio abierto en la misma pantalla de Retos (debajo de las misiones) */
+.rz-juego { position: relative; }
+.rz-juego .rt-panel { max-width: none; padding: 4px 0 0; border: 0; box-shadow: none; background: transparent; }
+.rz-juego-x { position: absolute; top: 12px; right: 14px; z-index: 2; }

@@ -1,5 +1,5 @@
 /* Club FisioTeck — detalles de navegación y accesibilidad (como Alintec y Zoorigen):
-   · barra inferior del celular distinta según el plan (miembro: Inicio, Cursos, En vivo, Retos, Más · cuenta gratuita: Inicio, Cursos, Retos, Logros, Más),
+   · barra inferior del celular distinta según el plan (miembro: Inicio, Cursos, Material, Herramientas, Referidos, Más · cuenta gratuita: Inicio, Cursos, Retos, Logros, Más),
    · "Instalar app" fijo en el menú lateral,
    · aria-current en el menú, regiones aria-live en las listas que cargan y estados vacíos con un botón que lleva a la acción.
    Depende de index.html: showPage, toggleSidebar, memberIsPaid, showToast. */
@@ -10,7 +10,9 @@
   const ic = id => id === 'home' ? CASA : '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#' + id + '"/></svg>';
 
   // ---------- Barra inferior por plan ----------
-  const MIEMBRO = [['home', 'Inicio', 'home'], ['library', 'Cursos', 'f-book'], ['courses-live', 'En vivo', 'f-live'], ['retos', 'Retos', 'f-target']];
+  const MIEMBRO = [['home', 'Inicio', 'home'], ['library', 'Cursos', 'f-book'], ['pdfs', 'Material', 'f-file'], ['herramientas', 'Herramientas', 'f-tool'], ['referidos', 'Referidos', 'f-gift']];
+  // Páginas de cada herramienta: el botón «Herramientas» de la barra queda marcado en cualquiera de ellas
+  const HERRAMIENTAS = ['rehab-calc', 'atlas', 'glossary', 'rom', 'eva', 'timer'];
   const GRATIS = [['home', 'Inicio', 'home'], ['library', 'Cursos', 'f-book'], ['retos', 'Retos', 'f-target'], ['achievements', 'Logros', 'f-trophy']];
   let ultimo = '';
   function barraInferior() {
@@ -31,12 +33,32 @@
     void nav;
   }
 
+  // ---------- Página «Herramientas Pro»: un solo lugar con todas las herramientas (el botón de la barra inferior del miembro) ----------
+  const TARJETAS = [
+    ['rehab-calc', 'Calculadora', 'Dosis, cargas y porcentajes para tu plan de rehabilitación.'],
+    ['atlas', 'Atlas muscular', 'Origen, inserción y acción de cada músculo.'],
+    ['glossary', 'Glosario', 'Términos clínicos explicados de forma clara.'],
+    ['rom', 'Rangos de movimiento', 'Valores de referencia para cada articulación.'],
+    ['eva', 'Escala EVA', 'Registra y compara el dolor de tus pacientes.'],
+    ['timer', 'Cronómetro', 'Tiempos de trabajo y descanso para tus sesiones.']
+  ];
+  function montarHerramientas() {
+    if ($('page-herramientas')) return;
+    const ref = $('page-rehab-calc'); if (!ref) return;
+    ref.insertAdjacentHTML('beforebegin',
+      '<section class="section" id="page-herramientas"><div class="page-header"><h1 class="page-title">Herramientas Pro</h1>' +
+      '<p class="page-subtitle">Todo lo que necesitas en consulta, en un solo lugar</p></div>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;">' + TARJETAS.map(([p, t, d]) =>
+        '<button type="button" onclick="showPage(\'' + p + '\')" style="text-align:left;padding:18px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--text);font:inherit;cursor:pointer;">' +
+        '<strong style="display:block;font-size:1rem;margin-bottom:6px;">' + t + '</strong><span style="font-size:.84rem;color:var(--text-light);line-height:1.45;">' + d + '</span></button>').join('') + '</div></section>');
+  }
+
   // ---------- aria-current ----------
   function marcarActual() {
     const activa = document.querySelector('.section.active'); if (!activa) return;
     const pagina = activa.id.replace(/^page-/, '');
     document.querySelectorAll('.nav-item[data-page], .mobile-bottom-item[data-page]').forEach(n => {
-      const es = n.getAttribute('data-page') === pagina;
+      const es = n.getAttribute('data-page') === pagina || (n.getAttribute('data-page') === 'herramientas' && HERRAMIENTAS.includes(pagina));
       if (es) n.setAttribute('aria-current', 'page'); else n.removeAttribute('aria-current');
       if (n.classList.contains('mobile-bottom-item')) n.classList.toggle('active', es);
     });
@@ -84,5 +106,5 @@
   const original = window.showPage;
   window.showPage = function (page) { const r = original.apply(this, arguments); setTimeout(() => { marcarActual(); vivas(); vacios(); }, 80); return r; };
   setInterval(() => { barraInferior(); mostrarInstalar(); vivas(); vacios(); marcarActual(); }, 2500);
-  barraInferior(); mostrarInstalar(); vivas();
+  montarHerramientas(); barraInferior(); mostrarInstalar(); vivas();
 })();

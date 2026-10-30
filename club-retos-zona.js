@@ -62,6 +62,22 @@
     if (abierta) { const p = $('rzPanel'); if (p && p.scrollIntoView) p.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   }
 
+  // Un ejercicio (quiz, ordena, flashcards) se abre en esta misma pantalla, justo debajo de las misiones, sin ir a otra vista
+  function juego(html) {
+    const cont = $('retosContenido'); if (!cont) return false;
+    if (!cont.querySelector('.rz-mis')) pintar();
+    const mis = cont.querySelector('.rz-mis'); if (!mis) return false;
+    let s = $('rzJuego');
+    if (!s) {
+      s = document.createElement('section'); s.id = 'rzJuego'; s.className = 'rz-pan rz-juego';
+      const p = $('rzPanel'); if (p) p.replaceWith(s); else mis.insertAdjacentElement('afterend', s);
+    }
+    s.innerHTML = '<button type="button" class="rz-cerrar rz-juego-x" aria-label="Cerrar el ejercicio" onclick="ftRetosZona.cerrarJuego()">&times;</button>' + html;
+    s.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return true;
+  }
+  function cerrarJuego() { pintar(); const p = $('rzPanel') || document.querySelector('.rz-mis'); if (p && p.scrollIntoView) p.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+
   function podio(f) {
     const orden = [f[1], f[0], f[2]].filter(Boolean);
     return '<div class="rz-podio">' + orden.map(r => {
@@ -141,5 +157,5 @@
     if (page === 'retos') pintar();
     return r;
   };
-  window.ftRetosZona = { pintar, abrir: abrirMision };
+  window.ftRetosZona = { pintar, abrir: abrirMision, juego, cerrarJuego };
 })();

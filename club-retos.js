@@ -102,6 +102,8 @@
   window.ftRetosInicio = inicio;
 
   function jugar(html) {
+    // El ejercicio se muestra en la misma pantalla, debajo de las misiones (club-retos-zona.js), sin mandar a otra vista
+    if (window.ftRetosZona && ftRetosZona.juego && ftRetosZona.juego(html)) return;
     $('retosContenido').innerHTML = '<button type="button" class="rt-volver" onclick="ftRetosInicio()">← Volver a Retos</button>' + html;
     window.scrollTo(0, 0);
   }

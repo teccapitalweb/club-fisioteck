@@ -41,3 +41,7 @@
   .section > .page-header .page-title { font-size: clamp(1.35rem, 6vw, 1.7rem); }
   .section > .page-header .page-subtitle { font-size: .84rem; }
 }
+
+/* La barra inferior del celular admite 5 o 6 botones (el miembro lleva 6): las columnas se reparten solas y no se parten en dos filas */
+.mobile-bottom-nav { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
+@media (max-width: 420px) { .mobile-bottom-nav .mobile-bottom-item { font-size: .56rem; letter-spacing: -.01em; } }
