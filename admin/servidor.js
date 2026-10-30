@@ -40,6 +40,24 @@
     try { await post(uid, 'cancelar', { mensaje }); toast('Acceso retirado'); recargar(); }
     catch (err) { toast('No se pudo actualizar: ' + err.message); }
   };
+  // Diagnóstico de acceso: por qué un miembro ve sus cursos abiertos o cerrados (solo lectura)
+  const MOTIVOS = { admin: 'Es administrador: ve todo abierto.', 'sin-membresia': 'El servidor no lo reconoce con membresía activa: se rige por la prueba gratuita.', apagado: 'El calendario de cursos está apagado en la configuración.', anterior: 'Se le toma como miembro anterior (sin pagos registrados desde el calendario): ve todo abierto.', calendario: 'Sigue el calendario de cursos.' };
+  window.verAccesoSocio = async function (uid) {
+    try {
+      const r = await apiAdmin('/api/admin/acceso-miembro/' + encodeURIComponent(uid)), m = r.miembro, c = r.calendario;
+      const fila = (k, v) => '<tr><td style="padding:3px 10px 3px 0;color:var(--text-muted);white-space:nowrap">' + e(k) + '</td><td style="padding:3px 0"><strong>' + e(v === '' || v == null ? '—' : v) + '</strong></td></tr>';
+      const cursos = r.cursos.map(x => '<li style="margin:2px 0">' + (x.abierto ? 'Abierto' : 'Cerrado' + (x.dias ? ' (' + x.dias + ' d)' : '')) + ' · ' + e(x.titulo) + '</li>').join('');
+      const ov = document.createElement('div');
+      ov.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(7,14,24,.6);display:flex;align-items:center;justify-content:center;padding:16px;';
+      ov.innerHTML = '<div style="background:var(--surface,#fff);color:var(--text,#111);max-width:640px;width:100%;max-height:90vh;overflow:auto;border-radius:16px;padding:22px;font-size:.88rem;line-height:1.45">' +
+        '<h3 style="margin:0 0 4px">Acceso de ' + e(m.nombre || m.email) + '</h3><p style="margin:0 0 12px;color:var(--text-muted)">' + e(MOTIVOS[r.motivo] || (r.escalonado ? MOTIVOS.calendario : '')) + ' <b>' + r.abiertos + ' de ' + r.total + ' cursos abiertos.</b></p>' +
+        '<table>' + fila('Estado', m.status) + fila('Plan', m.plan) + fila('Con membresía (servidor)', m.tieneMembresia ? 'Sí' : 'No') + fila('Pagos registrados', (m.pagos || []).join(', ')) + fila('Activado manualmente', m.activadoEn) + fila('Regalo', m.giftedAt) + fila('Alta de la cuenta', m.startDate) + fila('Último pago', m.lastPaymentDate) +
+        fila('Calendario activo', c.activo ? 'Sí' : 'No') + fila('Encendido desde', c.desde) + fila('Aplicar a antiguos', c.paraTodos ? 'Sí' : 'No') + fila('Inicio que se calculó', r.inicioCalculado) + '</table>' +
+        '<ul style="margin:12px 0 14px;padding-left:18px">' + cursos + '</ul><button class="btn btn-p" id="accCerrar">Cerrar</button></div>';
+      document.body.appendChild(ov);
+      ov.onclick = ev => { if (ev.target === ov) ov.remove(); }; ov.querySelector('#accCerrar').onclick = () => ov.remove();
+    } catch (err) { toast('No se pudo revisar: ' + err.message); }
+  };
   window.toggleMemberStatus = function (uid, estado) { return estado === 'active' ? window.mbQuitar(uid) : window.mbActivar(uid, 'mensual'); };
 
   // ---------- Se agrega al panel: menú y sección ----------

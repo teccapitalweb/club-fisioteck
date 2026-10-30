@@ -1456,6 +1456,7 @@
         <td>
           <button class="btn btn-o btn-sm" onclick="editFirebaseMember('${m.uid}')">Editar</button>
           <button class="btn btn-o btn-sm" onclick="verProgresoSocio('${m.uid}')">Progreso</button>
+          <button class="btn btn-o btn-sm" title="Por qué ve sus cursos abiertos o cerrados" onclick="verAccesoSocio('${m.uid}')">Acceso</button>
           <button class="btn btn-o btn-sm" title="Regalar 30 días de acceso" onclick="regalarTiempo('${m.uid}')">+30 días</button>
           <button class="btn btn-${m.status==='active'?'w':'p'} btn-sm" onclick="toggleMemberStatus('${m.uid}','${m.status}')">${m.status==='active'?'Desactivar':'Activar'}</button>
         </td>
@@ -2692,7 +2693,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script src="metricas-visitas.js?v=1"></script>
 <script src="trafico.js?v=4"></script>
-<script src="servidor.js?v=2"></script>
+<script src="servidor.js?v=3"></script>
 <script src="soporte.js?v=1"></script>
 <script src="exportar.js?v=1"></script>
 <script src="webinars.js?v=1"></script>
