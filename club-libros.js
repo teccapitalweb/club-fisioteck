@@ -14,9 +14,9 @@
   const RAYO = ic('<path d="M13 2L3 14h9l-1 8 10-12h-9z"/>');
   const PIN = ic('<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>');
   const COLORES = [['#0A3E68', '#159E92'], ['#115E59', '#2DD4BF'], ['#5B21B6', '#A78BFA'], ['#9A3412', '#FB923C'], ['#1E3A8A', '#60A5FA'], ['#0D5FA0', '#4CA6DE']];
-  const GUARDADOS = 'ft:libros:guardados';
-  const guardados = () => { try { return new Set(JSON.parse(localStorage.getItem(GUARDADOS) || '[]')); } catch (_) { return new Set(); } };
-  const alternarGuardado = id => { const s = guardados(); if (s.has(id)) s.delete(id); else s.add(id); try { localStorage.setItem(GUARDADOS, JSON.stringify([...s])); } catch (_) { /* modo privado */ } return s.has(id); };
+  const GUARDADOS = () => 'ft:libros:guardados:' + ((typeof auth !== 'undefined' && auth.currentUser && auth.currentUser.uid) || 'x'); // por cuenta
+  const guardados = () => { try { return new Set(JSON.parse(localStorage.getItem(GUARDADOS()) || '[]')); } catch (_) { return new Set(); } };
+  const alternarGuardado = id => { const s = guardados(); if (s.has(id)) s.delete(id); else s.add(id); try { localStorage.setItem(GUARDADOS(), JSON.stringify([...s])); } catch (_) { /* modo privado */ } return s.has(id); };
 
   // Los libros ya no tienen página propia: "Libros" lleva a PDF y material, donde viven
   const showPageOriginal = window.showPage;

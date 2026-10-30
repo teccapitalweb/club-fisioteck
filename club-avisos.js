@@ -7,14 +7,14 @@
   const claveLeidos = () => 'ft_avisos_leidos_' + ((auth.currentUser || {}).uid || 'x');
   const leidos = () => { try { return new Set(JSON.parse(localStorage.getItem(claveLeidos()) || '[]')); } catch (_) { return new Set(); } };
   const guardar = s => { try { localStorage.setItem(claveLeidos(), JSON.stringify([...s].slice(-200))); } catch (_) { /* modo privado */ } };
-  const extra = { t: 0, creditos: null, cupon: null, foro: [] };
+  const extra = { t: 0, creditos: null, cupon: null, foro: [], sistema: [] };
 
   async function cargar() {
     if (Date.now() - extra.t < 60000 || typeof auth === 'undefined' || !auth.currentUser) return;
     extra.t = Date.now();
     try { const d = await certFetch('/api/creditos'); extra.creditos = d.aviso || null; } catch (_) { extra.creditos = null; }
     try { const c = await certFetch('/api/creditos/cupon-activo'); extra.cupon = c && c.hay ? c : null; } catch (_) { extra.cupon = null; }
-    try { const a = await certFetch('/api/avisos'); extra.foro = (a.avisos || []).filter(x => x.tipo === 'foro'); } catch (_) { extra.foro = []; }
+    try { const a = await certFetch('/api/avisos'); extra.foro = (a.avisos || []).filter(x => x.tipo === 'foro'); extra.sistema = (a.avisos || []).filter(x => x.tipo !== 'foro'); } catch (_) { extra.foro = []; extra.sistema = []; }
     if (window.ftBarra) ftBarra.refrescar();
   }
 
@@ -23,6 +23,12 @@
     const add = (id, title, message, accion, categoria) => out.push({ id: 'av:' + id, title, message, category: categoria || 'sistema', read: ya.has('av:' + id), sintetico: true, accion });
     if (extra.creditos) add('cred:' + (extra.creditos.ms || 0), '¡Recibiste ' + extra.creditos.cantidad + ' créditos!', extra.creditos.mensaje || 'Úsalos para abrir material descargable.', () => { try { if (window.ftCreditos && ftCreditos.visto) ftCreditos.visto(); } catch (_) { /* sigue */ } showPage('pdfs'); });
     if (extra.cupon) add('cup:' + (extra.cupon.venceMs || 0), 'Hay un cupón para ti', extra.cupon.creditos + ' créditos para canjear en Material PDF.', () => showPage('pdfs'), 'promo');
+    // Avisos que crea el servidor: certificado emitido, insignia nueva, premio ganado (como Zoorigen)
+    const PAGINAS = { certificates: 'certificates', achievements: 'achievements', pdfs: 'pdfs', library: 'library' };
+    (extra.sistema || []).forEach(a => {
+      const id = 'srv:' + a.id, destino = PAGINAS[a.pagina] || 'home';
+      out.push({ id: 'av:' + id, title: a.titulo || 'Aviso', message: a.fragmento || '', category: a.tipo === 'certificado' ? 'course' : 'sistema', read: a.leido === true || ya.has('av:' + id), sintetico: true, servidorId: a.id, accion: () => showPage(destino) });
+    });
     // Respuestas a tus temas del foro (las crea el servidor cuando alguien responde)
     extra.foro.forEach(a => { const id = 'foro:' + a.id; out.push({ id: 'av:' + id, title: a.quien + ' respondió tu tema', message: '«' + a.titulo + '» · ' + a.fragmento, category: 'foro', read: a.leido === true || ya.has('av:' + id), sintetico: true, servidorId: a.id, accion: () => { try { showPage('forum'); setTimeout(() => { if (typeof openThread === 'function') openThread(a.postId); }, 350); } catch (_) { /* sin foro */ } } }); });
     (sd.live || []).forEach(w => {
@@ -37,7 +43,8 @@
   }
   function marcar(id) {
     const s = leidos(); s.add(id); guardar(s);
-    const f = extra.foro.find(a => 'av:foro:' + a.id === id); // el aviso del foro también se marca como leído en el servidor
+    // Los avisos que vienen del servidor (foro y sistema) también se marcan como leídos allá
+    const f = extra.foro.find(a => 'av:foro:' + a.id === id) || (extra.sistema || []).find(a => 'av:srv:' + a.id === id);
     if (f && !f.leido) { f.leido = true; try { certFetch('/api/avisos/' + encodeURIComponent(f.id) + '/leido', { method: 'POST', body: '{}' }).catch(() => {}); } catch (_) { /* se reintenta luego */ } }
   }
 

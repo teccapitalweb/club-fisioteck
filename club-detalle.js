@@ -59,13 +59,15 @@
     const aviso = panel ? panel : est.cerrado ? '<div class="fd-aviso">' + I.candado + '<span><b>Faltan ' + est.dias + ' día' + (est.dias === 1 ? '' : 's') + ' para su desbloqueo.</b> Mientras tanto puedes ver de qué trata y qué clases incluye.</span></div>' : '';
     const filas = lecc.map((l, i) => {
       const hecha = hechas.has(i), abierta = abre(i);
+      // Clases en orden (como Alintec; el servidor también lo exige): la clase i se completa después de la i-1
+      const esperaAnterior = abierta && !hecha && i > 0 && !hechas.has(i - 1) && !window.ftVistaAdmin;
       const nodo = hecha ? '<span class="nodo ok">' + I.check + '</span>' : abierta ? '<span class="nodo">' + (i + 1) + '</span>' : '<span class="nodo bloq">' + I.candado + '</span>';
       const sub = est.cerrado ? 'Faltan ' + est.dias + ' día' + (est.dias === 1 ? '' : 's') + ' para su desbloqueo'
-        : abierta ? (hecha ? 'Clase vista' : 'Toca para ver la clase') : est.prueba && i === total - 1 ? 'La última clase se abre con la membresía' : 'Activa tu membresía para ver esta clase';
+        : abierta ? (hecha ? 'Clase vista' : esperaAnterior ? 'Puedes verla; se marca al completar la clase ' + i : 'Toca para ver la clase') : est.prueba && i === total - 1 ? 'La última clase se abre con la membresía' : 'Activa tu membresía para ver esta clase';
       const clic = abierta ? 'playLesson(' + i + ')' : est.cerrado ? '' : 'showPaywallOverlay()';
       return '<li class="fd-clase' + (abierta ? '' : ' bloq') + '"' + (clic ? ' onclick="' + clic + '"' : '') + '>' + nodo + '<span class="mini"' + (img ? ' style="background-image:url(\'' + esc(img) + '\')"' : '') + '></span>' +
         '<span class="txt"><strong>' + esc(l.title || 'Clase ' + (i + 1)) + '</strong><small>' + esc(sub) + (l.duration ? ' · ' + esc(l.duration) : '') + '</small></span>' +
-        (abierta && (est.acceso || est.prueba) && !hecha ? '<button type="button" class="fd-vista" onclick="event.stopPropagation();markLessonComplete(' + c.id + ',' + i + ')">Marcar como vista</button>' : '') + '<i class="ir">' + I.flecha + '</i></li>';
+        (abierta && (est.acceso || est.prueba) && !hecha && !esperaAnterior ? '<button type="button" class="fd-vista" onclick="event.stopPropagation();markLessonComplete(' + c.id + ',' + i + ')">Marcar como vista</button>' : '') + '<i class="ir">' + I.flecha + '</i></li>';
     }).join('');
     const terminado = total && nHechas >= total ? '<div class="fd-fin"><div><strong>¡Curso terminado!</strong><span>Ya puedes obtener tu certificado con folio verificable.</span></div><button type="button" class="fd-btn" onclick="abrirCertModal(' + c.id + ')">Obtener certificado</button></div>' : '';
     return '<header class="fd-top"><span class="ico">' + I.libro + '</span><b>Detalle del curso</b><button type="button" class="fd-x" aria-label="Cerrar" onclick="ftCerrarDetalle()">' + I.x + '</button></header>' +

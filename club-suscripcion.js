@@ -141,10 +141,15 @@
     const venc = typeof calcularFechaVencimiento === 'function' ? calcularFechaVencimiento(m) : null, st = m.status || '';
     const vencido = !!(venc && new Date() > venc), cancelada = st === 'cancelled';
     const activa = !vencido && (st === 'active' || st === 'paid' || cancelada);
+    const pagoPendiente = m.pagoPendiente === true;
     if (!activa) {
+      // «Pago no confirmado» es distinto de «venció»: la tarjeta falló (como en Zoorigen)
       raiz.innerHTML = hero('Activa tu acceso', 'Estás a un click de acceder a todo el contenido de FisioTeck. Elige tu plan y completa tu suscripción.') +
-        '<div class="ftsub-vacio"><div class="ftsub-icono">' + SVG.candado + '</div><h3>' + (vencido ? 'Tu suscripción venció' : 'Tu suscripción no está activa') + '</h3><p>' +
-        (vencido ? 'Renueva para recuperar tu acceso: tu progreso, tus logros y tus certificados siguen guardados. ' : '') + 'Selecciona tu plan preferido a continuación. El pago se procesa de forma segura por Stripe y la activación es inmediata.</p></div>';
+        '<div class="ftsub-vacio"><div class="ftsub-icono">' + SVG.candado + '</div><h3>' + (pagoPendiente ? 'Tu pago no se pudo confirmar' : vencido ? 'Tu suscripción venció' : 'Tu suscripción no está activa') + '</h3><p>' +
+        (pagoPendiente ? 'El último cobro de tu membresía fue rechazado. Actualiza tu tarjeta en «Gestionar en Stripe» o vuelve a suscribirte abajo; tu progreso, tus logros y tus certificados siguen guardados. '
+          : vencido ? 'Renueva para recuperar tu acceso: tu progreso, tus logros y tus certificados siguen guardados. ' : '') + 'Selecciona tu plan preferido a continuación. El pago se procesa de forma segura por Stripe y la activación es inmediata.</p>' +
+        (pagoPendiente && m.stripeCustomerId ? '<button type="button" class="ftsub-btn" id="ftsubPortal" style="max-width:300px;margin:16px auto 0">' + SVG.tarjeta + '<span>Gestionar en Stripe</span></button>' : '') + '</div>';
+      const p0 = $('ftsubPortal'); if (p0) p0.onclick = abrirPortal;
       return;
     }
     const anual = (m.plan || 'mensual') === 'anual';
@@ -154,18 +159,35 @@
     const feats = ['Todos los cursos con certificado', 'Clases en vivo y grabaciones', 'Certificados con folio y QR', 'Retos, XP y libros', 'Foro y Directorio VIP', 'PDF y material descargable'];
     const pagos = (Array.isArray(m.payments) ? m.payments.slice() : []).filter(Boolean).reverse();
     raiz.innerHTML = hero('Tu plan', 'Detalles de tu membresía, historial de pagos y próxima renovación.') +
-      '<section class="ftsub-plan"><div class="ftsub-plan-cab"><div><div class="ftsub-plan-lbl">' + (cancelada ? 'Plan cancelado · con acceso' : 'Plan activo · pagado') + '</div><h2 class="ftsub-plan-nombre">' + (anual ? 'VIP Anual' : 'VIP Mensual') + '</h2></div>' +
+      (pagoPendiente ? '<div class="ftsub-vacio" style="border-color:rgba(239,68,68,.4);margin-bottom:14px;padding:18px 20px;text-align:left;"><strong style="color:#EF4444;">Pago no confirmado.</strong> <span style="font-size:13px;color:var(--text-light);">Tu último cobro fue rechazado y Stripe lo volverá a intentar. Para no perder tu acceso, actualiza tu tarjeta en «Gestionar en Stripe». No vuelvas a suscribirte: se te cobraría dos veces.</span></div>' : '') +
+      '<section class="ftsub-plan"><div class="ftsub-plan-cab"><div><div class="ftsub-plan-lbl">' + (pagoPendiente ? 'Pago no confirmado · acceso temporal' : cancelada ? 'Plan cancelado · con acceso' : 'Plan activo · pagado') + '</div><h2 class="ftsub-plan-nombre">' + (anual ? 'VIP Anual' : 'VIP Mensual') + '</h2></div>' +
       '<div class="ftsub-plan-precio"><b>' + pesos(monto) + '</b><span>MXN / ' + (anual ? 'año' : 'mes') + '</span></div></div>' +
       '<div class="ftsub-feats">' + feats.map(f => '<div class="ftsub-feat">' + SVG.check + esc(f) + '</div>').join('') + '</div>' +
       '<div class="ftsub-pie"><span><strong>' + (cancelada ? 'Acceso hasta:' : 'Próxima renovación:') + '</strong> ' + fechaLarga(venc) + '</span><span><strong>Días restantes:</strong> ' + dias + '</span></div></section>' +
       '<div class="ftsub-grid"><div class="ftsub-caja"><div class="ftsub-caja-tit">Método de pago</div><p>Gestiona tu tarjeta, descarga tus facturas y revisa tu historial de cobros desde el portal seguro de Stripe.</p><button type="button" class="ftsub-btn" id="ftsubPortal">' + SVG.tarjeta + '<span>Gestionar en Stripe</span></button></div>' +
       '<div class="ftsub-caja"><div class="ftsub-caja-tit">' + (cancelada ? 'Cancelación programada' : 'Cancelar suscripción') + '</div>' +
-      (cancelada ? '<p>Tu membresía se cancelará el <strong>' + fechaLarga(venc) + '</strong>. Hasta esa fecha mantienes acceso completo; después podrás volver a suscribirte desde aquí.</p>'
+      (cancelada ? '<p>Tu membresía se cancelará el <strong>' + fechaLarga(venc) + '</strong>. Hasta esa fecha mantienes acceso completo.</p>' +
+          (m.stripeSubscriptionId && !m.suscripcionTerminada ? '<button type="button" class="ftsub-btn" id="ftsubReactivar">' + SVG.check + '<span>Reactivar mi suscripción</span></button>' : '<p>Después de esa fecha podrás volver a suscribirte desde aquí.</p>')
         : '<p>Mantendrás acceso hasta el final del periodo pagado. Después se cancela automáticamente y no se te cobra más.</p><button type="button" class="ftsub-btn peligro" id="ftsubCancelar">' + SVG.x + '<span>Cancelar suscripción</span></button>') + '</div></div>' +
       (pagos.length ? '<div class="ftsub-historial"><h2 class="ftsub-historial-tit">Historial de pagos<span>' + pagos.length + ' cobro' + (pagos.length === 1 ? '' : 's') + '</span></h2><div class="ftsub-pagos">' +
         pagos.map(p => { const f = p.date || p.fecha || ''; const fecha = f ? (typeof formatDate === 'function' ? formatDate(f) : f) : '—'; return '<div class="ftsub-pago"><div class="ftsub-pago-ic">' + SVG.check + '</div><div class="ftsub-pago-cuerpo"><b>' + esc(p.concept || p.concepto || ('Pago de membresía ' + (p.plan === 'anual' || anual ? 'anual' : 'mensual'))) + '</b><small>' + esc(fecha) + '</small></div><span class="ftsub-pago-monto">' + (typeof p.amount === 'number' ? pesos(p.amount) : '—') + '</span><span class="ftsub-pago-estado">' + esc(p.status === 'failed' ? 'Fallido' : 'Pagado') + '</span></div>'; }).join('') + '</div></div>' : '');
     const portal = $('ftsubPortal'); if (portal) portal.onclick = abrirPortal;
     const canc = $('ftsubCancelar'); if (canc) canc.onclick = () => modalCancelar(venc);
+    const rea = $('ftsubReactivar'); if (rea) rea.onclick = reactivar;
+  }
+
+  // Reanudar una membresía cancelada que todavía no vence (como Alintec y Zoorigen)
+  async function reactivar() {
+    const b = $('ftsubReactivar'); if (!b) return; const txt = b.querySelector('span'), antes = txt.textContent; b.disabled = true; txt.textContent = 'Reactivando…';
+    try {
+      const token = await auth.currentUser.getIdToken();
+      const r = await fetch(API() + '/api/reactivate-subscription', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: '{}' });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d.success) throw new Error(d.error || 'No se pudo reactivar tu suscripción.');
+      showToast('¡Listo! Tu suscripción sigue activa y se renovará como siempre.');
+      if (typeof loadUserProfile === 'function') await loadUserProfile();
+      pintar();
+    } catch (e) { showToast(e.message); b.disabled = false; txt.textContent = antes; }
   }
 
   async function abrirPortal() {

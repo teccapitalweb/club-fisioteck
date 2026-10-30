@@ -61,7 +61,7 @@
     const title = $('postTitle').value.trim().replace(/\s+/g, ' '), body = $('postBody').value.trim(), category = $('postCategory').value;
     if (title.length < L.titulo[0]) { showToast('El título debe tener al menos ' + L.titulo[0] + ' caracteres.'); return; }
     if (body.length < L.cuerpo[0]) { showToast('El mensaje debe tener al menos ' + L.cuerpo[0] + ' caracteres.'); return; }
-    const datos = { title, body, category: CAT[category] ? category : 'general', authorId: u.uid, authorName: u.displayName || u.email || 'Socio', replyCount: 0, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
+    const datos = { title, body, category: CAT[category] ? category : 'general', authorId: u.uid, authorName: u.displayName || u.email || 'Socio', authorAvatar: (window.ftAvatarActual && ftAvatarActual()) || '', replyCount: 0, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
     if (imagenNueva) datos.imagen = imagenNueva;
     try {
       await db.collection('forum_posts').add(datos);
@@ -71,7 +71,12 @@
   };
 
   // ---------- Hilo ----------
-  const avatar = (n, c) => '<div class="fh-av" style="background:' + c + '">' + esc((n || 'S').charAt(0).toUpperCase()) + '</div>';
+  // Avatar ilustrado del autor (como Zoorigen): si eligió uno se guarda en el tema/respuesta; si no, su inicial de color
+  const avatar = (n, c, av) => {
+    const u = av && window.ftAvatarUrl ? ftAvatarUrl(av) : '';
+    return u ? '<div class="fh-av" style="background:transparent;overflow:hidden"><img src="' + esc(u) + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>'
+      : '<div class="fh-av" style="background:' + c + '">' + esc((n || 'S').charAt(0).toUpperCase()) + '</div>';
+  };
   const COL = ['#0D5FA0', '#159E92', '#C2760B', '#7C3AED', '#DC2D3F', '#0F9D58'];
   const colorDe = t => COL[Math.abs(String(t || '').split('').reduce((a, ch) => a + ch.charCodeAt(0), 0)) % COL.length];
   const fechaDe = x => x && x.seconds ? new Date(x.seconds * 1000) : new Date();
@@ -82,7 +87,7 @@
     const u = yo(), mio = u && post.authorId === u.uid, liked = u && (post.likes || []).includes(u.uid);
     $('threadCategory').textContent = CAT[post.category] || post.category || 'General';
     $('threadTitle').textContent = post.title || '';
-    $('threadOriginal').innerHTML = '<div class="fh-cab">' + avatar(post.authorName, colorDe(post.authorId)) + '<div><strong>' + esc(post.authorName || 'Socio') + '</strong><small>' + esc(getTimeAgo(fechaDe(post.createdAt))) + '</small></div>' +
+    $('threadOriginal').innerHTML = '<div class="fh-cab">' + avatar(post.authorName, colorDe(post.authorId), post.authorAvatar) + '<div><strong>' + esc(post.authorName || 'Socio') + '</strong><small>' + esc(getTimeAgo(fechaDe(post.createdAt))) + '</small></div>' +
       (mio || esAdmin() ? '<button type="button" class="fh-borrar" onclick="ftForo.borrarTema(\'' + esc(post.id) + '\')">Eliminar</button>' : '') + '</div>' +
       '<div class="fh-cuerpo">' + esc(post.body || '') + '</div>' + (post.imagen && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(post.imagen) ? '<img class="fh-img" src="' + post.imagen + '" alt="Imagen del tema">' : '') +
       '<div class="fh-pie"><button type="button" class="fh-like' + (liked ? ' on' : '') + '" onclick="event.stopPropagation();toggleLikePost(\'' + esc(post.id) + '\')">Me gusta · ' + (post.likes || []).length + '</button></div>';
@@ -94,7 +99,7 @@
       $('replyCount').textContent = lista.length + ' respuesta' + (lista.length === 1 ? '' : 's');
       cont.innerHTML = lista.length ? lista.map(r => {
         const likeR = u && (r.likes || []).includes(u.uid);
-        return '<div class="fh-resp"><div class="fh-cab">' + avatar(r.authorName, colorDe(r.authorId)) + '<div><strong>' + esc(r.authorName || 'Socio') + '</strong><small>' + esc(getTimeAgo(fechaDe(r.createdAt))) + '</small></div>' +
+        return '<div class="fh-resp"><div class="fh-cab">' + avatar(r.authorName, colorDe(r.authorId), r.authorAvatar) + '<div><strong>' + esc(r.authorName || 'Socio') + '</strong><small>' + esc(getTimeAgo(fechaDe(r.createdAt))) + '</small></div>' +
           (u && (r.authorId === u.uid || esAdmin()) ? '<button type="button" class="fh-borrar" onclick="ftForo.borrarRespuesta(\'' + esc(postId) + '\',\'' + esc(r.id) + '\')">Eliminar</button>' : '') + '</div>' +
           '<div class="fh-cuerpo">' + esc(r.body || '') + '</div><div class="fh-pie"><button type="button" class="fh-like' + (likeR ? ' on' : '') + '" onclick="toggleLikeReply(\'' + esc(postId) + '\',\'' + esc(r.id) + '\')">Me gusta · ' + (r.likes || []).length + '</button></div></div>';
       }).join('') : '<div class="fh-vacio">Sin respuestas aún. Sé el primero.</div>';
@@ -107,7 +112,7 @@
     const body = $('replyBody').value.trim(), id = window.currentThreadId; if (!id) return;
     if (body.length < L.respuesta[0]) { showToast('Escribe una respuesta de al menos ' + L.respuesta[0] + ' caracteres.'); return; }
     try {
-      const nueva = await db.collection('forum_posts').doc(id).collection('replies').add({ body, authorId: u.uid, authorName: u.displayName || u.email || 'Socio', createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+      const nueva = await db.collection('forum_posts').doc(id).collection('replies').add({ body, authorId: u.uid, authorName: u.displayName || u.email || 'Socio', authorAvatar: (window.ftAvatarActual && ftAvatarActual()) || '', createdAt: firebase.firestore.FieldValue.serverTimestamp() });
       // Aviso en la campana del autor del tema (lo crea el servidor, que comprueba que la respuesta es tuya)
       try { certFetch('/api/avisos/foro', { method: 'POST', body: JSON.stringify({ postId: id, replyId: nueva.id }) }).catch(() => {}); } catch (_) { /* el aviso es un extra */ }
       await db.collection('forum_posts').doc(id).update({ replyCount: firebase.firestore.FieldValue.increment(1) });

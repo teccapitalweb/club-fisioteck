@@ -4376,7 +4376,7 @@
       const cat = p.category || 'general';
       const replies = p.replyCount || 0;
       return `<div onclick="openThread('${p.id}')" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:10px;cursor:pointer;transition:all .3s ease;display:flex;gap:14px;align-items:flex-start;" onmouseover="this.style.borderColor='var(--primary)';this.style.boxShadow='0 0 12px rgba(20,167,155,.15)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
-        <div style="width:42px;height:42px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem;flex-shrink:0;">${(p.authorName || 'S')[0].toUpperCase()}</div>
+        <div style="width:42px;height:42px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem;flex-shrink:0;overflow:hidden;">${(p.authorAvatar && window.ftAvatarUrl && ftAvatarUrl(p.authorAvatar)) ? `<img src="${ftAvatarUrl(p.authorAvatar)}" alt="" style="width:100%;height:100%;object-fit:cover;">` : (p.authorName || 'S')[0].toUpperCase()}</div>
         <div style="flex:1;min-width:0;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;">
             <span style="font-size:.65rem;padding:2px 8px;border-radius:10px;background:${catColors[cat]||catColors.general};color:#fff;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">${catLabels[cat]||cat}</span>
@@ -4430,6 +4430,7 @@
         title, body, category,
         authorId: user.uid,
         authorName: user.displayName || user.email || 'Socio',
+        authorAvatar: (window.ftAvatarActual && ftAvatarActual()) || '',
         replyCount: 0,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
@@ -4454,7 +4455,7 @@
     const postDate = post.createdAt ? new Date(post.createdAt.seconds * 1000) : new Date();
     document.getElementById('threadOriginal').innerHTML = `
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-        <div style="width:34px;height:34px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;">${(post.authorName||'S')[0].toUpperCase()}</div>
+        <div style="width:34px;height:34px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;overflow:hidden;">${(post.authorAvatar && window.ftAvatarUrl && ftAvatarUrl(post.authorAvatar)) ? `<img src="${ftAvatarUrl(post.authorAvatar)}" alt="" style="width:100%;height:100%;object-fit:cover;">` : (post.authorName||'S')[0].toUpperCase()}</div>
         <div><div style="font-size:.85rem;font-weight:600;color:var(--text);">${post.authorName || 'Socio'}</div>
         <div style="font-size:.7rem;color:var(--text-muted);">${getTimeAgo(postDate)}</div></div>
       </div>
@@ -4480,7 +4481,7 @@
           const rDate = r.createdAt ? new Date(r.createdAt.seconds * 1000) : new Date();
           return `<div style="padding:12px;background:var(--bg);border-radius:var(--radius-sm);margin-bottom:8px;">
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-              <div style="width:28px;height:28px;border-radius:50%;background:var(--border);color:var(--text);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;">${(r.authorName||'S')[0].toUpperCase()}</div>
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--border);color:var(--text);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;overflow:hidden;">${(r.authorAvatar && window.ftAvatarUrl && ftAvatarUrl(r.authorAvatar)) ? `<img src="${ftAvatarUrl(r.authorAvatar)}" alt="" style="width:100%;height:100%;object-fit:cover;">` : (r.authorName||'S')[0].toUpperCase()}</div>
               <span style="font-size:.82rem;font-weight:600;color:var(--text);">${r.authorName || 'Socio'}</span>
               <span style="font-size:.7rem;color:var(--text-muted);">${getTimeAgo(rDate)}</span>
             </div>
@@ -4552,6 +4553,7 @@
         body,
         authorId: user.uid,
         authorName: user.displayName || user.email || 'Socio',
+        authorAvatar: (window.ftAvatarActual && ftAvatarActual()) || '',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
       // Update reply count
@@ -5480,7 +5482,11 @@
       const r = await certFetch('/api/cursos/' + encodeURIComponent(courseId) + '/progreso', { method: 'POST', body: JSON.stringify({ leccion: lessonIndex }) });
       progress = { completed: r.completed };
       userProgress['c_' + courseId] = progress;
-    } catch (e) { showToast(e.message || 'No se pudo guardar tu avance'); return; }
+    } catch (e) {
+      // Sin respuesta del servidor (se cayó la red): el avance queda pendiente y se reintenta solo (como Alintec)
+      if (!e.status) { encolarAvance(courseId, lessonIndex); showToast('Sin conexión: tu clase quedó anotada y se guardará sola cuando vuelva el internet.'); return; }
+      showToast(e.message || 'No se pudo guardar tu avance'); return;
+    }
     const course = siteData.courses.find(c => c.id === courseId);
     const totalLessons = course?.lessons?.length || 0;
     openCourseDetail(courseId);
@@ -5492,6 +5498,38 @@
     }
     checkAchievements();
   }
+
+  // ===== AVANCE PENDIENTE (a prueba de cortes de red, como Alintec) =====
+  // Si «Marcar como vista» falla por la red, queda en una cola por cuenta y se reintenta al volver la conexión y cada 30 s.
+  const claveAvance = () => 'ft_avance_pendiente_' + ((auth.currentUser || {}).uid || 'x');
+  const leerCola = () => { try { return JSON.parse(localStorage.getItem(claveAvance()) || '[]'); } catch (_) { return []; } };
+  const guardarCola = c => { try { localStorage.setItem(claveAvance(), JSON.stringify(c.slice(-40))); } catch (_) { /* modo privado */ } };
+  function encolarAvance(courseId, leccion) {
+    const c = leerCola();
+    if (!c.some(x => String(x.courseId) === String(courseId) && x.leccion === leccion)) { c.push({ courseId, leccion, ms: Date.now() }); guardarCola(c); }
+  }
+  let _reintentando = false;
+  async function reintentarAvance() {
+    if (_reintentando || !auth.currentUser) return;
+    const cola = leerCola(); if (!cola.length) return;
+    _reintentando = true;
+    const restante = [];
+    for (const p of cola) {
+      try {
+        const r = await certFetch('/api/cursos/' + encodeURIComponent(p.courseId) + '/progreso', { method: 'POST', body: JSON.stringify({ leccion: p.leccion }) });
+        userProgress['c_' + p.courseId] = { completed: r.completed };
+      } catch (e) {
+        if (!e.status) { restante.push(p); } // sigue sin red: se conserva
+        else if (e.status === 409) { restante.push(p); } // falta la clase anterior: se reintenta cuando se complete
+        // 4xx restantes (sin acceso, clase inexistente): se descarta, no tiene arreglo automático
+      }
+    }
+    guardarCola(restante);
+    if (restante.length < cola.length) { showToast('Tu avance pendiente ya se guardó.'); try { if (window.ftDetalle) ftDetalle.repintar(); } catch (_) { /* sin detalle */ } }
+    _reintentando = false;
+  }
+  window.addEventListener('online', () => setTimeout(reintentarAvance, 1500));
+  setInterval(reintentarAvance, 30000);
 
   // ===== CERTIFICADOS =====
   // En local se usa el servidor de tu equipo (npm start en club-fisioteck-webhooks); en producción, Railway.

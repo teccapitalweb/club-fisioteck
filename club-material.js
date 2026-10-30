@@ -6,11 +6,18 @@
    Depende de index.html: siteData, memberIsPaid, certFetch, downloadPdf, ftAbrirMaterial, ftCreditos y de club-diseno*.css, club-cursos.js (ftdHero). */
 (function () {
   'use strict';
+  const estiloGuardar = document.createElement('style');
+  estiloGuardar.textContent = '.ftd-mat{position:relative}.ftd-guardar{position:absolute;top:10px;right:10px;z-index:2;width:34px;height:34px;display:grid;place-items:center;border-radius:10px;border:1px solid var(--border,#CBD5E1);background:var(--surface,#fff);color:var(--text-muted,#64748B);cursor:pointer}.ftd-guardar:hover{color:var(--accent,#0D5FA0);border-color:var(--accent,#0D5FA0)}.ftd-guardar.on{color:var(--accent,#0D5FA0)}.ftd-guardar svg{width:16px;height:16px}';
+  document.head.appendChild(estiloGuardar);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const $ = id => document.getElementById(id);
   const PALETAS = [['#0A3E68', '#159E92'], ['#0D5FA0', '#4CA6DE'], ['#115E59', '#2DD4BF'], ['#5B21B6', '#A78BFA'], ['#9A3412', '#FB923C'], ['#1E3A8A', '#60A5FA']];
   const LUPA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>';
   let filtro = 'todo', area = 'todas', texto = '';
+  // «Guardados» (como Zoorigen): marcados por cuenta en este navegador
+  const claveGuardados = () => 'ft:material:guardados:' + ((typeof auth !== 'undefined' && auth.currentUser && auth.currentUser.uid) || 'x');
+  const guardados = () => { try { return new Set(JSON.parse(localStorage.getItem(claveGuardados()) || '[]')); } catch (_) { return new Set(); } };
+  const alternarGuardado = id => { const g = guardados(); if (g.has(id)) g.delete(id); else g.add(id); try { localStorage.setItem(claveGuardados(), JSON.stringify([...g].slice(-200))); } catch (_) { /* modo privado */ } return g.has(id); };
   const cursosMat = { t: 0, lista: [] };
 
   const hash = s => String(s).split('').reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
@@ -77,8 +84,10 @@
   }
 
   function tarjeta(it) {
+    const g = guardados().has(String(it.id));
+    const pin = '<button type="button" class="ftd-guardar' + (g ? ' on' : '') + '" data-guardar-mat="' + esc(it.id) + '" aria-label="' + (g ? 'Quitar de guardados' : 'Guardar') + '" title="' + (g ? 'Quitar de guardados' : 'Guardar para después') + '"><svg viewBox="0 0 24 24" fill="' + (g ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>';
     const acc = it.accion === 'abrir' ? 'Abrir' : it.accion === 'abrir-curso' ? 'Abrir' : it.accion === 'canjear' ? 'Canjear por ' + it.costo + ' créditos' : it.accion === 'retos' ? 'Ir a los retos' : it.accion === 'paywall' ? 'Ver membresía' : 'Bloqueado';
-    return '<article class="ftd-mat' + (it.abierto ? '' : ' cerrado') + '" data-g="' + it.grupo + '"><button type="button" class="ftd-mat-top" data-acc="' + it.accion + '" data-id="' + esc(it.id) + '" aria-label="' + esc(acc) + ': ' + esc(it.titulo) + '"' + (it.accion === 'ninguna' ? ' disabled' : '') + '>' + portada(it.titulo, it.cat, it.mini, it.formato) + (it.puede ? '<span class="ftd-mat-canje">Canjear por ' + it.costo + ' créditos</span>' : '') + '</button>' +
+    return '<article class="ftd-mat' + (it.abierto ? '' : ' cerrado') + '" data-g="' + it.grupo + '"><button type="button" class="ftd-mat-top" data-acc="' + it.accion + '" data-id="' + esc(it.id) + '" aria-label="' + esc(acc) + ': ' + esc(it.titulo) + '"' + (it.accion === 'ninguna' ? ' disabled' : '') + '>' + portada(it.titulo, it.cat, it.mini, it.formato) + (it.puede ? '<span class="ftd-mat-canje">Canjear por ' + it.costo + ' créditos</span>' : '') + '</button>' + pin +
       '<div class="ftd-mat-cuerpo"><div class="fila"><span class="tipo">' + esc(it.formato || 'PDF') + '</span><span class="area">' + esc(nombreArea(it.cat)) + (it.grupo === 'curso' ? ' · ' + esc(it.desc) : '') + '</span></div>' +
       '<div class="fila"><span class="tag ' + (it.abierto ? 'ok' : '') + '">' + esc(it.etiqueta) + '</span>' + (it.accion !== 'ninguna' ? '<button type="button" class="ftd-btn suave pequeno" data-acc="' + it.accion + '" data-id="' + esc(it.id) + '">' + esc(acc) + '</button>' : '') + '</div>' + (it.accion2 === 'canjear' ? '<div class="fila"><button type="button" class="ftd-enlace" data-acc="canjear" data-id="' + esc(it.id) + '">o canjéalo por ' + it.costo + ' créditos</button></div>' : it.accion2 === 'retos' ? '<div class="fila"><button type="button" class="ftd-enlace" data-acc="retos" data-id="' + esc(it.id) + '">o ábrelo superando ' + it.falta + ' reto' + (it.falta === 1 ? '' : 's') + '</button></div>' : '') + '</div></article>';
   }
@@ -98,13 +107,13 @@
     const todos = items(), cred = $('ftCreditos');
     const areas = [...new Set(todos.map(x => x.cat))];
     const q = texto.toLowerCase();
-    const vis = todos.filter(x => (filtro === 'todo' || (filtro === 'pdf' && x.grupo === 'pdf') || (filtro === 'cursos' && x.grupo === 'curso') || (filtro === 'creditos' && x.accion === 'canjear')) && (area === 'todas' || x.cat === area) && (!q || (x.titulo + ' ' + x.desc).toLowerCase().includes(q)));
+    const vis = todos.filter(x => (filtro === 'todo' || (filtro === 'pdf' && x.grupo === 'pdf') || (filtro === 'cursos' && x.grupo === 'curso') || (filtro === 'creditos' && x.accion === 'canjear') || (filtro === 'guardados' && guardados().has(String(x.id)))) && (area === 'todas' || x.cat === area) && (!q || (x.titulo + ' ' + x.desc).toLowerCase().includes(q)));
     const verLibros = !!window.ftLibros && (filtro === 'todo' || filtro === 'libros') && !q && area === 'todas';
     const pdfs = vis.filter(x => x.grupo === 'pdf'), cursos = vis.filter(x => x.grupo === 'curso');
     const kpi = (l, v, n, c) => '<div class="ftd-card ftd-cuenta" style="--c:' + c + '"><small>' + l + '</small><b>' + esc(v) + '</b><span>' + n + '</span></div>';
     const D = (window.ftCreditos && ftCreditos.datos) || null;
     cont.innerHTML = window.ftdHero('Biblioteca profesional', 'PDF y <em>material.</em>', 'Guías, protocolos y material de tus cursos, listos para estudiar y descargar.', 'pdfs',
-      '<div class="ftd-tabs" role="tablist">' + [['todo', 'Todo'], ['libros', 'Libros'], ['pdf', 'PDF'], ['cursos', 'Mis cursos'], ['creditos', 'Créditos']].map(t => '<button type="button" role="tab" aria-selected="' + (filtro === t[0]) + '" class="' + (filtro === t[0] ? 'on' : '') + '" data-f="' + t[0] + '">' + t[1] + '</button>').join('') + '</div>') +
+      '<div class="ftd-tabs" role="tablist">' + [['todo', 'Todo'], ['libros', 'Libros'], ['pdf', 'PDF'], ['cursos', 'Mis cursos'], ['creditos', 'Créditos'], ['guardados', 'Guardados']].map(t => '<button type="button" role="tab" aria-selected="' + (filtro === t[0]) + '" class="' + (filtro === t[0] ? 'on' : '') + '" data-f="' + t[0] + '">' + t[1] + '</button>').join('') + '</div>') +
       '<div id="ftdCredSlot"></div>' +
       (verLibros ? ftLibros.bloque(todos.length) : '') +
       (filtro === 'libros' ? '' : '<div class="ftd-cuatro ftd-kpis">' + kpi('MATERIALES', todos.length, 'EN LA BIBLIOTECA', '#0D5FA0') + kpi('DISPONIBLES', todos.filter(x => x.abierto).length, 'PARA ABRIR YA', 'var(--ftd-teal)') + kpi('DE TUS CURSOS', todos.filter(x => x.grupo === 'curso').length, 'SE DESBLOQUEAN POR CLASE', 'var(--ftd-ambar)') + kpi('CRÉDITOS', D ? D.saldo : '—', 'TU SALDO', 'var(--ftd-violeta)') + '</div>' +
@@ -115,6 +124,7 @@
     const slot = $('ftdCredSlot'); if (slot && cred) slot.appendChild(cred);
     if (verLibros) ftLibros.enlazar(cont);
     cont.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { filtro = b.dataset.f; pintar(); });
+    cont.querySelectorAll('[data-guardar-mat]').forEach(b => b.onclick = e => { e.stopPropagation(); const quedo = alternarGuardado(String(b.dataset.guardarMat)); showToast(quedo ? 'Guardado en tu lista.' : 'Quitado de tus guardados.'); pintar(); });
     cont.querySelectorAll('[data-area]').forEach(b => b.onclick = () => { area = b.dataset.area; pintar(); });
     cont.querySelectorAll('[data-acc]').forEach(b => b.onclick = () => accion(b.dataset.acc, b.dataset.id));
     const inp = $('ftmBusca'); inp.oninput = () => { texto = inp.value.trim(); const pos = inp.selectionStart; pintar(); const n = $('ftmBusca'); n.focus(); try { n.setSelectionRange(pos, pos); } catch (_) { /* sin cursor */ } };

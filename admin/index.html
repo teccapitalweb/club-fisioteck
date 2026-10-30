@@ -1208,6 +1208,13 @@
   // ===== RENDER =====
   function initAdmin() {
     loadData();
+    // La casilla «Miembros activos (mostrar)» carga el número guardado (y el publicado en el sitio, que es el que manda);
+    // antes se quedaba en 87 y cada publicación regresaba esa cifra inventada al Club.
+    const cfgM = document.getElementById('cfgMembers');
+    if (cfgM) cfgM.value = data.stats.members || 0;
+    fetch('../data/content.json?v=' + Date.now()).then(r => r.json()).then(pub => {
+      if (pub && pub.stats && Number(pub.stats.members) > 0) { data.stats.members = Number(pub.stats.members); if (cfgM) cfgM.value = data.stats.members; saveData(); renderDashboard(); }
+    }).catch(() => { /* sin sitio publicado */ });
     renderDashboard();
     renderCourses();
     renderLive();
@@ -1433,22 +1440,17 @@
       <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="mfName" value="${m.name||''}"></div>
       <div class="form-group"><label class="form-label">Teléfono</label><input class="form-input" id="mfPhone" value="${m.phone||''}"></div>
       <div class="form-group"><label class="form-label">Especialidad</label><input class="form-input" id="mfSpecialty" value="${m.specialty||''}"></div>
-      <div class="form-group"><label class="form-label">Estado</label>
-        <select class="form-select" id="mfStatus">
-          <option value="active" ${m.status==='active'?'selected':''}>Activo</option>
-          <option value="inactive" ${m.status==='inactive'?'selected':''}>Inactivo</option>
-        </select>
-      </div>
+      <p style="font-size:.78rem;color:var(--text-muted);margin:4px 0 0;">El acceso no se cambia desde aquí: usa «Activar», «Regalar días» o «Quitar acceso», que pasan por el servidor, ponen fecha de vencimiento y quedan en la bitácora.</p>
     `;
     document.getElementById('modalTitle').textContent = 'Editar Miembro';
     document.getElementById('modalBody').innerHTML = html;
     document.getElementById('modalSave').onclick = async () => {
       try {
+        // Solo datos de contacto: el estado de acceso se cambia con Activar / Regalar / Quitar acceso (servidor + bitácora)
         await fbDb.collection('members').doc(uid).update({
           name: document.getElementById('mfName').value,
           phone: document.getElementById('mfPhone').value,
-          specialty: document.getElementById('mfSpecialty').value,
-          status: document.getElementById('mfStatus').value
+          specialty: document.getElementById('mfSpecialty').value
         });
         toast('Miembro actualizado');
         closeModal();
@@ -2332,6 +2334,15 @@
         if (getRes.ok) { const d = await getRes.json(); sha = d.sha; }
       } catch(e) {}
 
+      // Dos administradores: si alguien más publicó desde tu última publicación, avisar antes de encimarse
+      const ultimaSha = localStorage.getItem('ft_pub_sha') || '';
+      if (sha && ultimaSha && sha !== ultimaSha) {
+        if (!confirm('ATENCIÓN: otro administrador (u otro navegador) publicó cambios después de tu última publicación.\n\nSi continúas, lo que publicó la otra persona se REEMPLAZA con lo que tienes en este navegador.\n\n¿Publicar de todas formas?')) {
+          toast('Publicación cancelada. Recarga el panel para traer lo último publicado.');
+          return;
+        }
+      }
+
       const body = {
         message: 'Actualizar contenido del Club FisioTeck',
         content: btoa(unescape(encodeURIComponent(content))),
@@ -2343,6 +2354,7 @@
         body: JSON.stringify(body)
       });
       if (res.ok) {
+        try { const d = await res.json(); if (d && d.content && d.content.sha) localStorage.setItem('ft_pub_sha', d.content.sha); } catch (e) {}
         toast('¡Publicado en GitHub exitosamente! Los cambios se verán en minutos.');
       } else {
         toast('Error al publicar en GitHub — revisa tu token y repo');
@@ -2428,7 +2440,7 @@
               ${n.accessUntil ? '<span>Acceso hasta: <strong>' + n.accessUntil + '</strong></span>' : ''}
               ${n.cancelledAt ? '<span>Cancelado: <strong>' + n.cancelledAt + '</strong></span>' : ''}
             </div>
-            ${n.type === 'cancellation' ? '<div style="margin-top:10px;"><a href="https://dashboard.stripe.com/test/subscriptions" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--warning);color:#fff;border-radius:6px;font-size:.8rem;font-weight:600;">Ver en Stripe →</a></div>' : ''}
+            ${n.type === 'cancellation' ? '<div style="margin-top:10px;"><a href="https://dashboard.stripe.com/subscriptions" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--warning);color:#fff;border-radius:6px;font-size:.8rem;font-weight:600;">Ver en Stripe →</a></div>' : ''}
           </div>
           <div style="text-align:right;flex-shrink:0;">
             <div style="font-size:.75rem;color:var(--text-muted);">${date}</div>
@@ -2590,5 +2602,6 @@
 <script src="webinars.js?v=1"></script>
 <script src="moderacion.js?v=1"></script>
 <script src="noticias.js?v=1"></script>
+<script src="noticias-auto.js?v=1"></script>
 </body>
 </html>

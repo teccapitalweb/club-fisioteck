@@ -97,21 +97,8 @@
     o.classList.add('on');
   };
   window.mbCerrarYa = cerrar;
-  window.mbActivar = async function (uid, plan) {
-    const m = firebaseMembers.find(x => x.uid === uid); if (!m) return;
-    if (!confirm('¿Activar el plan ' + plan + ' de ' + (m.name || m.email) + ' sin cobro? Se le dará acceso por ' + (plan === 'anual' ? '365' : '30') + ' días.')) return;
-    const hasta = new Date(); hasta.setDate(hasta.getDate() + (plan === 'anual' ? 365 : 30));
-    try {
-      await fbDb.collection('members').doc(uid).update({ status: 'active', plan, nextPaymentDate: hasta.toISOString().split('T')[0], activadoManualmente: true, activadoPor: (firebase.auth().currentUser || {}).email || '', activadoEn: new Date().toISOString() });
-      toast('Plan ' + plan + ' activado'); cerrar(); loadFirebaseMembers();
-    } catch (e) { toast('No se pudo activar: ' + (e.code || e.message)); }
-  };
-  window.mbQuitar = async function (uid) {
-    const m = firebaseMembers.find(x => x.uid === uid); if (!m) return;
-    if (!confirm('¿Quitar el acceso de ' + (m.name || m.email) + '? Podrá volver a suscribirse.')) return;
-    try { await fbDb.collection('members').doc(uid).update({ status: 'inactive' }); toast('Acceso retirado'); cerrar(); loadFirebaseMembers(); }
-    catch (e) { toast('No se pudo actualizar: ' + (e.code || e.message)); }
-  };
+  // mbActivar y mbQuitar viven en servidor.js: pasan por el servidor, cancelan Stripe al quitar el acceso y quedan en la
+  // bitácora. Aquí ya no hay versión que escriba directo en Firestore, para que ningún orden de <script> la reviva.
   window.mbEliminar = async function (uid) {
     const m = firebaseMembers.find(x => x.uid === uid); if (!m) return;
     const motivo = prompt('¿Eliminar a ' + (m.name || m.email) + '?\nVa a la papelera y no podrá entrar al Club hasta que lo restaures. Su avance, certificados y pagos se conservan.\n\nMotivo (opcional):');

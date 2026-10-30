@@ -79,7 +79,7 @@
   async function abrir(op) {
     estilo();
     const id = String(op.id || op.titulo || 'libro');
-    const clave = 'ft:lector:' + id + ':pagina';
+    const clave = 'ft:lector:' + ((typeof auth !== 'undefined' && auth.currentUser && auth.currentUser.uid) || 'x') + ':' + id + ':pagina'; // por cuenta: en un equipo compartido no se mezclan
     document.querySelectorAll('.rdr-overlay').forEach(o => o.remove());
     const overlay = document.createElement('div'); overlay.className = 'rdr-overlay';
     overlay.innerHTML = '<div class="rdr-escenario"><span class="rdr-cargando">Abriendo el libro…</span></div>';
