@@ -222,3 +222,10 @@ body.fd-abierto { overflow:hidden; }
 .fd-ventana { display: flex; flex-direction: column; width: min(960px, 100%); max-height: calc(100vh - 48px); max-height: calc(100dvh - 48px); background: var(--bg, #EEF4FB); border-radius: 28px; overflow: hidden; box-shadow: 0 30px 80px rgba(0, 0, 0, .4); }
 .fd-ventana .fd-cuerpo { max-width: none; }
 @media (max-width: 640px) { .fd-ov { padding: 0; align-items: flex-end; } .fd-ventana { max-height: 94vh; max-height: 94dvh; border-radius: 24px 24px 0 0; } }
+
+/* Inicio: una sola columna a todo el ancho; las tarjetas laterales (clases en vivo, comunidad, actividad, directorio) van abajo, antes de las noticias */
+#ftHome { grid-template-columns: minmax(0, 1fr); }
+.ftd-izq { display: contents; }
+.ftd-izq > * { order: 1; }
+.ftd-der { order: 2; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); align-items: stretch; }
+.ftd-izq > section:last-child { order: 3; }

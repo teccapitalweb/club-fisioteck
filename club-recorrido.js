@@ -90,7 +90,8 @@
       let x = Math.min(Math.max(12, r.left + r.width / 2 - ancho / 2), window.innerWidth - ancho - 12);
       const abajoFijo = enMenu && window.innerWidth <= 900;
       const abajo = r.bottom + 14 + 190 < window.innerHeight;
-      if (abajoFijo) { tarjeta.style.left = '12px'; tarjeta.style.top = 'auto'; tarjeta.style.bottom = '14px'; }
+      // En el celular, con el menú abierto, la tarjeta va arriba si el botón está en la mitad de abajo (antes quedaba encima de él) y abajo si está arriba
+      if (abajoFijo) { const arriba = r.top > window.innerHeight * 0.42; tarjeta.style.left = '12px'; tarjeta.style.top = arriba ? '14px' : 'auto'; tarjeta.style.bottom = arriba ? 'auto' : '14px'; }
       else { tarjeta.style.left = x + 'px'; tarjeta.style.top = abajo ? (r.bottom + 14) + 'px' : 'auto'; tarjeta.style.bottom = abajo ? 'auto' : (window.innerHeight - r.top + 14) + 'px'; }
     } else { foco.style.cssText = 'display:none'; tarjeta.style.cssText = 'width:min(340px,calc(100vw - 24px));left:50%;top:50%;transform:translate(-50%,-50%)'; }
     ov.querySelector('.ftt-n').textContent = 'Paso ' + (paso + 1) + ' de ' + PASOS.length;
