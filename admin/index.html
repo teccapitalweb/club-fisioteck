@@ -919,6 +919,11 @@
         <div class="ap-kpi" style="--k:var(--success)"><div class="lbl">Curso con más certificados</div><div class="val" id="ceTop" style="font-size:1.05rem;line-height:1.3;">—</div><div class="note" id="ceTopN">&nbsp;</div></div>
         <div class="ap-kpi" style="--k:var(--blue)"><div class="lbl">Verificación pública</div><div class="val" style="font-size:1.05rem;">/verificar/</div><div class="note">Con folio o código QR</div></div>
       </div>
+      <div class="admin-card" id="cePendCard" style="display:none;overflow-x:auto;">
+        <h3 style="margin:0 0 4px;font-size:1rem;">Pendientes por emitir</h3>
+        <p style="font-size:.84rem;color:var(--text-muted);margin:0 0 12px;">Miembros que terminaron cursos antes de los certificados automáticos. Cada uno confirma su nombre y emite desde su cuenta (Certificados).</p>
+        <table class="admin-table"><thead><tr><th>Miembro</th><th>Cursos terminados sin certificado</th><th>Nombre</th></tr></thead><tbody id="cePendTabla"></tbody></table>
+      </div>
       <div class="admin-card" style="overflow-x:auto;">
         <div class="ap-toolbar"><input class="form-input" type="search" placeholder="Buscar por nombre, correo, curso o folio" oninput="ceBuscar(this.value)"></div>
         <table class="admin-table">
@@ -1524,6 +1529,18 @@
       est.innerHTML = '<div class="admin-card" style="border-left:4px solid var(--warning);"><strong>El servidor de certificados no respondió.</strong><p style="font-size:.86rem;color:var(--text-light);margin-top:6px;">' + esc(e.message) + '. Los certificados viven en el servidor (Railway). En local, inicia <code>npm start</code> en <code>club-fisioteck-webhooks</code> con tus variables de entorno.</p></div>';
     }
     renderCertificados();
+    cargarPendientesCert();
+  }
+  async function cargarPendientesCert() {
+    const card = document.getElementById('cePendCard');
+    try {
+      const d = await apiAdmin('/api/admin/certificados/pendientes');
+      card.style.display = d.miembros.length ? '' : 'none';
+      document.getElementById('cePendTabla').innerHTML = d.miembros.map(m =>
+        '<tr><td><strong>' + esc(m.nombre || 'Sin nombre') + '</strong><br><span style="font-size:.78rem;color:var(--text-muted)">' + esc(m.email) + '</span></td><td>' +
+        m.cursos.map(c => esc(c.titulo) + (c.terminadoEn ? ' <span style="font-size:.78rem;color:var(--text-muted)">· ' + new Date(c.terminadoEn).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' }) + '</span>' : '')).join('<br>') +
+        '</td><td><span class="badge ' + (m.nombreConfirmado ? 'badge-success' : 'badge-warning') + '">' + (m.nombreConfirmado ? 'Confirmado' : 'Por confirmar') + '</span></td></tr>').join('');
+    } catch (e) { card.style.display = 'none'; }
   }
   function renderCertificados() {
     const f = certLista.filter(c => !certBusqueda || [c.nombre, c.email, c.curso, c.folio].join(' ').toLowerCase().includes(certBusqueda));
