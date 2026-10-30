@@ -378,12 +378,14 @@
     if (j.tipo === 'sopa_letras') {
       const pal = [...new Set((d.palabras || []).map(soloLetras).filter(p => p.length >= 3 && p.length <= 12))];
       if (pal.length < 3) return { error: 'Clase ' + (i + 1) + ': la sopa de letras necesita al menos 3 palabras de 3 a 12 letras.' };
+      if (pal.length > 10) return { error: 'Clase ' + (i + 1) + ': la sopa de letras acepta máximo 10 palabras (tienes ' + pal.length + '); quita algunas.' };
       return { juego: { tipo: j.tipo, datos: { palabras: pal } } };
     }
     if (j.tipo === 'memorama') {
       const pares = (d.pares || []).map(p => ({ termino: String(p.termino || '').trim(), definicion: String(p.definicion || '').trim() })).filter(p => p.termino && p.definicion);
       if (pares.length < 3) return { error: 'Clase ' + (i + 1) + ': el memorama necesita al menos 3 pares completos.' };
-      return { juego: { tipo: j.tipo, datos: { pares: pares.slice(0, 8) } } };
+      if (pares.length > 10) return { error: 'Clase ' + (i + 1) + ': el memorama acepta máximo 10 pares (tienes ' + pares.length + '); quita algunos.' };
+      return { juego: { tipo: j.tipo, datos: { pares } } };
     }
     if (j.tipo === 'rompecabezas') return { juego: { tipo: j.tipo, datos: { dificultad: ['3', '4', '5'].includes(String(d.dificultad)) ? String(d.dificultad) : '3', imagenUrl: String(d.imagenUrl || '').trim() } } };
     if (j.tipo === 'ahorcado') {

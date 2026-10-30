@@ -46,7 +46,7 @@
     const lecc = c.lessons || [], total = lecc.length, prog = getCourseProgress(c.id), hechas = new Set(prog.completed || []), nHechas = hechas.size, pct = total ? Math.round(nHechas / total * 100) : 0;
     const img = imagen(c), area = window.ftNombreArea ? ftNombreArea(c.category) : (c.category || 'General');
     let sig = lecc.findIndex((l, i) => !hechas.has(i)); if (sig < 0) sig = 0;
-    const abre = i => !est.cerrado && (est.acceso || (est.prueba && i < total - 1));
+    const abre = i => !est.cerrado && (est.acceso || (est.prueba && i < total - 1) || (lecc[i] && lecc[i].isPreview === true)); // la vista previa se ve sin membresía (como Alintec)
     const pendiente = !memberIsPaid && window.ftPrueba && ftPrueba.estado === 'pendiente';
     let cta = '';
     if (!est.cerrado && total) {
@@ -63,7 +63,7 @@
       const esperaAnterior = abierta && !hecha && i > 0 && !hechas.has(i - 1) && !window.ftVistaAdmin;
       const nodo = hecha ? '<span class="nodo ok">' + I.check + '</span>' : abierta ? '<span class="nodo">' + (i + 1) + '</span>' : '<span class="nodo bloq">' + I.candado + '</span>';
       const sub = est.cerrado ? 'Faltan ' + est.dias + ' día' + (est.dias === 1 ? '' : 's') + ' para su desbloqueo'
-        : abierta ? (hecha ? 'Clase vista' : esperaAnterior ? 'Puedes verla; se marca al completar la clase ' + i : 'Toca para ver la clase') : est.prueba && i === total - 1 ? 'La última clase se abre con la membresía' : 'Activa tu membresía para ver esta clase';
+        : abierta ? (!est.acceso && !est.prueba ? 'Vista previa gratis' : hecha ? 'Clase vista' : esperaAnterior ? 'Puedes verla; se marca al completar la clase ' + i : 'Toca para ver la clase') : est.prueba && i === total - 1 ? 'La última clase se abre con la membresía' : 'Activa tu membresía para ver esta clase';
       const clic = abierta ? 'playLesson(' + i + ')' : est.cerrado ? '' : 'showPaywallOverlay()';
       return '<li class="fd-clase' + (abierta ? '' : ' bloq') + '"' + (clic ? ' onclick="' + clic + '"' : '') + '>' + nodo + '<span class="mini"' + (img ? ' style="background-image:url(\'' + esc(img) + '\')"' : '') + '></span>' +
         '<span class="txt"><strong>' + esc(l.title || 'Clase ' + (i + 1)) + '</strong><small>' + esc(sub) + (l.duration ? ' · ' + esc(l.duration) : '') + '</small></span>' +
@@ -124,6 +124,7 @@
   function permitida(cursoId, i) {
     if (memberIsPaid) return true;
     const c = siteData.courses.find(x => x.id === cursoId);
+    if (c && (c.lessons || [])[i] && c.lessons[i].isPreview === true) return true; // vista previa gratis
     return !!(c && typeof ftEsPrueba === 'function' && ftEsPrueba(cursoId) && i < (c.lessons || []).length - 1);
   }
   const reproducir = window.playLesson;

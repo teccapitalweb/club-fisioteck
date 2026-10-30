@@ -5489,6 +5489,7 @@
     }
     const course = siteData.courses.find(c => c.id === courseId);
     const totalLessons = course?.lessons?.length || 0;
+    try { window.dispatchEvent(new CustomEvent('ft:clase-completada', { detail: { courseId, lessonIndex } })); } catch (_) { /* sin oyentes */ }
     openCourseDetail(courseId);
     if (progress.completed.length >= totalLessons && totalLessons > 0) {
       showToast('¡Felicidades! Has completado todo el curso.');
@@ -5525,7 +5526,7 @@
       }
     }
     guardarCola(restante);
-    if (restante.length < cola.length) { showToast('Tu avance pendiente ya se guardó.'); try { if (window.ftDetalle) ftDetalle.repintar(); } catch (_) { /* sin detalle */ } }
+    if (restante.length < cola.length) { showToast('Tu avance pendiente ya se guardó.'); try { window.dispatchEvent(new CustomEvent('ft:clase-completada', { detail: {} })); } catch (_) { /* sin oyentes */ } }
     _reintentando = false;
   }
   window.addEventListener('online', () => setTimeout(reintentarAvance, 1500));
@@ -6084,7 +6085,7 @@
     const lesson = course.lessons[index];
     const isPreview = lesson.isPreview === true;
     const enPrueba = typeof ftEsPrueba === 'function' && ftEsPrueba(course.id);
-    if (!memberIsPaid && !enPrueba) { showPaywallOverlay(); return; }
+    if (!memberIsPaid && !enPrueba && !isPreview) { showPaywallOverlay(); return; }
     document.querySelectorAll('.lesson-item').forEach(el => el.classList.remove('playing'));
     document.getElementById('lesson-'+index)?.classList.add('playing');
     openVideo(lesson.title, lesson.videoUrl || '', {
