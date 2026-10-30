@@ -127,7 +127,7 @@
       : { eyebrow: '¡Membresía VIP activa!', t: 'Bienvenido al Club VIP Mensual', d: nombre + ', ya eres parte de la comunidad de fisioterapia y rehabilitación. Esto es tuyo:' };
     return [
       Object.assign({ pose: 'celebra' }, portada),
-      { pose: 'libro', eyebrow: 'Cursos con certificado', t: 'Cursos premium', d: esc8 ? 'Tu primer curso ya está abierto y cada ' + dias + ' días se abre el siguiente. También puedes abrir el que sigue antes superando retos.' : 'Catálogo completo con clases grabadas, material descargable y certificado al terminar.' },
+      { pose: 'libro', eyebrow: 'Cursos con certificado', t: 'Cursos premium', d: esc8 ? 'Tu primer curso ya está abierto y cada ' + dias + ' días se abre el siguiente. También puedes abrir antes el primero de esos cursos superando retos (una sola vez).' : 'Catálogo completo con clases grabadas, material descargable y certificado al terminar.' },
       { pose: 'senala', eyebrow: 'En vivo', t: 'Clases en vivo', d: 'Webinars con especialistas y acceso a las grabaciones cuando quieras.' },
       { pose: 'lupa', eyebrow: 'Biblioteca', t: 'PDF, material y libros', d: 'Guías y plantillas descargables, y libros de lectura que se abren al superar retos.' },
       { pose: 'trofeo', eyebrow: 'Herramientas y retos', t: 'Herramientas clínicas y retos', d: 'Calculadora, atlas muscular, escala EVA y más. Gana XP, sube de nivel y presume tu tarjeta en el Directorio VIP.' },
