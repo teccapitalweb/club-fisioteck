@@ -55,10 +55,40 @@
     } catch (e) { if (!(window.ftCupones && ftCupones.interpretar(e))) showToast(e.message); btn.disabled = false; }
   };
 
+  // Tarjeta de confirmación (en lugar del cuadro de texto del navegador)
+  const estilo = document.createElement('style');
+  estilo.textContent = '.fcc-ov{position:fixed;inset:0;z-index:100003;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(6,14,26,.62);backdrop-filter:blur(4px);animation:fccF .2s ease}' +
+    '.fcc-caja{width:100%;max-width:380px;background:var(--surface,#fff);color:var(--text,#12202B);border:1px solid var(--border,#D4DDD9);border-radius:22px;padding:26px 22px 20px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.4);animation:fccP .3s cubic-bezier(.16,1,.3,1)}' +
+    '.fcc-ico{width:58px;height:58px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;background:var(--accent-ghost,rgba(13,95,160,.12));color:var(--accent,#0D5FA0)}.fcc-ico svg{width:28px;height:28px}' +
+    '.fcc-caja small{display:block;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;font-weight:800;color:var(--accent,#0D5FA0);margin-bottom:6px}' +
+    '.fcc-caja h3{margin:0 0 6px;font-size:1.15rem;line-height:1.3}.fcc-caja p{margin:0 0 6px;font-size:.88rem;color:var(--text-light,#5A6F68);line-height:1.5}' +
+    '.fcc-cuenta{margin:12px 0 16px;padding:10px 12px;border-radius:12px;background:var(--surface-2,#eef1f4);font-size:.84rem;display:flex;justify-content:space-between;gap:10px}.fcc-cuenta b{color:var(--text,#12202B)}' +
+    '.fcc-bot{display:flex;gap:10px}.fcc-bot button{flex:1;padding:12px 14px;border-radius:12px;font:inherit;font-weight:700;font-size:.9rem;cursor:pointer;border:1px solid var(--border-2,#C9D8E6);background:none;color:var(--text,#12202B)}' +
+    '.fcc-bot .fcc-ok{background:var(--accent,#0D5FA0);border-color:var(--accent,#0D5FA0);color:var(--on-accent,#fff)}@keyframes fccF{from{opacity:0}to{opacity:1}}@keyframes fccP{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}';
+  document.head.appendChild(estilo);
+  function confirmarCanje(m) {
+    return new Promise(resolve => {
+      document.querySelectorAll('.fcc-ov').forEach(x => x.remove());
+      const saldo = Number(C.datos && C.datos.saldo) || 0, resto = saldo - m.costo;
+      const o = document.createElement('div'); o.className = 'fcc-ov'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true');
+      o.innerHTML = '<div class="fcc-caja"><div class="fcc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18"/><path d="M12 8c-2.5 0-4-1-4-2.5S9.5 3 12 8zM12 8c2.5 0 4-1 4-2.5S14.5 3 12 8z"/></svg></div>' +
+        '<small>Canjear material</small><h3>' + String(m.titulo).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])) + '</h3><p>Se descontarán créditos de tu saldo y el material queda desbloqueado para siempre.</p>' +
+        '<div class="fcc-cuenta"><span>Costo<br><b>' + m.costo + ' créditos</b></span><span>Te quedan<br><b>' + resto + ' créditos</b></span></div>' +
+        '<div class="fcc-bot"><button type="button" id="fccNo">Cancelar</button><button type="button" class="fcc-ok" id="fccSi">Canjear</button></div></div>';
+      document.body.appendChild(o);
+      const cerrar = v => { document.removeEventListener('keydown', tecla, true); o.remove(); resolve(v); };
+      const tecla = e => { if (e.key === 'Escape') { e.preventDefault(); cerrar(false); } };
+      document.addEventListener('keydown', tecla, true);
+      o.querySelector('#fccNo').onclick = () => cerrar(false); o.querySelector('#fccSi').onclick = () => cerrar(true);
+      o.addEventListener('mousedown', e => { if (e.target === o) cerrar(false); });
+      setTimeout(() => o.querySelector('#fccSi').focus(), 60);
+    });
+  }
+
   C.canjear = async function (id) {
     const m = C.datos && C.datos.materiales.find(x => x.id === id); if (!m) return;
     if (C.datos.saldo < m.costo) { showToast('Te faltan ' + (m.costo - C.datos.saldo) + ' créditos. Canjea un cupón o pídelos en nuestro canal.'); return; }
-    if (!confirm('¿Canjear ' + m.costo + ' créditos por "' + m.titulo + '"?')) return;
+    if (!(await confirmarCanje(m))) return;
     try {
       await certFetch('/api/creditos/canjear', { method: 'POST', body: JSON.stringify({ materialId: id }) });
       showToast('¡Material desbloqueado!');

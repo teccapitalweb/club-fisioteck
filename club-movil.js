@@ -1,5 +1,5 @@
 /* Club FisioTeck — detalles de navegación y accesibilidad (como Alintec y Zoorigen):
-   · barra inferior del celular distinta según el plan (miembro: Inicio, Cursos, Material, Herramientas, Referidos, Más · cuenta gratuita: Inicio, Cursos, Retos, Logros, Más),
+   · barra inferior del celular distinta según el plan (miembro: Inicio, Cursos, Material, Retos, Herramientas, Más · cuenta gratuita: Inicio, Cursos, Retos, Logros, Más),
    · "Instalar app" fijo en el menú lateral,
    · aria-current en el menú, regiones aria-live en las listas que cargan y estados vacíos con un botón que lleva a la acción.
    Depende de index.html: showPage, toggleSidebar, memberIsPaid, showToast. */
@@ -10,7 +10,7 @@
   const ic = id => id === 'home' ? CASA : '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#' + id + '"/></svg>';
 
   // ---------- Barra inferior por plan ----------
-  const MIEMBRO = [['home', 'Inicio', 'home'], ['library', 'Cursos', 'f-book'], ['pdfs', 'Material', 'f-file'], ['herramientas', 'Herramientas', 'f-tool'], ['referidos', 'Referidos', 'f-gift']];
+  const MIEMBRO = [['home', 'Inicio', 'home'], ['library', 'Cursos', 'f-book'], ['pdfs', 'Material', 'f-file'], ['retos', 'Retos', 'f-target'], ['herramientas', 'Herramientas', 'f-tool']];
   // Páginas de cada herramienta: el botón «Herramientas» de la barra queda marcado en cualquiera de ellas
   const HERRAMIENTAS = ['rehab-calc', 'atlas', 'glossary', 'rom', 'eva', 'timer'];
   const GRATIS = [['home', 'Inicio', 'home'], ['library', 'Cursos', 'f-book'], ['retos', 'Retos', 'f-target'], ['achievements', 'Logros', 'f-trophy']];

@@ -125,7 +125,8 @@
     const nombre = (((auth.currentUser && auth.currentUser.displayName) || '').trim().split(/\s+/)[0]) || 'colega';
     const hoy = new Date().toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
     const sig = !c && d.proximo ? (d.cursos.find(x => String(x.id) === String(d.proximo.id)) || null) : null; // el curso que sigue (cerrado): su portada va de fondo
-    const img = c ? imagen(c.c) : (sig ? imagen(sig) : '');
+    const portada = (d.cursos.find(x => imagen(x)) || null);
+    const img = c ? imagen(c.c) : (sig ? imagen(sig) : (d.pruebaPend && portada ? imagen(portada) : ''));
     const clase = c ? ((c.c.lessons || [])[c.sigIdx] || {}) : {};
     const pct = c && c.total ? Math.round(c.hechas / c.total * 100) : 0;
     const noticias = ((typeof siteData !== 'undefined' && siteData.news) || []).slice().sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 7);
