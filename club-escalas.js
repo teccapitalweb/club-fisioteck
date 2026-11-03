@@ -30,7 +30,7 @@
       return pos.map((t, i) => '<label class="fe-item"><span>' + t + '</span><select data-q="' + i + '">' + opciones(0, 10) + '</select></label>').join('') + '<p class="fp-ref">Segundos que mantuvo la posición (de 0 a 10). Si en una posición no llegó a 10 s, deja las siguientes en 0.</p>';
     }
     if (e.tipo === 'actividades') return [0, 1, 2, 3, 4].map(i => '<div class="fe-psfs"><input type="text" maxlength="80" data-aa="' + i + '" placeholder="Actividad ' + (i + 1) + (i ? ' (opcional)' : '') + '" aria-label="Actividad ' + (i + 1) + '"><select data-av="' + i + '" aria-label="Calificación de la actividad ' + (i + 1) + '">' + opciones(0, 10) + '</select></div>').join('') + '<p class="fp-ref">0 es no poder hacerla y 10 es hacerla sin ninguna dificultad.</p>';
-    if (e.tipo === 'silla') return '<div class="fp-fila"><label>Sexo<select id="feSexo"><option value="">Elige…</option><option value="hombre">Hombre</option><option value="mujer">Mujer</option></select></label><label>Edad (60 a 94)<input type="number" id="feEdad" min="60" max="94" inputmode="numeric"></label></div><label>Repeticiones en 30 segundos<input type="number" id="feRep" min="0" max="60" inputmode="numeric"></label>';
+    if (e.tipo === 'silla') return '<div class="fp-fila"><label>Sexo<select id="feSexo"><option value="">Elige…</option><option value="hombre">Hombre</option><option value="mujer">Mujer</option></select></label><label>Edad<input type="number" id="feEdad" min="1" max="120" inputmode="numeric"></label></div><p class="fp-ref">Los valores esperados existen solo de 60 a 94 años. A otras edades se registra el número de repeticiones para ver la evolución, sin comparar con un valor esperado.</p><label>Repeticiones en 30 segundos<input type="number" id="feRep" min="0" max="60" inputmode="numeric"></label>';
     return '';
   }
 
@@ -83,9 +83,12 @@
     }
     if (e.tipo === 'silla') {
       const sexo = (raiz.querySelector('#feSexo') || {}).value, edad = Number((raiz.querySelector('#feEdad') || {}).value), rep = Number((raiz.querySelector('#feRep') || {}).value);
-      if (!sexo) return { ok: false, error: 'Elige el sexo para comparar con el valor esperado.' };
-      if (!(edad >= 60 && edad <= 94)) return { ok: false, error: 'La edad debe estar entre 60 y 94 años.' };
       if (!(rep >= 0 && rep <= 60) || (raiz.querySelector('#feRep') || {}).value === '') return { ok: false, error: 'Escribe cuántas repeticiones hizo en 30 segundos.' };
+      if (!(edad >= 60 && edad <= 94) || !sexo) {
+        const hayEdad = edad >= 1 && edad <= 120;
+        if (hayEdad && edad >= 60 && edad <= 94 && !sexo) return { ok: false, error: 'Elige el sexo para comparar con el valor esperado.' };
+        return { ok: true, entrada: Object.assign(base, { p: rep, max: null, txt: 'Sin valor esperado: solo existe de 60 a 94 años (CDC STEADI). Sirve para ver la evolución.', det: { sexo: sexo || '', edad: hayEdad ? edad : null } }) };
+      }
       const fila = e.refs[sexo].find(r => edad >= r[0] && edad <= r[1]), umbral = fila ? fila[2] : null;
       const txt = umbral == null ? '' : (rep < umbral ? 'Por debajo del valor esperado (menos de ' + umbral + ')' : 'Dentro o por encima del valor esperado (' + umbral + ' o más)');
       return { ok: true, entrada: Object.assign(base, { p: rep, max: null, txt, det: { sexo, edad } }) };

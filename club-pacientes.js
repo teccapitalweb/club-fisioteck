@@ -252,7 +252,7 @@
     const a = $('fpArt'); if (a) { a.onchange = movimientos; $('fpMov').onchange = refRom; movimientos(); $('fpGuardarRom').onclick = guardarRom; }
     const es = $('fpEsc');
     if (es) {
-      es.onchange = () => { const e = window.ftEscalas && ftEscalas.buscar(es.value); $('fpEscDesc').textContent = e ? e.desc + (e.nota ? ' ' + e.nota : '') + (e.fuente ? ' Fuente: ' + e.fuente : '') : ''; $('fpEscCampos').innerHTML = e ? ftEscalas.formulario(e.id) : ''; $('fpEscErr').hidden = true; };
+      es.onchange = () => { const e = window.ftEscalas && ftEscalas.buscar(es.value); $('fpEscDesc').textContent = e ? e.desc + (e.nota ? ' ' + e.nota : '') + (e.fuente ? ' Fuente: ' + e.fuente : '') : ''; $('fpEscCampos').innerHTML = e ? ftEscalas.formulario(e.id) : ''; const ed = edad(nacDe(actual)), se = $('feSexo'), ee = $('feEdad'); if (ee && ed != null) ee.value = ed; if (se && actual.sexo) se.value = actual.sexo === 'F' ? 'mujer' : actual.sexo === 'M' ? 'hombre' : ''; $('fpEscErr').hidden = true; };
       $('fpGuardarEsc').onclick = guardarEscala;
     }
   }
