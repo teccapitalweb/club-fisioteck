@@ -269,7 +269,7 @@
       (ab === 'q' ? panelPreguntas(i) : ab === 'j' ? panelJuego(i) : '') + '</div>';
   }
   window.cuePanel = (i, p) => { abiertos[i] = abiertos[i] === p ? null : p; pintarEditor(); };
-  window.cueAgregarClase = () => { D.lessons.push({ id: Date.now() + D.lessons.length, title: 'Sesión ' + String(D.lessons.length + 1).padStart(2, '0'), desc: '', duration: '', videoRef: '', isPreview: D.lessons.length === 0, preguntas: [], juego: null, videoProvider: 'bunny', sessionNumbers: [D.lessons.length + 1] }); pintarEditor(); };
+  window.cueAgregarClase = () => { D.lessons.push({ id: Date.now() + D.lessons.length, title: 'Sesión ' + String(D.lessons.length + 1).padStart(2, '0'), desc: '', duration: '', videoRef: '', isPreview: false, preguntas: [], juego: null, videoProvider: 'bunny', sessionNumbers: [D.lessons.length + 1] }); pintarEditor(); };
   window.cueQuitarClase = i => { if (!confirm('¿Quitar la clase ' + (i + 1) + '?')) return; D.lessons.splice(i, 1); abiertos = {}; pintarEditor(); };
   window.cueMover = (i, d) => { const j = i + d; if (j < 0 || j >= D.lessons.length) return; [D.lessons[i], D.lessons[j]] = [D.lessons[j], D.lessons[i]]; abiertos = {}; pintarEditor(); };
 
@@ -304,7 +304,7 @@
       let creadas = 0;
       mejor.sesiones.forEach(se => {
         let l = D.lessons[se.numero - 1];
-        if (!l) { l = { id: Date.now() + se.numero, title: '', desc: '', duration: '', isPreview: se.numero === 1, preguntas: [], juego: null, videoProvider: 'bunny', sessionNumbers: [se.numero], videoRef: '' }; D.lessons[se.numero - 1] = l; creadas++; }
+        if (!l) { l = { id: Date.now() + se.numero, title: '', desc: '', duration: '', isPreview: false, preguntas: [], juego: null, videoProvider: 'bunny', sessionNumbers: [se.numero], videoRef: '' }; D.lessons[se.numero - 1] = l; creadas++; }
         l.videoRef = se.videoId;
         if (!String(l.title || '').trim()) l.title = se.titulo || 'Sesión ' + String(se.numero).padStart(2, '0');
         if (!String(l.duration || '').trim() && se.duracion) l.duration = se.duracion;

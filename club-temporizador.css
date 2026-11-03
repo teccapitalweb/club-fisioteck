@@ -1,0 +1,26 @@
+/* Club FisioTeck — Cronómetro: rutinas por intervalos */
+.tm-pestanas { display: flex; gap: 6px; max-width: 520px; margin: 0 auto 16px; padding: 4px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface, var(--bg-card, #fff)); }
+.tm-pestanas button { flex: 1; padding: 9px 10px; border: 0; border-radius: 9px; background: transparent; color: var(--text-light, var(--text-muted)); font: inherit; font-weight: 700; font-size: .84rem; cursor: pointer; }
+.tm-pestanas button.on { background: var(--accent); color: var(--on-accent, #fff); }
+.tm-rutina { max-width: 560px; margin: 0 auto; }
+.tm-rutina h4 { margin: 14px 0 8px; font-size: .86rem; color: var(--text-light, var(--text-muted)); font-weight: 600; }
+.tm-plantillas { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.tm-plantillas button { text-align: left; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface, var(--bg-card, #fff)); color: var(--text); font: inherit; font-weight: 600; font-size: .84rem; cursor: pointer; } .tm-plantillas small { display: block; font-weight: 500; color: var(--text-muted); font-size: .7rem; }
+.tm-ref { font-size: .76rem; color: var(--text-muted); margin: 8px 0 0; }
+.tm-nombre, .tm-ej-fila label { display: block; font-size: .72rem; font-weight: 600; color: var(--text-light, var(--text-muted)); } .tm-nombre input, .tm-ej-fila input { width: 100%; box-sizing: border-box; margin-top: 3px; padding: 9px 10px; border: 1px solid var(--border-2, var(--border)); border-radius: 9px; background: var(--bg); color: var(--text); font: inherit; font-size: .9rem; } .tm-nombre { margin-bottom: 10px; }
+.tm-ej-fila { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; align-items: end; padding: 12px; margin-bottom: 8px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface, var(--bg-card, #fff)); } .tm-ej-fila .tm-n { grid-column: 1 / -1; margin: 0; font-weight: 700; }
+.tm-x { grid-column: 1 / -1; justify-self: end; background: none; border: 0; color: #C0392B; font: inherit; font-size: .76rem; text-decoration: underline; cursor: pointer; padding: 0; }
+.tm-opc { display: flex; gap: 14px; flex-wrap: wrap; margin: 14px 0 6px; font-size: .84rem; } .tm-opc label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.tm-total { font-size: .82rem; color: var(--text-muted); margin: 6px 0 12px; }
+.tm-bot { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+.tm-cta, .tm-sec { padding: 12px 20px; border-radius: 10px; font: inherit; font-weight: 700; font-size: .9rem; cursor: pointer; border: 1px solid var(--border-2, var(--border)); background: transparent; color: var(--text); } .tm-cta { background: var(--accent); border-color: var(--accent); color: var(--on-accent, #fff); }
+.tm-borrar { margin-top: 14px; background: none; border: 0; color: #C0392B; font: inherit; font-size: .78rem; text-decoration: underline; cursor: pointer; padding: 0; }
+.tm-corredor { text-align: center; padding: 22px 16px; border: 1px solid var(--border); border-radius: 20px; background: var(--surface, var(--bg-card, #fff)); }
+.tm-corredor.trabajo { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-ghost, rgba(13,95,160,.12)); } .tm-corredor.descanso { border-color: #2F8B63; box-shadow: 0 0 0 3px rgba(47,139,99,.14); }
+.tm-fase { font-size: .78rem; letter-spacing: .16em; text-transform: uppercase; font-weight: 800; color: var(--accent); } .tm-corredor.descanso .tm-fase { color: #2F8B63; }
+.tm-reloj { font-size: clamp(3.4rem, 17vw, 5.4rem); font-weight: 800; line-height: 1.05; font-variant-numeric: tabular-nums; letter-spacing: .02em; margin: 4px 0; }
+.tm-ej { font-size: 1.2rem; font-weight: 700; } .tm-sub { color: var(--text-muted); font-size: .88rem; margin: 2px 0 12px; } .tm-sig { color: var(--text-muted); font-size: .8rem; margin: 10px 0 14px; }
+.tm-barra { height: 6px; border-radius: 6px; background: var(--bg); overflow: hidden; } .tm-barra i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s linear; }
+.tm-corredor .tm-bot { justify-content: center; }
+.tm-fin b { display: block; font-size: 1.5rem; margin-bottom: 4px; } .tm-fin p { color: var(--text-muted); margin: 0 0 14px; }
+@media (max-width: 560px) { .tm-ej-fila { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

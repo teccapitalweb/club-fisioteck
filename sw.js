@@ -1,7 +1,7 @@
 /* Club FisioTeck — Service Worker
    Estrategia: network-first SOLO para recursos del mismo origen (online = siempre fresco,
    offline = respaldo de caché). Firebase / gstatic / CDNs NO se interceptan. */
-const CACHE = 'fisioteck-v84-pacientes';
+const CACHE = 'fisioteck-v85-herramientas';
 const SHELL = [
   './',
   './index.html',
@@ -21,6 +21,21 @@ const SHELL = [
   './club-retos.css',
   './club-retos.js',
   './club-insignias-extra.js',
+  './club-temporizador.js',
+  './club-temporizador.css',
+  './club-escalas-datos.js',
+  './club-escalas.js',
+  './club-atlas-datos.js',
+  './club-atlas.js',
+  './club-atlas.css',
+  './club-rom-datos.js',
+  './club-rom.js',
+  './club-rom.css',
+  './club-plan-datos.js',
+  './club-plan.js',
+  './club-plan.css',
+  './club-glosario.js',
+  './club-glosario.css',
   './club-pacientes.js',
   './club-pacientes.css',
   './club-detective.js',

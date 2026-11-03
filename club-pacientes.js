@@ -9,7 +9,7 @@
   'use strict';
   const $ = id => document.getElementById(id);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const MAX_PAC = 100, MAX_EVA = 300, MAX_ROM = 600;
+  const MAX_PAC = 100, MAX_EVA = 300, MAX_ROM = 600, MAX_ESC = 300, MAX_PLANES = 20;
   const ZONAS = ['Cervical', 'Hombro', 'Codo', 'Muñeca', 'Espalda', 'Cadera', 'Rodilla', 'Tobillo', 'Otro'];
   const TIPOS = ['Punzante', 'Ardor', 'Sordo', 'Eléctrico', 'Otro'];
   const LADOS = ['', 'Derecho', 'Izquierdo'];
@@ -46,10 +46,10 @@
     const e = idx.pacientes.find(x => x.id === p.id), datos = { id: p.id, clave: p.clave, zona: p.zona || '', ultimaMs: Date.now(), sesiones: sesiones(p) };
     if (e) Object.assign(e, datos); else idx.pacientes.push(datos);
   }
-  const sesiones = p => new Set([...(p.eva || []).map(x => new Date(x.f).toDateString()), ...(p.rom || []).map(x => new Date(x.f).toDateString())]).size;
+  const sesiones = p => new Set([...(p.eva || []).map(x => new Date(x.f).toDateString()), ...(p.rom || []).map(x => new Date(x.f).toDateString()), ...(p.escalas || []).map(x => new Date(x.f).toDateString())]).size;
   async function guardarPaciente() {
     if (!actual) return;
-    actual.eva = (actual.eva || []).slice(-MAX_EVA); actual.rom = (actual.rom || []).slice(-MAX_ROM);
+    actual.eva = (actual.eva || []).slice(-MAX_EVA); actual.rom = (actual.rom || []).slice(-MAX_ROM); actual.escalas = (actual.escalas || []).slice(-MAX_ESC); actual.planes = (actual.planes || []).slice(-MAX_PLANES);
     await col().doc(actual.id).set(actual);
     actualizarEntrada(actual); await guardarIndice();
   }
@@ -117,7 +117,7 @@
       '<div class="fp-metricas"><div><small>Dolor inicial</small><b>' + (inicial == null ? '—' : inicial + '/10') + '</b></div><div><small>Dolor última sesión</small><b>' + (ultima == null ? '—' : ultima + '/10') + '</b></div><div><small>Déficit de movilidad</small><b>' + (defProm == null ? '—' : defProm + ' %') + '</b></div></div>' +
       '<h4>Evolución del dolor (EVA 0 a 10)</h4>' + grafica(eva) +
       '<h4>Movilidad (grados)</h4>' + (ult.length ? '<div class="fp-rom">' + ult.map(e => { const r = e.ultimo, pct = Math.min(100, r.ref ? Math.round(r.g / r.ref * 100) : 0), mejora = e.primero !== r ? (r.g - e.primero.g) : null; return '<div class="fp-m"><div class="fp-m-top"><span>' + esc(r.movN) + (r.lado ? ' · ' + esc(r.lado) : '') + '<small>' + esc(r.artN) + '</small></span><span class="fp-der">' + r.g + ' de ' + r.ref + '°<small>déficit ' + deficit(r) + ' %' + (mejora == null ? '' : ' · ' + (mejora >= 0 ? '+' : '') + mejora + '° desde la primera') + '</small></span></div><div class="fp-barra"><i style="width:' + pct + '%"></i></div></div>'; }).join('') + '</div>' : '<p class="fp-nada">Todavía no hay mediciones de movilidad.</p>') +
-      '<div class="fp-botones"><button type="button" class="fp-cta" data-forma="dolor">Registrar dolor</button><button type="button" class="fp-cta" data-forma="rom">Medir movilidad</button></div>' +
+      seccionEscalas(p) + seccionPlanes(p) + '<div class="fp-botones"><button type="button" class="fp-cta" data-forma="dolor">Registrar dolor</button><button type="button" class="fp-cta" data-forma="rom">Medir movilidad</button><button type="button" class="fp-cta" data-forma="escala">Aplicar escala</button></div>' +
       '<div id="fpForma">' + formulario() + '</div>' + historial(p) +
       '<p class="fp-aviso">Herramienta de apoyo. No sustituye el criterio profesional ni constituye un diagnóstico.</p>';
   }
@@ -134,15 +134,69 @@
         '<div class="fp-fila"><label>Lado<select id="fpLado">' + LADOS.map(l => '<option value="' + l + '">' + (l || 'No aplica') + '</option>').join('') + '</select></label><label>Grados medidos<input type="number" id="fpGrados" min="0" max="360" step="1" inputmode="numeric" placeholder="0"></label></div>' +
         '<p class="fp-ref" id="fpRef"></p><div class="fp-bot"><button type="button" class="fp-sec" data-forma="">Cancelar</button><button type="button" class="fp-cta" id="fpGuardarRom">Guardar</button></div></div>';
     }
+    if (forma === 'escala') {
+      const lista = window.ftEscalas ? ftEscalas.lista() : [];
+      return '<div class="fp-form"><h4>Aplicar escala</h4><label>Escala<select id="fpEsc"><option value="">Elige una escala…</option>' + lista.map(e => '<option value="' + esc(e.id) + '">' + esc(e.nombre) + '</option>').join('') + '</select></label><p class="fp-ref" id="fpEscDesc"></p><div id="fpEscCampos"></div><p class="fp-error" id="fpEscErr" hidden></p><div class="fp-bot"><button type="button" class="fp-sec" data-forma="">Cancelar</button><button type="button" class="fp-cta" id="fpGuardarEsc">Calcular y guardar</button></div></div>';
+    }
     return '';
   }
 
   function historial(p) {
-    const e = (p.eva || []).slice().sort((a, b) => b.f - a.f).slice(0, 8), r = (p.rom || []).slice().sort((a, b) => b.f - a.f).slice(0, 8);
-    if (!e.length && !r.length) return '';
+    const e = (p.eva || []).slice().sort((a, b) => b.f - a.f).slice(0, 8), r = (p.rom || []).slice().sort((a, b) => b.f - a.f).slice(0, 8), s = (p.escalas || []).slice().sort((a, b) => b.f - a.f).slice(0, 8);
+    if (!e.length && !r.length && !s.length) return '';
     return '<details class="fp-hist"><summary>Historial reciente</summary>' +
       e.map(x => '<div class="fp-h"><span>' + fecha(x.f) + ' · Dolor <b>' + x.v + '/10</b> · ' + esc(x.zona || '') + (x.tipo ? ' · ' + esc(x.tipo) : '') + (x.nota ? '<small>' + esc(x.nota) + '</small>' : '') + '</span><button type="button" data-del="eva" data-f="' + x.f + '" aria-label="Eliminar registro">Eliminar</button></div>').join('') +
-      r.map(x => '<div class="fp-h"><span>' + fecha(x.f) + ' · ' + esc(x.movN) + ' ' + esc(x.artN) + (x.lado ? ' ' + esc(x.lado) : '') + ' <b>' + x.g + '°</b> de ' + x.ref + '°</span><button type="button" data-del="rom" data-f="' + x.f + '" aria-label="Eliminar medición">Eliminar</button></div>').join('') + '</details>';
+      r.map(x => '<div class="fp-h"><span>' + fecha(x.f) + ' · ' + esc(x.movN) + ' ' + esc(x.artN) + (x.lado ? ' ' + esc(x.lado) : '') + ' <b>' + x.g + '°</b> de ' + x.ref + '°</span><button type="button" data-del="rom" data-f="' + x.f + '" aria-label="Eliminar medición">Eliminar</button></div>').join('') +
+      s.map(x => '<div class="fp-h"><span>' + fecha(x.f) + ' · ' + esc(x.nombre) + ' <b>' + esc(puntaje(x)) + '</b><small>' + esc(x.txt || '') + '</small></span><button type="button" data-del="escalas" data-f="' + x.f + '" aria-label="Eliminar escala">Eliminar</button></div>').join('') + '</details>';
+  }
+
+  // ---------- Planes de rehabilitación guardados desde la Calculadora ----------
+  function seccionPlanes(p) {
+    const l = (p.planes || []).slice().sort((a, b) => b.f - a.f); if (!l.length) return '';
+    return '<h4>Planes de rehabilitación</h4><div class="fp-esc">' + l.map(x => '<div class="fp-h"><span>' + esc(x.nombre) + '<small>' + fecha(x.f) + ' · ' + esc(x.zonaN || '') + ' · ' + (x.ejercicios || []).length + ' ejercicios</small></span><span class="fp-acc"><button type="button" class="fp-sec" data-plan-pdf="' + x.f + '">PDF</button><button type="button" class="fp-sec fp-rojo" data-plan-del="' + x.f + '">Quitar</button></span></div>').join('') + '</div>';
+  }
+  async function listar() {
+    if (!auth.currentUser) throw new Error('Inicia sesión.');
+    await cargarIndice(); return { avisoOk: !!idx.aviso, pacientes: idx.pacientes.map(p => ({ id: p.id, clave: p.clave })) };
+  }
+  async function guardarPlan(id, plan) {
+    if (!memberIsPaid && !window.ftVistaAdmin) { showPaywallOverlay(); throw new Error('Herramienta para miembros.'); }
+    await cargarIndice(); if (!idx.aviso) throw new Error('Abre Pacientes y acepta el aviso de privacidad primero.');
+    const s = await col().doc(id).get(); if (!s.exists) throw new Error('Ese paciente ya no existe.');
+    const doc = Object.assign({ id, eva: [], rom: [], escalas: [], planes: [] }, s.data());
+    doc.planes = (doc.planes || []).concat([plan]).slice(-MAX_PLANES);
+    await col().doc(id).set(doc); actualizarEntrada(doc); await guardarIndice(); if (actual && actual.id === id) actual = doc;
+  }
+
+  async function guardarMediciones(id, lista) {
+    if (!memberIsPaid && !window.ftVistaAdmin) { showPaywallOverlay(); throw new Error('Herramienta para miembros.'); }
+    await cargarIndice(); if (!idx.aviso) throw new Error('Abre Pacientes y acepta el aviso de privacidad primero.');
+    const s = await col().doc(id).get(); if (!s.exists) throw new Error('Ese paciente ya no existe.');
+    const doc = Object.assign({ id, eva: [], rom: [], escalas: [], planes: [] }, s.data());
+    doc.rom = (doc.rom || []).concat(lista).slice(-MAX_ROM);
+    await col().doc(id).set(doc); actualizarEntrada(doc); await guardarIndice(); if (actual && actual.id === id) actual = doc;
+  }
+
+  // ---------- Escalas clínicas ----------
+  const puntaje = x => x.p + (x.max ? ' de ' + x.max : (x.id === 'tug' ? ' s' : ''));
+  function seccionEscalas(p) {
+    const grupos = new Map();
+    (p.escalas || []).slice().sort((a, b) => a.f - b.f).forEach(x => { const g = grupos.get(x.id) || { primera: x }; g.ultima = x; grupos.set(x.id, g); });
+    if (!grupos.size) return '';
+    return '<h4>Escalas clínicas</h4><div class="fp-esc">' + [...grupos.values()].map(g => {
+      const u = g.ultima, cambio = g.primera !== u ? redondear1(u.p - g.primera.p) : null;
+      return '<div class="fp-m"><div class="fp-m-top"><span>' + esc(u.nombre) + '<small>' + esc(u.txt || '') + '</small></span><span class="fp-der">' + esc(puntaje(u)) + '<small>' + fecha(u.f, true) + (cambio == null ? '' : ' · cambio desde la primera: ' + (cambio >= 0 ? '+' : '') + cambio) + '</small></span></div></div>';
+    }).join('') + '</div>';
+  }
+  const redondear1 = n => Math.round(n * 10) / 10;
+  async function guardarEscala() {
+    if (!memberIsPaid && !window.ftVistaAdmin) { showPaywallOverlay(); return; }
+    const sel = $('fpEsc'), err = $('fpEscErr'); if (!sel.value) { err.textContent = 'Elige una escala.'; err.hidden = false; return; }
+    const r = ftEscalas.leer(sel.value, $('fpEscCampos'));
+    if (!r.ok) { err.textContent = r.error; err.hidden = false; return; }
+    const b = $('fpGuardarEsc'); b.disabled = true;
+    actual.escalas = (actual.escalas || []).concat([r.entrada]);
+    try { await guardarPaciente(); forma = ''; pintar(); aviso(r.entrada.nombre + ': ' + puntaje(r.entrada)); } catch (_) { actual.escalas.pop(); b.disabled = false; aviso('No se pudo guardar. Intenta de nuevo.'); }
   }
 
   // ---------- Acciones ----------
@@ -167,6 +221,8 @@
     ligarForma();
     const pdf = $('fpPdf'); if (pdf) pdf.onclick = resumenPdf;
     const del = $('fpBorrar'); if (del) del.onclick = async () => { if (await confirmar('Eliminar paciente', 'Se borrarán todas las mediciones de ' + actual.clave + '. No se puede deshacer.', 'Eliminar', true)) await eliminarPaciente(actual.id); };
+    raiz.querySelectorAll('[data-plan-pdf]').forEach(b => b.onclick = () => { const x = (actual.planes || []).find(q => String(q.f) === b.dataset.planPdf); if (x && window.ftPlan) ftPlan.pdf(x, actual.clave); });
+    raiz.querySelectorAll('[data-plan-del]').forEach(b => b.onclick = async () => { if (!await confirmar('Quitar plan', 'Se quitará este plan de la ficha del paciente.', 'Quitar', true)) return; actual.planes = (actual.planes || []).filter(q => String(q.f) !== b.dataset.planDel); try { await guardarPaciente(); pintar(); } catch (_) { aviso('No se pudo quitar el plan.'); } });
     raiz.querySelectorAll('[data-del]').forEach(b => b.onclick = async () => { const tipo = b.dataset.del, f = Number(b.dataset.f); if (!await confirmar('Eliminar registro', 'Se quitará este registro del seguimiento.', 'Eliminar', true)) return; actual[tipo] = (actual[tipo] || []).filter(x => x.f !== f); try { await guardarPaciente(); pintar(); } catch (_) { aviso('No se pudo eliminar.'); } });
   }
   function ligarBotonForma(b) {
@@ -180,6 +236,11 @@
   function ligarForma() {
     const s = $('fpEva'); if (s) { s.oninput = () => { $('fpEvaV').textContent = s.value; }; $('fpGuardarEva').onclick = guardarEva; }
     const a = $('fpArt'); if (a) { a.onchange = movimientos; $('fpMov').onchange = refRom; movimientos(); $('fpGuardarRom').onclick = guardarRom; }
+    const es = $('fpEsc');
+    if (es) {
+      es.onchange = () => { const e = window.ftEscalas && ftEscalas.buscar(es.value); $('fpEscDesc').textContent = e ? e.desc + (e.nota ? ' ' + e.nota : '') + (e.fuente ? ' Fuente: ' + e.fuente : '') : ''; $('fpEscCampos').innerHTML = e ? ftEscalas.formulario(e.id) : ''; $('fpEscErr').hidden = true; };
+      $('fpGuardarEsc').onclick = guardarEscala;
+    }
   }
 
   async function nuevoPaciente() {
@@ -260,6 +321,7 @@
       '<h2>Evolución del dolor (EVA 0 a 10)</h2>' + grafica(eva).replace(/var\(--accent\)/g, '#0D5FA0').replace(/var\(--border\)/g, '#C9D8E6').replace(/var\(--text-muted\)/g, '#5B7186').replace(/var\(--text\)/g, '#12202B') +
       (eva.length ? '<table><tr><th>Fecha</th><th>Dolor</th><th>Zona</th><th>Tipo</th><th>Observaciones</th></tr>' + eva.map(x => '<tr><td>' + fecha(x.f) + '</td><td>' + x.v + '/10</td><td>' + esc(x.zona || '') + '</td><td>' + esc(x.tipo || '') + '</td><td>' + esc(x.nota || '') + '</td></tr>').join('') + '</table>' : '') +
       '<h2>Movilidad</h2>' + (ult.length ? '<table><tr><th>Movimiento</th><th>Primera medición</th><th>Última medición</th><th>Referencia</th><th>Déficit</th></tr>' + ult.map(e => { const r = e.ultimo; return '<tr><td>' + esc(r.movN) + ' ' + esc(r.artN) + (r.lado ? ' ' + esc(r.lado) : '') + '</td><td>' + e.primero.g + '° (' + fecha(e.primero.f, true) + ')</td><td>' + r.g + '° (' + fecha(r.f, true) + ')</td><td>' + r.ref + '°</td><td>' + deficit(r) + ' %</td></tr>'; }).join('') + '</table>' : '<p class="m">Sin mediciones de movilidad.</p>') +
+      ((p.escalas || []).length ? '<h2>Escalas clínicas</h2><table><tr><th>Fecha</th><th>Escala</th><th>Resultado</th><th>Interpretación</th></tr>' + (p.escalas || []).slice().sort((a, b) => a.f - b.f).map(x => '<tr><td>' + fecha(x.f) + '</td><td>' + esc(x.nombre) + '</td><td>' + esc(puntaje(x)) + '</td><td>' + esc(x.txt || '') + '</td></tr>').join('') + '</table>' : '') +
       '<p class="m" style="margin-top:24px">Herramienta de apoyo del Club FisioTeck. No sustituye el criterio profesional ni constituye un diagnóstico. Las referencias de movilidad son valores generales y deben interpretarse con criterio clínico.</p>' +
       '<script>window.onload=function(){setTimeout(function(){window.print()},400)}<\/script></body></html>');
     w.document.close();
@@ -270,5 +332,5 @@
   const original = window.showPage;
   window.showPage = function (page) { const r = original.apply(this, arguments); if (page === 'pacientes') abrir(); return r; };
   auth.onAuthStateChanged(u => { if (!u) { idx = null; actual = null; forma = ''; filtro = ''; const r = $('fpRaiz'); if (r) r.innerHTML = ''; } });
-  window.ftPacientes = { abrir };
+  window.ftPacientes = { abrir, listar, guardarPlan, guardarMediciones };
 })();

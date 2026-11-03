@@ -27,7 +27,7 @@
           "sessionNumbers": [
             1
           ],
-          "isPreview": true,
+          "isPreview": false,
           "videoProvider": "bunny",
           "bunnyVideoId": "58fa738a-ed77-44be-95be-29c81407366e",
           "bunnyCollectionId": "81658bc3-b359-44f1-9bfa-769f2eebca51"
@@ -96,7 +96,7 @@
           "sessionNumbers": [
             1
           ],
-          "isPreview": true,
+          "isPreview": false,
           "videoProvider": "bunny",
           "bunnyVideoId": "e646b0a7-0ffa-4df0-9635-a63e878aa3c4",
           "bunnyCollectionId": "34fe9215-17e2-42ce-9bd3-b26ec7da70bc"
@@ -177,7 +177,7 @@
           "sessionNumbers": [
             1
           ],
-          "isPreview": true,
+          "isPreview": false,
           "videoProvider": "bunny",
           "bunnyVideoId": "fe7c040e-54f3-44cc-aa26-9f88616b5e9c",
           "bunnyCollectionId": "8061e688-3239-466f-851f-76d71f2006ba"
@@ -258,7 +258,7 @@
           "sessionNumbers": [
             1
           ],
-          "isPreview": true,
+          "isPreview": false,
           "videoProvider": "bunny",
           "bunnyVideoId": "542c8048-f905-430e-8c93-55cc62023e3f",
           "bunnyCollectionId": "0bc5bbdf-f15a-4627-b6e7-9d579bc1f528"
@@ -339,7 +339,7 @@
           "sessionNumbers": [
             1
           ],
-          "isPreview": true,
+          "isPreview": false,
           "videoProvider": "bunny",
           "bunnyVideoId": "b3c85c96-4e62-404c-b603-35c790dcad83",
           "bunnyCollectionId": "f95b3a9c-6721-4dfb-a77b-fe4bf0d3e985"
@@ -410,7 +410,7 @@
             2,
             3
           ],
-          "isPreview": true,
+          "isPreview": false,
           "videoProvider": "bunny",
           "bunnyVideoId": "4f0a5df7-78b7-45f3-9b5f-6a5e6a739175",
           "bunnyCollectionId": "893efc0c-6583-4513-a195-a31405eabb47"
@@ -453,7 +453,7 @@
           "sessionNumbers": [
             1
           ],
-          "isPreview": true,
+          "isPreview": false,
           "videoProvider": "bunny",
           "bunnyVideoId": "e85562e3-5281-4ac1-b4c1-c26d9c24a0f4",
           "bunnyCollectionId": "662d2a7b-567a-4b5f-ad46-4a9a09b7aac3"
@@ -534,7 +534,7 @@
           "sessionNumbers": [
             1
           ],
-          "isPreview": true,
+          "isPreview": false,
           "videoProvider": "bunny",
           "bunnyVideoId": "c1586124-f505-4338-ab15-971b9feafd00",
           "bunnyCollectionId": "e38260a5-996c-421d-b8ad-fe93eb28176e"
@@ -591,7 +591,7 @@
           "sessionNumbers": [
             1
           ],
-          "isPreview": true,
+          "isPreview": false,
           "videoProvider": "bunny",
           "bunnyVideoId": "193f3fb0-44eb-4e46-b1f4-479ffb325eb9",
           "bunnyCollectionId": "f641218b-8103-4307-9750-e2c272f74044"
@@ -672,7 +672,7 @@
           "sessionNumbers": [
             1
           ],
-          "isPreview": true,
+          "isPreview": false,
           "videoProvider": "bunny",
           "bunnyVideoId": "2bc4ebc4-fb5c-48fc-98d8-1e720da07639",
           "bunnyCollectionId": "0ee1609d-a4a0-4a31-b2af-58bfd81f5631"
@@ -741,7 +741,7 @@
           "sessionNumbers": [
             1
           ],
-          "isPreview": true,
+          "isPreview": false,
           "videoProvider": "bunny",
           "bunnyVideoId": "90dbb7a5-8616-423b-8f8e-26acf7678f9c",
           "bunnyCollectionId": "fe78203c-44c0-44ff-8ad3-bf82510e9024"
@@ -822,7 +822,7 @@
           "sessionNumbers": [
             1
           ],
-          "isPreview": true,
+          "isPreview": false,
           "videoProvider": "bunny",
           "bunnyVideoId": "95f3a4a2-ede6-45a4-9706-1bd06a8ae505",
           "bunnyCollectionId": "f96a408d-61d7-424f-8ad1-53d9ad146cb3"
@@ -892,7 +892,7 @@
             1,
             2
           ],
-          "isPreview": true,
+          "isPreview": false,
           "videoProvider": "bunny",
           "bunnyVideoId": "4e27763c-d512-4e70-a2bc-1c66f6d91356",
           "bunnyCollectionId": "5c588657-887f-4219-b538-c65f6bfc7de3"
@@ -949,7 +949,7 @@
             1,
             2
           ],
-          "isPreview": true,
+          "isPreview": false,
           "videoProvider": "bunny",
           "bunnyVideoId": "198f20fd-140d-49e5-a085-6a92d30e9ffc",
           "bunnyCollectionId": "da908ab4-52f9-4f77-9f49-45cba7a9b485"

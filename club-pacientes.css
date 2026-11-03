@@ -28,3 +28,8 @@
 .fp-ov { position: fixed; inset: 0; z-index: 100003; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(6,14,26,.62); backdrop-filter: blur(4px); }
 .fp-caja { width: 100%; max-width: 420px; max-height: 90vh; overflow: auto; background: var(--surface, var(--bg-card, #fff)); color: var(--text); border: 1px solid var(--border); border-radius: 20px; padding: 22px; box-shadow: 0 24px 60px rgba(0,0,0,.4); } .fp-caja h3 { margin: 0 0 8px; font-size: 1.1rem; } .fp-caja p { margin: 0 0 10px; font-size: .88rem; color: var(--text-light, var(--text-muted)); line-height: 1.5; } .fp-lista { margin: 0 0 6px; padding-left: 18px; font-size: .86rem; line-height: 1.55; }
 @media (max-width: 800px) { #page-pacientes .fp-grid { grid-template-columns: minmax(0, 1fr); } .fp-metricas b { font-size: 1.15rem; } .fp-fila { grid-template-columns: 1fr; } }
+
+.fp-esc { display: grid; gap: 10px; font-size: .86rem; }
+.fe-item { display: block; } .fe-item > span { display: block; margin-bottom: 3px; color: var(--text); font-weight: 600; font-size: .82rem; } .fp-form h5 { margin: 12px 0 6px; font-size: .8rem; color: var(--text-light, var(--text-muted)); }
+.fe-psfs { display: grid; grid-template-columns: minmax(0, 1fr) 90px; gap: 8px; margin-bottom: 8px; }
+.fp-m-top > span:first-child { flex: 1 1 auto; min-width: 0; } .fp-m-top .fp-der { flex: 0 0 42%; }
