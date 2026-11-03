@@ -75,6 +75,8 @@ service cloud.firestore {
         allow write: if isAdmin() || (own(userId) && !(doc in ['courses', 'retos', 'premios', 'logros', 'achievements', 'quiz']));
       }
       match /eva_records/{doc}   { allow read, write: if own(userId) || isAdmin(); }
+      // Pacientes del fisioterapeuta (datos de salud de terceros): SOLO el dueño de la cuenta, ni siquiera el administrador
+      match /pacientes/{doc}     { allow read, write: if own(userId); }
       match /read_notifs/{doc}   { allow read, write: if own(userId) || isAdmin(); }
     }
 

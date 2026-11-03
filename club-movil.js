@@ -12,7 +12,7 @@
   // ---------- Barra inferior por plan ----------
   const MIEMBRO = [['home', 'Inicio', 'home'], ['library', 'Cursos', 'f-book'], ['pdfs', 'Material', 'f-file'], ['retos', 'Retos', 'f-target'], ['herramientas', 'Herramientas', 'f-tool']];
   // Páginas de cada herramienta: el botón «Herramientas» de la barra queda marcado en cualquiera de ellas
-  const HERRAMIENTAS = ['rehab-calc', 'atlas', 'glossary', 'rom', 'eva', 'timer'];
+  const HERRAMIENTAS = ['pacientes', 'rehab-calc', 'atlas', 'glossary', 'rom', 'eva', 'timer'];
   const GRATIS = [['home', 'Inicio', 'home'], ['library', 'Cursos', 'f-book'], ['retos', 'Retos', 'f-target'], ['achievements', 'Logros', 'f-trophy']];
   let ultimo = '';
   function barraInferior() {
@@ -35,6 +35,7 @@
 
   // ---------- Página «Herramientas Pro»: un solo lugar con todas las herramientas (el botón de la barra inferior del miembro) ----------
   const TARJETAS = [
+    ['pacientes', 'Pacientes', 'Dolor y movilidad de tus pacientes, sesión por sesión, con gráficas y resumen en PDF.'],
     ['rehab-calc', 'Calculadora', 'Dosis, cargas y porcentajes para tu plan de rehabilitación.'],
     ['atlas', 'Atlas muscular', 'Origen, inserción y acción de cada músculo.'],
     ['glossary', 'Glosario', 'Términos clínicos explicados de forma clara.'],
