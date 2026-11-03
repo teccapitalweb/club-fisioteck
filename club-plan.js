@@ -133,7 +133,7 @@
       if (!l.pacientes.length) { caja.innerHTML = '<div class="rp-selpac-t"><b>Paciente (opcional)</b><span>Aún no tienes pacientes. Crea uno para guardar los planes en su ficha.</span></div><button type="button" class="rp-sec" onclick="showPage(\'pacientes\')">Crear paciente</button>'; return; }
       const actual = pacienteElegido && l.pacientes.some(x => x.id === pacienteElegido.id) ? pacienteElegido.id : '';
       if (!actual) pacienteElegido = null;
-      caja.innerHTML = '<label class="rp-selpac-t"><b>Paciente (opcional)</b><span>Elígelo para ponerlo en el PDF y guardar el plan en su ficha con un toque.</span><select id="rpSelPacSel"><option value="">Sin paciente (plan general)</option>' + l.pacientes.map(x => '<option value="' + esc(x.id) + '"' + (x.id === actual ? ' selected' : '') + '>' + esc(x.clave) + '</option>').join('') + '</select></label>';
+      caja.innerHTML = '<label class="rp-selpac-t"><b>Paciente (opcional)</b><span>Elígelo para ponerlo en el PDF y guardar el plan en su ficha con un toque.</span><select id="rpSelPacSel"><option value="">Sin paciente (plan general)</option>' + l.pacientes.map(x => '<option value="' + esc(x.id) + '"' + (x.id === actual ? ' selected' : '') + '>' + esc(x.etiqueta || x.clave) + '</option>').join('') + '</select></label>';
       $('rpSelPacSel').onchange = () => { const x = l.pacientes.find(p => p.id === $('rpSelPacSel').value); pacienteElegido = x ? { id: x.id, clave: x.clave } : null; if (plan) panel(); };
     } catch (_) { caja.hidden = true; }
   }
@@ -147,7 +147,7 @@
       const l = await ftPacientes.listar();
       if (!l.avisoOk) { caja.innerHTML = '<p class="rp-nota">Antes abre <b>Pacientes</b> y acepta el aviso de privacidad.</p>'; return; }
       if (!l.pacientes.length) { caja.innerHTML = '<p class="rp-nota">Aún no tienes pacientes. Crea uno en <b>Pacientes</b>.</p>'; return; }
-      caja.innerHTML = '<div class="rp-pac"><label>Paciente<select id="rpPacSel">' + l.pacientes.map(x => '<option value="' + esc(x.id) + '">' + esc(x.clave) + '</option>').join('') + '</select></label><button type="button" class="rp-cta" id="rpPacOk">Guardar plan</button></div>';
+      caja.innerHTML = '<div class="rp-pac"><label>Paciente<select id="rpPacSel">' + l.pacientes.map(x => '<option value="' + esc(x.id) + '">' + esc(x.etiqueta || x.clave) + '</option>').join('') + '</select></label><button type="button" class="rp-cta" id="rpPacOk">Guardar plan</button></div>';
       $('rpPacOk').onclick = async () => {
         $('rpPacOk').disabled = true;
         try { await ftPacientes.guardarPlan($('rpPacSel').value, datosPlan()); caja.innerHTML = ''; showToast('Plan guardado en la ficha del paciente'); }

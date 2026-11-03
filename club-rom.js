@@ -61,7 +61,7 @@
       const l = await ftPacientes.listar();
       if (!l.avisoOk) { caja.innerHTML = '<p class="rm-nota">Antes abre <b>Pacientes</b> y acepta el aviso de privacidad.</p>'; return; }
       if (!l.pacientes.length) { caja.innerHTML = '<p class="rm-nota">Aún no tienes pacientes. Crea uno en <b>Pacientes</b>.</p>'; return; }
-      caja.innerHTML = '<div class="rm-pac"><label>Paciente<select id="rmSel">' + l.pacientes.map(x => '<option value="' + esc(x.id) + '">' + esc(x.clave) + '</option>').join('') + '</select></label><button type="button" class="rm-cta" id="rmOk">Guardar ' + llenas.length + ' medición' + (llenas.length === 1 ? '' : 'es') + '</button></div>';
+      caja.innerHTML = '<div class="rm-pac"><label>Paciente<select id="rmSel">' + l.pacientes.map(x => '<option value="' + esc(x.id) + '">' + esc(x.etiqueta || x.clave) + '</option>').join('') + '</select></label><button type="button" class="rm-cta" id="rmOk">Guardar ' + llenas.length + ' medición' + (llenas.length === 1 ? '' : 'es') + '</button></div>';
       $('rmOk').onclick = async () => {
         $('rmOk').disabled = true; const lado = $('rmLado').value, ahora = Date.now();
         try { await ftPacientes.guardarMediciones($('rmSel').value, llenas.map((x, k) => { const mv = d.movements[x.i]; return { f: ahora + k, art: a, artN: d.name, mov: mv.m, movN: mv.m, g: Math.round(Number(x.v)), ref: mv.bar, lado }; })); caja.innerHTML = ''; showToast('Mediciones guardadas en la ficha del paciente'); }

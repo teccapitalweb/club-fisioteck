@@ -1,6 +1,6 @@
 /* Club FisioTeck — Pacientes: seguimiento del dolor (EVA) y de la movilidad (ROM) de los pacientes del fisioterapeuta.
    Privacidad y costo:
-   · Solo el dueño de la cuenta lee y escribe sus pacientes (firestore.rules: members/{uid}/pacientes). Se guardan iniciales o una clave, nunca teléfono ni correo.
+   · Solo el dueño de la cuenta lee y escribe sus pacientes (firestore.rules: members/{uid}/pacientes). Se guardan nombre, fecha de nacimiento, peso y estatura, nunca teléfono, correo ni domicilio.
    · Cada paciente es UN documento (con sus mediciones dentro) y hay un documento índice con la lista: abrir la herramienta cuesta 1 lectura y abrir un paciente, otra.
    · Máximo 100 pacientes por cuenta, 300 registros de dolor y 600 de movilidad por paciente.
    Herramienta de apoyo: no sustituye el criterio profesional ni constituye un diagnóstico.
@@ -20,6 +20,19 @@
   const aviso = t => { try { showToast(t); } catch (_) { /* sin aviso */ } };
   const iniciales = nombre => { const p = String(nombre || '').trim().split(/\s+/).filter(Boolean); return p.length > 1 ? p.map(w => w.charAt(0).toUpperCase() + '.').join('').slice(0, 12) : (p[0] || 'P').slice(0, 3).toUpperCase() + '.'; };
   const rom = () => (typeof ROM_DATA !== 'undefined' ? ROM_DATA : {});
+  const AVISO_V = 2; // versión del aviso de privacidad: al cambiar su contenido se vuelve a pedir la aceptación
+  // Edad en años a partir de 'AAAA-MM-DD' (o solo 'AAAA' en pacientes anteriores)
+  function edad(nac) {
+    const m = /^(\d{4})(?:-(\d{2})-(\d{2}))?$/.exec(String(nac || '')); if (!m) return null;
+    const hoy = new Date(); let a = hoy.getFullYear() - Number(m[1]);
+    if (m[2] && (hoy.getMonth() + 1 < Number(m[2]) || (hoy.getMonth() + 1 === Number(m[2]) && hoy.getDate() < Number(m[3])))) a--;
+    return a >= 0 && a < 130 ? a : null;
+  }
+  const nacDe = p => p.nacimiento || p.nac || p.anio || '';
+  // Nombre con la edad: así se distinguen varios pacientes con el mismo nombre
+  const etiqueta = p => { const e = edad(nacDe(p)); return p.clave + (e == null ? '' : ' (' + e + ' años)'); };
+  const imc = (kg, cm) => (kg > 0 && cm > 0 ? Math.round(kg / Math.pow(cm / 100, 2) * 10) / 10 : null);
+  const datosLinea = p => [edad(nacDe(p)) == null ? '' : edad(nacDe(p)) + ' años', p.sexo ? ({ F: 'Mujer', M: 'Hombre', O: 'Otro' }[p.sexo] || '') : '', p.pesoKg ? p.pesoKg + ' kg' : '', p.estaturaCm ? (p.estaturaCm / 100).toFixed(2) + ' m' : '', imc(p.pesoKg, p.estaturaCm) ? 'IMC ' + imc(p.pesoKg, p.estaturaCm) : ''].filter(Boolean).join(' · ');
 
   // ---------- Tarjeta de confirmación (en lugar de los cuadros del navegador) ----------
   function confirmar(titulo, texto, ok, peligro) {
@@ -43,7 +56,7 @@
   }
   const guardarIndice = () => col().doc('_indice').set(idx);
   function actualizarEntrada(p) {
-    const e = idx.pacientes.find(x => x.id === p.id), datos = { id: p.id, clave: p.clave, zona: p.zona || '', ultimaMs: Date.now(), sesiones: sesiones(p) };
+    const e = idx.pacientes.find(x => x.id === p.id), datos = { id: p.id, clave: p.clave, nac: nacDe(p), zona: p.zona || '', ultimaMs: Date.now(), sesiones: sesiones(p) };
     if (e) Object.assign(e, datos); else idx.pacientes.push(datos);
   }
   const sesiones = p => new Set([...(p.eva || []).map(x => new Date(x.f).toDateString()), ...(p.rom || []).map(x => new Date(x.f).toDateString()), ...(p.escalas || []).map(x => new Date(x.f).toDateString())]).size;
@@ -68,28 +81,28 @@
     if (!memberIsPaid && !window.ftVistaAdmin) { raiz.innerHTML = '<div class="fp-vacio"><h3>Herramienta para miembros</h3><p>Guarda el dolor y la movilidad de tus pacientes y mira su evolución. Disponible con la membresía.</p><button type="button" class="fp-cta" onclick="showPaywallOverlay()">Ver membresía</button></div>'; return; }
     if (cargando) return; cargando = true;
     try { await cargarIndice(); pintar(); } catch (e) { raiz.innerHTML = '<div class="fp-vacio"><p>No se pudieron cargar tus pacientes. Intenta de nuevo en un momento.</p></div>'; } finally { cargando = false; }
-    if (!idx.aviso) avisoPrivacidad();
+    if (idx.avisoV !== AVISO_V) avisoPrivacidad();
   }
 
   function avisoPrivacidad() {
     const o = document.createElement('div'); o.className = 'fp-ov'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true');
     o.innerHTML = '<div class="fp-caja"><h3>Antes de empezar: datos de tus pacientes</h3>' +
-      '<p>Aquí guardas información de salud de otras personas. Se guarda en tu cuenta y solo tú puedes verla; nadie del Club la lee.</p>' +
-      '<ul class="fp-lista"><li>Guarda solo <b>iniciales o una clave</b>. No escribas teléfonos, correos ni domicilios.</li><li>Tú eres responsable de contar con el <b>consentimiento</b> de cada paciente.</li><li>Puedes <b>exportar o borrar</b> todo cuando quieras.</li><li>Es una herramienta de apoyo: no sustituye tu criterio profesional ni diagnostica.</li></ul>' +
+      '<p>Aquí guardas datos personales y de salud de otras personas: su nombre, fecha de nacimiento, peso, estatura y sus mediciones. Se guardan en tu cuenta y solo tú puedes verlos; nadie del Club, ni el administrador, los lee.</p>' +
+      '<ul class="fp-lista"><li>No escribas <b>teléfonos, correos ni domicilios</b>.</li><li>Tú eres responsable de contar con el <b>consentimiento</b> de cada paciente para guardar sus datos.</li><li>Puedes <b>exportar o borrar</b> todo cuando quieras.</li><li>Es una herramienta de apoyo: no sustituye tu criterio profesional ni diagnostica.</li></ul>' +
       '<div class="fp-bot"><button type="button" class="fp-cta" id="fpAcepto">Entiendo y acepto</button></div></div>';
     document.body.appendChild(o);
-    o.querySelector('#fpAcepto').onclick = async () => { idx.aviso = Date.now(); o.remove(); try { await guardarIndice(); } catch (_) { /* se vuelve a pedir */ } };
+    o.querySelector('#fpAcepto').onclick = async () => { idx.aviso = Date.now(); idx.avisoV = AVISO_V; o.remove(); try { await guardarIndice(); } catch (_) { /* se vuelve a pedir */ } };
   }
 
   function pintar() {
     const raiz = $('fpRaiz'); if (!raiz) return;
-    const lista = idx.pacientes.slice().sort((a, b) => (b.ultimaMs || 0) - (a.ultimaMs || 0)).filter(p => !filtro || (p.clave + ' ' + p.zona).toLowerCase().includes(filtro));
+    const lista = idx.pacientes.slice().sort((a, b) => (b.ultimaMs || 0) - (a.ultimaMs || 0)).filter(p => !filtro || (p.clave + ' ' + p.zona + ' ' + (p.nac || '')).toLowerCase().includes(filtro));
     raiz.innerHTML = '<div class="fp-grid"><aside class="fp-lado"><div class="fp-lado-cab"><span>Mis pacientes</span><small>' + idx.pacientes.length + ' de ' + MAX_PAC + '</small></div>' +
       '<input class="fp-buscar" id="fpBuscar" type="search" placeholder="Buscar paciente" value="' + esc(filtro) + '" aria-label="Buscar paciente">' +
-      (lista.length ? lista.map(p => '<button type="button" class="fp-pac' + (actual && actual.id === p.id ? ' on' : '') + '" data-id="' + esc(p.id) + '"><b>' + esc(p.clave) + '</b><span>' + esc(p.zona || 'Sin zona') + ' · ' + (p.ultimaMs ? fecha(p.ultimaMs, true) : '') + '</span></button>').join('') : '<p class="fp-nada">' + (idx.pacientes.length ? 'Sin resultados.' : 'Aún no tienes pacientes.') + '</p>') +
+      (lista.length ? lista.map(p => '<button type="button" class="fp-pac' + (actual && actual.id === p.id ? ' on' : '') + '" data-id="' + esc(p.id) + '"><b>' + esc(p.clave) + '</b><span>' + (edad(p.nac) == null ? '' : edad(p.nac) + ' años · ') + esc(p.zona || 'Sin zona') + ' · ' + (p.ultimaMs ? fecha(p.ultimaMs, true) : '') + '</span></button>').join('') : '<p class="fp-nada">' + (idx.pacientes.length ? 'Sin resultados.' : 'Aún no tienes pacientes.') + '</p>') +
       '<button type="button" class="fp-sec fp-ancho" id="fpNuevo">+ Nuevo paciente</button>' +
       '<div class="fp-mini"><button type="button" id="fpImportar">Importar registros de la Escala EVA</button><button type="button" id="fpExportar">Exportar mis datos</button><button type="button" id="fpBorrarTodo" class="fp-rojo">Borrar todos mis pacientes</button></div></aside>' +
-      '<section class="fp-ficha" id="fpFicha">' + (actual ? ficha() : '<div class="fp-vacio"><h3>Elige o crea un paciente</h3><p>Aquí verás cómo cambian su dolor y su movilidad de una sesión a otra.</p></div><div class="fp-guia"><b>Cómo empezar</b><ol><li>Toca <b>+ Nuevo paciente</b> y escribe solo sus iniciales o una clave.</li><li>Registra el dolor (EVA) y la movilidad en cada sesión.</li><li>Mira la evolución en gráficas y descarga el resumen en PDF.</li></ol></div>') + '</section></div>';
+      '<section class="fp-ficha" id="fpFicha">' + (actual ? ficha() : '<div class="fp-vacio"><h3>Elige o crea un paciente</h3><p>Aquí verás cómo cambian su dolor y su movilidad de una sesión a otra.</p></div><div class="fp-guia"><b>Cómo empezar</b><ol><li>Toca <b>+ Nuevo paciente</b> y escribe su nombre, fecha de nacimiento, peso y estatura.</li><li>Registra el dolor (EVA) y la movilidad en cada sesión.</li><li>Mira la evolución en gráficas y descarga el resumen en PDF.</li></ol></div>') + '</section></div>';
     ligar();
   }
 
@@ -112,8 +125,8 @@
     const p = actual, eva = (p.eva || []).slice().sort((a, b) => a.f - b.f), ult = ultimosRom(p);
     const inicial = eva.length ? eva[0].v : null, ultima = eva.length ? eva[eva.length - 1].v : null;
     const defProm = ult.length ? Math.round(ult.reduce((t, e) => t + deficit(e.ultimo), 0) / ult.length) : null;
-    return '<div class="fp-cab"><div><h2>' + esc(p.clave) + (p.anio ? ' · nacimiento ' + esc(p.anio) : '') + '</h2><p>' + esc(p.zona || 'Sin zona') + ' · ' + sesiones(p) + ' sesión' + (sesiones(p) === 1 ? '' : 'es') + '</p></div>' +
-      '<div class="fp-acc"><button type="button" class="fp-sec" id="fpPdf">Resumen PDF</button><button type="button" class="fp-sec fp-rojo" id="fpBorrar">Eliminar</button></div></div>' +
+    return '<div class="fp-cab"><div><h2>' + esc(p.clave) + '</h2><p class="fp-datos">' + (datosLinea(p) ? esc(datosLinea(p)) : 'Sin datos de edad, peso ni estatura') + '</p><p>' + esc(p.zona || 'Sin zona') + ' · ' + sesiones(p) + (sesiones(p) === 1 ? ' sesión' : ' sesiones') + '</p></div>' +
+      '<div class="fp-acc"><button type="button" class="fp-sec" id="fpEditar">Editar datos</button><button type="button" class="fp-sec" id="fpPdf">Resumen PDF</button><button type="button" class="fp-sec fp-rojo" id="fpBorrar">Eliminar</button></div></div>' +
       '<div class="fp-metricas"><div><small>Dolor inicial</small><b>' + (inicial == null ? '—' : inicial + '/10') + '</b></div><div><small>Dolor última sesión</small><b>' + (ultima == null ? '—' : ultima + '/10') + '</b></div><div><small>Déficit de movilidad</small><b>' + (defProm == null ? '—' : defProm + ' %') + '</b></div></div>' +
       '<h4>Evolución del dolor (EVA 0 a 10)</h4>' + grafica(eva) +
       '<h4>Movilidad (grados)</h4>' + (ult.length ? '<div class="fp-rom">' + ult.map(e => { const r = e.ultimo, pct = Math.min(100, r.ref ? Math.round(r.g / r.ref * 100) : 0), mejora = e.primero !== r ? (r.g - e.primero.g) : null; return '<div class="fp-m"><div class="fp-m-top"><span>' + esc(r.movN) + (r.lado ? ' · ' + esc(r.lado) : '') + '<small>' + esc(r.artN) + '</small></span><span class="fp-der">' + r.g + ' de ' + r.ref + '°<small>déficit ' + deficit(r) + ' %' + (mejora == null ? '' : ' · ' + (mejora >= 0 ? '+' : '') + mejora + '° desde la primera') + '</small></span></div><div class="fp-barra"><i style="width:' + pct + '%"></i></div></div>'; }).join('') + '</div>' : '<p class="fp-nada">Todavía no hay mediciones de movilidad.</p>') +
@@ -157,11 +170,11 @@
   }
   async function listar() {
     if (!auth.currentUser) throw new Error('Inicia sesión.');
-    await cargarIndice(); return { avisoOk: !!idx.aviso, pacientes: idx.pacientes.map(p => ({ id: p.id, clave: p.clave })) };
+    await cargarIndice(); return { avisoOk: idx.avisoV === AVISO_V, pacientes: idx.pacientes.map(p => ({ id: p.id, clave: p.clave, etiqueta: etiqueta(p) })) };
   }
   async function guardarPlan(id, plan) {
     if (!memberIsPaid && !window.ftVistaAdmin) { showPaywallOverlay(); throw new Error('Herramienta para miembros.'); }
-    await cargarIndice(); if (!idx.aviso) throw new Error('Abre Pacientes y acepta el aviso de privacidad primero.');
+    await cargarIndice(); if (idx.avisoV !== AVISO_V) throw new Error('Abre Pacientes y acepta el aviso de privacidad primero.');
     const s = await col().doc(id).get(); if (!s.exists) throw new Error('Ese paciente ya no existe.');
     const doc = Object.assign({ id, eva: [], rom: [], escalas: [], planes: [] }, s.data());
     doc.planes = (doc.planes || []).concat([plan]).slice(-MAX_PLANES);
@@ -170,7 +183,7 @@
 
   async function guardarMediciones(id, lista) {
     if (!memberIsPaid && !window.ftVistaAdmin) { showPaywallOverlay(); throw new Error('Herramienta para miembros.'); }
-    await cargarIndice(); if (!idx.aviso) throw new Error('Abre Pacientes y acepta el aviso de privacidad primero.');
+    await cargarIndice(); if (idx.avisoV !== AVISO_V) throw new Error('Abre Pacientes y acepta el aviso de privacidad primero.');
     const s = await col().doc(id).get(); if (!s.exists) throw new Error('Ese paciente ya no existe.');
     const doc = Object.assign({ id, eva: [], rom: [], escalas: [], planes: [] }, s.data());
     doc.rom = (doc.rom || []).concat(lista).slice(-MAX_ROM);
@@ -220,6 +233,7 @@
     raiz.querySelectorAll('[data-forma]').forEach(ligarBotonForma);
     ligarForma();
     const pdf = $('fpPdf'); if (pdf) pdf.onclick = resumenPdf;
+    const ed = $('fpEditar'); if (ed) ed.onclick = () => formularioPaciente(actual);
     const del = $('fpBorrar'); if (del) del.onclick = async () => { if (await confirmar('Eliminar paciente', 'Se borrarán todas las mediciones de ' + actual.clave + '. No se puede deshacer.', 'Eliminar', true)) await eliminarPaciente(actual.id); };
     raiz.querySelectorAll('[data-plan-pdf]').forEach(b => b.onclick = () => { const x = (actual.planes || []).find(q => String(q.f) === b.dataset.planPdf); if (x && window.ftPlan) ftPlan.pdf(x, actual.clave); });
     raiz.querySelectorAll('[data-plan-del]').forEach(b => b.onclick = async () => { if (!await confirmar('Quitar plan', 'Se quitará este plan de la ficha del paciente.', 'Quitar', true)) return; actual.planes = (actual.planes || []).filter(q => String(q.f) !== b.dataset.planDel); try { await guardarPaciente(); pintar(); } catch (_) { aviso('No se pudo quitar el plan.'); } });
@@ -243,22 +257,43 @@
     }
   }
 
-  async function nuevoPaciente() {
+  function nuevoPaciente() {
     if (!memberIsPaid && !window.ftVistaAdmin) { showPaywallOverlay(); return; }
     if (idx.pacientes.length >= MAX_PAC) { aviso('Llegaste al máximo de ' + MAX_PAC + ' pacientes. Elimina alguno para agregar otro.'); return; }
+    formularioPaciente(null);
+  }
+  // Una sola tarjeta para crear (p = null) o editar los datos de un paciente
+  function formularioPaciente(p) {
+    const nuevo = !p, hoy = new Date().toISOString().slice(0, 10), nac0 = /^\d{4}-\d{2}-\d{2}$/.test(nacDe(p || {})) ? nacDe(p) : '';
     const o = document.createElement('div'); o.className = 'fp-ov'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true');
-    o.innerHTML = '<div class="fp-caja"><h3>Nuevo paciente</h3><label>Iniciales o clave<input id="fpClave" maxlength="20" placeholder="Por ejemplo, M.R.T." autocomplete="off"></label><label>Año de nacimiento (opcional)<input id="fpAnio" inputmode="numeric" maxlength="4" placeholder="1988" autocomplete="off"></label><label>Zona principal (opcional)<select id="fpZ"><option value="">Sin definir</option>' + ZONAS.map(z => '<option>' + z + '</option>').join('') + '</select></label><p class="fp-error" id="fpErr" hidden></p><p class="fp-ref">No escribas teléfonos, correos ni domicilios.</p><div class="fp-bot"><button type="button" class="fp-sec" id="fpC">Cancelar</button><button type="button" class="fp-cta" id="fpOk">Crear</button></div></div>';
+    o.innerHTML = '<div class="fp-caja"><h3>' + (nuevo ? 'Nuevo paciente' : 'Datos del paciente') + '</h3>' +
+      '<label>Nombre completo<input id="fpClave" maxlength="60" placeholder="Nombre y apellidos" autocomplete="off" value="' + esc(p ? p.clave : '') + '"></label>' +
+      '<div class="fp-fila"><label>Fecha de nacimiento<input id="fpNac" type="date" min="1900-01-01" max="' + hoy + '" value="' + esc(nac0) + '"></label>' +
+      '<label>Sexo<select id="fpSexo"><option value="">Sin definir</option><option value="F"' + (p && p.sexo === 'F' ? ' selected' : '') + '>Mujer</option><option value="M"' + (p && p.sexo === 'M' ? ' selected' : '') + '>Hombre</option><option value="O"' + (p && p.sexo === 'O' ? ' selected' : '') + '>Otro</option></select></label></div>' +
+      '<div class="fp-fila"><label>Peso (kg)<input id="fpPeso" type="number" min="1" max="400" step="0.1" inputmode="decimal" placeholder="72" value="' + esc(p && p.pesoKg ? p.pesoKg : '') + '"></label>' +
+      '<label>Estatura (cm)<input id="fpEst" type="number" min="30" max="250" step="1" inputmode="numeric" placeholder="170" value="' + esc(p && p.estaturaCm ? p.estaturaCm : '') + '"></label></div>' +
+      '<label>Zona principal (opcional)<select id="fpZ"><option value="">Sin definir</option>' + ZONAS.map(z => '<option' + (p && p.zona === z ? ' selected' : '') + '>' + z + '</option>').join('') + '</select></label>' +
+      '<p class="fp-error" id="fpErr" hidden></p><p class="fp-ref">Con la fecha de nacimiento distingues a dos pacientes con el mismo nombre. No escribas teléfonos, correos ni domicilios.</p>' +
+      '<div class="fp-bot"><button type="button" class="fp-sec" id="fpC">Cancelar</button><button type="button" class="fp-cta" id="fpOk">' + (nuevo ? 'Crear' : 'Guardar') + '</button></div></div>';
     document.body.appendChild(o); setTimeout(() => $('fpClave').focus(), 60);
     o.querySelector('#fpC').onclick = () => o.remove();
     o.querySelector('#fpOk').onclick = async () => {
-      const clave = $('fpClave').value.trim(), anio = $('fpAnio').value.trim(), err = $('fpErr');
-      if (!clave) { err.textContent = 'Escribe iniciales o una clave.'; err.hidden = false; return; }
-      if (/@|\d{7,}/.test(clave)) { err.textContent = 'La clave parece un correo o un teléfono. Usa solo iniciales o una clave.'; err.hidden = false; return; }
-      if (anio && !/^(19|20)\d{2}$/.test(anio)) { err.textContent = 'Escribe un año de 4 cifras o déjalo vacío.'; err.hidden = false; return; }
-      if (idx.pacientes.some(p => p.clave.toLowerCase() === clave.toLowerCase())) { err.textContent = 'Ya tienes un paciente con esa clave.'; err.hidden = false; return; }
-      const id = 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-      actual = { id, clave, anio: anio || '', zona: $('fpZ').value, creado: Date.now(), eva: [], rom: [] };
-      try { await guardarPaciente(); o.remove(); forma = ''; pintar(); aviso('Paciente creado'); } catch (_) { err.textContent = 'No se pudo guardar. Intenta de nuevo.'; err.hidden = false; }
+      const err = $('fpErr'), falla = m => { err.textContent = m; err.hidden = false; };
+      const clave = $('fpClave').value.trim().replace(/\s+/g, ' '), nac = $('fpNac').value, peso = $('fpPeso').value.trim(), est = $('fpEst').value.trim();
+      if (!clave) return falla('Escribe el nombre del paciente.');
+      if (/@|\d{7,}/.test(clave)) return falla('El nombre parece un correo o un teléfono. Escribe solo el nombre.');
+      if (nac && (!/^\d{4}-\d{2}-\d{2}$/.test(nac) || nac > hoy || nac < '1900-01-01')) return falla('La fecha de nacimiento no es válida.');
+      if (peso && !(Number(peso) >= 1 && Number(peso) <= 400)) return falla('El peso debe estar entre 1 y 400 kg.');
+      if (est && !(Number(est) >= 30 && Number(est) <= 250)) return falla('La estatura debe estar entre 30 y 250 cm.');
+      const repetido = idx.pacientes.some(x => (!p || x.id !== p.id) && x.clave.toLowerCase() === clave.toLowerCase() && String(x.nac || '') === String(nac || ''));
+      if (repetido) return falla('Ya tienes un paciente con ese nombre' + (nac ? ' y esa fecha de nacimiento' : '. Agrega su fecha de nacimiento para distinguirlos') + '.');
+      const datos = { clave, nacimiento: nac || '', anio: nac ? nac.slice(0, 4) : '', sexo: $('fpSexo').value, pesoKg: peso ? Math.round(Number(peso) * 10) / 10 : '', estaturaCm: est ? Math.round(Number(est)) : '', zona: $('fpZ').value, datosF: Date.now() };
+      const previo = actual;
+      try {
+        if (nuevo) actual = Object.assign({ id: 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), creado: Date.now(), eva: [], rom: [] }, datos);
+        else Object.assign(actual, datos);
+        await guardarPaciente(); o.remove(); forma = ''; pintar(); aviso(nuevo ? 'Paciente creado' : 'Datos guardados');
+      } catch (_) { actual = previo; falla('No se pudo guardar. Intenta de nuevo.'); }
     };
   }
 
@@ -317,7 +352,7 @@
     const p = actual, w = window.open('', '_blank'); if (!w) { aviso('Permite las ventanas emergentes para generar el resumen.'); return; }
     const eva = (p.eva || []).slice().sort((a, b) => a.f - b.f), ult = ultimosRom(p);
     w.document.write('<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Resumen ' + esc(p.clave) + '</title><style>body{font:14px Arial,sans-serif;color:#12202B;max-width:760px;margin:24px auto;padding:0 16px}h1{font-size:20px;margin:0}h2{font-size:15px;margin:22px 0 6px;color:#0A3E68}table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid #D4DDD9;padding:6px 4px;text-align:left;font-size:13px}.m{color:#5B7186;font-size:12px}.cab{display:flex;align-items:center;gap:14px;border-bottom:3px solid #0A3E68;padding-bottom:10px}img{height:42px}svg{width:100%;height:auto}</style></head><body>' +
-      '<div class="cab"><img src="' + location.origin + location.pathname.replace(/[^/]*$/, '') + 'pwa-logo.png" alt=""><div><h1>Resumen de seguimiento</h1><div class="m">Paciente ' + esc(p.clave) + (p.anio ? ' · nacimiento ' + esc(p.anio) : '') + ' · ' + esc(p.zona || '') + ' · generado el ' + fecha(Date.now()) + '</div></div></div>' +
+      '<div class="cab"><img src="' + location.origin + location.pathname.replace(/[^/]*$/, '') + 'pwa-logo.png" alt=""><div><h1>Resumen de seguimiento</h1><div class="m">Paciente ' + esc(p.clave) + (datosLinea(p) ? ' · ' + esc(datosLinea(p)) : '') + (/^\d{4}-\d{2}-\d{2}$/.test(nacDe(p)) ? ' · nacimiento ' + esc(nacDe(p).split('-').reverse().join('/')) : '') + ' · ' + esc(p.zona || '') + ' · generado el ' + fecha(Date.now()) + '</div></div></div>' +
       '<h2>Evolución del dolor (EVA 0 a 10)</h2>' + grafica(eva).replace(/var\(--accent\)/g, '#0D5FA0').replace(/var\(--border\)/g, '#C9D8E6').replace(/var\(--text-muted\)/g, '#5B7186').replace(/var\(--text\)/g, '#12202B') +
       (eva.length ? '<table><tr><th>Fecha</th><th>Dolor</th><th>Zona</th><th>Tipo</th><th>Observaciones</th></tr>' + eva.map(x => '<tr><td>' + fecha(x.f) + '</td><td>' + x.v + '/10</td><td>' + esc(x.zona || '') + '</td><td>' + esc(x.tipo || '') + '</td><td>' + esc(x.nota || '') + '</td></tr>').join('') + '</table>' : '') +
       '<h2>Movilidad</h2>' + (ult.length ? '<table><tr><th>Movimiento</th><th>Primera medición</th><th>Última medición</th><th>Referencia</th><th>Déficit</th></tr>' + ult.map(e => { const r = e.ultimo; return '<tr><td>' + esc(r.movN) + ' ' + esc(r.artN) + (r.lado ? ' ' + esc(r.lado) : '') + '</td><td>' + e.primero.g + '° (' + fecha(e.primero.f, true) + ')</td><td>' + r.g + '° (' + fecha(r.f, true) + ')</td><td>' + r.ref + '°</td><td>' + deficit(r) + ' %</td></tr>'; }).join('') + '</table>' : '<p class="m">Sin mediciones de movilidad.</p>') +
