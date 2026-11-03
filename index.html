@@ -4175,7 +4175,9 @@
     renderTipOfDay();
     animateCounter('statPdfs', siteData.pdfs.length);
     animateCounter('statLive', siteData.live.length);
-    animateCounter('statMembers', parseInt(siteData.stats.members) || 0);
+    // Miembros: cifra real y automática del servidor; si no responde, el número guardado en el contenido
+    const miembrosRespaldo = () => animateCounter('statMembers', parseInt(siteData.stats.members) || 0);
+    fetch(((location.hostname === 'localhost' || location.hostname === '127.0.0.1') ? 'http://localhost:3000' : WEBHOOK_URL) + '/api/miembros-publico').then(r => r.ok ? r.json() : null).then(d => { if (d && Number.isFinite(d.miembros) && d.miembros > 0) animateCounter('statMembers', d.miembros); else miembrosRespaldo(); }).catch(miembrosRespaldo);
 
     // Progress card
     let totalCourses = siteData.courses.length;
