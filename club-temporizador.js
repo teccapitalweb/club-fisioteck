@@ -51,6 +51,15 @@
       o.connect(g); g.connect(ctx.destination); o.start(t0); o.stop(t0 + dur + 0.02);
     } catch (_) { /* sin audio */ }
   }
+  // Alarma de fin: dura 5 segundos (10 pitidos alternando dos tonos) y vibra el mismo tiempo. Devuelve si el dispositivo aceptó la vibración.
+  function alarmaFinal(conSonido, conVibra) {
+    let vibro = null;
+    if (conSonido) { try { for (let i = 0; i < 10; i++) { const ini = i * 500; pitido(i % 2 ? 1175 : 880, 380, ini, true); } } catch (_) { /* sin audio */ } }
+    if (conVibra && navigator.vibrate) { try { vibro = navigator.vibrate([400, 100, 400, 100, 400, 100, 400, 100, 400, 100, 400, 100, 400, 100, 400, 100, 400, 100, 400]); } catch (_) { vibro = false; } }
+    return vibro;
+  }
+  // Para el cronómetro clásico de index.html (sin opciones: siempre suena y vibra)
+  window.ftAlarmaFin = function () { const g = opc.sonido; opc.sonido = true; try { return alarmaFinal(true, true); } finally { opc.sonido = g; } };
   // Alarmas con varios tonos: cambio a trabajo (sube), cambio a descanso (baja) y fin de la rutina (melodía larga)
   function alarma(tipo) {
     const mel = { trabajo: [[784, 140, 0], [988, 140, 170], [1319, 320, 340]], descanso: [[1319, 140, 0], [988, 140, 170], [659, 320, 340]], fin: [[784, 180, 0], [988, 180, 220], [1319, 180, 440], [1568, 180, 660], [1319, 180, 900], [1568, 520, 1120]] }[tipo] || [];
@@ -81,7 +90,7 @@
     clearInterval(reloj); reloj = setInterval(tic, 200);
   }
   function terminar() {
-    corriendo = false; clearInterval(reloj); soltarPantalla(); alarma('fin'); vibrar([400, 150, 400, 150, 400, 150, 900]);
+    corriendo = false; clearInterval(reloj); soltarPantalla(); alarmaFinal(opc.sonido, opc.vibracion);
     const c = $('tmCorredor'); if (c) c.innerHTML = '<div class="tm-fin"><b>Rutina terminada</b><p>' + esc(nombreRutina) + ' · ' + mmss(totalSeg(fases) - 5) + ' en total</p><div class="tm-bot"><button type="button" class="tm-cta" id="tmRepetir">Repetir</button><button type="button" class="tm-sec" id="tmSalir">Volver a la rutina</button></div></div>';
     if ($('tmRepetir')) { $('tmRepetir').onclick = () => { $('tmCorredor').innerHTML = estructuraCorredor(); ligarCorredor(); empezar(); }; $('tmSalir').onclick = salir; }
   }
@@ -127,7 +136,7 @@
       '<p class="tm-ref">Los ejemplos son solo una configuración de partida, no una prescripción clínica. Ajusta los tiempos según tu criterio.</p>' +
       '<h4>Tu rutina</h4><label class="tm-nombre">Nombre<input id="tmNombre" maxlength="40" value="' + esc(nombreRutina) + '"></label><div id="tmLista">' + rutina.map(filaEj).join('') + '</div>' +
       '<button type="button" class="tm-sec" id="tmMas">+ Agregar ejercicio</button>' +
-      '<div class="tm-opc"><label><input type="checkbox" id="tmSonido"' + (opc.sonido ? ' checked' : '') + '> Sonido</label><label><input type="checkbox" id="tmVibra"' + (opc.vibracion ? ' checked' : '') + '> Vibración' + (navigator.vibrate ? '' : ' (no disponible en este dispositivo)') + '</label><label><input type="checkbox" id="tmPantalla"' + (opc.pantalla ? ' checked' : '') + '> Mantener la pantalla activa</label></div>' +
+      '<div class="tm-opc"><button type="button" class="tm-probar" onclick="ftProbarAlarma()">Probar alarma y vibración</button><label><input type="checkbox" id="tmSonido"' + (opc.sonido ? ' checked' : '') + '> Sonido</label><label><input type="checkbox" id="tmVibra"' + (opc.vibracion ? ' checked' : '') + '> Vibración' + (navigator.vibrate ? '' : ' (no disponible en este dispositivo)') + '</label><label><input type="checkbox" id="tmPantalla"' + (opc.pantalla ? ' checked' : '') + '> Mantener la pantalla activa</label></div>' +
       '<p class="tm-total" id="tmTotal"></p><div class="tm-bot"><button type="button" class="tm-cta" id="tmIniciar">Iniciar rutina</button><button type="button" class="tm-sec" id="tmGuardar">Guardar como plantilla</button></div>' + (prop.length ? '<button type="button" class="tm-borrar" id="tmBorrarMias">Borrar mis plantillas</button>' : '');
     ligarEditor(); total();
   }
@@ -178,4 +187,21 @@
   }
   montar();
   auth.onAuthStateChanged(u => { if (!u && corriendo) salir(); });
+
+  // Botón de prueba: también sirve para que el navegador permita sonar y vibrar (necesita un toque del usuario)
+  function probar() {
+    ctx = ctx || null; const g = opc.sonido; opc.sonido = true;
+    let v; try { v = alarmaFinal(true, true); } finally { opc.sonido = g; }
+    const toast = window.showToast || (() => {});
+    if (!navigator.vibrate) toast('Este dispositivo o navegador no permite vibrar desde la web. Suena la alarma de 5 segundos.');
+    else if (v === false) toast('El navegador bloqueó la vibración. Revisa que el teléfono no esté en modo ahorro de energía o silencio.');
+    else toast('Probando la alarma: 5 segundos de sonido y vibración.');
+  }
+  function botonProbar() {
+    const caja = document.querySelector('.tm-clasico-bot'); if (!caja || document.getElementById('tmProbarClasico')) return;
+    const b = document.createElement('button'); b.type = 'button'; b.id = 'tmProbarClasico'; b.className = 'tm-probar'; b.textContent = 'Probar alarma y vibración'; b.onclick = probar;
+    caja.insertAdjacentElement('afterend', b);
+  }
+  window.ftProbarAlarma = probar;
+  botonProbar();
 })();

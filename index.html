@@ -5202,19 +5202,8 @@
         document.getElementById('timerStartBtn').style.opacity = '1';
         document.getElementById('timerDisplay').textContent = '00:00';
         // Alarm
-        showToast('⏰ ¡Tiempo completado!');
-        try {
-          const ctx = new (window.AudioContext || window.webkitAudioContext)();
-          [0,200,400].forEach(delay => {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain); gain.connect(ctx.destination);
-            osc.frequency.value = 880;
-            gain.gain.value = 0.3;
-            osc.start(ctx.currentTime + delay/1000);
-            osc.stop(ctx.currentTime + delay/1000 + 0.15);
-          });
-        } catch(e){}
+        showToast('¡Tiempo completado!');
+        try { if (window.ftAlarmaFin) ftAlarmaFin(); } catch(e){}
       }
     }, 1000);
   }
