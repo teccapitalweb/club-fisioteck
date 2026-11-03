@@ -3095,10 +3095,10 @@
         <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:30px;text-align:center;margin-bottom:20px;">
           <div id="timerDisplay" style="font-size:4rem;font-weight:700;color:var(--primary);font-family:monospace;letter-spacing:4px;margin-bottom:6px;">20:00</div>
           <div id="timerTechnique" style="font-size:.85rem;color:var(--text-muted);margin-bottom:20px;">TENS - Estimulación eléctrica</div>
-          <div style="display:flex;gap:10px;justify-content:center;">
-            <button onclick="startTimer()" id="timerStartBtn" style="padding:12px 28px;border-radius:var(--radius-sm);background:var(--primary);color:#fff;border:none;font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;">▶ Iniciar</button>
-            <button onclick="pauseTimer()" style="padding:12px 28px;border-radius:var(--radius-sm);background:var(--bg);color:var(--text);border:1px solid var(--border);font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;">⏸ Pausar</button>
-            <button onclick="resetTimer()" style="padding:12px 28px;border-radius:var(--radius-sm);background:var(--bg);color:var(--text);border:1px solid var(--border);font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;">↺ Reset</button>
+          <div class="tm-clasico-bot" style="display:flex;gap:10px;justify-content:center;">
+            <button onclick="startTimer()" id="timerStartBtn" style="padding:12px 8px;flex:1 1 0;min-width:0;border-radius:var(--radius-sm);background:var(--primary);color:#fff;border:none;font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;">Iniciar</button>
+            <button onclick="pauseTimer()" style="padding:12px 8px;flex:1 1 0;min-width:0;border-radius:var(--radius-sm);background:var(--bg);color:var(--text);border:1px solid var(--border);font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;">Pausar</button>
+            <button onclick="resetTimer()" style="padding:12px 8px;flex:1 1 0;min-width:0;border-radius:var(--radius-sm);background:var(--bg);color:var(--text);border:1px solid var(--border);font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;">Reiniciar</button>
           </div>
         </div>
         <h4 style="font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:12px;">Presets de técnicas</h4>
@@ -5190,7 +5190,7 @@
     if (!memberIsPaid) { showPaywallOverlay(); return; }
     if (timerRunning || timerSeconds <= 0) return;
     timerRunning = true;
-    document.getElementById('timerStartBtn').textContent = '⏵ Corriendo...';
+    document.getElementById('timerStartBtn').textContent = 'Corriendo...';
     document.getElementById('timerStartBtn').style.opacity = '.6';
     timerInterval = setInterval(() => {
       timerSeconds--;
@@ -5198,7 +5198,7 @@
       if (timerSeconds <= 0) {
         clearInterval(timerInterval);
         timerRunning = false;
-        document.getElementById('timerStartBtn').textContent = '▶ Iniciar';
+        document.getElementById('timerStartBtn').textContent = 'Iniciar';
         document.getElementById('timerStartBtn').style.opacity = '1';
         document.getElementById('timerDisplay').textContent = '00:00';
         // Alarm
@@ -5223,7 +5223,7 @@
     if (!timerRunning) return;
     clearInterval(timerInterval);
     timerRunning = false;
-    document.getElementById('timerStartBtn').textContent = '▶ Continuar';
+    document.getElementById('timerStartBtn').textContent = 'Continuar';
     document.getElementById('timerStartBtn').style.opacity = '1';
   }
 
@@ -5231,7 +5231,7 @@
     clearInterval(timerInterval);
     timerRunning = false;
     timerSeconds = timerTotal;
-    document.getElementById('timerStartBtn').textContent = '▶ Iniciar';
+    document.getElementById('timerStartBtn').textContent = 'Iniciar';
     document.getElementById('timerStartBtn').style.opacity = '1';
     updateTimerDisplay();
   }

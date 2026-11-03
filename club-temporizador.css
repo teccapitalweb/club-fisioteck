@@ -32,3 +32,4 @@
   .tm-corredor { padding: 18px 12px; }
 }
 @media (max-width: 340px) { .tm-bot { grid-template-columns: minmax(0, 1fr); } }
+.tm-clasico-bot { max-width: 460px; margin: 0 auto; flex-wrap: wrap; } .tm-clasico-bot > button { box-sizing: border-box; }
