@@ -13,3 +13,8 @@
 #sec-reminders code { font-size: .78rem; background: var(--surface-2); padding: 1px 6px; border-radius: 6px; }
 #sec-reminders .badge-danger { background: rgba(220, 45, 63, .12); color: var(--danger); }
 @media (max-width: 600px) { #sec-reminders .rc-fila > * { flex: 1 1 100%; max-width: none !important; } }
+#sec-reminders .rc-intro { margin-bottom: 14px; } #sec-reminders .rc-intro p { margin: 6px 0 12px; font-size: .88rem; line-height: 1.55; color: var(--text-light); }
+#sec-reminders .rc-glosario { display: flex; flex-wrap: wrap; gap: 8px; } #sec-reminders .rc-glosario span { flex: 1 1 220px; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--surface-2); font-size: .8rem; line-height: 1.45; color: var(--text-light); } #sec-reminders .rc-glosario b { display: block; color: var(--text); margin-bottom: 2px; }
+#sec-reminders .rc-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 16px; padding: 4px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface, var(--bg-card)); } #sec-reminders .rc-tabs button { flex: 1 1 auto; padding: 9px 14px; border: 0; border-radius: 9px; background: transparent; color: var(--text-light); font: inherit; font-weight: 600; font-size: .85rem; cursor: pointer; } #sec-reminders .rc-tabs button.on { background: var(--accent); color: var(--on-accent, #fff); }
+#sec-reminders .rc-limites { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); } #sec-reminders .rc-limites h4, #sec-reminders .rc-bloque h4 { margin: 0 0 10px; font-size: .9rem; }
+#sec-reminders .rc-bloque { padding: 14px 0; border-top: 1px solid var(--border); } #sec-reminders .rc-panel[hidden] { display: none; } #sec-reminders .admin-card h3 { margin-bottom: 6px; }

@@ -23,24 +23,29 @@
     const s = document.createElement('section');
     s.className = 'admin-section'; s.id = 'sec-reminders';
     s.innerHTML =
-      '<div class="admin-page-header"><div><div class="admin-page-title">Recordatorios de pago</div><div class="admin-page-sub">Correos con cupón para quien se registró y nunca ha pagado</div></div>' +
+      '<div class="admin-page-header"><div><div class="admin-page-title">Recordatorios de pago</div><div class="admin-page-sub">Correos automáticos con cupón para quien se registró y todavía no paga</div></div>' +
       '<div class="rc-acciones"><button type="button" class="btn btn-o btn-sm" onclick="rcCargar(true)">Actualizar</button></div></div>' +
       '<div id="rcEstado"></div>' +
-      '<div class="rc-control admin-card" id="rcControl"></div>' +
+      '<div class="rc-intro admin-card"><b>Qué hace esta sección</b><p>Cuando alguien se registra en el Club y no paga, el sistema le manda por correo una serie de mensajes con un cupón de descuento para su primer mes. Tú solo decides si está encendido y cuántos correos salen al día.</p>' +
+      '<div class="rc-glosario"><span><b>Paso</b>Un correo de la serie (son 7).</span><span><b>Vuelta</b>Una serie completa de 7 correos. Cada persona puede recibir hasta 3 vueltas.</span><span><b>Cupón</b>Código único de $50 o $100, de un solo uso y por tiempo limitado.</span></div></div>' +
+      '<div class="rc-tabs" id="rcTabs" role="tablist"><button type="button" data-t="resumen" class="on">Resumen</button><button type="button" data-t="serie">Cómo funciona</button><button type="button" data-t="probar">Probar</button><button type="button" data-t="envios">Envíos</button><button type="button" data-t="personas">Personas</button></div>' +
+      '<div class="rc-panel" data-p="resumen"><div class="rc-control admin-card" id="rcControl"></div>' +
       '<div class="ap-kpis" id="rcKpis"></div>' +
-      '<div class="zg-fila-graficas"><div class="admin-card"><h3>Correos enviados por paso</h3><div id="rcPasos"></div></div><div class="admin-card"><h3>De los correos al pago</h3><div id="rcEmbudo"></div></div></div>' +
-      '<div class="zg-fila-graficas"><div class="admin-card"><h3>Calendario de la serie</h3><div id="rcSerie" style="overflow-x:auto"></div></div>' +
-      '<div class="admin-card"><h3>Probar antes de activar</h3><p class="rc-nota">Un <b>ensayo</b> muestra quién recibiría un correo ahora, sin enviar nada. El <b>correo de prueba</b> te llega solo a ti, con un cupón real marcado como prueba (no cuenta en las estadísticas).</p>' +
-      '<div class="rc-fila"><button type="button" class="btn btn-o btn-sm" onclick="rcEnsayo()">Hacer un ensayo</button>' +
-      '<select class="form-select" id="rcPaso" style="max-width:150px"></select><select class="form-select" id="rcCiclo" style="max-width:130px"><option value="1">Vuelta 1</option><option value="2">Vuelta 2</option><option value="3">Vuelta 3</option></select>' +
-      '<button type="button" class="btn btn-p btn-sm" onclick="rcPrueba()">Enviarme prueba</button></div><div id="rcEnsayo" style="margin-top:12px"></div></div></div>' +
-      '<div class="admin-card" style="overflow-x:auto"><h3>Próximos envíos</h3><table class="admin-table"><thead><tr><th>Persona</th><th>Correo</th><th>Vuelta</th><th>Paso</th><th>Cupón</th><th>Sale</th></tr></thead><tbody id="rcProximos"></tbody></table></div>' +
-      '<div class="admin-card" style="overflow-x:auto"><h3>Últimos enviados</h3><table class="admin-table"><thead><tr><th>Persona</th><th>Correo</th><th>Vuelta</th><th>Paso</th><th>Cupón</th><th>Enviado</th></tr></thead><tbody id="rcRecientes"></tbody></table></div>' +
-      '<div class="admin-card" style="overflow-x:auto"><h3>Personas</h3><div class="rc-fila" style="margin-bottom:12px"><input class="form-input" id="rcBuscar" placeholder="Buscar por nombre o correo" style="max-width:280px" oninput="rcBuscar()"><select class="form-select" id="rcEtapa" style="max-width:220px" onchange="rcFiltrar(this.value)"></select></div>' +
-      '<table class="admin-table"><thead><tr><th>Persona</th><th>Correo</th><th>Estado</th><th>Vuelta</th><th>Paso</th><th>Siguiente</th></tr></thead><tbody id="rcLista"></tbody></table><div id="rcPaginas" class="rc-fila" style="margin-top:12px"></div></div>';
+      '<div class="zg-fila-graficas"><div class="admin-card"><h3>Correos enviados por paso</h3><p class="rc-nota">Cuántos correos de cada paso han salido y cuántos pagos hubo con su cupón.</p><div id="rcPasos"></div></div><div class="admin-card"><h3>De los correos al pago</h3><p class="rc-nota">Cuántas personas pagaron después de recibir un correo.</p><div id="rcEmbudo"></div></div></div></div>' +
+      '<div class="rc-panel" data-p="serie" hidden><div class="admin-card"><h3>Calendario de la serie</h3><p class="rc-nota">Cada persona recibe estos correos en orden. El tiempo se cuenta desde que se registró o desde el correo anterior. Si paga o se da de baja, la serie se detiene.</p><div id="rcSerie" style="overflow-x:auto"></div></div></div>' +
+      '<div class="rc-panel" data-p="probar" hidden><div class="admin-card"><h3>Probar antes de activar</h3><p class="rc-nota"><b>Ensayo:</b> te dice quién recibiría un correo ahora mismo, sin enviar nada.<br><b>Correo de prueba:</b> te llega solo a ti, con un cupón real marcado como prueba (no cuenta en las estadísticas).</p>' +
+      '<div class="rc-bloque"><h4>1. Ensayo</h4><div class="rc-fila"><button type="button" class="btn btn-o btn-sm" onclick="rcEnsayo()">Hacer un ensayo</button></div><div id="rcEnsayo" style="margin-top:12px"></div></div>' +
+      '<div class="rc-bloque"><h4>2. Correo de prueba para mí</h4><div class="rc-fila"><label class="rc-lim">Paso <select class="form-select" id="rcPaso" style="max-width:160px"></select></label><label class="rc-lim">Vuelta <select class="form-select" id="rcCiclo" style="max-width:130px"><option value="1">Vuelta 1</option><option value="2">Vuelta 2</option><option value="3">Vuelta 3</option></select></label>' +
+      '<button type="button" class="btn btn-p btn-sm" onclick="rcPrueba()">Enviarme prueba</button></div></div></div></div>' +
+      '<div class="rc-panel" data-p="envios" hidden><div class="admin-card" style="overflow-x:auto"><h3>Próximos envíos</h3><p class="rc-nota">Los siguientes correos que saldrán, del más cercano al más lejano.</p><table class="admin-table"><thead><tr><th>Persona</th><th>Correo</th><th>Vuelta</th><th>Paso</th><th>Cupón</th><th>Sale</th></tr></thead><tbody id="rcProximos"></tbody></table></div>' +
+      '<div class="admin-card" style="overflow-x:auto"><h3>Últimos enviados</h3><p class="rc-nota">Los correos más recientes que ya salieron.</p><table class="admin-table"><thead><tr><th>Persona</th><th>Correo</th><th>Vuelta</th><th>Paso</th><th>Cupón</th><th>Enviado</th></tr></thead><tbody id="rcRecientes"></tbody></table></div></div>' +
+      '<div class="rc-panel" data-p="personas" hidden><div class="admin-card" style="overflow-x:auto"><h3>Personas en la serie</h3><p class="rc-nota">Las personas registradas que no han pagado y en qué punto de la serie van.</p><div class="rc-fila" style="margin-bottom:12px"><input class="form-input" id="rcBuscar" placeholder="Buscar por nombre o correo" style="max-width:280px" oninput="rcBuscar()"><select class="form-select" id="rcEtapa" style="max-width:240px" onchange="rcFiltrar(this.value)"></select></div>' +
+      '<table class="admin-table"><thead><tr><th>Persona</th><th>Correo</th><th>Estado</th><th>Vuelta</th><th>Último paso</th><th>Siguiente correo</th></tr></thead><tbody id="rcLista"></tbody></table><div id="rcPaginas" class="rc-fila" style="margin-top:12px"></div></div></div>';
+    s.querySelectorAll('#rcTabs button').forEach(b => { b.onclick = () => rcTab(b.dataset.t); });
     sec.insertAdjacentElement('afterend', s);
   }
 
+  window.rcTab = t => { document.querySelectorAll('#rcTabs button').forEach(b => b.classList.toggle('on', b.dataset.t === t)); document.querySelectorAll('#sec-reminders .rc-panel').forEach(p => { p.hidden = p.dataset.p !== t; }); };
   const ETAPAS = [['todas', 'Todas'], ['listas-ahora', 'Listas ahora'], ['programadas', 'Programadas'], ['en-espera', 'En espera de su primer correo'], ['enviado', 'Esperando su siguiente correo'], ['cupon-vigente', 'Con cupón vigente'], ['descanso', 'En descanso'], ['convertida', 'Convertidas con cupón'], ['pago', 'Ya pagaron'], ['baja', 'Se dieron de baja'], ['cerrada', 'Terminaron las 3 vueltas'], ['sin-verificar', 'Correo sin verificar']];
 
   // ---------- Carga ----------
@@ -63,20 +68,20 @@
       '<div class="rc-estado"><span class="rc-punto ' + (on ? 'on' : '') + '"></span><div><b>' + (on ? 'Activos' : 'Apagados') + '</b><div class="rc-nota" style="margin:2px 0 0">' +
       (on ? 'Revisan cada 20 minutos y envían de 8:00 a 22:00 (hora de México).' : 'No se envía ningún correo mientras estén apagados.') + '</div></div></div>' +
       (E.configurado ? '' : '<p class="rc-aviso">Falta configurar el correo en el servidor (<code>RESEND_API_KEY</code>, <code>MAIL_FROM</code>) o la llave de firmas (<code>CERT_SIGNING_KEY</code>). Hasta entonces no se puede activar.</p>') +
-      '<div class="rc-fila"><button type="button" class="btn ' + (on ? 'btn-o' : 'btn-p') + '" onclick="rcModo(\'' + (on ? 'apagado' : 'activo') + '\')">' + (on ? 'Apagar los recordatorios' : 'Activar los recordatorios') + '</button>' +
-      '<label class="rc-lim">Tope por día <input class="form-input" id="rcTope" type="number" min="1" max="500" value="' + E.topeDiario + '"></label>' +
-      '<label class="rc-lim">Máx. por revisión <input class="form-input" id="rcMax" type="number" min="1" max="50" value="' + E.maxPorCorrida + '"></label>' +
-      '<button type="button" class="btn btn-o btn-sm" onclick="rcLimites()">Guardar topes</button></div>';
+      '<div class="rc-fila"><button type="button" class="btn ' + (on ? 'btn-o' : 'btn-p') + '" onclick="rcModo(\'' + (on ? 'apagado' : 'activo') + '\')">' + (on ? 'Apagar los recordatorios' : 'Activar los recordatorios') + '</button></div>' +
+      '<div class="rc-limites"><h4>Límites de envío</h4><div class="rc-fila"><label class="rc-lim">Correos por día (máximo) <input class="form-input" id="rcTope" type="number" min="1" max="500" value="' + E.topeDiario + '"></label>' +
+      '<label class="rc-lim">Por revisión, cada 20 min (máximo) <input class="form-input" id="rcMax" type="number" min="1" max="50" value="' + E.maxPorCorrida + '"></label>' +
+      '<button type="button" class="btn btn-o btn-sm" onclick="rcLimites()">Guardar límites</button></div><p class="rc-nota" style="margin:8px 0 0">Protegen tu cuenta de correo: si hay muchas personas por escribir, salen poco a poco.</p></div>';
     const g = E.estadisticas || {}, conv = g.convertidas || 0, env = Object.values(g.enviadosPaso || {}).reduce((a, b) => a + b, 0);
     $('rcKpis').innerHTML =
-      kpi('Enviados hoy', E.enviadosHoy + ' / ' + E.topeDiario, 'Quedan ' + E.faltanHoy + ' hoy', 'var(--accent)') +
-      kpi('Calificarían', E.calificarian, 'Sin pago, con correo verificado', 'var(--blue)') +
-      kpi('Listas ahora', E.listasAhora, E.dentroDeHorario ? 'Salen en la próxima revisión' : 'Salen al abrir el horario (8:00)', 'var(--warning)') +
-      kpi('Convertidas', conv, env ? 'De ' + env + ' correos enviados' : 'Aún sin envíos', 'var(--success)');
+      kpi('Correos enviados hoy', E.enviadosHoy + ' de ' + E.topeDiario, 'Pueden salir ' + E.faltanHoy + ' más hoy', 'var(--accent)') +
+      kpi('Personas en la serie', E.calificarian, 'Registradas, sin pago y con correo verificado', 'var(--blue)') +
+      kpi('Les toca correo ahora', E.listasAhora, E.dentroDeHorario ? 'Salen en la próxima revisión' : 'Salen al abrir el horario (8:00)', 'var(--warning)') +
+      kpi('Pagaron con el cupón', conv, env ? 'De ' + env + ' correos enviados' : 'Aún sin envíos', 'var(--success)');
     const p = (g.enviadosPaso || {});
     $('rcPasos').innerHTML = window.ZG ? ZG.barras({ etiquetas: E.serie.map(s => 'Paso ' + s.paso), series: [{ nombre: 'Enviados', valores: E.serie.map(s => p['p' + s.paso] || 0), color: 1 }, { nombre: 'Pagos con cupón', valores: E.serie.map(s => (g.pagosConCuponPaso || {})['p' + s.paso] || 0), color: 6 }], vacio: 'Aún no se envía ningún correo' }) : '';
     $('rcEmbudo').innerHTML = window.ZG ? ZG.embudo({ etapas: [{ nombre: 'Correos enviados', valor: env }, { nombre: 'Pagaron después de un correo', valor: Object.values(g.pagosTrasCorreoPaso || {}).reduce((a, b) => a + b, 0) }, { nombre: 'Pagaron con el cupón', valor: conv }], vacio: 'Aún no hay envíos' }) : '';
-    $('rcSerie').innerHTML = '<table class="admin-table"><thead><tr><th>Correo</th><th>Cupón</th><th>Sale</th></tr></thead><tbody>' + E.serie.map(s =>
+    $('rcSerie').innerHTML = '<table class="admin-table"><thead><tr><th>Paso</th><th>Cupón incluido</th><th>Cuándo sale</th></tr></thead><tbody>' + E.serie.map(s =>
       '<tr><td>Paso ' + s.paso + '</td><td>' + (s.monto ? pesos(s.monto) + ' (' + E.vigenciaHoras + ' h)' : 'Sin cupón · beneficios') + '</td><td>' + (s.desde === 'registro' ? s.esperaHoras + ' h después de registrarse' : s.desde === 'envio' ? s.esperaHoras + ' h después del paso anterior' : s.esperaHoras + ' h después de que venció el cupón anterior') + '</td></tr>').join('') +
       '</tbody></table><p class="rc-nota">Hasta ' + E.maxCiclos + ' vueltas, con ' + E.descansoDias + ' días de descanso entre vueltas.</p>';
     const sel = $('rcPaso'); if (sel && !sel.options.length) sel.innerHTML = E.serie.map(s => '<option value="' + s.paso + '">Paso ' + s.paso + (s.monto ? ' · ' + pesos(s.monto) : '') + '</option>').join('') + '<option value="todos">Los 7 pasos</option>';
