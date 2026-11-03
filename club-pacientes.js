@@ -89,7 +89,7 @@
       (lista.length ? lista.map(p => '<button type="button" class="fp-pac' + (actual && actual.id === p.id ? ' on' : '') + '" data-id="' + esc(p.id) + '"><b>' + esc(p.clave) + '</b><span>' + esc(p.zona || 'Sin zona') + ' · ' + (p.ultimaMs ? fecha(p.ultimaMs, true) : '') + '</span></button>').join('') : '<p class="fp-nada">' + (idx.pacientes.length ? 'Sin resultados.' : 'Aún no tienes pacientes.') + '</p>') +
       '<button type="button" class="fp-sec fp-ancho" id="fpNuevo">+ Nuevo paciente</button>' +
       '<div class="fp-mini"><button type="button" id="fpImportar">Importar registros de la Escala EVA</button><button type="button" id="fpExportar">Exportar mis datos</button><button type="button" id="fpBorrarTodo" class="fp-rojo">Borrar todos mis pacientes</button></div></aside>' +
-      '<section class="fp-ficha" id="fpFicha">' + (actual ? ficha() : '<div class="fp-vacio"><h3>Elige o crea un paciente</h3><p>Aquí verás cómo cambian su dolor y su movilidad de una sesión a otra.</p></div>') + '</section></div>';
+      '<section class="fp-ficha" id="fpFicha">' + (actual ? ficha() : '<div class="fp-vacio"><h3>Elige o crea un paciente</h3><p>Aquí verás cómo cambian su dolor y su movilidad de una sesión a otra.</p></div><div class="fp-guia"><b>Cómo empezar</b><ol><li>Toca <b>+ Nuevo paciente</b> y escribe solo sus iniciales o una clave.</li><li>Registra el dolor (EVA) y la movilidad en cada sesión.</li><li>Mira la evolución en gráficas y descarga el resumen en PDF.</li></ol></div>') + '</section></div>';
     ligar();
   }
 

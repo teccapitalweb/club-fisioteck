@@ -41,13 +41,20 @@
   const totalSeg = f => f.reduce((t, x) => t + x.dur, 0);
 
   // ---------- Sonido, vibración y pantalla activa ----------
-  function pitido(frec, ms) {
+  function pitido(frec, ms, inicio, fuerte) {
     if (!opc.sonido) return;
     try {
       ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === 'suspended') ctx.resume();
-      const o = ctx.createOscillator(), g = ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.frequency.value = frec; g.gain.value = 0.25;
-      o.start(); o.stop(ctx.currentTime + ms / 1000);
+      const t0 = ctx.currentTime + (inicio || 0) / 1000, dur = ms / 1000;
+      const o = ctx.createOscillator(), g = ctx.createGain(); o.type = fuerte ? 'square' : 'sine'; o.frequency.value = frec;
+      g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(fuerte ? 0.55 : 0.35, t0 + 0.012); g.gain.setValueAtTime(fuerte ? 0.55 : 0.35, t0 + Math.max(0.02, dur - 0.05)); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      o.connect(g); g.connect(ctx.destination); o.start(t0); o.stop(t0 + dur + 0.02);
     } catch (_) { /* sin audio */ }
+  }
+  // Alarmas con varios tonos: cambio a trabajo (sube), cambio a descanso (baja) y fin de la rutina (melodía larga)
+  function alarma(tipo) {
+    const mel = { trabajo: [[784, 140, 0], [988, 140, 170], [1319, 320, 340]], descanso: [[1319, 140, 0], [988, 140, 170], [659, 320, 340]], fin: [[784, 180, 0], [988, 180, 220], [1319, 180, 440], [1568, 180, 660], [1319, 180, 900], [1568, 520, 1120]] }[tipo] || [];
+    mel.forEach(([f, ms, ini]) => pitido(f, ms, ini, true));
   }
   const vibrar = p => { if (opc.vibracion && navigator.vibrate) { try { navigator.vibrate(p); } catch (_) { /* sin vibración */ } } };
   async function pedirPantalla() { if (!opc.pantalla || !navigator.wakeLock) return; try { wake = await navigator.wakeLock.request('screen'); } catch (_) { wake = null; } }
@@ -57,12 +64,12 @@
   // ---------- Motor ----------
   function iniciarFase(i) {
     iFase = i; const f = fases[i]; restante = f.dur * 1000; fin = Date.now() + restante; ultimoSeg = -1; pintarCorredor();
-    if (i > 0) { pitido(f.tipo === 'trabajo' ? 988 : 660, 350); vibrar(f.tipo === 'trabajo' ? [200, 80, 200] : [350]); }
+    if (i > 0) { alarma(f.tipo === 'trabajo' ? 'trabajo' : 'descanso'); vibrar(f.tipo === 'trabajo' ? [300, 100, 300, 100, 300] : [600, 150, 300]); }
   }
   function tic() {
     if (!corriendo || pausado) return;
     restante = fin - Date.now(); const seg = Math.ceil(restante / 1000);
-    if (seg !== ultimoSeg) { ultimoSeg = seg; if (seg > 0 && seg <= 3) { pitido(880, 120); vibrar(60); } pintarReloj(); }
+    if (seg !== ultimoSeg) { ultimoSeg = seg; if (seg > 0 && seg <= 3) { pitido(880, 140, 0, true); vibrar(120); } pintarReloj(); }
     if (restante <= 0) { if (iFase + 1 < fases.length) iniciarFase(iFase + 1); else terminar(); }
   }
   function empezar() {
@@ -74,7 +81,7 @@
     clearInterval(reloj); reloj = setInterval(tic, 200);
   }
   function terminar() {
-    corriendo = false; clearInterval(reloj); soltarPantalla(); [0, 220, 440].forEach(t => setTimeout(() => pitido(988, 200), t)); vibrar([300, 120, 300, 120, 500]);
+    corriendo = false; clearInterval(reloj); soltarPantalla(); alarma('fin'); vibrar([400, 150, 400, 150, 400, 150, 900]);
     const c = $('tmCorredor'); if (c) c.innerHTML = '<div class="tm-fin"><b>Rutina terminada</b><p>' + esc(nombreRutina) + ' · ' + mmss(totalSeg(fases) - 5) + ' en total</p><div class="tm-bot"><button type="button" class="tm-cta" id="tmRepetir">Repetir</button><button type="button" class="tm-sec" id="tmSalir">Volver a la rutina</button></div></div>';
     if ($('tmRepetir')) { $('tmRepetir').onclick = () => { $('tmCorredor').innerHTML = estructuraCorredor(); ligarCorredor(); empezar(); }; $('tmSalir').onclick = salir; }
   }
@@ -120,7 +127,7 @@
       '<p class="tm-ref">Los ejemplos son solo una configuración de partida, no una prescripción clínica. Ajusta los tiempos según tu criterio.</p>' +
       '<h4>Tu rutina</h4><label class="tm-nombre">Nombre<input id="tmNombre" maxlength="40" value="' + esc(nombreRutina) + '"></label><div id="tmLista">' + rutina.map(filaEj).join('') + '</div>' +
       '<button type="button" class="tm-sec" id="tmMas">+ Agregar ejercicio</button>' +
-      '<div class="tm-opc"><label><input type="checkbox" id="tmSonido"' + (opc.sonido ? ' checked' : '') + '> Sonido</label><label><input type="checkbox" id="tmVibra"' + (opc.vibracion ? ' checked' : '') + '> Vibración</label><label><input type="checkbox" id="tmPantalla"' + (opc.pantalla ? ' checked' : '') + '> Mantener la pantalla activa</label></div>' +
+      '<div class="tm-opc"><label><input type="checkbox" id="tmSonido"' + (opc.sonido ? ' checked' : '') + '> Sonido</label><label><input type="checkbox" id="tmVibra"' + (opc.vibracion ? ' checked' : '') + '> Vibración' + (navigator.vibrate ? '' : ' (no disponible en este dispositivo)') + '</label><label><input type="checkbox" id="tmPantalla"' + (opc.pantalla ? ' checked' : '') + '> Mantener la pantalla activa</label></div>' +
       '<p class="tm-total" id="tmTotal"></p><div class="tm-bot"><button type="button" class="tm-cta" id="tmIniciar">Iniciar rutina</button><button type="button" class="tm-sec" id="tmGuardar">Guardar como plantilla</button></div>' + (prop.length ? '<button type="button" class="tm-borrar" id="tmBorrarMias">Borrar mis plantillas</button>' : '');
     ligarEditor(); total();
   }

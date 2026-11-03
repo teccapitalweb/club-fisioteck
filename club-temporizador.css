@@ -24,3 +24,11 @@
 .tm-corredor .tm-bot { justify-content: center; }
 .tm-fin b { display: block; font-size: 1.5rem; margin-bottom: 4px; } .tm-fin p { color: var(--text-muted); margin: 0 0 14px; }
 @media (max-width: 560px) { .tm-ej-fila { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.tm-bot > button { min-width: 0; max-width: 100%; box-sizing: border-box; }
+@media (max-width: 560px) {
+  .tm-bot { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .tm-bot > button { width: 100%; padding: 12px 8px; font-size: .86rem; white-space: normal; line-height: 1.2; }
+  .tm-opc { gap: 8px 14px; } .tm-opc label { flex: 1 1 auto; }
+  .tm-corredor { padding: 18px 12px; }
+}
+@media (max-width: 340px) { .tm-bot { grid-template-columns: minmax(0, 1fr); } }
