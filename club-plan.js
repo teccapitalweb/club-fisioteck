@@ -80,8 +80,8 @@
     $('rpAgregar').onclick = () => { leerEditor(); if (plan.ejercicios.length >= MAX_EJ) { showToast('Máximo ' + MAX_EJ + ' ejercicios por plan.'); return; } plan.ejercicios.push({ n: 'Nuevo ejercicio', s: 3, r: 10, t: 0, d: 30, nota: '' }); panel(); };
     document.querySelectorAll('#rpLista [data-q]').forEach(b => b.onclick = () => { leerEditor(); plan.ejercicios.splice(Number(b.dataset.q), 1); panel(); });
     $('rpBib').onclick = bibliotecaCaja;
-    $('rpPdf').onclick = () => { leerEditor(); pdf(plan); };
-    $('rpPaciente').onclick = guardarEnPaciente;
+    $('rpPdf').onclick = () => { leerEditor(); pdf(plan, pacienteElegido ? pacienteElegido.clave : ''); };
+    $('rpPaciente').textContent = pacienteElegido ? 'Guardar en ' + pacienteElegido.clave : 'Guardar en un paciente'; $('rpPaciente').onclick = pacienteElegido ? () => { leerEditor(); guardarPlanEn(pacienteElegido.id); } : guardarEnPaciente;
   }
   function bibliotecaCaja() {
     leerEditor(); const caja = $('rpBibCaja'), z = BIB().zonas[plan.zona];
@@ -114,6 +114,30 @@
     w.document.close();
   }
 
+  // ---------- Paciente elegido al inicio de la calculadora (opcional) ----------
+  let pacienteElegido = null;
+  const datosPlan = () => ({ f: Date.now(), nombre: plan.patologia.slice(0, 80), zona: plan.zona, zonaN: plan.zonaN, patologia: plan.patologia, severidad: plan.severidad, objetivo: plan.objetivo, nivel: plan.nivel, sesiones: plan.sesiones, duracion: plan.duracion, semanas: plan.semanas, fases: plan.fases, ejercicios: plan.ejercicios, progresion: plan.progresion, notas: plan.notas, contra: plan.contra });
+  async function guardarPlanEn(id) {
+    try { await ftPacientes.guardarPlan(id, datosPlan()); showToast('Plan guardado en la ficha de ' + (pacienteElegido ? pacienteElegido.clave : 'tu paciente')); }
+    catch (e) { showToast(e && e.message ? e.message : 'No se pudo guardar el plan.'); }
+  }
+  async function pintarSelectorPaciente() {
+    const zona = $('rehabZone'); if (!zona) return;
+    let caja = $('rpSelPac');
+    if (!caja) { const rejilla = zona.closest('div[style*="grid"]'); if (!rejilla) return; caja = document.createElement('div'); caja.id = 'rpSelPac'; caja.className = 'rp-selpac'; rejilla.insertAdjacentElement('beforebegin', caja); }
+    if (!window.ftPacientes || !ftPacientes.listar) { caja.hidden = true; return; }
+    caja.hidden = false;
+    try {
+      const l = await ftPacientes.listar();
+      if (!l.avisoOk) { caja.innerHTML = '<div class="rp-selpac-t"><b>Paciente (opcional)</b><span>Para guardar el plan en la ficha de un paciente y ponerlo en el PDF, primero abre <b>Pacientes</b> y acepta el aviso de privacidad.</span></div><button type="button" class="rp-sec" onclick="showPage(\'pacientes\')">Abrir Pacientes</button>'; return; }
+      if (!l.pacientes.length) { caja.innerHTML = '<div class="rp-selpac-t"><b>Paciente (opcional)</b><span>Aún no tienes pacientes. Crea uno para guardar los planes en su ficha.</span></div><button type="button" class="rp-sec" onclick="showPage(\'pacientes\')">Crear paciente</button>'; return; }
+      const actual = pacienteElegido && l.pacientes.some(x => x.id === pacienteElegido.id) ? pacienteElegido.id : '';
+      if (!actual) pacienteElegido = null;
+      caja.innerHTML = '<label class="rp-selpac-t"><b>Paciente (opcional)</b><span>Elígelo para ponerlo en el PDF y guardar el plan en su ficha con un toque.</span><select id="rpSelPacSel"><option value="">Sin paciente (plan general)</option>' + l.pacientes.map(x => '<option value="' + esc(x.id) + '"' + (x.id === actual ? ' selected' : '') + '>' + esc(x.clave) + '</option>').join('') + '</select></label>';
+      $('rpSelPacSel').onchange = () => { const x = l.pacientes.find(p => p.id === $('rpSelPacSel').value); pacienteElegido = x ? { id: x.id, clave: x.clave } : null; if (plan) panel(); };
+    } catch (_) { caja.hidden = true; }
+  }
+
   // ---------- Guardar en la ficha de un paciente ----------
   async function guardarEnPaciente() {
     const caja = $('rpPacCaja'); if (caja.innerHTML) { caja.innerHTML = ''; return; }
@@ -126,7 +150,7 @@
       caja.innerHTML = '<div class="rp-pac"><label>Paciente<select id="rpPacSel">' + l.pacientes.map(x => '<option value="' + esc(x.id) + '">' + esc(x.clave) + '</option>').join('') + '</select></label><button type="button" class="rp-cta" id="rpPacOk">Guardar plan</button></div>';
       $('rpPacOk').onclick = async () => {
         $('rpPacOk').disabled = true;
-        try { await ftPacientes.guardarPlan($('rpPacSel').value, { f: Date.now(), nombre: plan.patologia.slice(0, 80), zona: plan.zona, zonaN: plan.zonaN, patologia: plan.patologia, severidad: plan.severidad, objetivo: plan.objetivo, nivel: plan.nivel, sesiones: plan.sesiones, duracion: plan.duracion, semanas: plan.semanas, fases: plan.fases, ejercicios: plan.ejercicios, progresion: plan.progresion, notas: plan.notas, contra: plan.contra }); caja.innerHTML = ''; showToast('Plan guardado en la ficha del paciente'); }
+        try { await ftPacientes.guardarPlan($('rpPacSel').value, datosPlan()); caja.innerHTML = ''; showToast('Plan guardado en la ficha del paciente'); }
         catch (e) { $('rpPacOk').disabled = false; showToast(e && e.message ? e.message : 'No se pudo guardar el plan.'); }
       };
     } catch (_) { showToast('No se pudo cargar tu lista de pacientes.'); }
@@ -142,5 +166,8 @@
       panel(); return r;
     };
   }
+  const origPagina = window.showPage;
+  if (typeof origPagina === 'function') window.showPage = function (p) { const r = origPagina.apply(this, arguments); if (p === 'rehab-calc') pintarSelectorPaciente(); return r; };
+  pintarSelectorPaciente();
   window.ftPlan = { pdf };
 })();
