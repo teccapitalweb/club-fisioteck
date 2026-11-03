@@ -4,7 +4,7 @@
 (function () {
   'use strict';
   const S = {
-    'courses-live': ['Aprende en vivo', 'Webinar y <em>clases.</em>', 'Sesiones en vivo con instructores especializados.', 'live'],
+    'courses-live': ['Aprende en vivo', 'Clases <em>en vivo.</em>', 'Sesiones en vivo con instructores especializados.', 'live'],
     news: ['Actualidad', 'Noticias y <em>blog.</em>', 'Artículos, tips y novedades del mundo de la fisioterapia.', 'news'],
     account: ['Tu cuenta', 'Mi <em>perfil.</em>', 'Administra tu información personal.', 'account'],
     subscription: ['Tu membresía', 'Mi <em>suscripción.</em>', 'Monitorea tu membresía y tus datos de pago.', 'subscription'],
@@ -13,6 +13,7 @@
     forum: ['Comunidad activa', 'Foro <em>FisioTeck.</em>', 'Comparte, pregunta y aprende con la comunidad.', 'forum'],
     community: ['Comunidad', 'Nuestro <em>canal.</em>', 'Recibe actualizaciones, noticias y contenido exclusivo.', 'canal'],
     discount: ['Beneficio de socio', 'Descuento <em>exclusivo.</em>', 'Un beneficio especial por ser socio del Club.', 'subscription'],
+    pacientes: ['Herramientas', 'Tus <em>pacientes.</em>', 'Seguimiento del dolor y la movilidad, sesión por sesión.', 'tools'],
     'rehab-calc': ['Herramientas', 'Calculadora de <em>rehabilitación.</em>', 'Planes sugeridos según la patología y la severidad.', 'tools'],
     atlas: ['Herramientas', 'Atlas <em>muscular.</em>', 'Explora los grupos musculares del cuerpo humano.', 'tools'],
     glossary: ['Herramientas', 'Glosario <em>FisioTeck.</em>', 'Diccionario de términos de fisioterapia.', 'pensar'],

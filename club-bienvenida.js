@@ -128,7 +128,7 @@
     return [
       Object.assign({ pose: 'celebra' }, portada),
       { pose: 'libro', eyebrow: 'Cursos con certificado', t: 'Cursos premium', d: esc8 ? 'Tu primer curso ya está abierto y cada ' + dias + ' días se abre el siguiente. También puedes abrir antes el primero de esos cursos superando retos (una sola vez).' : 'Catálogo completo con clases grabadas, material descargable y certificado al terminar.' },
-      { pose: 'senala', eyebrow: 'En vivo', t: 'Clases en vivo', d: 'Webinars con especialistas y acceso a las grabaciones cuando quieras.' },
+      { pose: 'senala', eyebrow: 'En vivo', t: 'Clases en vivo', d: 'Clases con especialistas y acceso a las grabaciones cuando quieras.' },
       { pose: 'lupa', eyebrow: 'Biblioteca', t: 'PDF, material y libros', d: 'Guías y plantillas descargables, y libros de lectura que se abren al superar retos.' },
       { pose: 'trofeo', eyebrow: 'Herramientas y retos', t: 'Herramientas clínicas y retos', d: 'Calculadora, atlas muscular, escala EVA y más. Gana XP, sube de nivel y presume tu tarjeta en el Directorio VIP.' },
       { pose: 'diploma', eyebrow: 'Certificados', t: 'Certificados con folio verificable', d: 'Con código QR que cualquiera puede verificar, para respaldar lo que aprendes.' },

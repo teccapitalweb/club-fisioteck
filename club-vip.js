@@ -27,7 +27,7 @@
       { ic: 'rayo', eyebrow: 'Retos', t: 'Abre tu primer curso <em>antes</em>', d: 'Resuelve ' + retos + ' retos (quiz, detective, ordena el proceso y modo historia) y abres ese primer curso sin esperar. Solo aplica una vez.' },
       { ic: 'herr', eyebrow: 'Herramientas clínicas', t: 'Todo para tu <em>consulta</em>', d: 'Calculadora de rehabilitación, atlas muscular, glosario, rangos de movimiento, escala EVA y cronómetro de sesión.' },
       { ic: 'gente', eyebrow: 'Comunidad', t: 'Foro y <em>directorio VIP</em>', d: 'Comparte casos con colegas, responde dudas y aparece en el directorio para que otros profesionales te encuentren.' },
-      { ic: 'archivo', eyebrow: 'Material y créditos', t: 'PDF, webinars y <em>créditos</em>', d: 'Material de apoyo en cada curso, clases en vivo y créditos para canjear los materiales gratuitos.' },
+      { ic: 'archivo', eyebrow: 'Material y créditos', t: 'PDF, clases en vivo y <em>créditos</em>', d: 'Material de apoyo en cada curso, clases en vivo y créditos para canjear los materiales gratuitos.' },
       { ic: 'diploma', eyebrow: 'Certificados', t: 'Listo, <em>empecemos</em>', d: 'Al terminar cada curso descargas tu certificado con folio verificable. Tu avance y tus logros nunca se pierden.' }
     ];
   }
