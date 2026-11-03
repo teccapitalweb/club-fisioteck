@@ -1,0 +1,9 @@
+/* Club FisioTeck — guía de inicio de las herramientas (club-inicios.js) */
+.vi-panel { padding: 24px 20px; border: 1px dashed var(--border-2, var(--border)); border-radius: var(--radius, 16px); background: var(--surface, var(--bg-card, #fff)); text-align: center; }
+.vi-panel h3 { margin: 0 0 6px; font-size: 1.1rem; color: var(--text); }
+.vi-panel p { margin: 0 auto 16px; max-width: 520px; font-size: .88rem; line-height: 1.5; color: var(--text-muted); }
+.vi-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.vi-chips button { padding: 10px 16px; border: 1px solid var(--border-2, var(--border)); border-radius: 999px; background: var(--bg-card, transparent); color: var(--text); font: inherit; font-weight: 600; font-size: .86rem; cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+.vi-chips button:hover, .vi-chips button:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--on-accent, #fff); }
+.vi-volver { margin-top: 14px; background: none; border: 0; color: var(--text-muted); font: inherit; font-size: .8rem; text-decoration: underline; cursor: pointer; }
+@media (max-width: 560px) { .vi-panel { padding: 18px 12px; } .vi-chips button { flex: 1 1 calc(50% - 8px); padding: 11px 8px; } }
