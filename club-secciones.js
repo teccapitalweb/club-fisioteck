@@ -15,7 +15,7 @@
     discount: ['Beneficio de socio', 'Descuento <em>exclusivo.</em>', 'Un beneficio especial por ser socio del Club.', 'subscription'],
     pacientes: ['Herramientas', 'Tus <em>pacientes.</em>', 'Seguimiento del dolor y la movilidad, sesión por sesión.', 'tools'],
     'rehab-calc': ['Herramientas', 'Calculadora de <em>rehabilitación.</em>', 'Planes sugeridos según la patología y la severidad.', 'tools'],
-    atlas: ['Herramientas', 'Atlas <em>muscular.</em>', 'Explora los grupos musculares del cuerpo humano.', 'tools'],
+    atlas: ['Herramientas', 'Atlas <em>muscular.</em>', 'Explora en 3D huesos, músculos, arterias y venas del cuerpo humano.', 'tools'],
     glossary: ['Herramientas', 'Glosario <em>FisioTeck.</em>', 'Diccionario de términos de fisioterapia.', 'pensar'],
     rom: ['Herramientas', 'Rangos de <em>movimiento.</em>', 'Valores normales de goniometría por articulación.', 'tools'],
     timer: ['Herramientas', 'Cronómetro de <em>sesión.</em>', 'Temporizador para técnicas de fisioterapia.', 'tools']

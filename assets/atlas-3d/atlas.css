@@ -1,0 +1,76 @@
+html,body{margin:0;padding:0;background:transparent;}
+
+#ft-anatomy-studio{font:14px/1.5 'Segoe UI',sans-serif;color:#e9eef4;color-scheme:dark;--s-ink:#e9eef4;--s-muted:#a7b4c3;--s-line:#303a46;--s-panel:#1b232e;--s-blue:#78c6e8}
+#ft-anatomy-studio *{box-sizing:border-box}#ft-anatomy-studio [hidden]{display:none!important}#ft-anatomy-studio button,#ft-anatomy-studio select,#ft-anatomy-studio input{font:inherit}
+#ft-anatomy-studio .s-app{border:1px solid var(--s-line);background:#101720;border-radius:18px;overflow:hidden}
+#ft-anatomy-studio .s-top{display:flex;align-items:center;gap:15px;padding:18px 23px;padding-right:110px;border-bottom:1px solid var(--s-line);background:#18212c;flex-wrap:wrap}
+#ft-anatomy-studio .s-brand{font-weight:700;letter-spacing:1.6px;color:#93c9ec}#ft-anatomy-studio .s-product{color:#aab9c9;font-size:12px;border-left:1px solid #44505f;padding-left:15px}
+#ft-anatomy-studio .s-title{padding:21px 23px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}#ft-anatomy-studio h2{margin:0;font-size:26px;font-weight:600;letter-spacing:-.6px;line-height:1.25}#ft-anatomy-studio .s-breadcrumb{font-size:11px;color:#9eb0c4;letter-spacing:.2px;margin-bottom:5px}#ft-anatomy-studio .s-title p{margin:6px 0 0;color:#a7b4c3;font-size:12px}
+#ft-anatomy-studio button{background:#263342;color:#edf3f8;border:1px solid #405064;border-radius:8px;padding:8px 12px;cursor:pointer}#ft-anatomy-studio button[aria-pressed=true]{background:#305a74;border-color:#82c7ee;color:#f2f9ff}#ft-anatomy-studio button:disabled{opacity:.45;cursor:default}#ft-anatomy-studio button:focus-visible,#ft-anatomy-studio select:focus-visible,#ft-anatomy-studio input:focus-visible{outline:3px solid #78c6e8;outline-offset:3px}
+#ft-anatomy-studio .s-grid{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(280px,1fr);gap:17px;padding:0 20px 20px;align-items:start}
+#ft-anatomy-studio .s-viewport{background:#141c26;border:1px solid var(--s-line);border-radius:13px;overflow:hidden;min-width:0}
+#ft-anatomy-studio .s-viewbar{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--s-line)}#ft-anatomy-studio .s-viewbar .s-views{display:flex;gap:4px;flex-wrap:wrap}#ft-anatomy-studio .s-viewbar button{font-size:11px;padding:6px 9px}#ft-anatomy-studio .s-viewbar span{font-size:11px;color:#a7b9c9}
+#ft-anatomy-studio .s-stage{position:relative;height:620px;background:radial-gradient(ellipse at 50% 43%,#38434c 0%,#1c2631 43%,#101822 82%);overflow:hidden}
+#ft-anatomy-studio .s-scene{width:100%;height:100%}#ft-anatomy-studio canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+#ft-anatomy-studio .s-loading{position:absolute;inset:40% 20px auto;text-align:center;color:#bfd0dd}
+#ft-anatomy-studio .s-status{position:absolute;left:14px;top:13px;background:#18232edb;border:1px solid #465362;padding:6px 10px;border-radius:6px;color:#bdcfde;font-size:11px;pointer-events:none;max-width:calc(100% - 28px)}
+#ft-anatomy-studio .s-pin{position:absolute;width:26px;height:26px;border-radius:50%;padding:0;background:#17222ddd;border:1.5px solid #afc8da;transform:translate(-50%,-50%);font-size:10px}#ft-anatomy-studio .s-pin:hover{background:#3d6077}
+#ft-anatomy-studio .s-annotation{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}#ft-anatomy-studio .s-label{position:absolute;pointer-events:none;background:#18232ff2;color:#e5f5ff;border:1px solid #75c6f0;border-radius:6px;padding:5px 8px;font-size:11px;max-width:42%;overflow-wrap:anywhere}
+#ft-anatomy-studio .s-hint{position:absolute;bottom:12px;left:15px;color:#b8c7d5;font-size:11px;pointer-events:none}
+#ft-anatomy-studio .s-camera{display:flex;align-items:center;justify-content:center;gap:6px;padding:11px;flex-wrap:wrap;border-top:1px solid var(--s-line)}#ft-anatomy-studio .s-camera button{font-size:11px;padding:7px 10px}
+#ft-anatomy-studio .s-sidebar{min-width:0;display:grid;gap:13px}#ft-anatomy-studio .s-panel{background:var(--s-panel);border:1px solid var(--s-line);border-radius:13px;padding:17px}
+#ft-anatomy-studio .s-panel h3{font-size:14px;letter-spacing:.1px;margin:0 0 4px;font-weight:600}#ft-anatomy-studio .s-help{font-size:11px;color:#aebdcb;margin:0 0 13px}
+#ft-anatomy-studio .s-layers{display:flex;flex-wrap:wrap;gap:5px 14px;padding:8px 13px;border-bottom:1px solid var(--s-line)}#ft-anatomy-studio .s-layer{display:flex;gap:9px;align-items:center;min-height:36px;padding:3px 0;cursor:pointer}#ft-anatomy-studio .s-layer input{accent-color:#74bfe8;width:17px;height:17px;margin:0}#ft-anatomy-studio .s-layer .s-dot{display:block;width:10px;height:10px;border-radius:50%;background:var(--tissue);border:1px solid #ffffff30}#ft-anatomy-studio .s-layer span:last-child{display:none}#ft-anatomy-studio .s-layer{font-size:12px;min-height:32px}
+#ft-anatomy-studio .s-opacity-toggle{font-size:11px;border:0;background:none;padding:7px 0;color:#8ac9ed;text-align:left;margin-top:7px}#ft-anatomy-studio .s-opacity-list{display:grid;gap:7px;margin:7px 0}#ft-anatomy-studio .s-opacity-list label{display:grid;grid-template-columns:78px 1fr 32px;align-items:center;gap:5px;font-size:11px;color:#bac9d6}#ft-anatomy-studio .s-opacity-list input{width:100%;min-width:0;accent-color:#74bfe8}
+#ft-anatomy-studio .s-region-fields{margin-top:15px;padding-top:8px;border-top:1px solid var(--s-line);display:grid;gap:10px}#ft-anatomy-studio .s-field{display:grid;gap:5px;color:#afbfce;font-size:11px}#ft-anatomy-studio select{padding:9px;width:100%;border:1px solid #425164;border-radius:7px;background:#222e3d;color:#e7f0f6;font-size:12px;min-width:0}
+#ft-anatomy-studio .s-empty{padding:20px 17px;background:#1b2633;border:1px solid #35475a;border-radius:13px}#ft-anatomy-studio .s-empty h3{font-size:16px;margin:0 0 9px}#ft-anatomy-studio .s-empty p{font-size:12px;color:#b8c9d9;margin:0}
+#ft-anatomy-studio .s-detail{padding:0;overflow:hidden;order:-1}#ft-anatomy-studio .s-detail-head{padding:16px 17px 11px}#ft-anatomy-studio .s-kind{font-size:10px;letter-spacing:1px;color:#9fcce6;text-transform:uppercase}#ft-anatomy-studio .s-detail-head h3{font-size:21px;line-height:1.25;letter-spacing:-.4px;margin:6px 0}#ft-anatomy-studio .s-detail-head small{color:#9eb3c8;font-size:11px}
+#ft-anatomy-studio .s-isolated{height:190px;margin:0 12px;background:radial-gradient(ellipse,#3b4b57,#15202b);border-radius:9px;overflow:hidden;position:relative}#ft-anatomy-studio .s-isolated small{position:absolute;bottom:7px;left:9px;color:#b7c8d4;font-size:10px;pointer-events:none}
+#ft-anatomy-studio .s-info-tabs{display:flex;gap:10px;margin:5px 16px 0;border-bottom:1px solid #3a4958;flex-wrap:wrap}#ft-anatomy-studio .s-info-tabs button{border:0;background:none;border-bottom:2px solid transparent;border-radius:0;padding:9px 0;font-size:11px;color:#aec0d0}#ft-anatomy-studio .s-info-tabs button[aria-pressed=true]{color:#8acdf3;border-bottom-color:#8acdf3;background:none}
+#ft-anatomy-studio .s-copy{padding:14px 17px;font-size:12px}#ft-anatomy-studio .s-copy h4{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#a7bfd1;margin:0 0 6px}#ft-anatomy-studio .s-copy h4:not(:first-child){margin-top:13px}#ft-anatomy-studio .s-copy p{margin:0 0 10px}#ft-anatomy-studio .s-tip{background:#273b4b;padding:9px 11px;border-left:2px solid #72b9df;border-radius:0 6px 6px 0;color:#d0dfeb;font-size:11px}
+#ft-anatomy-studio .s-actions{display:flex;gap:6px;padding:0 16px 14px;flex-wrap:wrap}#ft-anatomy-studio .s-actions button{font-size:11px;padding:6px 10px}
+#ft-anatomy-studio .s-coverage{font-size:10px;color:#a3b5c6;margin:10px 0 0;line-height:1.6}#ft-anatomy-studio .s-footer{border-top:1px solid var(--s-line);padding:12px 21px;font-size:10px;color:#9daebd;line-height:1.6;background:#151d27}#ft-anatomy-studio a{color:#8fc8e9}
+@media(max-width:730px){#ft-anatomy-studio .s-grid{grid-template-columns:1fr;padding:0 12px 14px}#ft-anatomy-studio .s-stage{height:540px}#ft-anatomy-studio .s-title{padding:18px 16px}#ft-anatomy-studio h2{font-size:23px}#ft-anatomy-studio .s-sidebar{grid-row:2}#ft-anatomy-studio .s-layers{grid-template-columns:1fr 1fr;column-gap:15px}#ft-anatomy-studio .s-layer span:last-child{display:none}#ft-anatomy-studio .s-isolated{height:235px}}
+@media(pointer:coarse){#ft-anatomy-studio button{min-height:44px}#ft-anatomy-studio .s-layer{min-height:44px}#ft-anatomy-studio .s-pin{width:36px;height:36px}}
+
+
+/* ===== Colores FisioTeck: claro y oscuro (el Club escribe data-theme en <html>); el escenario 3D queda azul marino ===== */
+html:not([data-theme="dark"]) #ft-anatomy-studio{color-scheme:light;--s-ink:#0B2A4A;--s-muted:#3E5975;--s-line:rgba(11,58,102,.14);--s-panel:#FFFFFF;--s-soft:#F3F9FE;--s-app:#EEF5FC;--s-btn:#FFFFFF;--s-btn-line:rgba(11,58,102,.22);--s-acc:#0D5FA0;--s-acc-soft:rgba(13,95,160,.10);--s-on-acc:#FFFFFF;--s-field:#FFFFFF}
+html[data-theme="dark"] #ft-anatomy-studio{color-scheme:dark;--s-ink:#EAF2FA;--s-muted:#A9BBD1;--s-line:rgba(140,190,230,.17);--s-panel:#101A2C;--s-soft:#16223A;--s-app:#0B121F;--s-btn:#16223A;--s-btn-line:rgba(140,190,230,.26);--s-acc:#4CA6DE;--s-acc-soft:rgba(76,166,222,.14);--s-on-acc:#06121F;--s-field:#16223A}
+#ft-anatomy-studio{font-family:'Inter','Segoe UI',sans-serif;color:var(--s-ink)}
+#ft-anatomy-studio h2,#ft-anatomy-studio h3{font-family:'Plus Jakarta Sans','Inter',sans-serif;letter-spacing:-.3px}
+#ft-anatomy-studio .s-app{background:var(--s-app);border-color:var(--s-line)}
+#ft-anatomy-studio .s-title p,#ft-anatomy-studio .s-breadcrumb,#ft-anatomy-studio .s-help,#ft-anatomy-studio .s-coverage,#ft-anatomy-studio .s-viewbar span,#ft-anatomy-studio .s-field,#ft-anatomy-studio .s-empty p,#ft-anatomy-studio .s-detail-head small,#ft-anatomy-studio .s-opacity-list label{color:var(--s-muted)}
+#ft-anatomy-studio .s-breadcrumb{letter-spacing:.14em;text-transform:uppercase;font-size:10px;font-weight:700;color:var(--s-acc)}
+#ft-anatomy-studio button{background:var(--s-btn);color:var(--s-ink);border-color:var(--s-btn-line)}
+#ft-anatomy-studio button:hover:not(:disabled){border-color:var(--s-acc);color:var(--s-acc)}
+#ft-anatomy-studio button[aria-pressed=true]{background:var(--s-acc);border-color:var(--s-acc);color:var(--s-on-acc)}
+#ft-anatomy-studio .s-info-tabs button,#ft-anatomy-studio .s-opacity-toggle{background:none;border-color:transparent}
+#ft-anatomy-studio .s-info-tabs{border-bottom-color:var(--s-line)}
+#ft-anatomy-studio .s-info-tabs button{color:var(--s-muted)}
+#ft-anatomy-studio .s-info-tabs button[aria-pressed=true]{background:none;color:var(--s-acc);border-bottom-color:var(--s-acc)}
+#ft-anatomy-studio .s-opacity-toggle{color:var(--s-acc)}
+#ft-anatomy-studio .s-viewport{background:var(--s-panel);border-color:var(--s-line)}
+#ft-anatomy-studio .s-viewbar,#ft-anatomy-studio .s-camera,#ft-anatomy-studio .s-layers{border-color:var(--s-line)}
+#ft-anatomy-studio .s-panel{background:var(--s-panel);border-color:var(--s-line)}
+#ft-anatomy-studio .s-empty{background:var(--s-soft);border-color:var(--s-line)}
+#ft-anatomy-studio select{background:var(--s-field);color:var(--s-ink);border-color:var(--s-btn-line)}
+#ft-anatomy-studio .s-layer input,#ft-anatomy-studio .s-opacity-list input{accent-color:var(--s-acc)}
+#ft-anatomy-studio .s-layer .s-dot{border-color:var(--s-line)}
+#ft-anatomy-studio .s-kind{color:var(--s-acc);font-weight:700}
+#ft-anatomy-studio .s-copy h4{color:var(--s-muted)}
+#ft-anatomy-studio .s-tip{background:var(--s-acc-soft);border-left-color:var(--s-acc);color:var(--s-ink)}
+#ft-anatomy-studio .s-footer{background:var(--s-soft);border-top-color:var(--s-line);color:var(--s-muted)}
+#ft-anatomy-studio a{color:var(--s-acc)}
+#ft-anatomy-studio button:focus-visible,#ft-anatomy-studio select:focus-visible,#ft-anatomy-studio input:focus-visible{outline-color:var(--s-acc)}
+/* Escenario 3D: azul marino de FisioTeck, para que huesos, músculos y vasos conserven su contraste */
+#ft-anatomy-studio .s-stage{background:radial-gradient(ellipse at 50% 43%,#1E4C78 0%,#0F2C4D 46%,#08182C 84%)}
+#ft-anatomy-studio .s-isolated{background:radial-gradient(ellipse,#245683,#0A1E36)}
+#ft-anatomy-studio .s-status{background:#08182Cdd;border-color:rgba(124,195,238,.35);color:#D8E8F6}
+#ft-anatomy-studio .s-hint,#ft-anatomy-studio .s-loading,#ft-anatomy-studio .s-isolated small{color:#C4D8EA}
+#ft-anatomy-studio .s-pin{background:#0B2A4Add;border-color:#7CC3EE;color:#EAF2FA}
+#ft-anatomy-studio .s-pin:hover{background:#0D5FA0}
+#ft-anatomy-studio .s-label{background:#08182Cf2;color:#EAF2FA;border-color:#7CC3EE}
+/* Botón de la ficha muscular */
+#ft-anatomy-studio .s-ficha{width:100%;margin-top:12px;padding:10px 12px;font-weight:700;font-size:12px;background:var(--s-acc);border-color:var(--s-acc);color:var(--s-on-acc)}
+#ft-anatomy-studio .s-ficha:hover:not(:disabled){background:var(--s-acc);color:var(--s-on-acc);filter:brightness(1.08)}

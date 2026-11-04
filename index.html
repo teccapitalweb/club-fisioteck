@@ -1915,7 +1915,7 @@
   <link rel="stylesheet" href="club-resenas.css?v=20261170">
   <link rel="stylesheet" href="club-referidos.css?v=20261112">
   <link rel="stylesheet" href="club-temporizador.css?v=20261214">
-  <link rel="stylesheet" href="club-atlas.css?v=20261230">
+  <link rel="stylesheet" href="club-atlas.css?v=20261106">
   <link rel="stylesheet" href="club-rom.css?v=20261230">
   <link rel="stylesheet" href="club-plan.css?v=20261220">
   <link rel="stylesheet" href="club-glosario.css?v=20261221">
@@ -2989,15 +2989,21 @@
     <section class="section" id="page-atlas">
       <div class="page-header">
         <h1 class="page-title">Atlas Muscular</h1>
-        <p class="page-subtitle">Explora los grupos musculares del cuerpo humano</p>
+        <p class="page-subtitle">Explora en 3D huesos, músculos, arterias y venas del cuerpo humano</p>
       </div>
+      <div class="atlas-3d-shell">
+        <iframe id="atlas3DFrame" title="Atlas anatómico interactivo en 3D" data-src="assets/atlas-3d/index.html?v=20261105b" style="display:block;width:100%;height:960px;border:0;" loading="lazy"></iframe>
+        <noscript>Activa JavaScript para explorar el atlas anatómico 3D.</noscript>
+      </div>
+      <details class="atlas-study" id="atlasStudy" open>
+        <summary id="atlasFichaTit">Ficha muscular de la zona seleccionada</summary>
       <div class="search-bar" style="margin-bottom:16px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="text" id="atlasSearch" placeholder="Buscar músculo o zona..." oninput="searchAtlas()">
       </div>
       <div id="atlasSearchResults" style="display:none;margin-bottom:16px;"></div>
-      <div style="display:grid;grid-template-columns:300px 1fr;gap:24px;" id="atlasGrid">
-        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;">
+      <div style="display:grid;grid-template-columns:1fr;gap:24px;" id="atlasGrid">
+        <div hidden style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;">
           <div style="display:flex;gap:6px;margin-bottom:14px;justify-content:center;">
             <button onclick="switchAtlasView('front')" id="atlasTabFront" style="padding:6px 14px;border-radius:16px;border:1px solid var(--primary);background:var(--primary);color:#fff;font-size:.72rem;font-family:inherit;cursor:pointer;font-weight:600;">Frontal</button>
             <button onclick="switchAtlasView('back')" id="atlasTabBack" style="padding:6px 14px;border-radius:16px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:.72rem;font-family:inherit;cursor:pointer;font-weight:600;">Posterior</button>
@@ -3008,6 +3014,7 @@
           <div style="text-align:center;padding:40px;color:var(--text-muted);font-size:.9rem;">Selecciona una zona del cuerpo para ver detalles</div>
         </div>
       </div>
+      </details>
     </section>
 
     <!-- GLOSARIO -->
@@ -7333,7 +7340,7 @@
 <script src="club-detective.js?v=20261200"></script>
 <script src="club-historia.js?v=20261026"></script>
 <script src="club-retos-zona.js?v=20261032"></script>
-<script src="club-secciones.js?v=20261041"></script>
+<script src="club-secciones.js?v=20261104-atlas3d"></script>
 <script src="club-cupon-barra.js?v=20261026"></script>
 <script src="club-paginas.js?v=20261200"></script>
 <script src="club-foro.js?v=20261101"></script>
@@ -7346,7 +7353,8 @@
 <script src="club-escalas-datos.js?v=20261212"></script>
 <script src="club-escalas.js?v=20261212"></script>
 <script src="club-atlas-datos.js?v=20261230"></script>
-<script src="club-atlas.js?v=20261230"></script>
+<script src="club-atlas-guia.js?v=20261108"></script>
+<script src="club-atlas.js?v=20261108"></script>
 <script src="club-rom-datos.js?v=20261230"></script>
 <script src="club-rom.js?v=20261230"></script>
 <script src="club-plan-datos.js?v=20261220"></script>
@@ -7365,7 +7373,7 @@
 <script src="club-perfil.js?v=20261116"></script>
 <script src="club-avisos.js?v=20261101"></script>
 <script src="club-avatar.js?v=20261124"></script>
-<script src="club-movil.js?v=20261201"></script>
+<script src="club-movil.js?v=20261104-atlas3d"></script>
 <script src="club-mascota.js?v=20261026"></script>
 <script src="club-noticias.js?v=20261118"></script>
 <script src="club-cursos.js?v=20261129"></script>
@@ -7390,5 +7398,6 @@
 <script src="club-cuenta.js?v=20261112"></script>
 <script src="club-seccion.js?v=20261041"></script>
 <script src="club-juegos-clase.js?v=20261141"></script>
+<script src="club-atlas-3d.js?v=20261105"></script>
 </body>
 </html>

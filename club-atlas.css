@@ -13,3 +13,28 @@
 @media (max-width: 520px) { .at-ficha dl { grid-template-columns: 1fr; gap: 0; } .at-ficha dt { margin-top: 8px; } }
 .at-nota { margin: 12px 0 0; font-size: .8rem; color: var(--text-light, var(--text-muted)); line-height: 1.5; padding: 8px 10px; border-left: 3px solid #E0A800; background: rgba(224,168,0,.08); border-radius: 0 8px 8px 0; }
 .at-fuentes { margin: 12px 0 0; font-size: .76rem; color: var(--text-muted); } .at-fuentes summary { cursor: pointer; font-weight: 600; } .at-fuentes ul { margin: 6px 0 0; padding-left: 18px; line-height: 1.5; }
+
+/* Visor anatómico integrado y biblioteca de fichas conservada. */
+#page-atlas .atlas-3d-shell{min-width:0;margin-bottom:20px;}
+#page-atlas .atlas-study{padding:16px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-card);}
+#page-atlas .atlas-study>summary{font-weight:700;cursor:pointer;color:var(--text);}
+#page-atlas .atlas-study[open]>summary{margin-bottom:18px;}
+#page-atlas #atlasInfo,#page-atlas .atlas-study{scroll-margin-top:96px;}
+
+/* Guía clínica de la zona */
+.at-guia { margin-top: 20px; padding: 16px; border: 1px solid var(--border); border-radius: 14px; background: var(--accent-ghost, rgba(13,95,160,.07)); }
+.at-guia h4 { margin: 0 0 10px; font-size: .95rem; }
+.at-g { margin-bottom: 8px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-card, var(--surface, #fff)); }
+.at-g summary { padding: 10px 13px; cursor: pointer; font-size: .86rem; font-weight: 700; color: var(--text); list-style-position: inside; }
+.at-g[open] summary { color: var(--accent, var(--primary)); }
+.at-g ul { margin: 0; padding: 0 16px 12px 32px; font-size: .84rem; line-height: 1.55; color: var(--text-light, var(--text-muted)); }
+.at-g li { margin-bottom: 5px; }
+.at-g.alerta { border-color: rgba(220,45,63,.35); }
+.at-g.alerta summary { color: var(--danger, #DC2D3F); }
+.at-guia .at-nota { margin: 10px 0 0; }
+
+.at-ref { font-size: .68rem; color: var(--accent, var(--primary)); font-weight: 700; white-space: nowrap; }
+.at-fuentes-l { margin: 0; padding: 0 16px 12px 36px; font-size: .78rem; line-height: 1.5; color: var(--text-muted); }
+.at-fuentes-l li { margin-bottom: 6px; overflow-wrap: anywhere; }
+.at-fuentes-l a { color: var(--accent, var(--primary)); font-weight: 600; }
+.at-fuentes-l span { display: block; font-size: .72rem; }

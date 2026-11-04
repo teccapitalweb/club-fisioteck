@@ -37,7 +37,7 @@
   const TARJETAS = [
     ['pacientes', 'Pacientes', 'Dolor y movilidad de tus pacientes, sesión por sesión, con gráficas y resumen en PDF.'],
     ['rehab-calc', 'Calculadora', 'Dosis, cargas y porcentajes para tu plan de rehabilitación.'],
-    ['atlas', 'Atlas muscular', 'Origen, inserción y acción de cada músculo.'],
+    ['atlas', 'Atlas muscular', 'Cuerpo humano en 3D, capas anatómicas y fichas musculares.'],
     ['glossary', 'Glosario', 'Términos clínicos explicados de forma clara.'],
     ['rom', 'Rangos de movimiento', 'Valores de referencia para cada articulación.'],
     ['timer', 'Cronómetro', 'Tiempos de trabajo y descanso para tus sesiones.']

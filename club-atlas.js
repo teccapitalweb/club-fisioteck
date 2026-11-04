@@ -36,14 +36,29 @@
     return '<div class="at-ficha"><div class="at-cab"><h4>' + esc(m.nombre) + '</h4><span>' + esc(REG[m.region] || '') + '</span></div><dl>' + fila('Origen', m.origen) + fila('Inserción', m.insercion) + fila('Acción', m.accion) + fila('Inervación', m.inervacion) + fila('Palpación', m.palpacion) + fila('Función', m.funcion) + '</dl>' +
       lista('Condiciones frecuentes', m.condiciones) + lista('Ejercicios relacionados', m.ejercicios) +
       (rel.length ? '<h5>Otros músculos de la región</h5><div class="at-chips">' + rel.map(x => '<button type="button" data-m="' + esc(x.id) + '">' + esc(x.nombre) + '</button>').join('') + '</div>' : '') +
-      (m.nota ? '<p class="at-nota"><b>Nota:</b> ' + esc(m.nota) + '</p>' : '') +
       ((m.fuentes || []).length ? '<details class="at-fuentes"><summary>Fuentes consultadas (' + esc(m.verificacion || 'sin verificar') + ')</summary><ul>' + m.fuentes.map(f => { const mt = /(https?:\/\/\S+)/.exec(f); return '<li>' + esc(String(f).replace(mt ? mt[1] : '', '').replace(/\s*[—-]\s*$/, '').trim()) + (mt ? ' <a href="' + esc(mt[1]) + '" target="_blank" rel="noopener">enlace</a>' : '') + '</li>'; }).join('') + '</ul></details>' : '') + '<p class="at-aviso">Herramienta de estudio y apoyo. Puede haber variaciones anatómicas; confirma con tus textos de referencia y tu criterio clínico.</p></div>';
   }
-  function ver(id) {
+  function ver(id, sinScroll) {
     const m = datos().find(x => x.id === id), caja = $('atFicha'); if (!m || !caja) return;
-    caja.innerHTML = ficha(m); caja.querySelectorAll('[data-m]').forEach(b => b.onclick = () => ver(b.dataset.m)); caja.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    caja.innerHTML = ficha(m); caja.querySelectorAll('[data-m]').forEach(b => b.onclick = () => ver(b.dataset.m)); if (!sinScroll) caja.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
   function chips(l) { return '<div class="at-chips">' + l.map(m => '<button type="button" data-m="' + esc(m.id) + '">' + esc(m.nombre) + '</button>').join('') + '</div>'; }
+
+  // ---------- Guía clínica de la zona (club-atlas-guia.js) ----------
+  function guia(z) {
+    const g = (window.FT_ATLAS_GUIA || {})[z]; if (!g) return '';
+    const punto = x => '<li>' + esc(x.t) + ((x.f || []).length ? ' <sup class="at-ref">[' + x.f.join(', ') + ']</sup>' : '') + '</li>';
+    const sec = (k, t, abierta) => (g[k] || []).length ? '<details class="at-g' + (k === 'alerta' ? ' alerta' : '') + '"' + (abierta ? ' open' : '') + '><summary>' + t + '</summary><ul>' + g[k].map(punto).join('') + '</ul></details>' : '';
+    const url = u => /^https:\/\//.test(u) ? u : '#';
+    const fuentes = (g.fuentes || []).length ? '<details class="at-g at-fuentes-g"><summary>Fuentes consultadas (' + g.fuentes.length + ')</summary><ol class="at-fuentes-l">' + g.fuentes.map(f => '<li value="' + f.n + '"><a href="' + esc(url(f.url)) + '" target="_blank" rel="noopener noreferrer">' + esc(f.titulo || f.url) + '</a> <span>' + esc(f.org) + '</span></li>').join('') + '</ol></details>' : '';
+    return '<div class="at-guia"><h4>Guía clínica de la zona</h4>' + sec('empezar', 'Cómo empezar a trabajar esta zona', true) + sec('tocar', 'Cómo tocar y explorar correctamente') + sec('fractura', 'Si hay una fractura') + sec('tratamientos', 'Posibles tratamientos') + sec('alerta', 'Señales de alerta: cuándo derivar') + fuentes + '<p class="at-nota">' + esc(window.FT_ATLAS_GUIA_AVISO || '') + '</p></div>';
+  }
+  // Busca la ficha de un músculo a partir del nombre que muestra el visor 3D (por ejemplo «Deltoides · clavicular · derecho»)
+  function porNombre(n) {
+    const b = sinTilde(String(n || '').split(' · ')[0]).replace(/\b(derecho|izquierdo)\b/g, '').trim(); if (b.length < 4) return null;
+    const l = datos(), base = m => sinTilde(m.nombre).split(' (')[0];
+    return l.find(m => base(m) === b) || l.find(m => sinTilde(m.nombre).includes(b)) || l.find(m => base(m).length >= 6 && b.includes(base(m))) || null;
+  }
 
   // ---------- Zonas y buscador ----------
   const originalMostrar = window.showMuscle;
@@ -52,7 +67,7 @@
       const r = originalMostrar.apply(this, arguments);
       if (!memberIsPaid && !window.ftVistaAdmin) return r;
       const info = $('atlasInfo'), l = deZona(id); if (!info || !l.length) return r;
-      info.insertAdjacentHTML('beforeend', '<div class="at-esp"><h4>Músculos de esta zona (' + l.length + ')</h4><p class="at-sub">Toca uno para ver su ficha.</p>' + chips(l) + '<div id="atFicha"></div></div>');
+      info.insertAdjacentHTML('beforeend', guia(id) + '<div class="at-esp"><h4>Músculos de esta zona (' + l.length + ')</h4><p class="at-sub">Toca uno para ver su ficha.</p>' + chips(l) + '<div id="atFicha"></div></div>');
       info.querySelectorAll('.at-esp [data-m]').forEach(b => b.onclick = () => ver(b.dataset.m));
       return r;
     };
@@ -102,5 +117,5 @@
     $('atPracticar').onclick = () => { if (!memberIsPaid && !window.ftVistaAdmin) { showPaywallOverlay(); return; } iniciar(); pintarPractica(); const g = $('atlasGrid'); if (g) g.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
   }
   montar();
-  window.ftAtlas = { ver };
+  window.ftAtlas = { ver, porNombre };
 })();
