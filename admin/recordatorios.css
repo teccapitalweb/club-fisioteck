@@ -1,20 +1,46 @@
-/* Panel FisioTeck — Recordatorios de pago */
-#sec-reminders .rc-control { margin-bottom: 18px; }
-#sec-reminders .rc-estado { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-#sec-reminders .rc-punto { width: 12px; height: 12px; border-radius: 50%; background: var(--text-muted); flex-shrink: 0; }
-#sec-reminders .rc-punto.on { background: var(--success); box-shadow: 0 0 0 4px rgba(15, 157, 108, .18); }
-#sec-reminders .rc-fila { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-#sec-reminders .rc-lim { display: flex; align-items: center; gap: 8px; font-size: .82rem; color: var(--text-light); }
-#sec-reminders .rc-lim .form-input { width: 90px; }
-#sec-reminders .rc-nota { font-size: .82rem; color: var(--text-light); line-height: 1.55; margin: 0 0 12px; }
-#sec-reminders .rc-aviso { font-size: .84rem; padding: 10px 14px; border-radius: var(--radius-sm); background: rgba(194, 118, 11, .12); color: var(--warning); margin: 0 0 14px; }
-#sec-reminders .rc-vacio { text-align: center; color: var(--text-muted); padding: 22px 8px; }
-#sec-reminders .rc-lista { margin: 0; padding-left: 18px; font-size: .84rem; line-height: 1.7; }
+/* Panel FisioTeck — Recordatorios de pago (misma estructura que Alintec) */
+#sec-reminders .rp-caja { padding: 20px; }
+#sec-reminders .rp-cab { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+#sec-reminders .rp-cab h3 { margin: 0; font-size: 1rem; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+#sec-reminders .rp-acc { display: flex; gap: 8px; flex-wrap: wrap; }
+#sec-reminders .rp-badge { padding: 3px 11px; border-radius: 999px; font-size: .72rem; font-weight: 700; background: var(--surface-2, #eef2f6); color: var(--text-light); }
+#sec-reminders .rp-badge.on { background: rgba(34, 197, 94, .15); color: #16A34A; }
+#sec-reminders h4 { margin: 22px 0 10px; font-size: .9rem; color: var(--text); }
 #sec-reminders code { font-size: .78rem; background: var(--surface-2); padding: 1px 6px; border-radius: 6px; }
-#sec-reminders .badge-danger { background: rgba(220, 45, 63, .12); color: var(--danger); }
-@media (max-width: 600px) { #sec-reminders .rc-fila > * { flex: 1 1 100%; max-width: none !important; } }
-#sec-reminders .rc-intro { margin-bottom: 14px; } #sec-reminders .rc-intro p { margin: 6px 0 12px; font-size: .88rem; line-height: 1.55; color: var(--text-light); }
-#sec-reminders .rc-glosario { display: flex; flex-wrap: wrap; gap: 8px; } #sec-reminders .rc-glosario span { flex: 1 1 220px; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--surface-2); font-size: .8rem; line-height: 1.45; color: var(--text-light); } #sec-reminders .rc-glosario b { display: block; color: var(--text); margin-bottom: 2px; }
-#sec-reminders .rc-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 16px; padding: 4px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface, var(--bg-card)); } #sec-reminders .rc-tabs button { flex: 1 1 auto; padding: 9px 14px; border: 0; border-radius: 9px; background: transparent; color: var(--text-light); font: inherit; font-weight: 600; font-size: .85rem; cursor: pointer; } #sec-reminders .rc-tabs button.on { background: var(--accent); color: var(--on-accent, #fff); }
-#sec-reminders .rc-limites { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); } #sec-reminders .rc-limites h4, #sec-reminders .rc-bloque h4 { margin: 0 0 10px; font-size: .9rem; }
-#sec-reminders .rc-bloque { padding: 14px 0; border-top: 1px solid var(--border); } #sec-reminders .rc-panel[hidden] { display: none; } #sec-reminders .admin-card h3 { margin-bottom: 6px; }
+#sec-reminders .rp-estado { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: 12px; margin: 0 0 12px; font-size: .85rem; line-height: 1.5; }
+#sec-reminders .rp-d { flex: none; width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; background: currentColor; }
+#sec-reminders .rp-e-on { background: rgba(34, 197, 94, .1); color: #166534; } #sec-reminders .rp-e-off { background: var(--surface-2); color: var(--text-light); } #sec-reminders .rp-e-aviso { background: rgba(245, 158, 11, .12); color: #92400E; }
+#sec-reminders .rp-sub { font-size: .76rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#sec-reminders .rp-intro { white-space: normal; font-size: .84rem; line-height: 1.55; margin: 0 0 12px; }
+#sec-reminders .rp-largo, #sec-reminders .rp-nota, #sec-reminders .rp-ajusta { white-space: normal; line-height: 1.6; }
+#sec-reminders .rp-nota { margin: 8px 0 0; } #sec-reminders .rp-mt { margin-top: 4px; }
+#sec-reminders .rp-verde { color: #16A34A; }
+#sec-reminders .rp-camino { margin: 0 0 14px; } #sec-reminders .rp-camino summary { cursor: pointer; font-size: .82rem; font-weight: 700; color: var(--accent); }
+#sec-reminders .rp-cadena { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; } #sec-reminders .rp-sep { color: var(--text-muted); }
+#sec-reminders .rp-datos { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 14px; }
+#sec-reminders .rp-dato { padding: 11px 13px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-card, var(--surface, #fff)); } #sec-reminders .rp-dato b { display: block; font-size: 1.25rem; font-weight: 800; } #sec-reminders .rp-dato span { display: block; margin-top: 3px; font-size: .74rem; color: var(--text-muted); line-height: 1.4; }
+#sec-reminders .rp-grafica { margin: 4px 0 6px; }
+#sec-reminders .rp-tabla { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: var(--bg-card, var(--surface, #fff)); }
+#sec-reminders .rp-th, #sec-reminders .rp-tr { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.1fr) minmax(0, 1.2fr) minmax(0, 1.3fr); gap: 14px; align-items: center; padding: 11px 14px; }
+#sec-reminders .rp-3 .rp-th, #sec-reminders .rp-3 .rp-tr { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.2fr) minmax(0, 1.2fr); }
+#sec-reminders .rp-th { background: var(--surface-2); font-size: .66rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); }
+#sec-reminders .rp-tr { border-top: 1px solid var(--border); } #sec-reminders .rp-vacio { padding: 14px; font-size: .84rem; color: var(--text-muted); }
+#sec-reminders .rp-persona { display: flex; align-items: center; gap: 10px; min-width: 0; }
+#sec-reminders .rp-av { flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-size: .8rem; font-weight: 800; color: #fff; }
+#sec-reminders .rp-nombre { font-weight: 700; font-size: .84rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#sec-reminders .rp-puntos { display: flex; gap: 5px; margin-bottom: 5px; } #sec-reminders .rp-pt { width: 12px; height: 12px; border-radius: 50%; background: var(--surface-2); border: 1.5px solid var(--border-2, var(--border)); }
+#sec-reminders .rp-pt.hecho { background: #22C55E; border-color: #22C55E; } #sec-reminders .rp-pt.sig { background: var(--bg-card, #fff); border-color: var(--accent); box-shadow: 0 0 0 3px rgba(13, 95, 160, .18); }
+#sec-reminders .rp-pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: .72rem; font-weight: 700; color: #fff; }
+#sec-reminders .rp-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: 999px; font-size: .74rem; font-weight: 700; } #sec-reminders .rp-chip i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+#sec-reminders .rp-listo { background: rgba(34, 197, 94, .14); color: #16A34A; } #sec-reminders .rp-prog { background: rgba(59, 130, 246, .14); color: #2563EB; } #sec-reminders .rp-hecho { background: var(--surface-2); color: var(--text-light); }
+#sec-reminders .rp-lbl { display: none; font-size: .62rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 3px; }
+#sec-reminders .rp-tabs { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 3px; border: 1px solid var(--border); border-radius: 999px; margin: 0 0 10px; }
+#sec-reminders .rp-tabs button { border: 0; background: transparent; padding: 6px 13px; border-radius: 999px; font: inherit; font-size: .76rem; font-weight: 700; color: var(--text-light); cursor: pointer; } #sec-reminders .rp-tabs button.on { background: var(--accent); color: var(--on-accent, #fff); }
+#sec-reminders .rp-centro { text-align: center; margin-top: 10px; }
+#sec-reminders .rp-fila { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+#sec-reminders .rp-lim { display: flex; align-items: center; gap: 8px; font-size: .8rem; color: var(--text-light); } #sec-reminders .rp-lim .form-input { width: 90px; }
+#sec-reminders .rp-error { padding: 18px; text-align: center; font-size: .85rem; color: var(--text-light); } #sec-reminders .rp-error b { display: block; margin-bottom: 4px; color: var(--text); }
+@media (max-width: 760px) {
+  #sec-reminders .rp-th { display: none; } #sec-reminders .rp-tr, #sec-reminders .rp-3 .rp-tr { grid-template-columns: 1fr; gap: 9px; } #sec-reminders .rp-lbl { display: block; }
+  #sec-reminders .rp-fila > * { flex: 1 1 100%; max-width: none !important; }
+}

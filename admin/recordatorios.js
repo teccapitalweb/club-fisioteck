@@ -1,14 +1,31 @@
-/* Panel FisioTeck — Recordatorios de pago por correo (como Alintec y Zoorigen).
+/* Panel FisioTeck — Recordatorios de pago por correo (misma estructura que Alintec).
    Escribe a quien se registró y NUNCA ha pagado: serie de 7 correos por vuelta (hasta 3 vueltas), con cupones únicos de Stripe de $50 y $100
-   para el primer mes del plan mensual. ARRANCA APAGADO; aquí se enciende, se ajustan los topes, se hace un ensayo y se manda un correo de prueba.
-   Todo lo hace el servidor (/api/admin/recordatorios/*). Depende de index.html: apiAdmin, toast, esc, showSection, ZG (graficas.js). */
+   para el primer mes del plan mensual. ARRANCA APAGADO; aquí se enciende, se apaga y se manda un correo de prueba.
+   Todo en una sola página: estado, cómo funciona, números, resultados de los cupones con su gráfica, seguimiento de cuentas (progreso de 7 puntos),
+   últimos correos enviados y prueba. Todo lo hace el servidor (/api/admin/recordatorios/*). Depende de index.html: apiAdmin, toast, esc, showSection, ZG (graficas.js). */
 (function () {
   'use strict';
   const $ = id => document.getElementById(id);
   const e = v => (typeof esc === 'function' ? esc(v) : String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
-  const fmtMs = ms => ms ? new Date(ms).toLocaleString('es-MX', { timeZone: 'America/Mexico_City', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) : '—';
-  const pesos = n => '$' + Number(n || 0).toLocaleString('es-MX');
-  let E = null, pagina = 1, filtro = 'todas', texto = '', temporizador = null;
+  const ZONA = 'America/Mexico_City', MAX_VUELTAS = 3;
+  const cuando = ms => ms ? new Date(ms).toLocaleString('es-MX', { timeZone: ZONA, weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', hour12: true }) : '—';
+  const hora = ms => new Date(ms).toLocaleTimeString('es-MX', { timeZone: ZONA, hour: 'numeric', minute: '2-digit', hour12: true });
+  const claveDia = ms => new Date(ms).toLocaleDateString('en-CA', { timeZone: ZONA });
+  // «Hoy · 3:20 p. m.», «Mañana · 8:00 a. m.» o «sáb 18 de oct · 8:00 a. m.»
+  const diaHora = (ms, ahoraMs) => {
+    const dif = Math.round((Date.parse(claveDia(ms)) - Date.parse(claveDia(ahoraMs))) / 86400000);
+    const dia = dif === 0 ? 'Hoy' : dif === 1 ? 'Mañana' : new Date(ms).toLocaleDateString('es-MX', { timeZone: ZONA, weekday: 'short', day: 'numeric', month: 'short' });
+    return dia + ' · ' + hora(ms);
+  };
+  const hace = (ms, ahoraMs) => { const m = Math.max(0, Math.round((ahoraMs - ms) / 60000)); return m < 1 ? 'hace un momento' : m < 60 ? 'hace ' + m + ' min' : m < 1440 ? 'hace ' + Math.round(m / 60) + ' h' : 'hace ' + Math.round(m / 1440) + ' d'; };
+  const COLORES_AV = ['#2E7D32', '#1565C0', '#6A1B9A', '#C2410C', '#00838F', '#AD1457', '#4E342E', '#455A64'];
+  let E = null, verTodas = false, filtro = 'todas';
+
+  // Cada correo: nombre y color claros (1 = sin cupón, $50 = verde, $100 = naranja). El precio con descuento sale del precio mensual real.
+  const correo = (paso, precio) => {
+    const s = (E && E.serie || []).find(x => x.paso === paso) || {}, m = s.monto || 0;
+    return m ? { n: 'Cupón $' + m, sub: precio ? 'Primer mes $' + (precio - m) : 'Descuento en el primer mes', c: m === 50 ? '#16A34A' : '#EA580C' } : { n: 'Hazte VIP', sub: 'Sin cupón', c: '#64748B' };
+  };
 
   // ---------- Se agrega al panel: menú y sección ----------
   function montar() {
@@ -22,86 +39,102 @@
     nav.insertAdjacentElement('afterend', item);
     const s = document.createElement('section');
     s.className = 'admin-section'; s.id = 'sec-reminders';
-    s.innerHTML =
-      '<div class="admin-page-header"><div><div class="admin-page-title">Recordatorios de pago</div><div class="admin-page-sub">Correos automáticos con cupón para quien se registró y todavía no paga</div></div>' +
-      '<div class="rc-acciones"><button type="button" class="btn btn-o btn-sm" onclick="rcCargar(true)">Actualizar</button></div></div>' +
-      '<div id="rcEstado"></div>' +
-      '<div class="rc-intro admin-card"><b>Qué hace esta sección</b><p>Cuando alguien se registra en el Club y no paga, el sistema le manda por correo una serie de mensajes con un cupón de descuento para su primer mes. Tú solo decides si está encendido y cuántos correos salen al día.</p>' +
-      '<div class="rc-glosario"><span><b>Paso</b>Un correo de la serie (son 7).</span><span><b>Vuelta</b>Una serie completa de 7 correos. Cada persona puede recibir hasta 3 vueltas.</span><span><b>Cupón</b>Código único de $50 o $100, de un solo uso y por tiempo limitado.</span></div></div>' +
-      '<div class="rc-tabs" id="rcTabs" role="tablist"><button type="button" data-t="resumen" class="on">Resumen</button><button type="button" data-t="serie">Cómo funciona</button><button type="button" data-t="probar">Probar</button><button type="button" data-t="envios">Envíos</button><button type="button" data-t="personas">Personas</button></div>' +
-      '<div class="rc-panel" data-p="resumen"><div class="rc-control admin-card" id="rcControl"></div>' +
-      '<div class="ap-kpis" id="rcKpis"></div>' +
-      '<div class="zg-fila-graficas"><div class="admin-card"><h3>Correos enviados por paso</h3><p class="rc-nota">Cuántos correos de cada paso han salido y cuántos pagos hubo con su cupón.</p><div id="rcPasos"></div></div><div class="admin-card"><h3>De los correos al pago</h3><p class="rc-nota">Cuántas personas pagaron después de recibir un correo.</p><div id="rcEmbudo"></div></div></div></div>' +
-      '<div class="rc-panel" data-p="serie" hidden><div class="admin-card"><h3>Calendario de la serie</h3><p class="rc-nota">Cada persona recibe estos correos en orden. El tiempo se cuenta desde que se registró o desde el correo anterior. Si paga o se da de baja, la serie se detiene.</p><div id="rcSerie" style="overflow-x:auto"></div></div></div>' +
-      '<div class="rc-panel" data-p="probar" hidden><div class="admin-card"><h3>Probar antes de activar</h3><p class="rc-nota"><b>Ensayo:</b> te dice quién recibiría un correo ahora mismo, sin enviar nada.<br><b>Correo de prueba:</b> te llega solo a ti, con un cupón real marcado como prueba (no cuenta en las estadísticas).</p>' +
-      '<div class="rc-bloque"><h4>1. Ensayo</h4><div class="rc-fila"><button type="button" class="btn btn-o btn-sm" onclick="rcEnsayo()">Hacer un ensayo</button></div><div id="rcEnsayo" style="margin-top:12px"></div></div>' +
-      '<div class="rc-bloque"><h4>2. Correo de prueba para mí</h4><div class="rc-fila"><label class="rc-lim">Paso <select class="form-select" id="rcPaso" style="max-width:160px"></select></label><label class="rc-lim">Vuelta <select class="form-select" id="rcCiclo" style="max-width:130px"><option value="1">Vuelta 1</option><option value="2">Vuelta 2</option><option value="3">Vuelta 3</option></select></label>' +
-      '<button type="button" class="btn btn-p btn-sm" onclick="rcPrueba()">Enviarme prueba</button></div></div></div></div>' +
-      '<div class="rc-panel" data-p="envios" hidden><div class="admin-card" style="overflow-x:auto"><h3>Próximos envíos</h3><p class="rc-nota">Los siguientes correos que saldrán, del más cercano al más lejano.</p><table class="admin-table"><thead><tr><th>Persona</th><th>Correo</th><th>Vuelta</th><th>Paso</th><th>Cupón</th><th>Sale</th></tr></thead><tbody id="rcProximos"></tbody></table></div>' +
-      '<div class="admin-card" style="overflow-x:auto"><h3>Últimos enviados</h3><p class="rc-nota">Los correos más recientes que ya salieron.</p><table class="admin-table"><thead><tr><th>Persona</th><th>Correo</th><th>Vuelta</th><th>Paso</th><th>Cupón</th><th>Enviado</th></tr></thead><tbody id="rcRecientes"></tbody></table></div></div>' +
-      '<div class="rc-panel" data-p="personas" hidden><div class="admin-card" style="overflow-x:auto"><h3>Personas en la serie</h3><p class="rc-nota">Las personas registradas que no han pagado y en qué punto de la serie van.</p><div class="rc-fila" style="margin-bottom:12px"><input class="form-input" id="rcBuscar" placeholder="Buscar por nombre o correo" style="max-width:280px" oninput="rcBuscar()"><select class="form-select" id="rcEtapa" style="max-width:240px" onchange="rcFiltrar(this.value)"></select></div>' +
-      '<table class="admin-table"><thead><tr><th>Persona</th><th>Correo</th><th>Estado</th><th>Vuelta</th><th>Último paso</th><th>Siguiente correo</th></tr></thead><tbody id="rcLista"></tbody></table><div id="rcPaginas" class="rc-fila" style="margin-top:12px"></div></div></div>';
-    s.querySelectorAll('#rcTabs button').forEach(b => { b.onclick = () => rcTab(b.dataset.t); });
+    s.innerHTML = '<div class="admin-page-header"><div><div class="admin-page-title">Recordatorios de pago</div><div class="admin-page-sub">Correos con cupón para quien se registró y todavía no paga</div></div></div><div id="rcEstado"></div><div class="admin-card rp-caja" id="rcCaja"><div class="rp-sub">Cargando…</div></div>';
     sec.insertAdjacentElement('afterend', s);
   }
 
-  window.rcTab = t => { document.querySelectorAll('#rcTabs button').forEach(b => b.classList.toggle('on', b.dataset.t === t)); document.querySelectorAll('#sec-reminders .rc-panel').forEach(p => { p.hidden = p.dataset.p !== t; }); };
-  const ETAPAS = [['todas', 'Todas'], ['listas-ahora', 'Listas ahora'], ['programadas', 'Programadas'], ['en-espera', 'En espera de su primer correo'], ['enviado', 'Esperando su siguiente correo'], ['cupon-vigente', 'Con cupón vigente'], ['descanso', 'En descanso'], ['convertida', 'Convertidas con cupón'], ['pago', 'Ya pagaron'], ['baja', 'Se dieron de baja'], ['cerrada', 'Terminaron las 3 vueltas'], ['sin-verificar', 'Correo sin verificar']];
-
   // ---------- Carga ----------
   window.rcCargar = async function (aviso) {
-    const est = $('rcEstado'); if (!est) return;
+    const caja = $('rcCaja'); if (!caja) return;
     try {
       E = await apiAdmin('/api/admin/recordatorios');
-      est.innerHTML = '';
       pintar();
-      await rcLista();
-      if (aviso) toast('Datos actualizados');
+      if (aviso === true) toast('Datos actualizados');
     } catch (err) {
-      est.innerHTML = '<div class="admin-card" style="border-color:var(--danger);color:var(--danger)">No se pudo leer el estado de los recordatorios: ' + e(err.message) + '. Enciende el servidor (npm start) y vuelve a intentar.</div>';
+      caja.innerHTML = '<div class="rp-error"><b>No se pudieron leer los recordatorios de pago</b>' + e(err.message) + '<br><button type="button" class="btn btn-o btn-sm" onclick="rcCargar()">Reintentar</button></div>';
     }
   };
 
-  function pintar() {
-    const c = $('rcControl'), on = E.modo === 'activo';
-    c.innerHTML =
-      '<div class="rc-estado"><span class="rc-punto ' + (on ? 'on' : '') + '"></span><div><b>' + (on ? 'Activos' : 'Apagados') + '</b><div class="rc-nota" style="margin:2px 0 0">' +
-      (on ? 'Revisan cada 20 minutos y envían de 8:00 a 22:00 (hora de México).' : 'No se envía ningún correo mientras estén apagados.') + '</div></div></div>' +
-      (E.configurado ? '' : '<p class="rc-aviso">Falta configurar el correo en el servidor (<code>RESEND_API_KEY</code>, <code>MAIL_FROM</code>) o la llave de firmas (<code>CERT_SIGNING_KEY</code>). Hasta entonces no se puede activar.</p>') +
-      '<div class="rc-fila"><button type="button" class="btn ' + (on ? 'btn-o' : 'btn-p') + '" onclick="rcModo(\'' + (on ? 'apagado' : 'activo') + '\')">' + (on ? 'Apagar los recordatorios' : 'Activar los recordatorios') + '</button></div>' +
-      '<div class="rc-limites"><h4>Límites de envío</h4><div class="rc-fila"><label class="rc-lim">Correos por día (máximo) <input class="form-input" id="rcTope" type="number" min="1" max="500" value="' + E.topeDiario + '"></label>' +
-      '<label class="rc-lim">Por revisión, cada 20 min (máximo) <input class="form-input" id="rcMax" type="number" min="1" max="50" value="' + E.maxPorCorrida + '"></label>' +
-      '<button type="button" class="btn btn-o btn-sm" onclick="rcLimites()">Guardar límites</button></div><p class="rc-nota" style="margin:8px 0 0">Protegen tu cuenta de correo: si hay muchas personas por escribir, salen poco a poco.</p></div>';
-    const g = E.estadisticas || {}, conv = g.convertidas || 0, env = Object.values(g.enviadosPaso || {}).reduce((a, b) => a + b, 0);
-    $('rcKpis').innerHTML =
-      kpi('Correos enviados hoy', E.enviadosHoy + ' de ' + E.topeDiario, 'Pueden salir ' + E.faltanHoy + ' más hoy', 'var(--accent)') +
-      kpi('Personas en la serie', E.calificarian, 'Registradas, sin pago y con correo verificado', 'var(--blue)') +
-      kpi('Les toca correo ahora', E.listasAhora, E.dentroDeHorario ? 'Salen en la próxima revisión' : 'Salen al abrir el horario (8:00)', 'var(--warning)') +
-      kpi('Pagaron con el cupón', conv, env ? 'De ' + env + ' correos enviados' : 'Aún sin envíos', 'var(--success)');
-    const p = (g.enviadosPaso || {});
-    $('rcPasos').innerHTML = window.ZG ? ZG.barras({ etiquetas: E.serie.map(s => 'Paso ' + s.paso), series: [{ nombre: 'Enviados', valores: E.serie.map(s => p['p' + s.paso] || 0), color: 1 }, { nombre: 'Pagos con cupón', valores: E.serie.map(s => (g.pagosConCuponPaso || {})['p' + s.paso] || 0), color: 6 }], vacio: 'Aún no se envía ningún correo' }) : '';
-    $('rcEmbudo').innerHTML = window.ZG ? ZG.embudo({ etapas: [{ nombre: 'Correos enviados', valor: env }, { nombre: 'Pagaron después de un correo', valor: Object.values(g.pagosTrasCorreoPaso || {}).reduce((a, b) => a + b, 0) }, { nombre: 'Pagaron con el cupón', valor: conv }], vacio: 'Aún no hay envíos' }) : '';
-    $('rcSerie').innerHTML = '<table class="admin-table"><thead><tr><th>Paso</th><th>Cupón incluido</th><th>Cuándo sale</th></tr></thead><tbody>' + E.serie.map(s =>
-      '<tr><td>Paso ' + s.paso + '</td><td>' + (s.monto ? pesos(s.monto) + ' (' + E.vigenciaHoras + ' h)' : 'Sin cupón · beneficios') + '</td><td>' + (s.desde === 'registro' ? s.esperaHoras + ' h después de registrarse' : s.desde === 'envio' ? s.esperaHoras + ' h después del paso anterior' : s.esperaHoras + ' h después de que venció el cupón anterior') + '</td></tr>').join('') +
-      '</tbody></table><p class="rc-nota">Hasta ' + E.maxCiclos + ' vueltas, con ' + E.descansoDias + ' días de descanso entre vueltas.</p>';
-    const sel = $('rcPaso'); if (sel && !sel.options.length) sel.innerHTML = E.serie.map(s => '<option value="' + s.paso + '">Paso ' + s.paso + (s.monto ? ' · ' + pesos(s.monto) : '') + '</option>').join('') + '<option value="todos">Los 7 pasos</option>';
-    const et = $('rcEtapa'); if (et && !et.options.length) et.innerHTML = ETAPAS.map(x => '<option value="' + x[0] + '">' + x[1] + '</option>').join('');
-    const fila = (x, enviado) => '<tr><td>' + e(x.nombre || '—') + '</td><td>' + e(x.correo) + '</td><td>' + x.ciclo + '</td><td>' + x.paso + '</td><td>' + (x.monto ? pesos(x.monto) : '—') + '</td><td>' + fmtMs(enviado ? x.enviadoMs : x.saleMs) + '</td></tr>';
-    $('rcProximos').innerHTML = E.proximos.length ? E.proximos.map(x => fila(x, false)).join('') : '<tr><td colspan="6" class="rc-vacio">Nadie tiene un envío pendiente.</td></tr>';
-    $('rcRecientes').innerHTML = E.recientes.length ? E.recientes.map(x => fila(x, true)).join('') : '<tr><td colspan="6" class="rc-vacio">Todavía no se ha enviado ningún correo.</td></tr>';
-  }
-  const kpi = (l, v, n, c) => '<div class="ap-kpi" style="--k:' + c + '"><div class="lbl">' + l + '</div><div class="val">' + e(v) + '</div><div class="note">' + e(n) + '</div></div>';
+  const persona = p => {
+    const nombre = p.nombre || String(p.correo || '').split('@')[0] || 'Miembro';
+    const ini = (nombre.trim().split(/\s+/).slice(0, 2).map(s => s[0] || '').join('') || '?').toUpperCase();
+    const color = COLORES_AV[((p.correo || '').length + ((p.correo || '').charCodeAt(0) || 0)) % COLORES_AV.length];
+    return '<div class="rp-persona"><span class="rp-av" style="background:' + color + '">' + e(ini) + '</span><div style="min-width:0"><div class="rp-nombre">' + e(nombre) + '</div><div class="rp-sub">' + e(p.correo) + '</div>' +
+      (p.registroMs ? '<div class="rp-sub">Se registró ' + e(cuando(p.registroMs)) + '</div>' : '') + '</div></div>';
+  };
+  const pildora = (paso, precio) => { const c = correo(paso, precio); return '<span class="rp-pill" style="background:' + c.c + '">Correo ' + paso + ' · ' + e(c.n) + '</span>'; };
+  const puntos = (paso, precio) => '<div class="rp-puntos" aria-hidden="true">' + [1, 2, 3, 4, 5, 6, 7].map(n => '<span class="rp-pt ' + (n < paso ? 'hecho' : n === paso ? 'sig' : '') + '" title="Correo ' + n + ' · ' + e(correo(n, precio).n) + '"></span>').join('') + '</div>';
+  const dato = (n, t) => '<div class="rp-dato"><b>' + e(n) + '</b><span>' + t + '</span></div>';
 
-  async function rcLista() {
-    try {
-      const r = await apiAdmin('/api/admin/recordatorios/lista?etapa=' + encodeURIComponent(filtro) + '&q=' + encodeURIComponent(texto) + '&pagina=' + pagina);
-      $('rcLista').innerHTML = r.items.length ? r.items.map(x => '<tr><td>' + e(x.nombre || '—') + '</td><td>' + e(x.correo) + '</td><td><span class="badge ' + (x.etapa === 'convertida' || x.etapa === 'pago' ? 'badge-success' : x.etapa === 'baja' ? 'badge-danger' : 'badge-info') + '">' + e(x.estado) + '</span></td><td>' + (x.enviados ? x.ciclo : '—') + '</td><td>' + (x.enviados ? x.paso : '—') + '</td><td>' + (x.proximoMs ? (x.vencida ? 'Ya le toca (paso ' + x.proximoPaso + ')' : 'Paso ' + x.proximoPaso + ' · ' + fmtMs(x.proximoMs)) : '—') + '</td></tr>').join('') : '<tr><td colspan="6" class="rc-vacio">No hay personas con ese filtro.</td></tr>';
-      $('rcPaginas').innerHTML = '<span class="rc-nota" style="margin:0">' + r.total + ' persona' + (r.total === 1 ? '' : 's') + '</span>' + (r.pagina > 1 ? '<button type="button" class="btn btn-o btn-sm" onclick="rcPagina(-1)">‹ Anterior</button>' : '') + (r.hayMas ? '<button type="button" class="btn btn-o btn-sm" onclick="rcPagina(1)">Siguiente ›</button>' : '');
-    } catch (err) { $('rcLista').innerHTML = '<tr><td colspan="6" class="rc-vacio">' + e(err.message) + '</td></tr>'; }
+  function pintar() {
+    const d = E, caja = $('rcCaja'), activo = d.modo === 'activo', precio = Number(d.precioMes) || 0;
+    const g = d.estadisticas || {}, ep = g.enviadosPaso || {}, pp = g.pagosConCuponPaso || {};
+    const suma = (obj, monto) => (d.serie || []).filter(s => s.monto === monto).reduce((a, s) => a + (obj['p' + s.paso] || 0), 0);
+    const env50 = suma(ep, 50), env100 = suma(ep, 100), uso50 = suma(pp, 50), uso100 = suma(pp, 100);
+    const totalEnv = Object.values(ep).reduce((a, b) => a + b, 0);
+    const pct = (u, n) => (n > 0 ? (Math.round(u / n * 1000) / 10) + '%' : '0%');
+    const c = d.conteo || {};
+    const yaPagaron = (c.pago || 0) + (c.convertida || 0);
+
+    const estado = !d.configurado && !activo
+      ? '<div class="rp-estado rp-e-aviso"><span class="rp-d"></span><span><b>Falta configurar el correo en el servidor</b> (<code>RESEND_API_KEY</code>, <code>MAIL_FROM</code>) o la llave de firmas (<code>CERT_SIGNING_KEY</code>). Hasta entonces no se puede activar.</span></div>'
+      : !activo ? '<div class="rp-estado rp-e-off"><span class="rp-d"></span><span><b>Apagado.</b> No se está enviando ningún correo. Pulsa «Activar» cuando quieras empezar.</span></div>'
+      : d.dentroDeHorario ? '<div class="rp-estado rp-e-on"><span class="rp-d"></span><span><b>Activo y enviando.</b> Estamos dentro del horario permitido (8:00 a. m. a 10:00 p. m.). Cada 20 minutos se revisa a quién le toca.</span></div>'
+      : '<div class="rp-estado rp-e-aviso"><span class="rp-d"></span><span><b>Activo, en pausa por el horario.</b> No se envía entre 10:00 p. m. y 8:00 a. m.; se reanuda solo a las 8:00 a. m.</span></div>';
+
+    const camino = '<details class="rp-camino"><summary>¿Cómo funciona cada vuelta?</summary><div class="rp-cadena">' + [1, 2, 3, 4, 5, 6, 7].map(n => pildora(n, precio)).join('<span class="rp-sep">›</span>') + '</div>' +
+      '<p class="rp-sub rp-largo">' + (d.serie || []).map(s => {
+        const tiempo = s.desde === 'registro' ? s.esperaHoras + ' horas después de registrarse' : s.desde === 'envio' ? s.esperaHoras + ' horas después del correo anterior' : s.esperaHoras + ' horas después de que vence el cupón anterior';
+        return '• El <b>Correo ' + s.paso + '</b> sale ' + tiempo + (s.monto ? ' (cupón de $' + s.monto + ')' : ' (sin cupón)') + '.';
+      }).join('<br>') + '<br>• Cada cupón vale <b>' + d.vigenciaHoras + ' horas</b>, es de un solo uso y solo para el plan mensual.<br>• Al terminar los 7 correos hay <b>' + d.descansoDias + ' días de descanso</b> y empieza otra vuelta (máximo ' + d.maxCiclos + ' vueltas).<br>• Solo se envía de <b>8:00 a. m. a 10:00 p. m.</b> (hora de México). Quien paga o pide la baja deja de recibirlos.</p></details>';
+
+    const listo = p => p.debeSalirMs <= d.ahoraMs && d.dentroDeHorario;
+    const prox = d.proximos || [];
+    const cuenta = { todas: prox.length, listas: prox.filter(listo).length }; cuenta.prog = cuenta.todas - cuenta.listas;
+    const filtradas = prox.filter(p => filtro === 'todas' || (filtro === 'listas' ? listo(p) : !listo(p)));
+    const visibles = verTodas ? filtradas : filtradas.slice(0, 10);
+    const fila = p => {
+      const sale = p.saleMs || p.debeSalirMs, porHorario = !listo(p) && p.debeSalirMs < sale - 60000, k = correo(p.paso, precio);
+      const celda = listo(p)
+        ? '<span class="rp-chip rp-listo"><i></i>Listo para enviar</span><div class="rp-sub rp-mt">Sale en la próxima revisión (cada 20 min)</div>'
+        : '<span class="rp-chip rp-prog"><i></i>' + e(diaHora(sale, d.ahoraMs)) + '</span><div class="rp-sub rp-mt rp-ajusta">' + (porHorario ? 'Le tocaba a las ' + e(hora(p.debeSalirMs)) + ' (fuera de horario)' : 'Faltan ' + (sale - d.ahoraMs >= 3600000 ? Math.round((sale - d.ahoraMs) / 3600000) + ' h' : Math.max(1, Math.round((sale - d.ahoraMs) / 60000)) + ' min')) + '</div>';
+      return '<div class="rp-tr"><div>' + persona(p) + '</div><div><div class="rp-lbl">Progreso</div>' + puntos(p.paso, precio) + '<div class="rp-sub">Vuelta ' + p.ciclo + ' de ' + MAX_VUELTAS + ' · ' + (p.paso === 1 ? (p.ciclo === 1 ? 'todavía sin correos' : 'empieza otra vuelta') : (p.paso - 1) + ' de 7 enviados') + '</div></div>' +
+        '<div><div class="rp-lbl">Siguiente correo</div>' + pildora(p.paso, precio) + '<div class="rp-sub rp-mt">' + e(k.sub) + '</div></div><div><div class="rp-lbl">Cuándo sale</div>' + celda + '</div></div>';
+    };
+    const tabla = prox.length
+      ? '<div class="rp-tabs" role="tablist">' + [['todas', 'Todas'], ['listas', 'Listas ahora'], ['prog', 'Programadas']].map(([k, t]) => '<button type="button" role="tab" data-rp-filtro="' + k + '" class="' + (filtro === k ? 'on' : '') + '">' + t + ' (' + cuenta[k] + ')</button>').join('') + '</div>' +
+        '<div class="rp-tabla"><div class="rp-th"><span>Persona</span><span>Progreso</span><span>Siguiente correo</span><span>Cuándo sale</span></div>' + (visibles.length ? visibles.map(fila).join('') : '<div class="rp-tr rp-vacio">No hay cuentas en esta lista.</div>') + '</div>' +
+        (filtradas.length > 10 ? '<div class="rp-centro"><button class="btn btn-o btn-sm" id="rp-ver-todas" type="button">' + (verTodas ? 'Ver menos' : 'Ver las ' + filtradas.length + ' cuentas') + '</button></div>' : '') +
+        '<p class="rp-sub rp-nota">Los puntos son los 7 correos de cada vuelta: <b class="rp-verde">verde = ya enviado</b>, con aro = el siguiente, gris = pendiente.</p>'
+      : '<div class="rp-vacio">No hay envíos pendientes.</div>';
+    const ult = d.recientes || [];
+    const ultimos = ult.length
+      ? '<div class="rp-tabla rp-3"><div class="rp-th"><span>Persona</span><span>Correo enviado</span><span>Cuándo</span></div>' + ult.map(p => '<div class="rp-tr"><div>' + persona(p) + '</div><div><div class="rp-lbl">Correo enviado</div>' + pildora(p.paso, precio) + '<div class="rp-sub rp-mt">Vuelta ' + p.ciclo + ' de ' + MAX_VUELTAS + '</div></div>' +
+        '<div><div class="rp-lbl">Cuándo</div><span class="rp-chip rp-hecho"><i></i>' + e(hace(p.enviadoMs, d.ahoraMs)) + '</span><div class="rp-sub rp-mt">' + e(cuando(p.enviadoMs)) + '</div></div></div>').join('') + '</div>'
+      : '<div class="rp-vacio">Todavía no se ha enviado ningún recordatorio.</div>';
+
+    caja.innerHTML = '<div class="rp-cab"><h3>Recordatorios de pago<span class="rp-badge ' + (activo ? 'on' : '') + '">' + (activo ? 'ACTIVO' : 'APAGADO') + '</span></h3>' +
+      '<div class="rp-acc"><button class="btn btn-o btn-sm" id="rp-actualizar" type="button">Actualizar</button><button class="btn ' + (activo ? 'btn-o' : 'btn-p') + ' btn-sm" id="rp-modo" type="button">' + (activo ? 'Apagar' : 'Activar') + '</button></div></div>' +
+      estado + '<p class="rp-sub rp-intro">Correos con cupón de descuento para quienes se registraron y <b>nunca han pagado</b>. Los cupones valen ' + d.vigenciaHoras + ' horas, son de un solo uso y solo para el plan mensual.</p>' + camino +
+      '<div class="rp-datos">' + dato(c.elegibles != null ? c.elegibles : d.calificarian, 'Cuentas en seguimiento') + dato(d.enviadosHoy + ' / ' + d.topeDiario, 'Correos enviados hoy / tope') + dato(yaPagaron, 'Ya pagaron (no reciben)') + dato(c.baja || 0, 'Pidieron la baja') + dato(c.cerrada || 0, 'Terminaron sus ' + d.maxCiclos + ' vueltas') + '</div>' +
+      '<h4>Resultados de los cupones</h4><div class="rp-datos rp-3c">' + dato(uso50, 'Pagaron con el cupón de $50 (de ' + env50 + ' enviados · ' + pct(uso50, env50) + ')') + dato(uso100, 'Pagaron con el cupón de $100 (de ' + env100 + ' enviados · ' + pct(uso100, env100) + ')') + dato(totalEnv, 'Correos enviados en total') + '</div>' +
+      '<div id="rp-grafica" class="rp-grafica"></div>' +
+      '<p class="rp-sub rp-nota">«Pagaron» cuenta las veces que Stripe registró el cupón al crearse la suscripción (no incluye tus pruebas si no completaste el pago). ' + (g.desdeMs ? 'Datos desde el ' + e(cuando(g.desdeMs)) + '.' : 'Aún no se ha enviado ningún recordatorio real.') + '</p>' +
+      '<h4>Seguimiento de cuentas</h4>' + tabla + '<h4>Últimos correos enviados</h4>' + ultimos +
+      '<h4>Probar los correos</h4><div class="rp-fila"><select id="rp-paso" class="form-select" style="max-width:280px">' + [1, 2, 3, 4, 5, 6, 7].map(n => '<option value="' + n + '">Correo ' + n + ' · ' + e(correo(n, precio).n) + '</option>').join('') + '</select><button class="btn btn-o btn-sm" id="rp-probar" type="button">Enviarme una prueba</button></div>' +
+      '<p class="rp-sub rp-nota">La prueba llega solo a tu correo de administrador, con un cupón real (' + d.vigenciaHoras + ' horas) para que puedas comprobar el descuento al pagar. No cambia nada de ninguna cuenta.</p>' +
+      '<h4>Límites de envío</h4><div class="rp-fila"><label class="rp-lim">Correos por día (máximo) <input class="form-input" id="rcTope" type="number" min="1" max="500" value="' + d.topeDiario + '"></label><label class="rp-lim">Por revisión, cada 20 min (máximo) <input class="form-input" id="rcMax" type="number" min="1" max="50" value="' + d.maxPorCorrida + '"></label><button type="button" class="btn btn-o btn-sm" onclick="rcLimites()">Guardar límites</button></div>' +
+      '<p class="rp-sub rp-nota">Protegen tu cuenta de correo: si hay muchas personas por escribir, salen poco a poco.</p>';
+
+    // Gráfica: cupones enviados contra cupones que se usaron al pagar, para cada descuento
+    const gr = $('rp-grafica');
+    if (gr) gr.innerHTML = window.ZG ? ZG.barras({ etiquetas: ['Cupón de $50', 'Cupón de $100'], series: [{ nombre: 'Cupones enviados', valores: [env50, env100], color: 1 }, { nombre: 'Pagaron con el cupón', valores: [uso50, uso100], color: 6 }], vacio: 'Aún no se envía ningún cupón' }) : '';
+    caja.querySelectorAll('[data-rp-filtro]').forEach(b => { b.onclick = () => { filtro = b.dataset.rpFiltro; verTodas = false; pintar(); }; });
+    const verMas = $('rp-ver-todas'); if (verMas) verMas.onclick = () => { verTodas = !verTodas; pintar(); };
+    $('rp-actualizar').onclick = () => rcCargar(true);
+    $('rp-modo').onclick = () => rcModo(activo ? 'apagado' : 'activo');
+    $('rp-probar').onclick = rcPrueba;
   }
-  window.rcPagina = d => { pagina = Math.max(1, pagina + d); rcLista(); };
-  window.rcFiltrar = v => { filtro = v; pagina = 1; rcLista(); };
-  window.rcBuscar = () => { clearTimeout(temporizador); temporizador = setTimeout(() => { texto = $('rcBuscar').value.trim(); pagina = 1; rcLista(); }, 350); };
 
   // ---------- Acciones ----------
   window.rcModo = async function (modo) {
@@ -117,22 +150,16 @@
     } catch (err) { toast(err.message); }
   };
   window.rcLimites = async function () {
-    try { await apiAdmin('/api/admin/recordatorios/limites', { method: 'POST', body: JSON.stringify({ topeDiario: parseInt($('rcTope').value, 10), maxPorCorrida: parseInt($('rcMax').value, 10) }) }); toast('Topes guardados'); rcCargar(); }
+    try { await apiAdmin('/api/admin/recordatorios/limites', { method: 'POST', body: JSON.stringify({ topeDiario: parseInt($('rcTope').value, 10), maxPorCorrida: parseInt($('rcMax').value, 10) }) }); toast('Límites guardados'); rcCargar(); }
     catch (err) { toast(err.message); }
   };
-  window.rcEnsayo = async function () {
-    const c = $('rcEnsayo'); c.textContent = 'Revisando…';
-    try {
-      const r = await apiAdmin('/api/admin/recordatorios/ensayo', { method: 'POST', body: '{}' });
-      c.innerHTML = '<p class="rc-nota" style="margin:0 0 8px"><b>' + r.recibirian.length + '</b> persona(s) recibirían un correo ahora' + (r.restantes ? ' (y ' + r.restantes + ' más en las siguientes revisiones)' : '') + '. ' + (r.dentroDeHorario ? '' : 'Ahora estamos fuera de horario: saldrían a las 8:00. ') + 'No se envió nada.</p>' +
-        (r.recibirian.length ? '<ul class="rc-lista">' + r.recibirian.slice(0, 15).map(x => '<li>' + e(x.nombre || x.correo) + ' — vuelta ' + x.ciclo + ', paso ' + x.paso + (x.monto ? ' (' + pesos(x.monto) + ')' : '') + '</li>').join('') + '</ul>' : '');
-    } catch (err) { c.textContent = err.message; }
-  };
   window.rcPrueba = async function () {
+    const b = $('rp-probar'); if (b) { b.disabled = true; b.textContent = 'Enviando…'; }
     try {
-      const paso = $('rcPaso').value, r = await apiAdmin('/api/admin/recordatorios/prueba', { method: 'POST', body: JSON.stringify({ paso: paso === 'todos' ? 'todos' : Number(paso), ciclo: Number($('rcCiclo').value) }) });
+      const r = await apiAdmin('/api/admin/recordatorios/prueba', { method: 'POST', body: JSON.stringify({ paso: Number($('rp-paso').value), ciclo: 1 }) });
       toast('Correo de prueba enviado a ' + r.para);
     } catch (err) { toast(err.message); }
+    finally { if (b) { b.disabled = false; b.textContent = 'Enviarme una prueba'; } }
   };
 
   // ---------- Enganche con el panel ----------
