@@ -10,7 +10,7 @@
   const pesos = n => '$' + Number(n || 0).toLocaleString('es-MX');
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const REGALO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v9h14v-9M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>';
-  let cupon = null, reloj = null;
+  let cupon = null, reloj = null, medidor = null;
 
   const cuenta = ms => {
     const s = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
@@ -20,7 +20,12 @@
     if (reloj) { clearInterval(reloj); reloj = null; }
     const b = $('ftCuponBarra'); if (b) b.remove();
     document.body.classList.remove('ftd-cupon');
+    document.body.style.removeProperty('--ftd-cupon-h');
+    if (medidor) { medidor.disconnect(); medidor = null; }
+    window.removeEventListener('resize', medir);
   }
+  // La altura de la barra cambia según el ancho de la pantalla (en el teléfono se parte en varias filas): se mide la real para que el encabezado, el menú y las notificaciones queden justo debajo y no tapados
+  function medir() { const b = $('ftCuponBarra'); if (b) document.body.style.setProperty('--ftd-cupon-h', Math.ceil(b.getBoundingClientRect().height) + 'px'); }
   function pintar() {
     const c = cupon; if (!c) return quitar();
     let b = $('ftCuponBarra');
@@ -33,6 +38,9 @@
       '<span class="resta" title="Tiempo que le queda al cupón">Vence en <b id="ftCuponResta">' + cuenta(c.venceMs - Date.now()) + '</b></span>' +
       '<button type="button" class="usar" id="ftCuponUsar">Usar mi cupón <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>';
     document.body.classList.add('ftd-cupon');
+    medir();
+    if (window.ResizeObserver && !medidor) { medidor = new ResizeObserver(medir); medidor.observe(b); }
+    window.removeEventListener('resize', medir); window.addEventListener('resize', medir);
     $('ftCuponCopiar').onclick = async () => {
       try { await navigator.clipboard.writeText(c.codigo); if (window.showToast) showToast('Código copiado'); } catch (_) { if (window.showToast) showToast('Selecciona y copia el código'); }
     };
