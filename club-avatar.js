@@ -41,6 +41,8 @@
     const u = auth.currentUser; if (!u) return;
     try {
       await db.collection('members').doc(u.uid).update({ avatar: id });
+      // La tarjeta del directorio (si existe) guarda su propia copia del avatar: se mantiene igual
+      try { const t = await db.collection('directorio').doc(u.uid).get(); if (t.exists && (t.data().avatar || '') !== id) await db.collection('directorio').doc(u.uid).update({ avatar: id }); } catch (_) { /* sin tarjeta o sin permiso */ }
       actual = id; aplicar(); pintarTarjeta(); showToast(id ? 'Avatar actualizado' : 'Ahora se muestran tus iniciales');
     } catch (e) { showToast('No se pudo guardar tu avatar'); }
   }

@@ -54,14 +54,28 @@
     return r;
   };
 
+  // Comienzo del mensaje como título interno cuando la persona no escribe uno
+  function tituloDe(cuerpo) {
+    const linea = String(cuerpo || '').split(/\r?\n/).map(x => x.trim()).find(Boolean) || 'Tema nuevo';
+    const limpio = linea.replace(/\s+/g, ' ');
+    if (limpio.length <= 70) return limpio;
+    const corte = limpio.slice(0, 70), esp = corte.lastIndexOf(' ');
+    return (esp > 30 ? corte.slice(0, esp) : corte) + '…';
+  }
+
   // ---------- Publicar ----------
   window.submitForumPost = async function () {
     if (!memberIsPaid) { showPaywallOverlay(); return; }
     const u = yo(); if (!u) { showToast('Inicia sesión para publicar'); return; }
-    const title = $('postTitle').value.trim().replace(/\s+/g, ' '), body = $('postBody').value.trim(), category = $('postCategory').value;
-    if (title.length < L.titulo[0]) { showToast('El título debe tener al menos ' + L.titulo[0] + ' caracteres.'); return; }
+    let title = $('postTitle').value.trim().replace(/\s+/g, ' ');
+    const body = $('postBody').value.trim(), category = $('postCategory').value;
     if (body.length < L.cuerpo[0]) { showToast('El mensaje debe tener al menos ' + L.cuerpo[0] + ' caracteres.'); return; }
+    // El título es opcional: sin título se guarda el comienzo del mensaje (sirve para los avisos) y el tema se muestra sin encabezado
+    const sinTitulo = !title;
+    if (sinTitulo) title = tituloDe(body);
+    else if (title.length < L.titulo[0]) { showToast('Si escribes un título, debe tener al menos ' + L.titulo[0] + ' caracteres. O déjalo vacío.'); return; }
     const datos = { title, body, category: CAT[category] ? category : 'general', authorId: u.uid, authorName: u.displayName || u.email || 'Socio', authorAvatar: (window.ftAvatarActual && ftAvatarActual()) || '', replyCount: 0, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
+    if (sinTitulo) datos.sinTitulo = true;
     if (imagenNueva) datos.imagen = imagenNueva;
     try {
       await db.collection('forum_posts').add(datos);
@@ -86,7 +100,8 @@
     const post = forumPosts.find(p => p.id === postId); if (!post) return;
     const u = yo(), mio = u && post.authorId === u.uid, liked = u && (post.likes || []).includes(u.uid);
     $('threadCategory').textContent = CAT[post.category] || post.category || 'General';
-    $('threadTitle').textContent = post.title || '';
+    $('threadTitle').textContent = post.sinTitulo ? '' : (post.title || '');
+    $('threadTitle').style.display = post.sinTitulo ? 'none' : '';
     $('threadOriginal').innerHTML = '<div class="fh-cab">' + avatar(post.authorName, colorDe(post.authorId), post.authorAvatar) + '<div><strong>' + esc(post.authorName || 'Socio') + '</strong><small>' + esc(getTimeAgo(fechaDe(post.createdAt))) + '</small></div>' +
       (mio || esAdmin() ? '<button type="button" class="fh-borrar" onclick="ftForo.borrarTema(\'' + esc(post.id) + '\')">Eliminar</button>' : '') + '</div>' +
       '<div class="fh-cuerpo">' + esc(post.body || '') + '</div>' + (post.imagen && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(post.imagen) ? '<img class="fh-img" src="' + post.imagen + '" alt="Imagen del tema">' : '') +

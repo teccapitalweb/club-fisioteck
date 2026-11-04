@@ -109,3 +109,8 @@ a.ftd-cert-ver { border-radius:999px !important; background:linear-gradient(135d
   .ftl-premios .cuenta b { font-size:1.7rem; display:inline; }
   .ftl-premios header h3 { font-size:1.35rem; }
 }
+
+/* Avatar ilustrado en la lista del foro */
+.ftd-foro-caja .av.av-img, .ftd-post .av.av-img { background: transparent; overflow: hidden; }
+.ftd-foro-caja .av.av-img img, .ftd-post .av.av-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+.ftd-post p.sin-titulo { margin-top: 2px; font-size: .92rem; color: var(--text); }

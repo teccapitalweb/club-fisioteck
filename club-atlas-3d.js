@@ -15,6 +15,7 @@
     try{
       window.showMuscle(d.zone);
       if(d.muscle&&window.ftAtlas&&window.ftAtlas.porNombre){const m=window.ftAtlas.porNombre(d.structure);if(m&&document.getElementById('atFicha'))window.ftAtlas.ver(m.id,true);}
+      else if(d.layer&&window.ftAtlas&&window.ftAtlas.porEstructura){const e=window.ftAtlas.porEstructura(d.structure,d.layer);if(e&&document.getElementById('atFicha'))window.ftAtlas.verEstr(e.id,true);}
     }finally{window.__atlasSinScroll=false;}
     const t=document.getElementById('atlasFichaTit');if(t)t.textContent='Ficha muscular: '+(d.regionName||'');
   }

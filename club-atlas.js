@@ -14,15 +14,15 @@
   const dentro = (m, re) => re.test(m.id);
   const ZONAS = {
     head: m => m.region === 'cabeza-cuello',
-    shoulders: m => m.region === 'hombro' && !dentro(m, /pectoral|serrato|dorsal-ancho/),
-    chest: m => dentro(m, /pectoral|serrato|intercostal|subclavio/),
+    shoulders: m => m.region === 'hombro' && !dentro(m, /pectoral|serrato|dorsal-ancho|subclavio/),
+    chest: m => dentro(m, /pectoral|serrato|intercostal|subclavio|subcostal|transverso-torax|elevadores-costillas/),
     arms: m => m.region === 'brazo',
-    core: m => m.region === 'tronco' && dentro(m, /abdomin|oblicu|transvers|diafrag|piso|cuadrado|psoas/),
-    back: m => dentro(m, /erector|espinal|multifid|dorsal-ancho|romboid|trapecio|elevador-de-la-escapula|cuadrado-lumbar|longisimo|iliocostal|semiespinoso/),
+    core: m => (m.region === 'tronco' && dentro(m, /abdomin|abdomen|oblicu|transverso-abdomen|diafrag|piso|cuadrado|psoas|perine|cremaster|isquiocavernoso|bulboesponjoso|esfinter|suelo-pelvico/)) || m.id === 'psoas-menor',
+    back: m => dentro(m, /erector|espinal|multifid|dorsal-ancho|romboid|trapecio|elevador-de-la-escapula|cuadrado-lumbar|longisimo|iliocostal|semiespinoso|rotadores|interespinosos|intertransversos|serrato-posterior|espinoso/),
     hip: m => m.region === 'cadera',
     thigh: m => m.region === 'muslo',
-    knee: m => m.region === 'muslo' && dentro(m, /cuadriceps|recto-femoral|vasto|isquio|femoral|semi|popl|sartorio|gracil/),
-    leg: m => m.region === 'pierna-pie' && dentro(m, /gastroc|soleo|tibial|peron|plantar|popl|talon/),
+    knee: m => m.region === 'muslo' && dentro(m, /cuadriceps|recto-femoral|vasto|isquio|femoral|semi|popl|sartorio|gracil|articular-rodilla/),
+    leg: m => m.region === 'pierna-pie' && dentro(m, /gastroc|soleo|tibial|peron|plantar|popl|talon|flexor-largo-dedos|extensor-largo-dedos|extensor-corto/),
     foot: m => m.region === 'pierna-pie'
   };
   const deZona = z => { const f = ZONAS[z]; let l = f ? datos().filter(f) : []; if (!l.length && f) l = datos().filter(m => m.region === ({ head: 'cabeza-cuello', shoulders: 'hombro', arms: 'brazo', core: 'tronco', back: 'tronco', chest: 'tronco', hip: 'cadera', thigh: 'muslo', knee: 'muslo', leg: 'pierna-pie', foot: 'pierna-pie' }[z])); return l; };
@@ -44,6 +44,35 @@
   }
   function chips(l) { return '<div class="at-chips">' + l.map(m => '<button type="button" data-m="' + esc(m.id) + '">' + esc(m.nombre) + '</button>').join('') + '</div>'; }
 
+  // ---------- Estructuras: huesos, arterias, venas, nervios, articulaciones y ligamentos (club-atlas-estructuras.js, FT_ATLAS_ESTR) ----------
+  const estr = () => window.FT_ATLAS_ESTR || [];
+  const TIPO = { hueso: 'Hueso', arteria: 'Arteria', vena: 'Vena', nervio: 'Nervio', articulacion: 'Articulación', ligamento: 'Ligamento o tendón' };
+  const TIPO_PL = { hueso: 'Huesos', arteria: 'Arterias', vena: 'Venas', nervio: 'Nervios', articulacion: 'Articulaciones', ligamento: 'Ligamentos y tendones' };
+  const TIT = { hueso: ['Puntos de referencia', 'Articulaciones y relaciones'], arteria: ['Recorrido y pulso', 'Ramas y relaciones'], vena: ['Recorrido', 'Afluentes y relaciones'], nervio: ['Recorrido y exploración', 'Qué controla y relaciones'], articulacion: ['Puntos de referencia', 'Qué la forma y la estabiliza'], ligamento: ['Puntos de referencia', 'Relaciones'] };
+  const CAPA = { bone: 'hueso', artery: 'arteria', vein: 'vena' };
+  function fichaEstr(e) {
+    const t = TIT[e.tipo] || ['Referencias', 'Relaciones'];
+    const lista = (ti, l) => (l || []).length ? '<h5>' + ti + '</h5><ul>' + l.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>' : '';
+    const fuentes = (e.fuentes || []).length ? '<details class="at-fuentes"><summary>Fuentes consultadas (' + esc(e.verificacion || 'sin verificar') + ')</summary><ul>' + e.fuentes.map(f => { const mt = /(https?:\/\/\S+)/.exec(f); return '<li>' + esc(String(f).replace(mt ? mt[1] : '', '').replace(/\s*[—-]\s*$/, '').trim()) + (mt ? ' <a href="' + esc(mt[1]) + '" target="_blank" rel="noopener noreferrer">enlace</a>' : '') + '</li>'; }).join('') + '</ul></details>' : '';
+    return '<div class="at-ficha"><div class="at-cab"><h4>' + esc(e.nombre) + '</h4><span>' + esc(TIPO[e.tipo] || '') + '</span></div>' + (e.descripcion ? '<p class="at-desc">' + esc(e.descripcion) + '</p>' : '') +
+      lista(t[0], e.referencias) + lista(t[1], e.relaciones) + lista('Lesiones frecuentes', e.lesiones) + lista('Para el fisioterapeuta', e.fisio) + fuentes + '<p class="at-aviso">Herramienta de estudio y apoyo. Puede haber variaciones anatómicas; confirma con tus textos de referencia y tu criterio clínico.</p></div>';
+  }
+  function verEstr(id, sinScroll) {
+    const e = estr().find(x => x.id === id), caja = $('atFicha'); if (!e || !caja) return;
+    caja.innerHTML = fichaEstr(e); if (!sinScroll) caja.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  // Ficha de la estructura que muestra el visor 3D (por su nombre y su capa: hueso, arteria o vena)
+  function porEstructura(nombre, capa) {
+    const tipo = CAPA[capa]; if (!tipo) return null;
+    const b = sinTilde(String(nombre || '').split(' · ')[0]).replace(/ (derecho|derecha|izquierdo|izquierda)$/, '').trim();
+    return estr().find(e => e.tipo === tipo && (e.nombres || []).some(n => sinTilde(n) === b)) || null;
+  }
+  function chipsEstr(z) {
+    const l = estr().filter(e => e.zona === z); if (!l.length) return '';
+    const tipos = Object.keys(TIPO_PL).filter(t => l.some(e => e.tipo === t));
+    return '<div class="at-esp-estr"><h4>Otras estructuras de esta zona (' + l.length + ')</h4>' + tipos.map(t => '<div class="at-tipo"><small>' + TIPO_PL[t] + '</small><div class="at-chips">' + l.filter(e => e.tipo === t).map(e => '<button type="button" data-e="' + esc(e.id) + '">' + esc(e.nombre) + '</button>').join('') + '</div></div>').join('') + '</div>';
+  }
+
   // ---------- Guía clínica de la zona (club-atlas-guia.js) ----------
   function guia(z) {
     const g = (window.FT_ATLAS_GUIA || {})[z]; if (!g) return '';
@@ -57,7 +86,7 @@
   function porNombre(n) {
     const b = sinTilde(String(n || '').split(' · ')[0]).replace(/\b(derecho|izquierdo)\b/g, '').trim(); if (b.length < 4) return null;
     const l = datos(), base = m => sinTilde(m.nombre).split(' (')[0];
-    return l.find(m => base(m) === b) || l.find(m => sinTilde(m.nombre).includes(b)) || l.find(m => base(m).length >= 6 && b.includes(base(m))) || null;
+    return l.find(m => base(m) === b) || l.find(m => sinTilde(m.nombre).includes(b)) || l.find(m => base(m).length >= 6 && (' ' + b + ' ').includes(' ' + base(m) + ' ')) || null;
   }
 
   // ---------- Zonas y buscador ----------
@@ -66,9 +95,10 @@
     window.showMuscle = function (id) {
       const r = originalMostrar.apply(this, arguments);
       if (!memberIsPaid && !window.ftVistaAdmin) return r;
-      const info = $('atlasInfo'), l = deZona(id); if (!info || !l.length) return r;
-      info.insertAdjacentHTML('beforeend', guia(id) + '<div class="at-esp"><h4>Músculos de esta zona (' + l.length + ')</h4><p class="at-sub">Toca uno para ver su ficha.</p>' + chips(l) + '<div id="atFicha"></div></div>');
+      const info = $('atlasInfo'), l = deZona(id); if (!info || (!l.length && !chipsEstr(id))) return r;
+      info.insertAdjacentHTML('beforeend', guia(id) + '<div class="at-esp"><h4>Músculos de esta zona (' + l.length + ')</h4><p class="at-sub">Toca uno para ver su ficha.</p>' + (l.length ? chips(l) : '') + chipsEstr(id) + '<div id="atFicha"></div></div>');
       info.querySelectorAll('.at-esp [data-m]').forEach(b => b.onclick = () => ver(b.dataset.m));
+      info.querySelectorAll('.at-esp [data-e]').forEach(b => b.onclick = () => verEstr(b.dataset.e));
       return r;
     };
   }
@@ -79,13 +109,21 @@
       const q = sinTilde(($('atlasSearch') || {}).value || '').trim(), cont = $('atlasSearchResults');
       if (!cont || q.length < 2 || !datos().length) return r;
       const hallados = datos().filter(m => sinTilde([m.nombre, m.accion, m.inervacion, m.origen, m.insercion, (m.condiciones || []).join(' ')].join(' ')).includes(q)).slice(0, 12);
-      if (!hallados.length) return r;
+      const hEstr = estr().filter(e => sinTilde([e.nombre, e.descripcion, (e.lesiones || []).join(' ')].join(' ')).includes(q)).slice(0, 12);
+      if (!hallados.length && !hEstr.length) return r;
       const hay = cont.querySelector('[onclick]') ? cont.innerHTML : '';
       cont.style.display = 'block';
-      cont.innerHTML = '<div class="at-res"><small>Músculos</small>' + hallados.map(m => '<button type="button" data-m="' + esc(m.id) + '"><b>' + esc(m.nombre) + '</b><span>' + esc(REG[m.region] || '') + ' · ' + esc((m.inervacion || '').slice(0, 60)) + '</span></button>').join('') + '</div>' + hay;
+      cont.innerHTML = '<div class="at-res">' + (hallados.length ? '<small>Músculos</small>' : '') + hallados.map(m => '<button type="button" data-m="' + esc(m.id) + '"><b>' + esc(m.nombre) + '</b><span>' + esc(REG[m.region] || '') + ' · ' + esc((m.inervacion || '').slice(0, 60)) + '</span></button>').join('') + (hEstr.length ? '<small>Estructuras</small>' + hEstr.map(e => '<button type="button" data-e="' + esc(e.id) + '"><b>' + esc(e.nombre) + '</b><span>' + esc(TIPO[e.tipo] || '') + '</span></button>').join('') : '') + '</div>' + hay;
       cont.querySelectorAll('.at-res [data-m]').forEach(b => b.onclick = () => abrirDesdeBusqueda(b.dataset.m));
+      cont.querySelectorAll('.at-res [data-e]').forEach(b => b.onclick = () => abrirEstrDesdeBusqueda(b.dataset.e));
       return r;
     };
+  }
+  function abrirEstrDesdeBusqueda(id) {
+    const e = estr().find(x => x.id === id); if (!e) return;
+    const info = $('atlasInfo'); if (!info) return;
+    $('atlasSearch').value = ''; $('atlasSearchResults').style.display = 'none';
+    info.innerHTML = '<div class="at-esp"><h4>' + esc(TIPO_PL[e.tipo] || '') + '</h4><div id="atFicha"></div></div>'; verEstr(id);
   }
   function abrirDesdeBusqueda(id) {
     const m = datos().find(x => x.id === id); if (!m) return;
@@ -117,5 +155,5 @@
     $('atPracticar').onclick = () => { if (!memberIsPaid && !window.ftVistaAdmin) { showPaywallOverlay(); return; } iniciar(); pintarPractica(); const g = $('atlasGrid'); if (g) g.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
   }
   montar();
-  window.ftAtlas = { ver, porNombre };
+  window.ftAtlas = { ver, porNombre, verEstr, porEstructura };
 })();

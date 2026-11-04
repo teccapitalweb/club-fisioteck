@@ -201,7 +201,7 @@
     const u = (typeof auth !== 'undefined' ? auth.currentUser : null), yo = u ? u.uid : '', nombre = (u && (u.displayName || u.email)) || 'Socio';
     let c = $('ftdForoCaja');
     if (!c) { c = document.createElement('div'); c.id = 'ftdForoCaja'; lista.parentNode.insertBefore(c, lista); }
-    c.innerHTML = '<button type="button" class="ftd-foro-caja" onclick="openNewPostModal()"><span class="av" style="background:' + COLORES[0] + '">' + esc(nombre.charAt(0).toUpperCase()) + '</span><span class="txt">¿Qué pasa en tu consulta? Comparte un caso o haz una pregunta…</span><b>Publicar</b></button>' +
+    c.innerHTML = '<button type="button" class="ftd-foro-caja" onclick="openNewPostModal()">' + avForo((window.ftAvatarActual && ftAvatarActual()) || '', COLORES[0], nombre) + '<span class="txt">¿Qué pasa en tu consulta? Comparte un caso o haz una pregunta…</span><b>Publicar</b></button>' +
       '<div class="ftd-tabs ftd-foro-tabs" role="tablist">' + [['recientes', 'Recientes'], ['reacciones', 'Más reacciones'], ['mias', 'Mis publicaciones']].map(t => '<button type="button" role="tab" aria-selected="' + (pestana === t[0]) + '" class="' + (pestana === t[0] ? 'on' : '') + '" data-ft="' + t[0] + '">' + t[1] + '</button>').join('') + '</div>' +
       '<div class="ftd-chips ftd-foro-cats" role="group" aria-label="Categoría"><button type="button" class="' + (!filtroCat ? 'on' : '') + '" data-cat="">Todas</button>' + Object.keys(CATEG).map(k => '<button type="button" class="' + (filtroCat === k ? 'on' : '') + '" data-cat="' + k + '">' + CATEG[k] + '</button>').join('') + '</div>';
     c.querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { filtroCat = b.dataset.cat; foro(); pintarForo(); });
@@ -223,6 +223,8 @@
         '<h4>' + esc(p.titulo) + '</h4><p>' + esc(p.texto) + '</p><footer><span>' + CORAZON + p.likes + '</span><span>' + GLOBO + p.resp + ' respuestas</span></footer></div></article>';
     }).join('');
   }
+  // Avatar elegido por la persona; si no tiene, su inicial sobre un color
+  const avForo = (avatar, color, nombre) => { const url = avatar && window.ftAvatarUrl ? ftAvatarUrl(avatar) : ''; return url ? '<span class="av av-img"><img src="' + esc(url) + '" alt="" loading="lazy"></span>' : '<span class="av" style="background:' + color + '">' + esc(String(nombre || 'S').charAt(0).toUpperCase()) + '</span>'; };
   function pintarForo() {
     const cont = $('forumPosts'); if (!cont || typeof forumPosts === 'undefined') return;
     const yo = (typeof auth !== 'undefined' && auth.currentUser) ? auth.currentUser.uid : '';
@@ -244,9 +246,9 @@
     cont.innerHTML = l.map(p => {
       const fecha = p.createdAt && p.createdAt.seconds ? new Date(p.createdAt.seconds * 1000) : new Date(), n = p.authorName || 'Socio', cat = p.category || 'general', r = p.replyCount || 0;
       const color = COLORES[Math.abs(String(p.authorId || n).split('').reduce((a, ch) => a + ch.charCodeAt(0), 0)) % COLORES.length], like = (p.likes || []).includes(yo);
-      return '<article class="ftd-post" onclick="openThread(\'' + esc(p.id) + '\')"><span class="av" style="background:' + color + '">' + esc(n.charAt(0).toUpperCase()) + '</span><div class="cuerpo">' +
+      return '<article class="ftd-post" onclick="openThread(\'' + esc(p.id) + '\')">' + avForo(p.authorAvatar, color, n) + '<div class="cuerpo">' +
         '<header><strong>' + esc(n) + '</strong><span class="tag">' + esc(CATEG[cat] || cat) + '</span><time>' + esc(getTimeAgo(fecha)) + '</time></header>' +
-        '<h4>' + esc(p.title || 'Sin título') + '</h4><p>' + esc((p.body || '').substring(0, 220)) + ((p.body || '').length > 220 ? '…' : '') + '</p>' + (p.imagen && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(p.imagen) ? '<img class="fotito" src="' + p.imagen + '" alt="" loading="lazy">' : '') +
+        (p.sinTitulo ? '' : '<h4>' + esc(p.title || 'Sin título') + '</h4>') + '<p' + (p.sinTitulo ? ' class="sin-titulo"' : '') + '>' + esc((p.body || '').substring(0, 220)) + ((p.body || '').length > 220 ? '…' : '') + '</p>' + (p.imagen && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(p.imagen) ? '<img class="fotito" src="' + p.imagen + '" alt="" loading="lazy">' : '') +
         '<footer><span class="' + (like ? 'like' : '') + '">' + CORAZON + (p.likes || []).length + '</span><span>' + GLOBO + r + ' respuesta' + (r === 1 ? '' : 's') + '</span></footer></div></article>';
     }).join('');
   }

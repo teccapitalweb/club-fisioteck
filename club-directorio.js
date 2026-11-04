@@ -119,6 +119,8 @@
     const caja = $('directorioContenido'); if (!caja) return;
     const p = S.propia ? conContacto(S.propia) : { id: uid(), nombre: (auth.currentUser || {}).displayName || '', portadaColor: 'azul' };
     if (!S.propia) Object.assign(p, S.meta.miContacto || {});
+    // Si tu tarjeta aún no tiene avatar (o todavía no la creas), se usa el que elegiste en Mi perfil
+    if (!/^a(0[1-9]|1[0-6])$/.test(p.avatar || '') && window.ftAvatarActual && /^a(0[1-9]|1[0-6])$/.test(ftAvatarActual() || '')) p.avatar = ftAvatarActual();
     const oculta = S.meta.ocultas.has(uid()), pub = !!(S.propia && S.propia.publicado === true && S.propia.visible !== false && !oculta);
     caja.innerHTML = hero() +
       '<div class="dir-mia-bloque"><div class="dir-mia-tarjeta">' + tarjeta(Object.assign({}, p, { id: uid() }), { pistas: !pub, vip: S.meta.viewerVip, mia: false }) + '</div><div class="dir-mia-info">' +
@@ -180,9 +182,11 @@
     const campo = (id, et, val, ph, max, tipo, op) => '<label class="dr-lbl">' + et + (op ? ' <small>(opcional)</small>' : '') + '<input id="' + id + '" ' + (tipo ? 'type="' + tipo + '" ' : '') + 'maxlength="' + (max || 60) + '" placeholder="' + esc(ph || '') + '" value="' + esc(val || '') + '"></label>';
     let color = portada(m.portadaColor);
     S.fotoEdit = typeof m.foto === 'string' ? m.foto : '';
+    S.avatarEdit = /^a(0[1-9]|1[0-6])$/.test(m.avatar || '') ? m.avatar : (/^a(0[1-9]|1[0-6])$/.test((window.ftAvatarActual && ftAvatarActual()) || '') ? ftAvatarActual() : '');
     const cuerpo = '<div class="dr-form"><div class="dr-prev" id="drPrev"></div>' +
       '<div class="dr-lbl">Color de tu portada<div class="dr-colores" id="drColores">' + Object.keys(PORTADAS).map(k => '<button type="button" data-c="' + k + '" class="' + (k === color ? 'on' : '') + '" style="background:' + PORTADAS[k][1] + '" aria-label="' + PORTADAS[k][0] + '" title="' + PORTADAS[k][0] + '"></button>').join('') + '</div></div>' +
       '<div class="dr-lbl">Tu foto <small>(opcional)</small><div class="dr-foto"><div class="dr-foto-vista" id="drFotoVista"></div><div class="dr-foto-acc"><button type="button" class="dr-btn-foto" id="drFotoBtn">Subir foto</button><button type="button" class="dr-btn-foto quitar" id="drFotoQuitar">Quitar</button><input type="file" id="drFotoArchivo" accept="image/*" hidden></div></div><small class="dr-foto-nota">Se recorta en círculo y se reduce sola. Si no subes foto se muestra tu avatar o tus iniciales.</small></div>' +
+      '<div class="dr-lbl">Tu avatar <small>(se usa si no subes foto)</small><div class="dr-avatares" id="drAvatares" role="radiogroup" aria-label="Avatares">' + (window.ftAvatar ? ftAvatar.IDS.map((id, i) => '<button type="button" role="radio" data-av="' + id + '" aria-label="Avatar ' + (i + 1) + '"><img src="' + esc(ftAvatar.url(id)) + '" alt="" loading="lazy"></button>').join('') : '') + '</div><button type="button" class="dr-btn-foto quitar" id="drAvatarIni">Usar mis iniciales</button></div>' +
       '<label class="dr-lbl">Estado profesional <small>(opcional)</small><select id="drEstado"><option value="">Sin indicar</option>' + Object.keys(ESTADOS).map(k => '<option value="' + k + '"' + (m.estado === k ? ' selected' : '') + '>' + ESTADOS[k][0] + '</option>').join('') + '</select></label>' +
       campo('drNombre', 'Nombre completo', m.nombre || u.displayName, '', 60) + campo('drPuesto', 'Puesto / cargo', m.puesto, 'Ej. Fisioterapeuta') + campo('drEmpresa', 'Consultorio / empresa', m.empresa, 'Ej. Clínica Movimiento') +
       campo('drCiudad', 'Ubicación profesional', m.ciudad, 'Ej. Puebla, Puebla', 60, '', true) +
@@ -199,7 +203,7 @@
     if (publicada) { pie.push({ texto: 'Dejar de publicar', suave: true, clic: (b, cer) => guardar(b, cer, () => color, false) }); pie.push({ texto: 'Guardar cambios', clic: (b, cer) => guardar(b, cer, () => color, true) }); }
     else { pie.push({ texto: 'Guardar como privada', suave: true, clic: (b, cer) => guardar(b, cer, () => color, false) }); pie.push({ texto: 'Guardar y publicar', clic: (b, cer) => guardar(b, cer, () => color, true) }); }
     const w = ventana('drEditor', 'Mi tarjeta profesional', publicada ? 'Publicada en el Directorio VIP' : 'Privada · solo tú la ves', cuerpo, pie);
-    const leer = () => { const v = id => (($(id) || {}).value || '').trim(); return { id: uid(), foto: S.fotoEdit, nombre: v('drNombre'), puesto: v('drPuesto'), empresa: v('drEmpresa'), ciudad: v('drCiudad'), especialidad: v('drEsp'), bio: v('drBio'), estado: v('drEstado'), portadaColor: color, avatar: m.avatar,
+    const leer = () => { const v = id => (($(id) || {}).value || '').trim(); return { id: uid(), foto: S.fotoEdit, nombre: v('drNombre'), puesto: v('drPuesto'), empresa: v('drEmpresa'), ciudad: v('drCiudad'), especialidad: v('drEsp'), bio: v('drBio'), estado: v('drEstado'), portadaColor: color, avatar: S.avatarEdit,
       whatsapp: v('drWa'), email: v('drMail'), linkedin: v('drLi'), web: v('drWeb'), instagram: v('drIg'), cedula: $('drCedVis') && $('drCedVis').checked ? v('drCed') : '' }; };
     const prev = () => { const p = $('drPrev'); if (p) p.innerHTML = tarjeta(leer(), { vip: S.meta.viewerVip, pistas: true }); };
     w.o.querySelectorAll('#drColores [data-c]').forEach(b => b.onclick = () => { color = b.dataset.c; w.o.querySelectorAll('#drColores [data-c]').forEach(x => x.classList.toggle('on', x === b)); prev(); });
@@ -209,6 +213,10 @@
     $('drFotoQuitar').onclick = () => { S.fotoEdit = ''; pintarFoto(); };
     $('drFotoArchivo').onchange = async ev => { const a = ev.target.files && ev.target.files[0]; ev.target.value = ''; if (!a) return; $('drError').textContent = ''; try { S.fotoEdit = await reducirFoto(a); pintarFoto(); } catch (e) { $('drError').textContent = e.message; } };
     pintarFoto();
+    const pintarAvatares = () => { w.o.querySelectorAll('#drAvatares [data-av]').forEach(b => { const on = b.dataset.av === S.avatarEdit; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(on)); }); const ini = $('drAvatarIni'); if (ini) ini.hidden = !S.avatarEdit; prev(); };
+    w.o.querySelectorAll('#drAvatares [data-av]').forEach(b => b.onclick = () => { S.avatarEdit = b.dataset.av; pintarAvatares(); });
+    if ($('drAvatarIni')) $('drAvatarIni').onclick = () => { S.avatarEdit = ''; pintarAvatares(); };
+    pintarAvatares();
   };
   // La foto se recorta cuadrada, se reduce a 320 px y se guarda dentro de la tarjeta como JPEG (unos 20 a 40 KB); no se sube a ningún otro servicio
   const FOTO_MAX = 60000;
@@ -234,12 +242,13 @@
     if (v('drNombre').length < 2) { err.textContent = 'Escribe tu nombre.'; return; }
     const botones = btn.parentNode.querySelectorAll('.ftm-btn'), texto = btn.textContent;
     botones.forEach(x => { x.disabled = true; }); btn.textContent = 'Guardando…';
-    let avatar = ''; try { const mm = await db.collection('members').doc(uid()).get(); avatar = (mm.exists && mm.data().avatar) || ''; } catch (_) { /* sin avatar */ }
+    const avatar = S.avatarEdit || '';
     const tarj = { nombre: v('drNombre').slice(0, 60), puesto: v('drPuesto').slice(0, 60), empresa: v('drEmpresa').slice(0, 60), ciudad: v('drCiudad').slice(0, 60), especialidad: $('drEsp').value, bio: v('drBio').slice(0, 200),
       estado: ESTADOS[$('drEstado').value] ? $('drEstado').value : '', portadaColor: portada(color()), avatar: /^a(0[1-9]|1[0-6])$/.test(avatar) ? avatar : '', ...(S.fotoEdit ? { foto: S.fotoEdit } : {}), publicado: publicar, actualizado: firebase.firestore.FieldValue.serverTimestamp() };
     try {
       await certFetch('/api/directorio/contacto', { method: 'POST', body: JSON.stringify({ whatsapp: v('drWa'), email: v('drMail'), linkedin: v('drLi'), web: v('drWeb'), instagram: v('drIg'), cedula: v('drCed'), cedulaVisible: $('drCedVis').checked }) });
       await db.collection('directorio').doc(uid()).set(tarj);
+      if (window.ftAvatar && avatar !== (ftAvatarActual() || '')) { try { await ftAvatar.elegir(avatar); } catch (_) { /* el perfil se actualiza la próxima vez */ } }
       cer(); showToast(publicar ? 'Tu tarjeta ya está en el directorio.' : 'Tarjeta guardada. Sigue privada: solo tú la ves.'); cargar();
     } catch (e) { err.textContent = e.message && e.status ? e.message : 'No se pudo guardar. Intenta de nuevo.'; botones.forEach(x => { x.disabled = false; }); btn.textContent = texto; }
   }
