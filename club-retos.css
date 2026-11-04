@@ -86,3 +86,21 @@
 .rt-img { display: block; margin: -18px -18px 8px; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 18px 18px 0 0; background: var(--surface-3); }
 .rt-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .rt-dia .rt-img { aspect-ratio: 21 / 8; }
+
+/* Ordena el procedimiento: flechas y "Comprobar orden" (igual que Alintec) */
+.rt-ord-eye { font-family: ui-monospace, 'JetBrains Mono', monospace; font-size: .6rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; color: var(--accent); }
+.rt-ord-tit { margin: 6px 0 0; font-size: 1.35rem; line-height: 1.25; }
+.rt-ord-sub { margin: 7px 0 18px; font-size: .85rem; color: var(--text-light); }
+.rt-ord-lista { display: grid; gap: 9px; }
+.rt-ord-item { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 11px 13px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-2); }
+.rt-ord-n { width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; background: color-mix(in srgb, var(--accent) 12%, var(--surface)); color: var(--accent); font: 800 .7rem ui-monospace, monospace; }
+.rt-ord-item strong { font-size: .86rem; line-height: 1.4; }
+.rt-ord-mov { display: flex; gap: 5px; }
+.rt-ord-mov button { width: 34px; height: 34px; padding: 0; display: grid; place-items: center; border: 1px solid var(--border-2, var(--border)); border-radius: 9px; background: var(--surface); color: var(--text); cursor: pointer; }
+.rt-ord-mov button svg { width: 16px; height: 16px; }
+.rt-ord-mov button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.rt-ord-mov button:disabled { opacity: .3; cursor: not-allowed; }
+.rt-ord-check { margin-top: 16px; }
+.rt-ord-feed { display: flex; flex-direction: column; gap: 3px; margin-top: 14px; padding: 13px 15px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--border); font-size: .84rem; color: var(--text-light); }
+.rt-ord-feed strong { color: var(--text); }
+@media (max-width: 560px) { .rt-ord-item { gap: 9px; padding: 10px; } .rt-ord-tit { font-size: 1.15rem; } }

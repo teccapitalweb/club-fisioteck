@@ -211,27 +211,36 @@
 
   // ---------- Ordena el proceso ----------
   let ord = null;
+  // Como en Alintec: los pasos salen mezclados, se suben y bajan con flechas y se pulsa "Comprobar orden"
   window.ftRetoOrden = function (id) {
     if (!guardia()) return;
     const r = D.orden.find(x => x.id === id);
-    ord = { r, pool: mezclar(r.pasos.map((t, i) => ({ t, i }))), puesto: [], intentos: 0 };
+    let lista = mezclar(r.pasos.map((t, i) => ({ t, i })));
+    if (r.pasos.length > 1 && lista.every((p, k) => p.i === k)) lista.push(lista.shift());
+    ord = { r, lista, intentos: 0, repaso: !!(R().hechos && R().hechos[r.id]) };
     pintarOrden();
   };
+  const FLE = d => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (d === 'up' ? '<path d="M12 19V5M5 12l7-7 7 7"/>' : '<path d="M12 5v14M5 12l7 7 7-7"/>') + '</svg>';
   function pintarOrden(msg) {
-    jugar('<div class="rt-panel"><div class="rt-progreso">' + esc(ord.r.titulo) + '</div>' +
-      '<h2 class="rt-pregunta">Toca los pasos en el orden correcto</h2>' +
-      '<ol class="rt-secuencia">' + ord.puesto.map(p => '<li>' + esc(p.t) + '</li>').join('') + '</ol>' +
-      '<div class="rt-opciones">' + ord.pool.map(p => '<button type="button" class="rt-op" onclick="ftRetoPaso(' + p.i + ')">' + esc(p.t) + '</button>').join('') + '</div>' +
-      (msg ? '<p class="rt-explica is-mal">' + msg + '</p>' : '') +
-      '<button type="button" class="rt-btn is-ghost" onclick="ftRetoOrden(\'' + ord.r.id + '\')">Reiniciar</button></div>');
+    const n = ord.lista.length;
+    jugar('<div class="rt-panel rt-ord"><div class="rt-ord-eye">Ordena el procedimiento' + (ord.repaso ? ' · repaso' : '') + '</div>' +
+      '<h2 class="rt-ord-tit">' + esc(ord.r.titulo) + '</h2><p class="rt-ord-sub">Usa las flechas para colocar los pasos en el orden correcto.</p>' +
+      '<div class="rt-ord-lista">' + ord.lista.map((p, k) => '<div class="rt-ord-item"><span class="rt-ord-n">' + (k + 1) + '</span><strong>' + esc(p.t) + '</strong>' +
+        '<div class="rt-ord-mov"><button type="button" aria-label="Subir paso" onclick="ftRetoMover(' + k + ',-1)"' + (k === 0 ? ' disabled' : '') + '>' + FLE('up') + '</button>' +
+        '<button type="button" aria-label="Bajar paso" onclick="ftRetoMover(' + k + ',1)"' + (k === n - 1 ? ' disabled' : '') + '>' + FLE('down') + '</button></div></div>').join('') + '</div>' +
+      '<button type="button" class="rt-btn rt-ord-check" onclick="ftRetoComprobar()">Comprobar orden</button>' +
+      (msg ? '<div class="rt-ord-feed">' + msg + '</div>' : '') + '</div>');
   }
-  window.ftRetoPaso = function (i) {
-    const esperado = ord.puesto.length;
-    if (i !== esperado) { ord.intentos++; pintarOrden('Ese paso no va ahora. Piensa qué se hace primero.'); return; }
-    const k = ord.pool.findIndex(p => p.i === i);
-    ord.puesto.push(ord.pool.splice(k, 1)[0]);
-    if (ord.pool.length) { pintarOrden(); return; }
-    ftOrdenFin();
+  window.ftRetoMover = function (k, d) {
+    const j = k + d; if (!ord || j < 0 || j >= ord.lista.length) return;
+    [ord.lista[k], ord.lista[j]] = [ord.lista[j], ord.lista[k]];
+    pintarOrden();
+  };
+  window.ftRetoComprobar = function () {
+    const bien = ord.lista.reduce((c, p, k) => c + (p.i === k ? 1 : 0), 0), n = ord.lista.length;
+    if (bien === n) { ord.puesto = ord.lista.slice(); ftOrdenFin(); return; }
+    ord.intentos++;
+    pintarOrden('<strong>' + bien + ' de ' + n + ' pasos están en su lugar.</strong><span>Vuelve a intentarlo; puedes mover los pasos cuantas veces necesites.</span>');
   };
   async function ftOrdenFin() {
     const srv = window.ftAcceso ? await ftAcceso.completarReto({ retoId: ord.r.id, tipo: 'orden', orden: ord.puesto.map(p => p.i) }) : null;
