@@ -43,7 +43,10 @@
 
   function filtrar() {
     const q = sinTilde(($('glossarySearch') || {}).value || '').trim();
-    return lista().filter(g => (cat === 'Todas' || (cat === 'Favoritos' ? favs.has(g.t) : g.c === cat)) && (!q || sinTilde(g.t).includes(q) || sinTilde(g.d).includes(q) || sinTilde(g.c).includes(q) || sinTilde(paciente(g)).includes(q)));
+    const r = lista().filter(g => (cat === 'Todas' || (cat === 'Favoritos' ? favs.has(g.t) : g.c === cat)) && (!q || sinTilde(g.t).includes(q) || sinTilde(g.d).includes(q) || sinTilde(g.c).includes(q) || sinTilde(paciente(g)).includes(q)));
+    // Primero la coincidencia exacta con el término, luego las que empiezan igual y al final las que solo lo contienen
+    if (q) { const rango = g => { const t = sinTilde(g.t); return t === q ? 0 : t.startsWith(q) ? 1 : t.includes(q) ? 2 : 3; }; r.sort((x, y) => rango(x) - rango(y)); }
+    return r;
   }
   function chips() {
     const cats = ['Todas', 'Favoritos', ...[...new Set(lista().map(g => g.c))].sort((a, b) => a.localeCompare(b, 'es'))];
