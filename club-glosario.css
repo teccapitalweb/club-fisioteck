@@ -11,3 +11,11 @@
 .gl-quiz { background: var(--bg-card, var(--surface, #fff)); border: 1px solid var(--border); border-radius: 16px; padding: 20px; max-width: 560px; } .gl-quiz small { display: block; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; color: var(--accent, var(--primary)); margin-bottom: 4px; } .gl-quiz h3 { margin: 0 0 10px; font-size: 1.05rem; } .gl-def { padding: 12px 14px; border-radius: 10px; background: var(--bg); font-size: .92rem; line-height: 1.55; margin: 0 0 12px; }
 .gl-op { display: block; width: 100%; text-align: left; margin-bottom: 8px; padding: 11px 14px; border: 1px solid var(--border-2, var(--border)); border-radius: 10px; background: transparent; color: var(--text); font: inherit; font-size: .9rem; cursor: pointer; } .gl-op.bien { border-color: #2F8B63; background: rgba(47,139,99,.12); } .gl-op.mal { border-color: #C0392B; background: rgba(192,57,43,.1); } .gl-op:disabled { cursor: default; }
 .gl-ok { color: #2F8B63; font-weight: 700; margin: 8px 0; } .gl-err { color: #C0392B; font-weight: 700; margin: 8px 0; } .gl-cta { padding: 11px 20px; border-radius: 10px; border: 0; background: var(--accent, var(--primary)); color: var(--on-accent, #fff); font: inherit; font-weight: 700; cursor: pointer; }
+
+/* Dícelo al paciente */
+.gl-pac { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: var(--accent-ghost, rgba(13,95,160,.08)); border: 1px solid var(--border); }
+.gl-pac small { display: block; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; color: var(--accent, var(--primary)); }
+.gl-card .gl-pac p { margin: 5px 0 0; font-size: .9rem; line-height: 1.55; color: var(--text); }
+.gl-pac-acc { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.gl-pac-acc button { padding: 7px 13px; border-radius: 999px; border: 1px solid var(--accent, var(--primary)); background: transparent; color: var(--accent, var(--primary)); font: inherit; font-size: .78rem; font-weight: 700; cursor: pointer; }
+.gl-pac-acc button:hover { background: var(--accent, var(--primary)); color: var(--on-accent, #fff); }

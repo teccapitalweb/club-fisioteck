@@ -26,11 +26,24 @@
     const l = lista(); if (!l.length) return null; const d = new Date(), n = d.getFullYear() * 366 + d.getMonth() * 31 + d.getDate();
     return l[n % l.length];
   }
-  function relacionados(g) { return lista().filter(x => x.c === g.c && x.t !== g.t).slice(0, 4); }
+  const PAC = () => window.FT_GLOSARIO_PACIENTE || {};
+  const paciente = g => (PAC()[g.t] || [])[0] || '';
+  const atlasDe = g => (PAC()[g.t] || [])[2] || '';
+  // Primero los relacionados que eligió el contenido; si no hay, los de la misma categoría
+  function relacionados(g) {
+    const sel = ((PAC()[g.t] || [])[1] || []).map(t => lista().find(x => x.t === t)).filter(Boolean);
+    return (sel.length ? sel : lista().filter(x => x.c === g.c && x.t !== g.t)).slice(0, 4);
+  }
+  const textoPaciente = g => g.t + ': ' + paciente(g);
+  function copiar(txt) {
+    const ok = () => showToast('Texto copiado');
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(ok, () => showToast('No se pudo copiar'));
+    else { const a = document.createElement('textarea'); a.value = txt; a.style.position = 'fixed'; a.style.opacity = '0'; document.body.appendChild(a); a.select(); try { document.execCommand('copy'); ok(); } catch (_) { showToast('No se pudo copiar'); } a.remove(); }
+  }
 
   function filtrar() {
     const q = sinTilde(($('glossarySearch') || {}).value || '').trim();
-    return lista().filter(g => (cat === 'Todas' || (cat === 'Favoritos' ? favs.has(g.t) : g.c === cat)) && (!q || sinTilde(g.t).includes(q) || sinTilde(g.d).includes(q) || sinTilde(g.c).includes(q)));
+    return lista().filter(g => (cat === 'Todas' || (cat === 'Favoritos' ? favs.has(g.t) : g.c === cat)) && (!q || sinTilde(g.t).includes(q) || sinTilde(g.d).includes(q) || sinTilde(g.c).includes(q) || sinTilde(paciente(g)).includes(q)));
   }
   function chips() {
     const cats = ['Todas', 'Favoritos', ...[...new Set(lista().map(g => g.c))].sort((a, b) => a.localeCompare(b, 'es'))];
@@ -46,10 +59,15 @@
     cont.innerHTML = '<p class="gl-cuenta">' + l.length + ' término' + (l.length === 1 ? '' : 's') + '</p>' + l.map(g => {
       const on = favs.has(g.t), ab = abierto === g.t;
       return '<article class="gl-card' + (ab ? ' ab' : '') + '"><div class="gl-top"><button type="button" class="gl-t" data-t="' + esc(g.t) + '" aria-expanded="' + ab + '"><b>' + esc(g.t) + '</b><span class="gl-c">' + esc(g.c) + '</span></button><button type="button" class="gl-fav' + (on ? ' on' : '') + '" data-f="' + esc(g.t) + '" aria-label="' + (on ? 'Quitar de favoritos' : 'Guardar en favoritos') + '" aria-pressed="' + on + '">' + estrella(on) + '</button></div><p>' + esc(g.d) + '</p>' +
+        (ab && paciente(g) ? '<div class="gl-pac"><small>Dícelo al paciente</small><p>' + esc(paciente(g)) + '</p><div class="gl-pac-acc"><button type="button" data-cp="' + esc(g.t) + '">Copiar texto</button><button type="button" data-wa="' + esc(g.t) + '">Enviar por WhatsApp</button>' + (atlasDe(g) ? '<button type="button" data-at="' + esc(atlasDe(g)) + '">Ver en el Atlas</button>' : '') + '</div></div>' : '') +
         (ab ? '<div class="gl-rel"><small>Relacionados</small>' + (relacionados(g).map(r => '<button type="button" data-r="' + esc(r.t) + '">' + esc(r.t) + '</button>').join('') || '<em>Sin términos relacionados</em>') + '</div>' : '') + '</article>';
     }).join('');
     cont.querySelectorAll('.gl-t').forEach(b => b.onclick = () => { abierto = abierto === b.dataset.t ? '' : b.dataset.t; pintarExplorar(); });
     cont.querySelectorAll('.gl-fav').forEach(b => b.onclick = () => { const t = b.dataset.f; if (favs.has(t)) favs.delete(t); else favs.add(t); guardarFavs(); chips(); pintarExplorar(); });
+    const porT = t => lista().find(x => x.t === t);
+    cont.querySelectorAll('[data-cp]').forEach(b => b.onclick = () => { const g = porT(b.dataset.cp); if (g) copiar(textoPaciente(g)); });
+    cont.querySelectorAll('[data-wa]').forEach(b => b.onclick = () => { const g = porT(b.dataset.wa); if (g) window.open('https://wa.me/?text=' + encodeURIComponent(textoPaciente(g)), '_blank', 'noopener'); });
+    cont.querySelectorAll('[data-at]').forEach(b => b.onclick = () => { showPage('atlas'); setTimeout(() => { if (window.showMuscle) window.showMuscle(b.dataset.at); }, 150); });
     cont.querySelectorAll('[data-r]').forEach(b => b.onclick = () => { abierto = b.dataset.r; cat = 'Todas'; const s = $('glossarySearch'); if (s) s.value = b.dataset.r; chips(); pintarExplorar(); });
   }
 
