@@ -12,7 +12,7 @@
   // ---------- Barra inferior por plan ----------
   const MIEMBRO = [['home', 'Inicio', 'home'], ['library', 'Cursos', 'f-book'], ['pdfs', 'Material', 'f-file'], ['retos', 'Retos', 'f-target'], ['herramientas', 'Herramientas', 'f-tool']];
   // Páginas de cada herramienta: el botón «Herramientas» de la barra queda marcado en cualquiera de ellas
-  const HERRAMIENTAS = ['pacientes', 'rehab-calc', 'atlas', 'glossary', 'rom', 'eva', 'timer'];
+  const HERRAMIENTAS = ['pacientes', 'rehab-calc', 'atlas', 'glossary', 'rom', 'timer'];
   const GRATIS = [['home', 'Inicio', 'home'], ['library', 'Cursos', 'f-book'], ['retos', 'Retos', 'f-target'], ['achievements', 'Logros', 'f-trophy']];
   let ultimo = '';
   function barraInferior() {
@@ -40,7 +40,6 @@
     ['atlas', 'Atlas muscular', 'Origen, inserción y acción de cada músculo.'],
     ['glossary', 'Glosario', 'Términos clínicos explicados de forma clara.'],
     ['rom', 'Rangos de movimiento', 'Valores de referencia para cada articulación.'],
-    ['eva', 'Escala EVA', 'Registra y compara el dolor de tus pacientes.'],
     ['timer', 'Cronómetro', 'Tiempos de trabajo y descanso para tus sesiones.']
   ];
   function montarHerramientas() {

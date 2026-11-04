@@ -18,7 +18,6 @@
     atlas: ['Herramientas', 'Atlas <em>muscular.</em>', 'Explora los grupos musculares del cuerpo humano.', 'tools'],
     glossary: ['Herramientas', 'Glosario <em>FisioTeck.</em>', 'Diccionario de términos de fisioterapia.', 'pensar'],
     rom: ['Herramientas', 'Rangos de <em>movimiento.</em>', 'Valores normales de goniometría por articulación.', 'tools'],
-    eva: ['Herramientas', 'Escala <em>EVA</em> de dolor.', 'Registro y seguimiento del nivel de dolor.', 'tools'],
     timer: ['Herramientas', 'Cronómetro de <em>sesión.</em>', 'Temporizador para técnicas de fisioterapia.', 'tools']
   };
   function poner(page) {

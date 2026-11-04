@@ -101,7 +101,7 @@
       '<input class="fp-buscar" id="fpBuscar" type="search" placeholder="Buscar paciente" value="' + esc(filtro) + '" aria-label="Buscar paciente">' +
       (lista.length ? lista.map(p => '<button type="button" class="fp-pac' + (actual && actual.id === p.id ? ' on' : '') + '" data-id="' + esc(p.id) + '"><b>' + esc(p.clave) + '</b><span>' + (edad(p.nac) == null ? '' : edad(p.nac) + ' años · ') + esc(p.zona || 'Sin zona') + ' · ' + (p.ultimaMs ? fecha(p.ultimaMs, true) : '') + '</span></button>').join('') : '<p class="fp-nada">' + (idx.pacientes.length ? 'Sin resultados.' : 'Aún no tienes pacientes.') + '</p>') +
       '<button type="button" class="fp-sec fp-ancho" id="fpNuevo">+ Nuevo paciente</button>' +
-      '<div class="fp-mini"><button type="button" id="fpImportar">Importar registros de la Escala EVA</button><button type="button" id="fpExportar">Exportar mis datos</button><button type="button" id="fpBorrarTodo" class="fp-rojo">Borrar todos mis pacientes</button></div></aside>' +
+      '<div class="fp-mini"><button type="button" id="fpImportar">Importar registros de dolor anteriores</button><button type="button" id="fpExportar">Exportar mis datos</button><button type="button" id="fpBorrarTodo" class="fp-rojo">Borrar todos mis pacientes</button></div></aside>' +
       '<section class="fp-ficha" id="fpFicha">' + (actual ? ficha() : '<div class="fp-vacio"><h3>Elige o crea un paciente</h3><p>Aquí verás cómo cambian su dolor y su movilidad de una sesión a otra.</p></div><div class="fp-guia"><b>Cómo empezar</b><ol><li>Toca <b>+ Nuevo paciente</b> y escribe su nombre, fecha de nacimiento, peso y estatura.</li><li>Registra el dolor (EVA) y la movilidad en cada sesión.</li><li>Mira la evolución en gráficas y descarga el resumen en PDF.</li></ol></div>') + '</section></div>';
     ligar();
   }
@@ -329,7 +329,7 @@
   }
   async function importarEva() {
     if (!memberIsPaid && !window.ftVistaAdmin) { showPaywallOverlay(); return; }
-    if (!await confirmar('Importar registros de la Escala EVA', 'Se copiarán a tu lista de pacientes los registros que guardaste antes en la Escala EVA, agrupados por nombre (se guardan solo las iniciales). Los originales no se borran.', 'Importar', false)) return;
+    if (!await confirmar('Importar registros de dolor anteriores', 'Se copiarán a tu lista de pacientes los registros de dolor que guardaste antes en la antigua herramienta Escala EVA, agrupados por nombre (se guardan solo las iniciales). Los originales no se borran.', 'Importar', false)) return;
     try {
       const sn = await db.collection('members').doc(auth.currentUser.uid).collection('eva_records').orderBy('createdAt', 'asc').limit(300).get();
       if (sn.empty) { aviso('No encontramos registros anteriores.'); return; }

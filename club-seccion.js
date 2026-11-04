@@ -27,7 +27,7 @@
   const GRUPOS = [
     ['Principal', ['home', 'library', 'courses-live', 'pdfs', 'retos']],
     ['Mi progreso', ['achievements', 'certificates']],
-    ['Herramientas', ['pacientes', 'rehab-calc', 'atlas', 'glossary', 'rom', 'eva', 'timer']],
+    ['Herramientas', ['pacientes', 'rehab-calc', 'atlas', 'glossary', 'rom', 'timer']],
     ['Comunidad', ['news', 'forum', 'directorio', 'referidos', 'community']],
     ['Mi cuenta', ['account', 'subscription', 'notifications', 'discount', 'settings', '#navAdminPanel']]
   ];

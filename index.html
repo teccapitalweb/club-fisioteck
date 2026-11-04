@@ -2202,10 +2202,6 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
         Rangos ROM
       </div>
-      <div class="nav-item" data-page="eva" onclick="showPage('eva')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-        Escala EVA
-      </div>
       <div class="nav-item" data-page="timer" onclick="showPage('timer')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3L2 6"/><path d="M22 6l-3-3"/></svg>
         Cronómetro
@@ -3049,40 +3045,6 @@
         </select>
       </div>
       <div id="romResult"></div>
-    </section>
-
-    <!-- ESCALA EVA -->
-    <section class="section" id="page-eva">
-      <div class="page-header">
-        <h1 class="page-title">Escala EVA de Dolor</h1>
-        <p class="page-subtitle">Registro y seguimiento del nivel de dolor</p>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;" id="evaGrid">
-        <div>
-          <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;">
-            <h4 style="font-size:.85rem;font-weight:600;color:var(--primary);margin-bottom:12px;">Nuevo registro</h4>
-            <input id="evaPatient" placeholder="Nombre del paciente" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:.88rem;background:var(--bg);color:var(--text);margin-bottom:10px;box-sizing:border-box;">
-            <select id="evaZone" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:.88rem;background:var(--bg);color:var(--text);margin-bottom:14px;">
-              <option value="cervical">Cervical</option><option value="hombro">Hombro</option><option value="codo">Codo</option><option value="muñeca">Muñeca</option><option value="espalda">Espalda</option><option value="cadera">Cadera</option><option value="rodilla">Rodilla</option><option value="tobillo">Tobillo</option><option value="otro">Otro</option>
-            </select>
-            <div style="text-align:center;margin-bottom:8px;">
-              <div id="evaValue" style="font-size:3rem;font-weight:700;color:var(--primary);line-height:1;">0</div>
-              <div id="evaLabel" style="font-size:.82rem;color:var(--text-muted);">Sin dolor</div>
-            </div>
-            <input type="range" id="evaSlider" min="0" max="10" value="0" oninput="updateEVA()" style="width:100%;margin-bottom:6px;accent-color:var(--primary);">
-            <div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--text-muted);margin-bottom:14px;"><span>0 - Sin dolor</span><span>10 - Peor dolor</span></div>
-            <div style="height:8px;border-radius:4px;background:linear-gradient(90deg,#10B77F,#EAB308,#E4485A);margin-bottom:14px;"></div>
-            <textarea id="evaNote" placeholder="Notas (opcional)" rows="2" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:.85rem;background:var(--bg);color:var(--text);resize:none;margin-bottom:12px;box-sizing:border-box;"></textarea>
-            <button onclick="saveEVA()" style="width:100%;padding:12px;border-radius:var(--radius-sm);background:var(--primary);color:#fff;border:none;font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;">Guardar registro</button>
-          </div>
-        </div>
-        <div>
-          <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;">
-            <h4 style="font-size:.85rem;font-weight:600;color:var(--primary);margin-bottom:12px;">Historial de registros</h4>
-            <div id="evaHistory"><div style="text-align:center;padding:20px;color:var(--text-muted);font-size:.85rem;">No hay registros aún</div></div>
-          </div>
-        </div>
-      </div>
     </section>
 
     <!-- CRONÓMETRO -->
@@ -6577,7 +6539,6 @@
     if (page === 'forum') loadForumPosts();
     if (page === 'atlas') renderAtlas();
     if (page === 'glossary') renderGlossary();
-    if (page === 'eva') loadEVAHistory();
     if (page === 'timer') renderTimerPresets();
   }
   function syncMobileNav(page) {
@@ -7372,7 +7333,7 @@
 <script src="club-detective.js?v=20261200"></script>
 <script src="club-historia.js?v=20261026"></script>
 <script src="club-retos-zona.js?v=20261032"></script>
-<script src="club-secciones.js?v=20261026"></script>
+<script src="club-secciones.js?v=20261041"></script>
 <script src="club-cupon-barra.js?v=20261026"></script>
 <script src="club-paginas.js?v=20261200"></script>
 <script src="club-foro.js?v=20261101"></script>
@@ -7391,7 +7352,7 @@
 <script src="club-plan-datos.js?v=20261220"></script>
 <script src="club-plan.js?v=20261220"></script>
 <script src="club-glosario.js?v=20261220"></script>
-<script src="club-pacientes.js?v=20261213"></script>
+<script src="club-pacientes.js?v=20261214"></script>
 <script src="club-inicios.js?v=20261231"></script>
 <script src="club-juegos.js?v=20261026"></script>
 <script src="club-materiales.js?v=20261026"></script>
@@ -7402,7 +7363,7 @@
 <script src="club-perfil.js?v=20261116"></script>
 <script src="club-avisos.js?v=20261101"></script>
 <script src="club-avatar.js?v=20261124"></script>
-<script src="club-movil.js?v=20261200"></script>
+<script src="club-movil.js?v=20261201"></script>
 <script src="club-mascota.js?v=20261026"></script>
 <script src="club-noticias.js?v=20261118"></script>
 <script src="club-cursos.js?v=20261129"></script>
@@ -7425,7 +7386,7 @@
 <script src="club-curso-premio.js?v=20261160"></script>
 <script src="club-libros.js?v=20261150"></script>
 <script src="club-cuenta.js?v=20261112"></script>
-<script src="club-seccion.js?v=20261026"></script>
+<script src="club-seccion.js?v=20261041"></script>
 <script src="club-juegos-clase.js?v=20261141"></script>
 </body>
 </html>
