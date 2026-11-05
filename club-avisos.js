@@ -7,6 +7,10 @@
   const claveLeidos = () => 'ft_avisos_leidos_' + ((auth.currentUser || {}).uid || 'x');
   const leidos = () => { try { return new Set(JSON.parse(localStorage.getItem(claveLeidos()) || '[]')); } catch (_) { return new Set(); } };
   const guardar = s => { try { localStorage.setItem(claveLeidos(), JSON.stringify([...s].slice(-200))); } catch (_) { /* modo privado */ } };
+  // Avisos que la persona quitó de su lista (en este dispositivo)
+  const claveOcultos = () => 'ft_avisos_ocultos_' + ((auth.currentUser || {}).uid || 'x');
+  const ocultos = () => { try { return new Set(JSON.parse(localStorage.getItem(claveOcultos()) || '[]')); } catch (_) { return new Set(); } };
+  const guardarOcultos = s => { try { localStorage.setItem(claveOcultos(), JSON.stringify([...s].slice(-300))); } catch (_) { /* modo privado */ } };
   const extra = { t: 0, creditos: null, cupon: null, foro: [], sistema: [], temas: [] };
 
   async function cargar() {
@@ -51,8 +55,12 @@
       const t = c.date ? new Date(c.date + 'T00:00:00').getTime() : 0;
       if (t && ahora - t >= 0 && ahora - t < 14 * DIA) add('curso:' + c.id, 'Curso nuevo: ' + c.title, (c.lessons || []).length + ' clases ya disponibles.', () => { showPage('library'); setTimeout(() => openCourseDetail(c.id), 60); }, 'course');
     });
-    return out;
+    const o = ocultos();
+    return out.filter(x => !o.has(x.id));
   }
+  function quitar(id) { const o = ocultos(); o.add(id); guardarOcultos(o); marcar(id); }
+  function marcarTodas() { lista().forEach(x => { if (!x.read) marcar(x.id); }); }
+  function quitarLeidas() { const o = ocultos(); lista().forEach(x => { if (x.read) o.add(x.id); }); guardarOcultos(o); }
   function marcar(id) {
     const s = leidos(); s.add(id); guardar(s);
     // Los avisos que vienen del servidor (foro y sistema) también se marcan como leídos allá
@@ -60,7 +68,7 @@
     if (f && !f.leido) { f.leido = true; try { certFetch('/api/avisos/' + encodeURIComponent(f.id) + '/leido', { method: 'POST', body: '{}' }).catch(() => {}); } catch (_) { /* se reintenta luego */ } }
   }
 
-  window.ftAvisos = { lista, marcar, cargar, recargar: () => { extra.t = 0; return cargar(); } };
+  window.ftAvisos = { lista, marcar, quitar, marcarTodas, quitarLeidas, cargar, recargar: () => { extra.t = 0; return cargar(); } };
   auth.onAuthStateChanged(u => { if (u) { extra.t = 0; cargar(); } else { extra.creditos = null; extra.cupon = null; } });
   setInterval(cargar, 60000);
 })();

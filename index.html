@@ -6767,7 +6767,7 @@
     const container = document.getElementById('memberNotifList');
     const escN = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     // La misma lista que la campana: avisos del administrador + foro, clases en vivo y cursos nuevos (ftAvisos)
-    const todas = memberNotifs.concat(window.ftAvisos ? ftAvisos.lista() : []);
+    const todas = window.ftBarra && ftBarra.visibles ? ftBarra.visibles() : memberNotifs.concat(window.ftAvisos ? ftAvisos.lista() : []);
     const filtered = todas.filter(n => {
       if (n.category === 'course' && !notifPrefs.courses) return false;
       if (n.category === 'live' && !notifPrefs.live) return false;
@@ -6779,7 +6779,8 @@
       container.innerHTML = '<div class="card" style="text-align:center;padding:40px;color:var(--text-muted);">No hay notificaciones por ahora. Cuando haya contenido nuevo te avisaremos aquí.</div>';
       return;
     }
-    container.innerHTML = filtered.map(n => {
+    const acciones = '<div class="notif-acciones"><button type="button" onclick="ftBarra.marcarTodas()">Marcar todas como leídas</button><button type="button" onclick="ftBarra.quitarLeidas()">Quitar las leídas</button></div>';
+    container.innerHTML = acciones + filtered.map(n => {
       const icon = n.category === 'course' ? '<svg class="ic" style="width:16px;height:16px;"><use href="#f-book"/></svg>' : n.category === 'live' ? '<svg class="ic" style="width:16px;height:16px;"><use href="#f-live"/></svg>' : n.category === 'pdf' ? '<svg class="ic" style="width:16px;height:16px;"><use href="#f-file"/></svg>' : n.category === 'promo' ? '<svg class="ic" style="width:16px;height:16px;"><use href="#f-gift"/></svg>' : '<svg class="ic" style="width:16px;height:16px;"><use href="#f-bell"/></svg>';
       const date = n.createdAt && n.createdAt.seconds ? new Date(n.createdAt.seconds * 1000).toLocaleDateString('es-MX', { day:'numeric', month:'short', year:'numeric' }) : '';
       const isNew = !n.read;
@@ -6793,7 +6794,7 @@
               <h4 style="font-size:.95rem;font-weight:600;">${escN(n.title || 'Notificación')}</h4>
               <div style="display:flex;align-items:center;gap:8px;">
                 <span style="font-size:.75rem;color:var(--text-muted);">${escN(date)}</span>
-                ${n.sintetico ? '' : `<button onclick="event.stopPropagation();deleteNotif('${escN(n.id)}')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1rem;padding:2px 4px;border-radius:4px;transition:all .2s;" onmouseover="this.style.color='#E24B4A';this.style.background='rgba(226,75,74,.08)'" onmouseout="this.style.color='var(--text-muted)';this.style.background='none'" title="Eliminar notificación">&times;</button>`}
+                <button onclick="event.stopPropagation();${n.sintetico ? 'quitarAvisoPropio' : 'deleteNotif'}('${escN(n.id)}')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1rem;padding:2px 4px;border-radius:4px;transition:all .2s;" onmouseover="this.style.color='#E24B4A';this.style.background='rgba(226,75,74,.08)'" onmouseout="this.style.color='var(--text-muted)';this.style.background='none'" title="Quitar notificación" aria-label="Quitar notificación">&times;</button>
               </div>
             </div>
             <p style="font-size:.85rem;color:var(--text-light);line-height:1.5;">${escN(n.message || '')}</p>
@@ -6823,14 +6824,18 @@
       }
       return false;
     }).length;
+    const total = window.ftBarra && ftBarra.sinLeer ? ftBarra.sinLeer() : unread;
     const badges = [document.getElementById('bellBadgeMobile'), document.getElementById('bellBadgeSidebar')];
     badges.forEach(b => {
       if (b) {
-        b.textContent = unread > 9 ? '9+' : unread;
-        b.style.display = unread > 0 ? 'inline-block' : 'none';
+        b.textContent = total > 9 ? '9+' : total;
+        b.style.display = total > 0 ? 'inline-block' : 'none';
       }
     });
   }
+
+  // Quita de la lista un aviso propio del Club (foro, clases en vivo, cursos nuevos)
+  function quitarAvisoPropio(id) { try { if (window.ftAvisos) ftAvisos.quitar(id); } catch (_) { /* sigue */ } renderMemberNotifs(); updateBellBadge(); if (window.ftBarra) ftBarra.refrescar(); }
 
   async function deleteNotif(notifId) {
     try {
@@ -7340,7 +7345,7 @@
 <script src="club-detective.js?v=20261200"></script>
 <script src="club-historia.js?v=20261026"></script>
 <script src="club-retos-zona.js?v=20261032"></script>
-<script src="club-secciones.js?v=20261104-atlas3d"></script>
+<script src="club-secciones.js?v=20261123"></script>
 <script src="club-cupon-barra.js?v=20261109"></script>
 <script src="club-paginas.js?v=20261201"></script>
 <script src="club-foro.js?v=20261102"></script>
@@ -7378,9 +7383,9 @@
 <script src="club-correo.js?v=20261124"></script>
 <script src="club-recordatorios.js?v=20261026"></script>
 <script src="club-visitas.js?v=20261026"></script>
-<script src="club-barra.js?v=20261190"></script>
+<script src="club-barra.js?v=20261191"></script>
 <script src="club-perfil.js?v=20261116"></script>
-<script src="club-avisos.js?v=20261122"></script>
+<script src="club-avisos.js?v=20261123"></script>
 <script src="club-avatar.js?v=20261125"></script>
 <script src="club-movil.js?v=20261104-atlas3d"></script>
 <script src="club-mascota.js?v=20261026"></script>

@@ -40,6 +40,11 @@
   .ftb-aviso { display:block; width:100%; text-align:left; padding:11px 16px; border:0; border-top:1px solid var(--border); background:none; color:var(--text); font:inherit; cursor:pointer; }
   .ftb-aviso.nuevo { background:var(--accent-ghost); } .ftb-aviso b { display:block; font-size:.84rem; } .ftb-aviso span { font-size:.78rem; color:var(--text-light); display:block; margin-top:2px; }
   .ftb-aviso:hover { background:var(--accent-ghost); }
+.ftb-pie { display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:8px 10px 10px; border-top:1px solid var(--border); }
+  .ftb-pie .ftb-acc { text-align:center; font-size:.76rem; padding:9px 6px; border:1px solid var(--border); border-radius:10px; width:auto; }
+  .notif-acciones { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 14px; }
+  .notif-acciones button { padding:8px 14px; border-radius:999px; border:1px solid var(--border); background:var(--bg-card,transparent); color:var(--text); font:inherit; font-size:.8rem; font-weight:700; cursor:pointer; }
+  .notif-acciones button:hover { border-color:var(--accent); color:var(--accent); }
   .ftb-lista { max-height:340px; overflow:auto; }
   .ftb-movil-lupa { background:none; border:none; color:var(--text-light); padding:8px; cursor:pointer; display:flex; align-items:center; }
   .ftb-ov { position:fixed; inset:0; z-index:10050; background:var(--bg); display:none; flex-direction:column; padding:14px; gap:10px; }
@@ -114,7 +119,7 @@
       '<button type="button" class="ftb-aviso" role="menuitem" onclick="ftBarra.cerrarPops();window.ftSoporte?ftSoporte.abrir():showPage(\'settings\')"><b>Escribir a soporte</b><span>Tu reporte llega directo al equipo</span></button>' +
       '<button type="button" class="ftb-aviso" role="menuitem" onclick="ftBarra.cerrarPops();if(window.ftRecorrido){ftRecorrido.iniciar(true)}else{showPage(\'home\')}"><b>Ver el recorrido del panel</b><span>Un repaso rápido de lo que hay en el Club</span></button></div></div>' +
       '<div style="position:relative"><button type="button" class="ftb-btn" id="ftbCampanaB" aria-label="Notificaciones" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="ftb-punto" id="ftbPunto">0</span></button>' +
-      '<div class="ftb-pop" id="ftbAvisos" role="dialog" aria-label="Notificaciones"><h4>Notificaciones</h4><div class="ftb-lista" id="ftbLista"></div><button type="button" class="ftb-aviso" onclick="ftBarra.cerrarPops();showPage(\'notifications\')" style="text-align:center;color:var(--accent);font-weight:600">Ver todas</button></div></div>' +
+      '<div class="ftb-pop" id="ftbAvisos" role="dialog" aria-label="Notificaciones"><h4>Notificaciones</h4><div class="ftb-lista" id="ftbLista"></div><div class="ftb-pie"><button type="button" class="ftb-aviso ftb-acc" onclick="ftBarra.marcarTodas()">Marcar todas como leídas</button><button type="button" class="ftb-aviso ftb-acc" onclick="ftBarra.cerrarPops();showPage(\'notifications\')" style="color:var(--accent);font-weight:600">Ver todas</button></div></div></div>' +
       '<button type="button" class="ftb-btn" onclick="toggleTheme()" aria-label="Cambiar entre modo claro y oscuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>' +
       '<button type="button" class="ftb-user" onclick="ftPerfil.abrir()" aria-label="Abrir mi perfil" aria-haspopup="dialog"><span class="ftb-av" id="ftbAv">S</span><span class="n"><span id="ftbNombre">Socio</span><small id="ftbPlan"></small></span></button></div>';
     main.insertBefore(b, main.firstChild);
@@ -148,10 +153,37 @@
   // ---------- Campana, racha y perfil ----------
   function visibles() {
     const lista = ((typeof memberNotifs !== 'undefined' && memberNotifs) || []).concat(window.ftAvisos ? ftAvisos.lista() : []), p = (typeof notifPrefs !== 'undefined' && notifPrefs) || {};
-    return lista.filter(n => !((n.category === 'course' && p.courses === false) || (n.category === 'live' && p.live === false) || (n.category === 'pdf' && p.pdfs === false) || (n.category === 'promo' && p.promos === false)));
+    const filtradas = lista.filter(n => !((n.category === 'course' && p.courses === false) || (n.category === 'live' && p.live === false) || (n.category === 'pdf' && p.pdfs === false) || (n.category === 'promo' && p.promos === false)));
+    // De las noticias del sector solo se muestra la más reciente (llegan una por día y llenaban la campana)
+    let hayNoticia = false;
+    const sinRepetir = filtradas.filter(n => { if (n.category !== 'news') return true; if (hayNoticia) return false; hayNoticia = true; return true; });
+    // Primero lo que no has leído; dentro de eso, lo personal (foro, tus avisos) antes que lo general y las noticias al final
+    const prioridad = n => n.category === 'foro' ? 0 : n.sintetico ? 1 : n.category === 'news' ? 4 : n.category === 'curioso' ? 3 : 2;
+    return sinRepetir.map((n, i) => ({ n, i })).sort((a, b) => ((a.n.read ? 1 : 0) - (b.n.read ? 1 : 0)) || (prioridad(a.n) - prioridad(b.n)) || (a.i - b.i)).map(x => x.n);
+  }
+  function sinLeer() { return visibles().filter(n => !n.read).length; }
+  // Marca todo como leído: los avisos propios del Club y los del equipo (member_notifications)
+  async function marcarTodas() {
+    try { if (window.ftAvisos) ftAvisos.marcarTodas(); } catch (_) { /* sigue con lo demás */ }
+    const u = (typeof auth !== 'undefined' && auth.currentUser) || null;
+    if (u && typeof memberNotifs !== 'undefined') {
+      await Promise.all(memberNotifs.filter(n => !n.read).map(async n => { n.read = true; try { await db.collection('members').doc(u.uid).collection('read_notifs').doc(n.id).set({ readAt: new Date().toISOString() }); } catch (_) { /* queda leído en esta sesión */ } }));
+    }
+    refrescar(); pintarAvisos(); try { if (typeof renderMemberNotifs === 'function') renderMemberNotifs(); if (typeof updateBellBadge === 'function') updateBellBadge(); } catch (_) { /* sin la página abierta */ }
+  }
+  // Quita de tu lista lo que ya leíste
+  async function quitarLeidas() {
+    try { if (window.ftAvisos) ftAvisos.quitarLeidas(); } catch (_) { /* sigue con lo demás */ }
+    const u = (typeof auth !== 'undefined' && auth.currentUser) || null;
+    if (u && typeof memberNotifs !== 'undefined') {
+      const leidas = memberNotifs.filter(n => n.read);
+      await Promise.all(leidas.map(async n => { try { await db.collection('members').doc(u.uid).collection('read_notifs').doc(n.id).set({ readAt: new Date().toISOString(), oculta: true }); } catch (_) { /* queda quitado en esta sesión */ } }));
+      memberNotifs = memberNotifs.filter(n => !n.read);
+    }
+    refrescar(); pintarAvisos(); try { if (typeof renderMemberNotifs === 'function') renderMemberNotifs(); if (typeof updateBellBadge === 'function') updateBellBadge(); } catch (_) { /* sin la página abierta */ }
   }
   function pintarAvisos() {
-    const l = visibles().slice(0, 6);
+    const l = visibles().slice(0, 10);
     $('ftbLista').innerHTML = l.length ? l.map(n => '<button type="button" class="ftb-aviso' + (n.read ? '' : ' nuevo') + '" data-id="' + esc(n.id) + '"><b>' + esc(n.title || 'Notificación') + '</b><span>' + esc(n.message || '') + '</span></button>').join('') : '<div class="ftb-vacio">No hay notificaciones por ahora.</div>';
     $('ftbLista').querySelectorAll('[data-id]').forEach(b => b.onclick = () => {
       const n = visibles().find(x => String(x.id) === b.dataset.id);
@@ -175,6 +207,6 @@
   if (typeof original === 'function') window.updateBellBadge = function () { const r = original.apply(this, arguments); refrescar(); return r; };
   setInterval(refrescar, 4000);
 
-  window.ftBarra = { refrescar, cerrarPops, buscar };
+  window.ftBarra = { refrescar, cerrarPops, buscar, visibles, sinLeer, marcarTodas, quitarLeidas };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', montar); else montar();
 })();

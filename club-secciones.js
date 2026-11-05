@@ -36,9 +36,10 @@
 // Noticias y Blog, Descuento y Notificaciones ya no son apartados del menú (las noticias están en Inicio y los avisos en la campana).
 (function () {
   'use strict';
-  const FUERA = ['news', 'discount', 'notifications'];
-  FUERA.forEach(p => { const n = document.querySelector('.nav-item[data-page="' + p + '"]'); if (n) n.style.display = 'none'; });
-  document.querySelectorAll('[onclick*="showPage(\'notifications\')"]').forEach(b => { if (!b.classList.contains('nav-item')) b.style.display = 'none'; });
+  const FUERA = ['news', 'discount'];
+  // Notificaciones sigue fuera del menú lateral, pero la página abre desde «Ver todas» de la campana y desde el icono del teléfono
+  const OCULTAR_MENU = ['news', 'discount', 'notifications'];
+  OCULTAR_MENU.forEach(p => { const n = document.querySelector('.nav-item[data-page="' + p + '"]'); if (n) n.style.display = 'none'; });
   const pg = window.showPage;
   window.showPage = function (page) { return pg.apply(this, FUERA.indexOf(page) >= 0 ? ['home'].concat([].slice.call(arguments, 1)) : arguments); };
 })();
