@@ -46,9 +46,9 @@
 
   // ---------- Estructuras: huesos, arterias, venas, nervios, articulaciones y ligamentos (club-atlas-estructuras.js, FT_ATLAS_ESTR) ----------
   const estr = () => window.FT_ATLAS_ESTR || [];
-  const TIPO = { hueso: 'Hueso', arteria: 'Arteria', vena: 'Vena', nervio: 'Nervio', articulacion: 'Articulación', ligamento: 'Ligamento o tendón', bursa: 'Bursa', prueba: 'Prueba clínica', patologia: 'Patología' };
-  const TIPO_PL = { hueso: 'Huesos', arteria: 'Arterias', vena: 'Venas', nervio: 'Nervios', articulacion: 'Articulaciones', ligamento: 'Ligamentos y tendones', bursa: 'Bursas', prueba: 'Pruebas clínicas', patologia: 'Patologías frecuentes' };
-  const TIT = { hueso: ['Puntos de referencia', 'Articulaciones y relaciones'], arteria: ['Recorrido y pulso', 'Ramas y relaciones'], vena: ['Recorrido', 'Afluentes y relaciones'], nervio: ['Recorrido y exploración', 'Qué controla y relaciones'], articulacion: ['Puntos de referencia', 'Qué la forma y la estabiliza'], ligamento: ['Puntos de referencia', 'Relaciones'], bursa: ['Dónde está y cómo se localiza', 'Qué amortigua y relaciones'], prueba: ['Cómo se realiza', 'Qué evalúa y cómo se interpreta'], patologia: ['Cómo se presenta', 'Estructuras y causas implicadas'] };
+  const TIPO = { hueso: 'Hueso', arteria: 'Arteria', vena: 'Vena', nervio: 'Nervio', articulacion: 'Articulación', ligamento: 'Ligamento o tendón', bursa: 'Bursa', linfatico: 'Sistema linfático', prueba: 'Prueba clínica', patologia: 'Patología' };
+  const TIPO_PL = { hueso: 'Huesos', arteria: 'Arterias', vena: 'Venas', nervio: 'Nervios', articulacion: 'Articulaciones', ligamento: 'Ligamentos y tendones', bursa: 'Bursas', linfatico: 'Sistema linfático', prueba: 'Pruebas clínicas', patologia: 'Patologías frecuentes' };
+  const TIT = { hueso: ['Puntos de referencia', 'Articulaciones y relaciones'], arteria: ['Recorrido y pulso', 'Ramas y relaciones'], vena: ['Recorrido', 'Afluentes y relaciones'], nervio: ['Recorrido y exploración', 'Qué controla y relaciones'], articulacion: ['Puntos de referencia', 'Qué la forma y la estabiliza'], ligamento: ['Puntos de referencia', 'Relaciones'], bursa: ['Dónde está y cómo se localiza', 'Qué amortigua y relaciones'], linfatico: ['Ubicación y dónde se palpa', 'Qué drena y relaciones'], prueba: ['Cómo se realiza', 'Qué evalúa y cómo se interpreta'], patologia: ['Cómo se presenta', 'Estructuras y causas implicadas'] };
   // Títulos de las dos últimas secciones según el tipo
   const ETI = { prueba: ['Qué puede sugerir un resultado positivo', 'Precauciones y límites'], patologia: ['Complicaciones y diagnósticos diferenciales', 'Abordaje de fisioterapia y cuándo derivar'] };
   const CAPA = { bone: 'hueso', artery: 'arteria', vein: 'vena' };
@@ -72,7 +72,9 @@
   function chipsEstr(z) {
     const l = estr().filter(e => e.zona === z); if (!l.length) return '';
     const tipos = Object.keys(TIPO_PL).filter(t => l.some(e => e.tipo === t));
-    return '<div class="at-esp-estr"><h4>Otras estructuras de esta zona (' + l.length + ')</h4>' + tipos.map(t => '<div class="at-tipo"><small>' + TIPO_PL[t] + '</small><div class="at-chips">' + l.filter(e => e.tipo === t).map(e => '<button type="button" data-e="' + esc(e.id) + '">' + esc(e.nombre) + '</button>').join('') + '</div></div>').join('') + '</div>';
+    // Cada tipo va en un desplegable (cerrado si la zona tiene muchas fichas) para que la lista no sea interminable
+    const abiertos = l.length <= 14;
+    return '<div class="at-esp-estr"><h4>Otras estructuras de esta zona (' + l.length + ')</h4>' + tipos.map(t => { const g = l.filter(e => e.tipo === t); return '<details class="at-tipo"' + (abiertos ? ' open' : '') + '><summary>' + TIPO_PL[t] + ' (' + g.length + ')</summary><div class="at-chips">' + g.map(e => '<button type="button" data-e="' + esc(e.id) + '">' + esc(e.nombre) + '</button>').join('') + '</div></details>'; }).join('') + '</div>';
   }
 
   // ---------- Guía clínica de la zona (club-atlas-guia.js) ----------
