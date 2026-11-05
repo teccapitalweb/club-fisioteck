@@ -100,5 +100,18 @@
   window.renderGlossary = function () { montar(); if (!favs.size) cargarFavs(); if (modo === 'practicar') { if (!practica) iniciarPractica(); pintarPractica(); return; } chips(); pintarExplorar(); };
   window.filterGlossary = function () { if (modo === 'practicar') return; abierto = ''; chips(); pintarExplorar(); };
   auth.onAuthStateChanged(() => { favs = new Set(); cargarFavs(); });
+  // El Glosario se puede ver sin plan, pero al tocar cualquier cosa (un término, una categoría, favoritos o Practicar) se manda a Suscripción
+  const conPlan = () => (typeof memberIsPaid !== 'undefined' && memberIsPaid) || window.ftVistaAdmin === true;
+  const pgG = $('page-glossary');
+  if (pgG && !pgG.dataset.ftGuardia) {
+    pgG.dataset.ftGuardia = '1';
+    pgG.addEventListener('click', e => {
+      if (conPlan()) return;
+      if (!e.target.closest('button, .gl-card, a, summary, [role="button"]')) return;
+      e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+      if (typeof showToast === 'function') showToast('El Glosario completo es para miembros. Elige tu plan para usarlo.');
+      if (typeof showPage === 'function') showPage('subscription');
+    }, true);
+  }
   montar();
 })();

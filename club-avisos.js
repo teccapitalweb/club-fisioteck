@@ -7,7 +7,7 @@
   const claveLeidos = () => 'ft_avisos_leidos_' + ((auth.currentUser || {}).uid || 'x');
   const leidos = () => { try { return new Set(JSON.parse(localStorage.getItem(claveLeidos()) || '[]')); } catch (_) { return new Set(); } };
   const guardar = s => { try { localStorage.setItem(claveLeidos(), JSON.stringify([...s].slice(-200))); } catch (_) { /* modo privado */ } };
-  const extra = { t: 0, creditos: null, cupon: null, foro: [], sistema: [] };
+  const extra = { t: 0, creditos: null, cupon: null, foro: [], sistema: [], temas: [] };
 
   async function cargar() {
     if (Date.now() - extra.t < 60000 || typeof auth === 'undefined' || !auth.currentUser) return;
@@ -15,6 +15,14 @@
     try { const d = await certFetch('/api/creditos'); extra.creditos = d.aviso || null; } catch (_) { extra.creditos = null; }
     try { const c = await certFetch('/api/creditos/cupon-activo'); extra.cupon = c && c.hay ? c : null; } catch (_) { extra.cupon = null; }
     try { const a = await certFetch('/api/avisos'); extra.foro = (a.avisos || []).filter(x => x.tipo === 'foro'); extra.sistema = (a.avisos || []).filter(x => x.tipo !== 'foro'); } catch (_) { extra.foro = []; extra.sistema = []; }
+    // Temas nuevos que publicaron otros miembros en los últimos 7 días (el foro es de lectura para toda cuenta con sesión; no hace falta el servidor)
+    try {
+      if (typeof memberIsPaid !== 'undefined' && memberIsPaid && typeof db !== 'undefined') {
+        const yo = auth.currentUser.uid, corte = Date.now() - 7 * DIA;
+        const sn = await db.collection('forum_posts').orderBy('createdAt', 'desc').limit(15).get();
+        extra.temas = sn.docs.map(d => Object.assign({ id: d.id }, d.data())).filter(p => p.authorId !== yo && p.createdAt && p.createdAt.seconds * 1000 >= corte).slice(0, 8);
+      } else extra.temas = [];
+    } catch (_) { extra.temas = []; }
     if (window.ftBarra) ftBarra.refrescar();
   }
 
@@ -31,6 +39,10 @@
     });
     // Respuestas a tus temas del foro (las crea el servidor cuando alguien responde)
     extra.foro.forEach(a => { const id = 'foro:' + a.id; out.push({ id: 'av:' + id, title: a.quien + ' respondió tu tema', message: '«' + a.titulo + '» · ' + a.fragmento, category: 'foro', read: a.leido === true || ya.has('av:' + id), sintetico: true, servidorId: a.id, accion: () => { try { showPage('forum'); setTimeout(() => { if (typeof openThread === 'function') openThread(a.postId); }, 350); } catch (_) { /* sin foro */ } } }); });
+    extra.temas.forEach(p => {
+      const id = 'foronuevo:' + p.id, texto = p.sinTitulo ? String(p.body || '').replace(/\s+/g, ' ').slice(0, 110) : String(p.title || '');
+      out.push({ id: 'av:' + id, title: (p.authorName || 'Un miembro') + ' publicó en el foro', message: '«' + texto + '»', category: 'foro', read: ya.has('av:' + id), sintetico: true, accion: () => { try { showPage('forum'); setTimeout(() => { if (typeof openThread === 'function') openThread(p.id); }, 350); } catch (_) { /* si el foro no abre, el aviso se queda */ } } });
+    });
     (sd.live || []).forEach(w => {
       const dt = new Date(w.date + 'T' + (w.time || '20:00') + ':00').getTime();
       if (dt > ahora && dt - ahora < 2 * DIA) add('live:' + w.id, 'Clase en vivo: ' + w.title, new Date(dt).toLocaleString('es-MX', { weekday: 'long', day: 'numeric', month: 'long', hour: 'numeric', minute: '2-digit' }), () => showPage('courses-live'), 'live');

@@ -46,16 +46,18 @@
 
   // ---------- Estructuras: huesos, arterias, venas, nervios, articulaciones y ligamentos (club-atlas-estructuras.js, FT_ATLAS_ESTR) ----------
   const estr = () => window.FT_ATLAS_ESTR || [];
-  const TIPO = { hueso: 'Hueso', arteria: 'Arteria', vena: 'Vena', nervio: 'Nervio', articulacion: 'Articulación', ligamento: 'Ligamento o tendón' };
-  const TIPO_PL = { hueso: 'Huesos', arteria: 'Arterias', vena: 'Venas', nervio: 'Nervios', articulacion: 'Articulaciones', ligamento: 'Ligamentos y tendones' };
-  const TIT = { hueso: ['Puntos de referencia', 'Articulaciones y relaciones'], arteria: ['Recorrido y pulso', 'Ramas y relaciones'], vena: ['Recorrido', 'Afluentes y relaciones'], nervio: ['Recorrido y exploración', 'Qué controla y relaciones'], articulacion: ['Puntos de referencia', 'Qué la forma y la estabiliza'], ligamento: ['Puntos de referencia', 'Relaciones'] };
+  const TIPO = { hueso: 'Hueso', arteria: 'Arteria', vena: 'Vena', nervio: 'Nervio', articulacion: 'Articulación', ligamento: 'Ligamento o tendón', bursa: 'Bursa', prueba: 'Prueba clínica', patologia: 'Patología' };
+  const TIPO_PL = { hueso: 'Huesos', arteria: 'Arterias', vena: 'Venas', nervio: 'Nervios', articulacion: 'Articulaciones', ligamento: 'Ligamentos y tendones', bursa: 'Bursas', prueba: 'Pruebas clínicas', patologia: 'Patologías frecuentes' };
+  const TIT = { hueso: ['Puntos de referencia', 'Articulaciones y relaciones'], arteria: ['Recorrido y pulso', 'Ramas y relaciones'], vena: ['Recorrido', 'Afluentes y relaciones'], nervio: ['Recorrido y exploración', 'Qué controla y relaciones'], articulacion: ['Puntos de referencia', 'Qué la forma y la estabiliza'], ligamento: ['Puntos de referencia', 'Relaciones'], bursa: ['Dónde está y cómo se localiza', 'Qué amortigua y relaciones'], prueba: ['Cómo se realiza', 'Qué evalúa y cómo se interpreta'], patologia: ['Cómo se presenta', 'Estructuras y causas implicadas'] };
+  // Títulos de las dos últimas secciones según el tipo
+  const ETI = { prueba: ['Qué puede sugerir un resultado positivo', 'Precauciones y límites'], patologia: ['Complicaciones y diagnósticos diferenciales', 'Abordaje de fisioterapia y cuándo derivar'] };
   const CAPA = { bone: 'hueso', artery: 'arteria', vein: 'vena' };
   function fichaEstr(e) {
     const t = TIT[e.tipo] || ['Referencias', 'Relaciones'];
     const lista = (ti, l) => (l || []).length ? '<h5>' + ti + '</h5><ul>' + l.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>' : '';
     const fuentes = (e.fuentes || []).length ? '<details class="at-fuentes"><summary>Fuentes consultadas (' + esc(e.verificacion || 'sin verificar') + ')</summary><ul>' + e.fuentes.map(f => { const mt = /(https?:\/\/\S+)/.exec(f); return '<li>' + esc(String(f).replace(mt ? mt[1] : '', '').replace(/\s*[—-]\s*$/, '').trim()) + (mt ? ' <a href="' + esc(mt[1]) + '" target="_blank" rel="noopener noreferrer">enlace</a>' : '') + '</li>'; }).join('') + '</ul></details>' : '';
     return '<div class="at-ficha"><div class="at-cab"><h4>' + esc(e.nombre) + '</h4><span>' + esc(TIPO[e.tipo] || '') + '</span></div>' + (e.descripcion ? '<p class="at-desc">' + esc(e.descripcion) + '</p>' : '') +
-      lista(t[0], e.referencias) + lista(t[1], e.relaciones) + lista('Lesiones frecuentes', e.lesiones) + lista('Para el fisioterapeuta', e.fisio) + fuentes + '<p class="at-aviso">Herramienta de estudio y apoyo. Puede haber variaciones anatómicas; confirma con tus textos de referencia y tu criterio clínico.</p></div>';
+      lista(t[0], e.referencias) + lista(t[1], e.relaciones) + lista((ETI[e.tipo] || [])[0] || 'Lesiones frecuentes', e.lesiones) + lista((ETI[e.tipo] || [])[1] || 'Para el fisioterapeuta', e.fisio) + fuentes + '<p class="at-aviso">Herramienta de estudio y apoyo. Puede haber variaciones anatómicas; confirma con tus textos de referencia y tu criterio clínico.</p></div>';
   }
   function verEstr(id, sinScroll) {
     const e = estr().find(x => x.id === id), caja = $('atFicha'); if (!e || !caja) return;
