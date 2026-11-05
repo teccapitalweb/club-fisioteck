@@ -14,7 +14,7 @@
     extra.t = Date.now();
     try { const d = await certFetch('/api/creditos'); extra.creditos = d.aviso || null; } catch (_) { extra.creditos = null; }
     try { const c = await certFetch('/api/creditos/cupon-activo'); extra.cupon = c && c.hay ? c : null; } catch (_) { extra.cupon = null; }
-    try { const a = await certFetch('/api/avisos'); extra.foro = (a.avisos || []).filter(x => x.tipo === 'foro'); extra.sistema = (a.avisos || []).filter(x => x.tipo !== 'foro'); } catch (_) { extra.foro = []; extra.sistema = []; }
+    try { const a = await certFetch('/api/avisos'); extra.foro = (a.avisos || []).filter(x => x.tipo === 'foro' || x.tipo === 'foro-act'); extra.sistema = (a.avisos || []).filter(x => x.tipo !== 'foro' && x.tipo !== 'foro-act'); } catch (_) { extra.foro = []; extra.sistema = []; }
     // Temas nuevos que publicaron otros miembros en los últimos 7 días (el foro es de lectura para toda cuenta con sesión; no hace falta el servidor)
     try {
       if (typeof memberIsPaid !== 'undefined' && memberIsPaid && typeof db !== 'undefined') {
@@ -38,7 +38,7 @@
       out.push({ id: 'av:' + id, title: a.titulo || 'Aviso', message: a.fragmento || '', category: a.tipo === 'certificado' ? 'course' : 'sistema', read: a.leido === true || ya.has('av:' + id), sintetico: true, servidorId: a.id, accion: () => showPage(destino) });
     });
     // Respuestas a tus temas del foro (las crea el servidor cuando alguien responde)
-    extra.foro.forEach(a => { const id = 'foro:' + a.id; out.push({ id: 'av:' + id, title: a.quien + ' respondió tu tema', message: '«' + a.titulo + '» · ' + a.fragmento, category: 'foro', read: a.leido === true || ya.has('av:' + id), sintetico: true, servidorId: a.id, accion: () => { try { showPage('forum'); setTimeout(() => { if (typeof openThread === 'function') openThread(a.postId); }, 350); } catch (_) { /* sin foro */ } } }); });
+    extra.foro.forEach(a => { const id = 'foro:' + a.id; const general = a.tipo === 'foro-act'; out.push({ id: 'av:' + id, title: general ? 'Hay nuevas respuestas en el foro' : a.quien + ' respondió tu tema', message: general ? '«' + a.titulo + '»' : '«' + a.titulo + '» · ' + a.fragmento, category: 'foro', read: a.leido === true || ya.has('av:' + id), sintetico: true, servidorId: a.id, accion: () => { try { showPage('forum'); setTimeout(() => { if (typeof openThread === 'function') openThread(a.postId); }, 350); } catch (_) { /* sin foro */ } } }); });
     extra.temas.forEach(p => {
       const id = 'foronuevo:' + p.id, texto = p.sinTitulo ? String(p.body || '').replace(/\s+/g, ' ').slice(0, 110) : String(p.title || '');
       out.push({ id: 'av:' + id, title: (p.authorName || 'Un miembro') + ' publicó en el foro', message: '«' + texto + '»', category: 'foro', read: ya.has('av:' + id), sintetico: true, accion: () => { try { showPage('forum'); setTimeout(() => { if (typeof openThread === 'function') openThread(p.id); }, 350); } catch (_) { /* si el foro no abre, el aviso se queda */ } } });
