@@ -17,6 +17,7 @@
     'rehab-calc': ['Herramientas', 'Calculadora de <em>rehabilitación.</em>', 'Planes sugeridos según la patología y la severidad.', 'tools'],
     atlas: ['Herramientas', 'Atlas <em>muscular.</em>', 'Explora en 3D huesos, músculos, arterias y venas del cuerpo humano.', 'tools'],
     glossary: ['Herramientas', 'Glosario <em>FisioTeck.</em>', 'Diccionario de términos de fisioterapia.', 'pensar'],
+    ejercicios: ['Herramientas', 'Biblioteca de <em>ejercicios.</em>', 'Fichas con pasos, progresión y precauciones para tus pacientes.', 'tools'],
     rom: ['Herramientas', 'Rangos de <em>movimiento.</em>', 'Valores normales de goniometría por articulación.', 'tools'],
     timer: ['Herramientas', 'Cronómetro de <em>sesión.</em>', 'Temporizador para técnicas de fisioterapia.', 'tools']
   };

@@ -27,7 +27,7 @@
   const GRUPOS = [
     ['Principal', ['home', 'library', 'courses-live', 'pdfs', 'retos']],
     ['Mi progreso', ['achievements', 'certificates']],
-    ['Herramientas', ['pacientes', 'rehab-calc', 'atlas', 'glossary', 'rom', 'timer']],
+    ['Herramientas', ['pacientes', 'rehab-calc', 'atlas', 'glossary', 'ejercicios', 'rom', 'timer']],
     ['Comunidad', ['news', 'forum', 'directorio', 'referidos', 'community']],
     ['Mi cuenta', ['account', 'subscription', 'notifications', 'discount', 'settings', '#navAdminPanel']]
   ];
@@ -35,7 +35,7 @@
   const PILDORA = {
     library: ['Principal', 'book'], 'courses-live': ['Principal', 'live'], pdfs: ['Principal', 'file'], retos: ['Principal', 'target'],
     achievements: ['Mi progreso', 'trophy'], certificates: ['Mi progreso', 'cert'],
-    pacientes: ['Herramientas', 'users'], 'rehab-calc': ['Herramientas', 'tool'], atlas: ['Herramientas', 'tool'], glossary: ['Herramientas', 'book'], rom: ['Herramientas', 'tool'], eva: ['Herramientas', 'tool'], timer: ['Herramientas', 'tool'],
+    pacientes: ['Herramientas', 'users'], 'rehab-calc': ['Herramientas', 'tool'], atlas: ['Herramientas', 'tool'], glossary: ['Herramientas', 'book'], ejercicios: ['Herramientas', 'tool'], rom: ['Herramientas', 'tool'], eva: ['Herramientas', 'tool'], timer: ['Herramientas', 'tool'],
     news: ['Comunidad', 'news'], forum: ['Comunidad', 'chat'], directorio: ['Comunidad', 'users'], community: ['Comunidad', 'chat'],
     account: ['Mi cuenta', 'user'], subscription: ['Mi cuenta', 'card'], notifications: ['Mi cuenta', 'bell'], discount: ['Mi cuenta', 'gift'], settings: ['Mi cuenta', 'gear']
   };

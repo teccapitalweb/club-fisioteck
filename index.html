@@ -1919,6 +1919,7 @@
   <link rel="stylesheet" href="club-rom.css?v=20261230">
   <link rel="stylesheet" href="club-plan.css?v=20261220">
   <link rel="stylesheet" href="club-glosario.css?v=20261221">
+  <link rel="stylesheet" href="club-ejercicios.css?v=3">
   <link rel="stylesheet" href="club-pacientes.css?v=20261213">
   <link rel="stylesheet" href="club-inicios.css?v=20261231">
   <link rel="stylesheet" href="club-juegos.css?v=20261026">
@@ -2197,6 +2198,10 @@
       <div class="nav-item" data-page="glossary" onclick="showPage('glossary')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
         Glosario
+      </div>
+      <div class="nav-item" data-page="ejercicios" onclick="showPage('ejercicios')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8v8M18 8v8M3 10v4M21 10v4M6 12h12"/></svg>
+        Ejercicios
       </div>
       <div class="nav-item" data-page="rom" onclick="showPage('rom')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
@@ -3015,6 +3020,15 @@
         </div>
       </div>
       </details>
+    </section>
+
+    <!-- EJERCICIOS -->
+    <section class="section" id="page-ejercicios">
+      <div class="page-header">
+        <h1 class="page-title">Biblioteca de ejercicios</h1>
+        <p class="page-subtitle">Fichas con pasos, progresión y precauciones</p>
+      </div>
+      <div id="ejerciciosCont"></div>
     </section>
 
     <!-- GLOSARIO -->
@@ -7377,6 +7391,8 @@
 <script src="club-glosario-mas.js?v=20261222"></script>
 <script src="club-glosario-mas-2.js?v=20261123"></script>
 <script src="club-glosario.js?v=20261224"></script>
+<script src="club-ejercicios-datos.js?v=3"></script>
+<script src="club-ejercicios.js?v=4"></script>
 <script src="club-pacientes.js?v=20261214"></script>
 <script src="club-inicios.js?v=20261231"></script>
 <script src="club-juegos.js?v=20261026"></script>
@@ -7388,7 +7404,7 @@
 <script src="club-perfil.js?v=20261116"></script>
 <script src="club-avisos.js?v=20261123"></script>
 <script src="club-avatar.js?v=20261125"></script>
-<script src="club-movil.js?v=20261104-atlas3d"></script>
+<script src="club-movil.js?v=20261124"></script>
 <script src="club-mascota.js?v=20261026"></script>
 <script src="club-noticias.js?v=20261118"></script>
 <script src="club-cursos.js?v=20261129"></script>
@@ -7411,7 +7427,7 @@
 <script src="club-curso-premio.js?v=20261160"></script>
 <script src="club-libros.js?v=20261150"></script>
 <script src="club-cuenta.js?v=20261112"></script>
-<script src="club-seccion.js?v=20261041"></script>
+<script src="club-seccion.js?v=20261124"></script>
 <script src="club-juegos-clase.js?v=20261141"></script>
 <script src="club-atlas-3d.js?v=20261112"></script>
 </body>
