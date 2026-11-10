@@ -2125,7 +2125,8 @@
           ${categoryFieldHTML(item?.category||'')}
         </div>
         <div class="form-group"><label class="form-label">Fecha</label><input class="form-input" type="date" id="mDate" value="${item?.date||''}"></div>
-        <div class="form-group"><label class="form-label">Hora</label><input class="form-input" type="time" id="mTime" value="${item?.time||''}"></div>
+        <div class="form-group"><label class="form-label">Hora (Ciudad de México)</label><input class="form-input" type="time" id="mTime" value="${item?.time||''}"></div>
+        <div class="form-group"><label class="form-label">Duración (minutos)</label><input class="form-input" type="number" id="mDuration" min="15" max="480" step="5" value="${item?.duration||60}"><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">Con la hora y la duración el Club muestra «En vivo ahora» mientras dura la clase y la pasa a Grabaciones al terminar.</p></div>
         <div class="form-group"><label class="form-label">Enlace de la sesión (Zoom, Meet, etc.)</label><input class="form-input" id="mLink" value="${item?.link||''}" placeholder="https://..."></div>
         <div class="form-group"><label class="form-label">URL de Thumbnail (imagen de portada)</label><input class="form-input" id="mThumb" value="${item?.thumbnail||''}" placeholder="https://drive.google.com/file/d/.../view"></div>
         <div class="form-group"><label class="form-label">Badge</label><input class="form-input" id="mBadge" value="${item?.badge||''}"></div>
@@ -2246,6 +2247,7 @@
         category: getCatValue(),
         date: document.getElementById('mDate').value,
         time: document.getElementById('mTime').value,
+        duration: Math.max(15, Math.min(480, parseInt(document.getElementById('mDuration').value, 10) || 60)),
         badge: document.getElementById('mBadge').value,
         link: document.getElementById('mLink').value,
         thumbnail: document.getElementById('mThumb').value,
