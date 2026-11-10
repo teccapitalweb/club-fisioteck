@@ -702,10 +702,28 @@
           <p style="font-size:.8rem;color:var(--text-muted);margin:6px 0 0;line-height:1.5;">Las clases registradas con «Crear la reunión con grabación automática». Al terminar la clase, Meet o Zoom genera el video, el servidor lo pasa a Bunny y aparece solo en Grabaciones. Puede tardar varios minutos.</p></div>
           <button class="btn btn-o btn-sm" onclick="cargarAuto()">Actualizar</button></div>
         <p id="autoAviso" style="font-size:.8rem;color:var(--danger);margin:6px 18px 0;"></p>
-        <table class="admin-table">
-          <thead><tr><th>Clase</th><th>Fecha</th><th>Estado</th><th></th></tr></thead>
-          <tbody id="autoTable"></tbody>
-        </table>
+        <style>
+          .gr-lista { padding: 8px 18px 18px; display: grid; gap: 14px; }
+          .gr-card { border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; background: var(--surface, transparent); }
+          .gr-cab { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline; margin-bottom: 12px; }
+          .gr-cab small { color: var(--text-muted); font-size: .76rem; }
+          .gr-pasos { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+          .gr-paso { display: grid; grid-template-columns: 26px 1fr; gap: 10px; padding: 7px 0; position: relative; }
+          .gr-paso:not(:last-child)::after { content: ''; position: absolute; left: 12px; top: 32px; bottom: -6px; width: 2px; background: var(--border); }
+          .gr-punto { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-size: .78rem; font-weight: 800; border: 2px solid var(--border); color: var(--text-muted); background: var(--bg, transparent); z-index: 1; }
+          .gr-paso.hecho .gr-punto { background: var(--success, #0F9D6C); border-color: var(--success, #0F9D6C); color: #fff; }
+          .gr-paso.activo .gr-punto { border-color: var(--primary, #2563AB); color: var(--primary, #2563AB); }
+          .gr-paso.activo .gr-punto::before { content: ''; width: 12px; height: 12px; border-radius: 50%; border: 2px solid currentColor; border-top-color: transparent; animation: grgiro 1s linear infinite; }
+          .gr-paso.fallo .gr-punto { background: var(--danger, #DC2D3F); border-color: var(--danger, #DC2D3F); color: #fff; }
+          @keyframes grgiro { to { transform: rotate(360deg); } }
+          .gr-t { font-size: .88rem; font-weight: 600; line-height: 1.35; padding-top: 3px; }
+          .gr-paso:not(.hecho):not(.activo):not(.fallo) .gr-t { color: var(--text-muted); font-weight: 500; }
+          .gr-m { display: block; font-weight: 400; font-size: .8rem; color: var(--text-muted); margin-top: 2px; line-height: 1.5; }
+          .gr-paso.fallo .gr-m { color: var(--danger, #DC2D3F); }
+          .gr-aviso { font-size: .76rem; color: var(--warning, #B45309); margin-top: 8px; }
+          .gr-acc { margin-top: 12px; }
+        </style>
+        <div class="gr-lista" id="autoLista"></div>
       </div>
     </section>
 
@@ -2405,17 +2423,63 @@
   }
 
   // ===== GRABACIONES AUTOMÁTICAS (Zoom → Bunny): estado de cada clase =====
-  const ESTADO_AUTO = { esperando: 'Esperando la grabación', descargando: 'Pasando el video a Bunny', subiendo: 'Procesando en Bunny', lista: 'Lista', error: 'Con error' };
+  // Cada clase se muestra como una lista de pasos: lo hecho con ✓, lo que está pasando ahora con un giro, y lo que falta en gris
+  const PASOS_AUTO = ['Clase programada', 'Grabación encontrada', 'Pasando el video a Bunny', 'Procesando en Bunny', 'Lista en el Club'];
+  const horaClase = e => { // la fecha viene como «AAAA-MM-DD HH:MM» en hora de Ciudad de México
+    const ini = e.inicioMs || Date.parse(String(e.fecha || '').replace(' ', 'T') + ':00-06:00') || 0;
+    return { ini, fin: e.finMs || (ini ? ini + 60 * 60000 : 0) };
+  };
+  function pasosDe(e) {
+    const ahora = Date.now(), h = horaClase(e);
+    const nombre = e.archivoNombre ? '«' + e.archivoNombre + '»' : 'el video';
+    // actual = número de paso (1 a 5) que está en marcha o que falló; hechos = los anteriores
+    let actual, mensajes = {}, fallo = false;
+    if (e.estado === 'lista') actual = 6;
+    else if (e.estado === 'subiendo') actual = 4;
+    else if (e.estado === 'descargando') actual = 3;
+    else if (e.estado === 'error') { fallo = true; actual = e.videoId ? 4 : (e.archivoNombre || e.archivoDrive || e.archivoZoom) ? 3 : 2; }
+    else actual = 2;
+    mensajes[1] = e.fecha ? 'Para el ' + e.fecha.replace(' ', ' a las ') + ' h (hora de Ciudad de México)' : '';
+    if (fallo) mensajes[actual] = e.error || 'Hubo un problema.';
+    else if (actual === 2) {
+      mensajes[2] = !h.ini || ahora < h.ini ? 'La clase aún no empieza. Cuando empiece, el sistema revisará tu Drive cada 3 minutos.'
+        : ahora < h.fin ? 'La clase está en curso. Recuerda pulsar Actividades → Grabación en Meet.'
+        : 'Buscando la grabación en tu Drive. Meet la deja unos minutos después de terminar la clase.';
+    }
+    else if (actual === 3) mensajes[3] = 'Se encontró ' + nombre + ' y se está pasando a Bunny. En videos largos puede tardar varios minutos.';
+    else if (actual === 4) mensajes[4] = 'Bunny está preparando el video para reproducirlo. Puede tardar unos minutos.';
+    if (e.estado === 'lista') mensajes[5] = 'Ya aparece en Grabaciones. Mírala en «Ver como usuario».';
+    if (actual >= 3 && e.archivoNombre) mensajes[2] = e.archivoNombre;
+    return { actual, fallo, mensajes };
+  }
+  function tarjetaAuto(e) {
+    const { actual, fallo, mensajes } = pasosDe(e);
+    const plataforma = e.proveedor === 'meet' ? 'Google Meet (Workspace)' : e.proveedor === 'drive' ? 'Google Meet (Gmail)' : 'Zoom';
+    const pasos = PASOS_AUTO.map((t, i) => {
+      const n = i + 1, clase = n < actual || actual === 6 ? 'hecho' : n === actual ? (fallo ? 'fallo' : 'activo') : '';
+      const punto = clase === 'hecho' ? '✓' : clase === 'fallo' ? '✕' : clase === 'activo' ? '' : n;
+      const titulo = n === actual && fallo ? 'Falló: ' + t.charAt(0).toLowerCase() + t.slice(1) : t;
+      return '<li class="gr-paso ' + clase + '"><span class="gr-punto">' + punto + '</span><span class="gr-t">' + escAdm(titulo) + (mensajes[n] ? '<span class="gr-m">' + escAdm(mensajes[n]) + '</span>' : '') + '</span></li>';
+    }).join('');
+    // un aviso pasajero (por ejemplo, Google no respondió) NO es un error: el sistema lo vuelve a intentar solo
+    const aviso = !fallo && e.estado === 'esperando' && e.error ? '<p class="gr-aviso">Último intento sin resultado: ' + escAdm(e.error) + ' Se vuelve a intentar solo en unos minutos.</p>' : '';
+    const boton = fallo || e.estado === 'esperando' ? '<div class="gr-acc"><button class="btn btn-o btn-sm" data-id="' + escAdm(e.id) + '" onclick="reintentarAuto(this.dataset.id)">' + (fallo ? 'Reintentar' : 'Buscar ahora') + '</button></div>' : '';
+    return '<div class="gr-card"><div class="gr-cab"><strong>' + escAdm(e.titulo) + '</strong><small>' + plataforma + ' · ' + escAdm(e.claseId) + '</small></div><ul class="gr-pasos">' + pasos + '</ul>' + aviso + boton + '</div>';
+  }
+  let autoHayEnCurso = false;
   async function cargarAuto() {
-    const t = document.getElementById('autoTable'), av = document.getElementById('autoAviso'); if (!t) return;
+    const lista = document.getElementById('autoLista'), av = document.getElementById('autoAviso'); if (!lista) return;
     try {
       const r = await apiAdmin('/api/admin/clases-auto');
       const faltan = []; if (!r.meetListo && !r.zoomListo) faltan.push('Google o Zoom'); if (!r.bunnyListo) faltan.push('Bunny');
       av.textContent = faltan.length ? 'Falta configurar ' + faltan.join(' y ') + ' en el servidor (Railway). Mientras tanto la grabación automática no funciona.' : '';
-      t.innerHTML = (r.entradas || []).map(e => '<tr><td><strong>' + escAdm(e.titulo) + '</strong><br><span style="font-size:.78rem;color:var(--text-muted)">' + (e.proveedor === 'meet' ? 'Google Meet (Workspace)' : e.proveedor === 'drive' ? 'Google Meet (Gmail)' : 'Zoom') + ' · ' + escAdm(e.claseId) + '</span></td><td>' + escAdm(e.fecha) + '</td><td><span class="badge ' + (e.estado === 'lista' ? 'badge-success' : e.estado === 'error' ? 'badge-danger' : 'badge-info') + '">' + escAdm(ESTADO_AUTO[e.estado] || e.estado) + '</span>' + (e.error ? '<br><span style="font-size:.76rem;color:var(--danger)">' + escAdm(e.error) + '</span>' : '') + '</td><td>' + (e.estado === 'error' || e.estado === 'esperando' ? '<button class="btn btn-o btn-sm" data-id="' + escAdm(e.id) + '" onclick="reintentarAuto(this.dataset.id)">Reintentar</button>' : '') + '</td></tr>').join('')
-        || '<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--text-muted);">Aún no hay clases con Zoom automático</td></tr>';
+      const es = r.entradas || [];
+      autoHayEnCurso = es.some(e => e.estado === 'esperando' || e.estado === 'descargando' || e.estado === 'subiendo');
+      lista.innerHTML = es.map(tarjetaAuto).join('') || '<p style="text-align:center;padding:24px;color:var(--text-muted);">Aún no hay clases con grabación automática</p>';
     } catch (e) { av.textContent = 'No se pudo leer el estado: ' + e.message; }
   }
+  // Mientras haya clases en proceso y estés viendo Webinar, la lista se actualiza sola cada 20 segundos
+  setInterval(() => { const sec = document.getElementById('sec-live'); if (autoHayEnCurso && sec && sec.classList.contains('active') && !document.hidden) cargarAuto(); }, 20000);
   async function reintentarAuto(id) {
     try { await apiAdmin('/api/admin/clases-auto/' + encodeURIComponent(id) + '/reintentar', { method: 'POST', body: '{}' }); toast('Se volvió a pedir la grabación a Zoom'); }
     catch (e) { toast('No se pudo reintentar: ' + e.message); }
