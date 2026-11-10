@@ -681,12 +681,20 @@
     <section class="admin-section" id="sec-live">
       <div class="admin-page-header">
         <div><div class="admin-page-title">Webinar</div><div class="admin-page-sub">Webinars y sesiones en vivo</div></div>
-        <button class="btn btn-p" onclick="openModal('live')">+ Nueva Sesión</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;"><button class="btn btn-o" onclick="abrirPrueba()">+ Agregar clase de prueba</button><button class="btn btn-p" onclick="openModal('live')">+ Nueva Sesión</button></div>
       </div>
       <div class="admin-card" style="overflow-x:auto;">
         <table class="admin-table">
           <thead><tr><th>Título</th><th>Categoría</th><th>Fecha</th><th>Hora</th><th>Enlace</th><th>Acciones</th></tr></thead>
           <tbody id="liveTable"></tbody>
+        </table>
+      </div>
+      <div class="admin-card" style="overflow-x:auto;margin-top:20px;">
+        <div style="padding:16px 18px 4px;"><strong>Clases de prueba</strong>
+          <p style="font-size:.8rem;color:var(--text-muted);margin:6px 0 0;line-height:1.5;">Solo las ves tú. No se publican, no aparecen para los miembros y no les llega ningún aviso. Para probarlas entra al Club en «Ver como usuario»: ahí se ven como una clase normal, con su cuenta regresiva, avisos y botones.</p></div>
+        <table class="admin-table">
+          <thead><tr><th>Título</th><th>Fecha</th><th>Hora</th><th>Duración</th><th>Enlace</th><th>Acciones</th></tr></thead>
+          <tbody id="pruebaTable"></tbody>
         </table>
       </div>
     </section>
@@ -1250,6 +1258,7 @@
     renderPdfs();
     cargarLibresPriv();
     cargarWebinarsPriv();
+    cargarPruebas();
     renderNewsList();
     loadFirebaseMembers();
     loadGitConfig();
@@ -2186,7 +2195,7 @@
     document.getElementById('modalOverlay').classList.add('active');
     if (type === 'pdf' && item) llenarEnlacePdf(item.id);
   }
-  function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); currentModal=null; editingId=null; }
+  function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); currentModal=null; editingId=null; modoPrueba=false; }
 
   function addLessonRow() {
     const container = document.getElementById('lessonsContainer');
@@ -2257,6 +2266,7 @@
         recordingUrl: document.getElementById('mRecordingUrl').value
       };
       if (!item.title) { toast('El título es obligatorio'); return; }
+      if (modoPrueba) { guardarPrueba(item); return; } // clase de prueba: va al servidor, nunca a content.json
       guardarWebinarPrivado(item);
       if (editingId) { const idx = data.live.findIndex(c=>c.id===editingId); if(idx>=0) data.live[idx]=item; }
       else data.live.unshift(item);
@@ -2333,6 +2343,36 @@
     else if (type==='member') renderMembers();
     renderDashboard();
     toast('Eliminado');
+  }
+
+  // ===== CLASES DE PRUEBA: solo administradores (no se publican ni avisan a los miembros; se ven en «Ver como usuario») =====
+  let modoPrueba = false, pruebas = [];
+  function abrirPrueba(item) {
+    openModal('live', item || null);
+    modoPrueba = true; // después de openModal: el modal normal lo deja apagado
+    document.getElementById('modalTitle').textContent = (item ? 'Editar' : 'Nueva') + ' clase de prueba (solo administradores)';
+  }
+  async function cargarPruebas() {
+    try { const r = await apiAdmin('/api/admin/clases-prueba'); pruebas = r.clases || []; } catch (e) { pruebas = []; }
+    renderPruebas();
+  }
+  function renderPruebas() {
+    const t = document.getElementById('pruebaTable'); if (!t) return;
+    t.innerHTML = pruebas.map(c => '<tr><td><strong>' + escAdm(c.title) + '</strong><br><span style="font-size:.78rem;color:var(--text-muted)">' + escAdm(c.desc || '') + '</span></td><td>' + escAdm(c.date) + '</td><td>' + escAdm(c.time) + '</td><td>' + (Number(c.duration) || 60) + ' min</td><td>' + (c.link ? '<a href="' + escAdm(c.link) + '" target="_blank" rel="noopener" style="color:var(--primary)">Enlace</a>' : '—') + '</td><td><button class="btn btn-o btn-sm" data-id="' + escAdm(c.id) + '" onclick="editarPrueba(this.dataset.id)">Editar</button> <button class="btn btn-d btn-sm" data-id="' + escAdm(c.id) + '" onclick="borrarPrueba(this.dataset.id)">Eliminar</button></td></tr>').join('')
+      || '<tr><td colspan="6" style="text-align:center;padding:26px;color:var(--text-muted);">Aún no hay clases de prueba</td></tr>';
+  }
+  function escAdm(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch])); }
+  function editarPrueba(id) { const c = pruebas.find(x => x.id === id); if (c) abrirPrueba(c); }
+  async function guardarPrueba(item) {
+    try {
+      await apiAdmin('/api/admin/clases-prueba', { method: 'POST', body: JSON.stringify({ ...item, id: editingId || undefined }) });
+      closeModal(); toast('Clase de prueba guardada. Mírala en «Ver como usuario».'); await cargarPruebas();
+    } catch (e) { toast('No se pudo guardar la clase de prueba: ' + e.message); }
+  }
+  async function borrarPrueba(id) {
+    if (!confirm('¿Eliminar esta clase de prueba?')) return;
+    try { await apiAdmin('/api/admin/clases-prueba/' + encodeURIComponent(id), { method: 'DELETE' }); toast('Clase de prueba eliminada'); await cargarPruebas(); }
+    catch (e) { toast('No se pudo eliminar: ' + e.message); }
   }
 
   // ===== CLASES EN VIVO: el enlace y la grabación viven en el servidor, nunca en content.json =====

@@ -34,3 +34,4 @@
 .cv-x { position: absolute; top: 12px; right: 14px; border: 0; background: none; color: var(--text-light, var(--text-muted)); font-size: 1.6rem; line-height: 1; cursor: pointer; }
 .cv-inst { margin-top: 12px; } .cv-nota { font-size: .84rem; color: var(--text-light, var(--text-muted)); }
 @media (max-width: 760px) { .cv-hero { grid-template-columns: 1fr; padding: 20px; } .cv-cd b { font-size: 1.3rem; } .cv-hero h2 { font-size: 1.25rem; } .cv-acc .cv-btn { flex: 1 1 auto; text-align: center; } }
+.cv-tag.prueba { background: #B7791F; color: #fff; }

@@ -51,10 +51,10 @@
       // Hora de Ciudad de México y duración, igual que la pantalla de Clases en vivo
       const cv = window.ftClasesVivo, dt = cv ? cv.inicioMs(w) : new Date(w.date + 'T' + (w.time || '20:00') + ':00').getTime();
       if (!dt) return;
-      const fin = dt + Math.max(15, Math.min(480, Number(w.duration) || 60)) * 60000, ir = () => showPage('courses-live');
-      if (ahora >= dt && ahora < fin) add('live:' + w.id + ':vivo', 'En vivo ahora: ' + w.title, 'La clase ya comenzó. Entra desde Clases en vivo.', ir, 'live');
-      else if (dt > ahora && dt - ahora <= 60 * 60000) add('live:' + w.id + ':1h', 'Tu clase empieza en menos de 1 hora', w.title, ir, 'live');
-      else if (dt > ahora && dt - ahora < 2 * DIA) add('live:' + w.id, 'Clase en vivo: ' + w.title, new Date(dt).toLocaleString('es-MX', { timeZone: 'America/Mexico_City', weekday: 'long', day: 'numeric', month: 'long', hour: 'numeric', minute: '2-digit' }), ir, 'live');
+      const fin = dt + Math.max(15, Math.min(480, Number(w.duration) || 60)) * 60000, ir = () => showPage('courses-live'), pr = w.prueba ? 'Prueba · ' : '';
+      if (ahora >= dt && ahora < fin) add('live:' + w.id + ':vivo', pr + 'En vivo ahora: ' + w.title, 'La clase ya comenzó. Entra desde Clases en vivo.', ir, 'live');
+      else if (dt > ahora && dt - ahora <= 60 * 60000) add('live:' + w.id + ':1h', pr + 'Tu clase empieza en menos de 1 hora', w.title, ir, 'live');
+      else if (dt > ahora && dt - ahora < 2 * DIA) add('live:' + w.id, pr + 'Clase en vivo: ' + w.title, new Date(dt).toLocaleString('es-MX', { timeZone: 'America/Mexico_City', weekday: 'long', day: 'numeric', month: 'long', hour: 'numeric', minute: '2-digit' }), ir, 'live');
     });
     (sd.courses || []).forEach(c => {
       const t = c.date ? new Date(c.date + 'T00:00:00').getTime() : 0;

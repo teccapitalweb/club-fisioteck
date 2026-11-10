@@ -23,13 +23,27 @@
   const hora = w => (w.time || '--:--') + ' h (CDMX) · ' + duracion(w) + ' min';
   const lista = () => ((typeof siteData !== 'undefined' && siteData && siteData.live) || []).filter(w => w && w.title);
 
+  // Clases de PRUEBA: solo las ve un administrador en «Ver como usuario» (el servidor las entrega únicamente a administradores; nunca están en content.json,
+  // así que a los miembros no les llegan ni como clase ni como aviso).
+  let pruebaT = 0;
+  async function cargarPruebas() {
+    if (window.ftVistaAdmin !== true || typeof certFetch !== 'function' || Date.now() - pruebaT < 4000) return;
+    pruebaT = Date.now();
+    try {
+      const r = await certFetch('/api/admin/clases-prueba');
+      if (typeof siteData === 'undefined' || !siteData) return;
+      siteData.live = (siteData.live || []).filter(w => !w.prueba).concat(r.clases || []);
+      pintar(); if (window.ftBarra) ftBarra.refrescar();
+    } catch (_) { /* sin servidor o sin permiso: simplemente no hay pruebas */ }
+  }
+
   async function cargarInscritas() {
     if (cargadas || !conPlan() || typeof auth === 'undefined' || !auth.currentUser) return;
     cargadas = true;
     try { const r = await certFetch('/api/webinars/registros'); inscritas = new Set((r.ids || []).map(String)); pintar(); }
     catch (_) { cargadas = false; }
   }
-  if (typeof auth !== 'undefined') auth.onAuthStateChanged(() => { inscritas = new Set(); cargadas = false; cargarInscritas(); });
+  if (typeof auth !== 'undefined') auth.onAuthStateChanged(() => { inscritas = new Set(); cargadas = false; cargarInscritas(); setTimeout(cargarPruebas, 3500); });
 
   function montar() {
     const sec = $('page-courses-live'); if (!sec) return null;
@@ -73,7 +87,7 @@
 
   function hero(w, ahora) {
     const vivo = enVivo(w, ahora), id = String(w.id), insc = inscritas.has(id);
-    return '<section class="cv-hero"><div class="cv-hero-info"><span class="cv-eyebrow' + (vivo ? ' vivo' : '') + '">' + (vivo ? 'En vivo ahora' : 'Próxima clase') + '</span>' +
+    return '<section class="cv-hero"><div class="cv-hero-info"><span class="cv-eyebrow' + (vivo ? ' vivo' : '') + '">' + (vivo ? 'En vivo ahora' : 'Próxima clase') + (w.prueba ? ' · prueba' : '') + '</span>' +
       '<h2>' + esc(w.title) + '</h2><div class="cv-meta"><span>' + esc(fechaLarga(w)) + '</span><span>' + esc(hora(w)) + '</span>' + (w.instructor ? '<span>' + esc(w.instructor) + '</span>' : '') + '</div>' +
       (w.desc ? '<p>' + esc(w.desc) + '</p>' : '') +
       '<div class="cv-acc"><button type="button" class="cv-btn pri" data-a="unir">' + (vivo ? 'Entrar a la transmisión' : 'Unirme a la clase') + '</button>' +
@@ -99,7 +113,7 @@
     const img = w.thumbnail && typeof driveImageUrl === 'function' ? driveImageUrl(w.thumbnail) : '';
     const dia = Number((w.date || '').slice(8, 10)) || d.getUTCDate(), mes = MESES[(Number((w.date || '').slice(5, 7)) || (d.getUTCMonth() + 1)) - 1];
     const graba = w.tieneGrabacion || (w.recordingUrl && String(w.recordingUrl).trim());
-    const etiqueta = prox ? (vivo ? '<span class="cv-tag vivo">En vivo</span>' : inscritas.has(id) ? '<span class="cv-tag ok">Inscrita</span>' : '<span class="cv-tag">Próxima</span>') : (graba ? '<span class="cv-tag ok">Grabación</span>' : '<span class="cv-tag">Finalizada</span>');
+    const etiqueta = (w.prueba ? '<span class="cv-tag prueba">Prueba</span>' : '') + (prox ? (vivo ? '<span class="cv-tag vivo">En vivo</span>' : inscritas.has(id) ? '<span class="cv-tag ok">Inscrita</span>' : '<span class="cv-tag">Próxima</span>') : (graba ? '<span class="cv-tag ok">Grabación</span>' : '<span class="cv-tag">Finalizada</span>'));
     return '<article class="cv-card" tabindex="0" data-id="' + esc(id) + '"><div class="cv-cover">' + (img ? '<img src="' + esc(img) + '" alt="" loading="lazy" onerror="this.remove()">' : '') + '<div class="cv-fecha"><b>' + dia + '</b><small>' + mes + '</small></div></div>' +
       '<div class="cv-body">' + etiqueta + (w.badge && prox ? '<span class="cv-tag">' + esc(w.badge) + '</span>' : '') + '<h3>' + esc(w.title) + '</h3>' +
       '<div class="cv-meta">' + (w.instructor ? '<span>' + esc(w.instructor) + '</span>' : '') + '<span>' + duracion(w) + ' min</span>' + (w.time ? '<span>' + esc(w.time) + ' h</span>' : '') + '</div></div></article>';
@@ -151,8 +165,8 @@
   }
 
   const original = window.renderLive;
-  window.renderLive = function () { try { pintar(); cargarInscritas(); } catch (e) { if (typeof original === 'function') return original.apply(this, arguments); } };
+  window.renderLive = function () { try { pintar(); cargarInscritas(); cargarPruebas(); } catch (e) { if (typeof original === 'function') return original.apply(this, arguments); } };
   const pgOriginal = window.showPage;
-  window.showPage = function (page) { const r = pgOriginal.apply(this, arguments); if (page === 'courses-live') { pintar(); cargarInscritas(); } else { clearInterval(timer); timer = 0; } return r; };
+  window.showPage = function (page) { const r = pgOriginal.apply(this, arguments); if (page === 'courses-live') { pintar(); cargarInscritas(); cargarPruebas(); } else { clearInterval(timer); timer = 0; } return r; };
   window.ftClasesVivo = { pintar, inicioMs, enVivo, proxima, inscritas: () => inscritas };
 })();
