@@ -1,0 +1,36 @@
+/* Club FisioTeck — Clases en vivo */
+.cv-hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; padding: 28px; border: 1px solid var(--border); border-radius: var(--radius, 16px); background: linear-gradient(135deg, var(--bg-card, var(--surface, #fff)) 0%, var(--accent-ghost) 100%); margin-bottom: 22px; }
+.cv-eyebrow { display: inline-block; font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.cv-eyebrow.vivo { color: #fff; background: #E03B4A; padding: 4px 12px; border-radius: 999px; animation: cvpulso 2s infinite; }
+@keyframes cvpulso { 0%, 100% { opacity: 1; } 50% { opacity: .65; } }
+.cv-hero h2, .cv-modal h2 { margin: 8px 0 10px; font-size: 1.5rem; line-height: 1.2; letter-spacing: -.02em; }
+.cv-hero p, .cv-modal p { margin: 12px 0 0; font-size: .9rem; line-height: 1.6; color: var(--text-light, var(--text-muted)); max-width: 560px; }
+.cv-meta { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .82rem; color: var(--text-light, var(--text-muted)); }
+.cv-meta span + span::before { content: ''; display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .5; margin-right: 16px; vertical-align: middle; }
+.cv-acc { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.cv-btn { padding: 11px 20px; border-radius: 12px; border: 1px solid var(--border-2, var(--border)); background: var(--bg-card, transparent); color: var(--text); font: inherit; font-weight: 700; font-size: .86rem; cursor: pointer; transition: border-color .15s, transform .15s; }
+.cv-btn:hover { border-color: var(--accent); transform: translateY(-1px); }
+.cv-btn.pri { background: var(--accent); border-color: var(--accent); color: var(--on-accent, #fff); }
+.cv-cd { display: grid; grid-template-columns: repeat(4, minmax(64px, 1fr)); gap: 8px; align-self: center; }
+.cv-cd div { text-align: center; padding: 14px 8px; border-radius: 14px; border: 1px solid var(--border); background: var(--bg-card, var(--surface, #fff)); }
+.cv-cd b { display: block; font-size: 1.7rem; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -.03em; }
+.cv-cd small { display: block; margin-top: 6px; font-size: .62rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--text-light, var(--text-muted)); }
+.cv-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+.cv-tab { padding: 9px 18px; border-radius: 999px; border: 1px solid var(--border-2, var(--border)); background: var(--bg-card, transparent); color: var(--text); font: inherit; font-weight: 700; font-size: .82rem; cursor: pointer; }
+.cv-tab.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent, #fff); }
+.cv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 18px; }
+.cv-card { border: 1px solid var(--border); border-radius: var(--radius, 16px); background: var(--bg-card, var(--surface, #fff)); overflow: hidden; cursor: pointer; transition: transform .2s, box-shadow .2s, border-color .2s; }
+.cv-card:hover, .cv-card:focus-visible { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 10px 26px rgba(0,0,0,.1); outline: none; }
+.cv-cover { position: relative; aspect-ratio: 16 / 9; background: linear-gradient(135deg, #0A1B33, #11315B); }
+.cv-cover img { display: block; width: 100%; max-width: none; height: 100%; object-fit: cover; }
+.cv-fecha { position: absolute; right: 12px; bottom: 12px; padding: 7px 13px; border-radius: 10px; background: rgba(6,11,18,.75); color: #fff; text-align: center; backdrop-filter: blur(6px); }
+.cv-fecha b { display: block; font-size: 1.3rem; line-height: 1; } .cv-fecha small { font-size: .65rem; text-transform: uppercase; letter-spacing: .1em; opacity: .85; }
+.cv-body { padding: 16px 18px 18px; } .cv-body h3 { margin: 10px 0 8px; font-size: 1rem; line-height: 1.3; }
+.cv-tag { display: inline-block; margin-right: 6px; padding: 3px 10px; border-radius: 999px; font-size: .68rem; font-weight: 800; background: var(--accent-ghost); color: var(--accent); }
+.cv-tag.vivo { background: #E03B4A; color: #fff; } .cv-tag.ok { background: rgba(47,139,99,.14); color: #2F8B63; }
+.cv-vacio { text-align: center; padding: 48px 24px; border: 1px dashed var(--border-2, var(--border)); border-radius: var(--radius, 16px); } .cv-vacio b { display: block; font-size: 1.05rem; margin-bottom: 6px; } .cv-vacio span { font-size: .86rem; color: var(--text-light, var(--text-muted)); }
+.cv-modal { position: fixed; inset: 0; z-index: 9000; background: rgba(6,11,18,.6); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.cv-modal-caja { position: relative; width: 100%; max-width: 560px; max-height: 90vh; overflow: auto; padding: 28px; border-radius: 18px; background: var(--bg-card, var(--surface, #fff)); color: var(--text); }
+.cv-x { position: absolute; top: 12px; right: 14px; border: 0; background: none; color: var(--text-light, var(--text-muted)); font-size: 1.6rem; line-height: 1; cursor: pointer; }
+.cv-inst { margin-top: 12px; } .cv-nota { font-size: .84rem; color: var(--text-light, var(--text-muted)); }
+@media (max-width: 760px) { .cv-hero { grid-template-columns: 1fr; padding: 20px; } .cv-cd b { font-size: 1.3rem; } .cv-hero h2 { font-size: 1.25rem; } .cv-acc .cv-btn { flex: 1 1 auto; text-align: center; } }
