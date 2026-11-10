@@ -697,6 +697,16 @@
           <tbody id="pruebaTable"></tbody>
         </table>
       </div>
+      <div class="admin-card" style="overflow-x:auto;margin-top:20px;">
+        <div style="padding:16px 18px 4px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start;"><div><strong>Grabaciones automáticas (Zoom → Bunny)</strong>
+          <p style="font-size:.8rem;color:var(--text-muted);margin:6px 0 0;line-height:1.5;">Las clases creadas con «Crear la reunión de Zoom con grabación automática». Al terminar la clase Zoom procesa el video, el servidor lo sube a Bunny y aparece solo en Grabaciones. Puede tardar unos minutos.</p></div>
+          <button class="btn btn-o btn-sm" onclick="cargarAuto()">Actualizar</button></div>
+        <p id="autoAviso" style="font-size:.8rem;color:var(--danger);margin:6px 18px 0;"></p>
+        <table class="admin-table">
+          <thead><tr><th>Clase</th><th>Fecha</th><th>Estado</th><th></th></tr></thead>
+          <tbody id="autoTable"></tbody>
+        </table>
+      </div>
     </section>
 
     <!-- PDFS -->
@@ -1259,6 +1269,7 @@
     cargarLibresPriv();
     cargarWebinarsPriv();
     cargarPruebas();
+    cargarAuto();
     renderNewsList();
     loadFirebaseMembers();
     loadGitConfig();
@@ -2137,6 +2148,7 @@
         <div class="form-group"><label class="form-label">Hora (Ciudad de México)</label><input class="form-input" type="time" id="mTime" value="${item?.time||''}"></div>
         <div class="form-group"><label class="form-label">Duración (minutos)</label><input class="form-input" type="number" id="mDuration" min="15" max="480" step="5" value="${item?.duration||60}"><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">Con la hora y la duración el Club muestra «En vivo ahora» mientras dura la clase y la pasa a Grabaciones al terminar.</p></div>
         <div class="form-group"><label class="form-label">Enlace de la sesión (Zoom, Meet, etc.)</label><input class="form-input" id="mLink" value="${item?.link||''}" placeholder="https://..."></div>
+        <div class="form-group" style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;"><label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:.86rem;font-weight:600;"><input type="checkbox" id="mZoomAuto" style="margin-top:3px;"><span>Crear la reunión de Zoom con grabación automática<small style="display:block;font-weight:400;color:var(--text-muted);margin-top:3px;line-height:1.5;">El enlace se llena solo. Al terminar la clase, la grabación se sube sola a Bunny y aparece en Grabaciones. Tú entras como anfitrión; el ponente entra como participante.</small></span></label></div>
         <div class="form-group"><label class="form-label">URL de Thumbnail (imagen de portada)</label><input class="form-input" id="mThumb" value="${item?.thumbnail||''}" placeholder="https://drive.google.com/file/d/.../view"></div>
         <div class="form-group"><label class="form-label">Badge</label><input class="form-input" id="mBadge" value="${item?.badge||''}"></div>
         <hr style="margin:16px 0;border:none;border-top:1px solid var(--border);">
@@ -2266,7 +2278,9 @@
         recordingUrl: document.getElementById('mRecordingUrl').value
       };
       if (!item.title) { toast('El título es obligatorio'); return; }
-      if (modoPrueba) { guardarPrueba(item); return; } // clase de prueba: va al servidor, nunca a content.json
+      const conZoom = !!(document.getElementById('mZoomAuto') || {}).checked;
+      if (modoPrueba) item.id = editingId || ('prueba-' + Date.now());
+      if (modoPrueba || conZoom) { guardarClaseLive(item, conZoom); return; } // prueba: va al servidor, nunca a content.json
       guardarWebinarPrivado(item);
       if (editingId) { const idx = data.live.findIndex(c=>c.id===editingId); if(idx>=0) data.live[idx]=item; }
       else data.live.unshift(item);
@@ -2363,11 +2377,45 @@
   }
   function escAdm(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch])); }
   function editarPrueba(id) { const c = pruebas.find(x => x.id === id); if (c) abrirPrueba(c); }
-  async function guardarPrueba(item) {
-    try {
-      await apiAdmin('/api/admin/clases-prueba', { method: 'POST', body: JSON.stringify({ ...item, id: editingId || undefined }) });
+  // Guarda una clase en vivo que es de prueba y/o crea su reunión de Zoom con grabación automática (Zoom → Bunny)
+  async function guardarClaseLive(item, conZoom) {
+    let zoom = null;
+    if (conZoom) {
+      try { zoom = await apiAdmin('/api/admin/clases-auto/zoom', { method: 'POST', body: JSON.stringify({ id: String(item.id), title: item.title, date: item.date, time: item.time, duration: item.duration }) }); item.link = zoom.joinUrl; }
+      catch (e) { toast('No se pudo crear la reunión de Zoom: ' + e.message); return; }
+    }
+    if (modoPrueba) {
+      try { await apiAdmin('/api/admin/clases-prueba', { method: 'POST', body: JSON.stringify(item) }); }
+      catch (e) { toast('No se pudo guardar la clase de prueba: ' + e.message); return; }
       closeModal(); toast('Clase de prueba guardada. Mírala en «Ver como usuario».'); await cargarPruebas();
-    } catch (e) { toast('No se pudo guardar la clase de prueba: ' + e.message); }
+    } else {
+      guardarWebinarPrivado(item);
+      const idx = data.live.findIndex(c => c.id === item.id);
+      if (idx >= 0) data.live[idx] = item; else data.live.unshift(item);
+      saveData(); renderLive(); renderDashboard(); closeModal(); toast('Guardado. Recuerda publicar los cambios para que los miembros vean la clase.');
+    }
+    if (zoom) {
+      cargarAuto();
+      if (zoom.startUrl) window.prompt('Reunión de Zoom creada con grabación automática.\n\nEste es TU enlace para entrar como ANFITRIÓN (cópialo ahora; el ponente y los alumnos usan el enlace público de la clase):', zoom.startUrl);
+    }
+  }
+
+  // ===== GRABACIONES AUTOMÁTICAS (Zoom → Bunny): estado de cada clase =====
+  const ESTADO_AUTO = { esperando: 'Esperando la grabación de Zoom', subiendo: 'Subiendo a Bunny', lista: 'Lista', error: 'Con error' };
+  async function cargarAuto() {
+    const t = document.getElementById('autoTable'), av = document.getElementById('autoAviso'); if (!t) return;
+    try {
+      const r = await apiAdmin('/api/admin/clases-auto');
+      const faltan = []; if (!r.zoomListo) faltan.push('Zoom'); if (!r.bunnyListo) faltan.push('Bunny');
+      av.textContent = faltan.length ? 'Falta configurar ' + faltan.join(' y ') + ' en el servidor (Railway). Mientras tanto la reunión automática no se puede crear.' : '';
+      t.innerHTML = (r.entradas || []).map(e => '<tr><td><strong>' + escAdm(e.titulo) + '</strong><br><span style="font-size:.78rem;color:var(--text-muted)">' + escAdm(e.claseId) + '</span></td><td>' + escAdm(e.fecha) + '</td><td><span class="badge ' + (e.estado === 'lista' ? 'badge-success' : e.estado === 'error' ? 'badge-danger' : 'badge-info') + '">' + escAdm(ESTADO_AUTO[e.estado] || e.estado) + '</span>' + (e.error ? '<br><span style="font-size:.76rem;color:var(--danger)">' + escAdm(e.error) + '</span>' : '') + '</td><td>' + (e.estado === 'error' || e.estado === 'esperando' ? '<button class="btn btn-o btn-sm" data-id="' + escAdm(e.id) + '" onclick="reintentarAuto(this.dataset.id)">Reintentar</button>' : '') + '</td></tr>').join('')
+        || '<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--text-muted);">Aún no hay clases con Zoom automático</td></tr>';
+    } catch (e) { av.textContent = 'No se pudo leer el estado: ' + e.message; }
+  }
+  async function reintentarAuto(id) {
+    try { await apiAdmin('/api/admin/clases-auto/' + encodeURIComponent(id) + '/reintentar', { method: 'POST', body: '{}' }); toast('Se volvió a pedir la grabación a Zoom'); }
+    catch (e) { toast('No se pudo reintentar: ' + e.message); }
+    cargarAuto();
   }
   async function borrarPrueba(id) {
     if (!confirm('¿Eliminar esta clase de prueba?')) return;

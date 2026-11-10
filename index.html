@@ -1920,7 +1920,7 @@
   <link rel="stylesheet" href="club-plan.css?v=20261220">
   <link rel="stylesheet" href="club-glosario.css?v=20261221">
   <link rel="stylesheet" href="club-ejercicios.css?v=4">
-  <link rel="stylesheet" href="club-clases-vivo.css?v=2">
+  <link rel="stylesheet" href="club-clases-vivo.css?v=3">
   <link rel="stylesheet" href="club-pacientes.css?v=20261213">
   <link rel="stylesheet" href="club-inicios.css?v=20261231">
   <link rel="stylesheet" href="club-juegos.css?v=20261026">
@@ -4301,21 +4301,20 @@
 
   // ===== WEBINAR POPUP =====
   function checkWebinarPopup() {
-    const now = new Date();
-    const upcoming = (siteData.live || [])
-      .filter(w => {
-        const dt = new Date(w.date + 'T' + (w.time || '23:59') + ':00');
-        return dt > now;
-      })
-      .sort((a,b) => new Date(a.date + 'T' + (a.time||'23:59')) - new Date(b.date + 'T' + (b.time||'23:59')));
+    const now = Date.now(), cv = window.ftClasesVivo;
+    // Hora de Ciudad de México y duración (igual que la pantalla de Clases en vivo); incluye la clase que está en vivo
+    const ini = w => cv ? cv.inicioMs(w) : new Date(w.date + 'T' + (w.time || '23:59') + ':00').getTime();
+    const fin = w => ini(w) + Math.max(15, Math.min(480, Number(w.duration) || 60)) * 60000;
+    const upcoming = (siteData.live || []).filter(w => ini(w) && fin(w) > now).sort((a,b) => ini(a) - ini(b));
 
     if (upcoming.length === 0) return;
     const next = upcoming[0];
 
-    // Check if within 48 hours
-    const targetDate = new Date(next.date + 'T' + (next.time || '20:00') + ':00');
-    const hoursLeft = (targetDate - now) / (1000 * 60 * 60);
-    if (hoursLeft > 48 || hoursLeft < 0) return;
+    // Solo si empieza en las próximas 48 horas (o ya está en vivo)
+    const hoursLeft = (ini(next) - now) / (1000 * 60 * 60);
+    if (hoursLeft > 48) return;
+    const vivo = hoursLeft <= 0;
+    const targetDate = new Date(next.date + 'T12:00:00');
 
     // Check if already dismissed
     const popupKey = 'wp_dismissed_' + next.id;
@@ -4324,9 +4323,9 @@
     // Show popup
     const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
     const d = targetDate;
-    document.getElementById('wpTitle').textContent = next.title || 'Clase en vivo';
+    document.getElementById('wpTitle').textContent = (vivo ? 'En vivo ahora: ' : '') + (next.title || 'Clase en vivo');
     document.getElementById('wpDate').textContent = d.getDate() + ' de ' + months[d.getMonth()] + ', ' + d.getFullYear();
-    document.getElementById('wpTime').textContent = (next.time || '20:00') + ' hrs';
+    document.getElementById('wpTime').textContent = (next.time || '20:00') + ' hrs (CDMX)';
     document.getElementById('wpInstructor').textContent = next.instructor ? next.instructor : '';
     document.getElementById('webinarPopup').style.display = 'flex';
 
@@ -7394,7 +7393,7 @@
 <script src="club-glosario.js?v=20261224"></script>
 <script src="club-ejercicios-datos.js?v=3"></script>
 <script src="club-ejercicios.js?v=4"></script>
-<script src="club-clases-vivo.js?v=2"></script>
+<script src="club-clases-vivo.js?v=3"></script>
 <script src="club-pacientes.js?v=20261214"></script>
 <script src="club-inicios.js?v=20261231"></script>
 <script src="club-juegos.js?v=20261026"></script>

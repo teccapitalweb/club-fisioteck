@@ -11,7 +11,7 @@
   const pad = n => String(n).padStart(2, '0');
   const conPlan = () => (typeof memberIsPaid !== 'undefined' && memberIsPaid) || window.ftVistaAdmin === true;
   const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-  let tab = 'proximas', inscritas = new Set(), cargadas = false, timer = 0;
+  let tab = 'proximas', inscritas = new Set(), cargadas = false, timer = 0, conGrabacion = new Set(), grabT = 0;
 
   // Hora de Ciudad de México (UTC-6 todo el año desde 2022)
   function inicioMs(w) { const t = Date.parse((w.date || '') + 'T' + (/^\d{1,2}:\d{2}$/.test(w.time || '') ? pad(w.time.split(':')[0]) + ':' + w.time.split(':')[1] : '12:00') + ':00-06:00'); return Number.isFinite(t) ? t : 0; }
@@ -37,13 +37,39 @@
     } catch (_) { /* sin servidor o sin permiso: simplemente no hay pruebas */ }
   }
 
+  // Qué clases ya tienen grabación (Drive o la automática de Zoom → Bunny): así las tarjetas se marcan solas, sin republicar el contenido
+  async function cargarGrabaciones() {
+    if (!conPlan() || typeof certFetch !== 'function' || typeof auth === 'undefined' || !auth.currentUser || Date.now() - grabT < 20000) return;
+    grabT = Date.now();
+    try { const r = await certFetch('/api/webinars/grabaciones'); conGrabacion = new Set((r.ids || []).map(String)); pintar(); } catch (_) { /* sin servidor: se usa lo que diga el contenido publicado */ }
+  }
+  const tieneGrabacion = w => !!(w.tieneGrabacion || (w.recordingUrl && String(w.recordingUrl).trim()) || conGrabacion.has(String(w.id)));
+
+  // Reproduce la grabación: la automática llega como enlace firmado de Bunny (embed); la manual sigue el camino de siempre (Drive)
+  async function reproducir(id) {
+    if (!conPlan()) { aviso('Las grabaciones son para miembros. Elige tu plan para verlas.'); return; }
+    const w = lista().find(x => String(x.id) === String(id)) || {};
+    try {
+      const r = await certFetch('/api/webinars/' + encodeURIComponent(String(id)) + '/enlace?tipo=grabacion');
+      if (r.embed) {
+        document.getElementById('videoTitle').textContent = w.title || 'Grabación';
+        document.getElementById('videoContainer').innerHTML = '<iframe src="' + esc(r.url) + '" style="width:100%;height:100%;border:none;" allow="autoplay;encrypted-media;picture-in-picture;fullscreen" allowfullscreen></iframe>';
+        document.getElementById('videoModal').classList.add('active'); document.body.classList.add('modal-open');
+        if (typeof incrementarStatLogro === 'function') incrementarStatLogro('webinarsAttended', id);
+      } else verGrabacion(String(id));
+    } catch (e) {
+      if (e.status === 402) aviso('Las grabaciones son para miembros.');
+      else if (typeof showToast === 'function') showToast(e.status === 404 ? 'La grabación todavía no está lista. Puede tardar unos minutos después de la clase.' : e.message);
+    }
+  }
+
   async function cargarInscritas() {
     if (cargadas || !conPlan() || typeof auth === 'undefined' || !auth.currentUser) return;
     cargadas = true;
     try { const r = await certFetch('/api/webinars/registros'); inscritas = new Set((r.ids || []).map(String)); pintar(); }
     catch (_) { cargadas = false; }
   }
-  if (typeof auth !== 'undefined') auth.onAuthStateChanged(() => { inscritas = new Set(); cargadas = false; cargarInscritas(); setTimeout(cargarPruebas, 3500); });
+  if (typeof auth !== 'undefined') auth.onAuthStateChanged(() => { inscritas = new Set(); cargadas = false; conGrabacion = new Set(); grabT = 0; cargarInscritas(); cargarGrabaciones(); setTimeout(cargarPruebas, 3500); });
 
   function montar() {
     const sec = $('page-courses-live'); if (!sec) return null;
@@ -112,7 +138,7 @@
     const prox = proxima(w, ahora), vivo = enVivo(w, ahora), id = String(w.id), d = new Date(inicioMs(w) - 6 * 36e5 + 0);
     const img = w.thumbnail && typeof driveImageUrl === 'function' ? driveImageUrl(w.thumbnail) : '';
     const dia = Number((w.date || '').slice(8, 10)) || d.getUTCDate(), mes = MESES[(Number((w.date || '').slice(5, 7)) || (d.getUTCMonth() + 1)) - 1];
-    const graba = w.tieneGrabacion || (w.recordingUrl && String(w.recordingUrl).trim());
+    const graba = tieneGrabacion(w);
     const etiqueta = (w.prueba ? '<span class="cv-tag prueba">Prueba</span>' : '') + (prox ? (vivo ? '<span class="cv-tag vivo">En vivo</span>' : inscritas.has(id) ? '<span class="cv-tag ok">Inscrita</span>' : '<span class="cv-tag">Próxima</span>') : (graba ? '<span class="cv-tag ok">Grabación</span>' : '<span class="cv-tag">Finalizada</span>'));
     return '<article class="cv-card" tabindex="0" data-id="' + esc(id) + '"><div class="cv-cover">' + (img ? '<img src="' + esc(img) + '" alt="" loading="lazy" onerror="this.remove()">' : '') + '<div class="cv-fecha"><b>' + dia + '</b><small>' + mes + '</small></div></div>' +
       '<div class="cv-body">' + etiqueta + (w.badge && prox ? '<span class="cv-tag">' + esc(w.badge) + '</span>' : '') + '<h3>' + esc(w.title) + '</h3>' +
@@ -122,7 +148,7 @@
   function detalle(id) {
     const w = lista().find(x => String(x.id) === String(id)); if (!w) return;
     const ahora = Date.now(), prox = proxima(w, ahora), vivo = enVivo(w, ahora), insc = inscritas.has(String(w.id));
-    const graba = w.tieneGrabacion || (w.recordingUrl && String(w.recordingUrl).trim());
+    const graba = tieneGrabacion(w);
     cerrar();
     const m = document.createElement('div'); m.className = 'cv-modal'; m.id = 'cvModal'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true');
     m.innerHTML = '<div class="cv-modal-caja"><button type="button" class="cv-x" aria-label="Cerrar">&times;</button>' +
@@ -138,7 +164,7 @@
     m.querySelector('[data-a="unir"]')?.addEventListener('click', () => unir(String(w.id)));
     m.querySelector('[data-a="inscribir"]')?.addEventListener('click', async () => { await inscribir(String(w.id)); if ($('cvModal')) detalle(w.id); });
     m.querySelector('[data-a="cal"]')?.addEventListener('click', () => calendario(w));
-    m.querySelector('[data-a="ver"]')?.addEventListener('click', () => { if (!conPlan()) { cerrar(); aviso('Las grabaciones son para miembros. Elige tu plan para verlas.'); return; } cerrar(); verGrabacion(String(w.id)); });
+    m.querySelector('[data-a="ver"]')?.addEventListener('click', () => { if (!conPlan()) { cerrar(); aviso('Las grabaciones son para miembros. Elige tu plan para verlas.'); return; } cerrar(); reproducir(String(w.id)); });
   }
   function escCierra(e) { if (e.key === 'Escape') cerrar(); }
   function cerrar() { const m = $('cvModal'); if (m) m.remove(); document.removeEventListener('keydown', escCierra); }
@@ -165,8 +191,8 @@
   }
 
   const original = window.renderLive;
-  window.renderLive = function () { try { pintar(); cargarInscritas(); cargarPruebas(); } catch (e) { if (typeof original === 'function') return original.apply(this, arguments); } };
+  window.renderLive = function () { try { pintar(); cargarInscritas(); cargarGrabaciones(); cargarPruebas(); } catch (e) { if (typeof original === 'function') return original.apply(this, arguments); } };
   const pgOriginal = window.showPage;
-  window.showPage = function (page) { const r = pgOriginal.apply(this, arguments); if (page === 'courses-live') { pintar(); cargarInscritas(); cargarPruebas(); } else { clearInterval(timer); timer = 0; } return r; };
+  window.showPage = function (page) { const r = pgOriginal.apply(this, arguments); if (page === 'courses-live') { pintar(); cargarInscritas(); cargarGrabaciones(); cargarPruebas(); } else { clearInterval(timer); timer = 0; } return r; };
   window.ftClasesVivo = { pintar, inicioMs, enVivo, proxima, inscritas: () => inscritas };
 })();
