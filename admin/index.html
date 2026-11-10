@@ -699,7 +699,7 @@
       </div>
       <div class="admin-card" style="overflow-x:auto;margin-top:20px;">
         <div style="padding:16px 18px 4px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start;"><div><strong>Grabaciones automáticas (Zoom → Bunny)</strong>
-          <p style="font-size:.8rem;color:var(--text-muted);margin:6px 0 0;line-height:1.5;">Las clases creadas con «Crear la reunión de Zoom con grabación automática». Al terminar la clase Zoom procesa el video, el servidor lo sube a Bunny y aparece solo en Grabaciones. Puede tardar unos minutos.</p></div>
+          <p style="font-size:.8rem;color:var(--text-muted);margin:6px 0 0;line-height:1.5;">Las clases creadas con «Crear la reunión con grabación automática». Al terminar la clase, Meet o Zoom genera el video, el servidor lo pasa a Bunny y aparece solo en Grabaciones. Puede tardar varios minutos.</p></div>
           <button class="btn btn-o btn-sm" onclick="cargarAuto()">Actualizar</button></div>
         <p id="autoAviso" style="font-size:.8rem;color:var(--danger);margin:6px 18px 0;"></p>
         <table class="admin-table">
@@ -2148,7 +2148,7 @@
         <div class="form-group"><label class="form-label">Hora (Ciudad de México)</label><input class="form-input" type="time" id="mTime" value="${item?.time||''}"></div>
         <div class="form-group"><label class="form-label">Duración (minutos)</label><input class="form-input" type="number" id="mDuration" min="15" max="480" step="5" value="${item?.duration||60}"><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">Con la hora y la duración el Club muestra «En vivo ahora» mientras dura la clase y la pasa a Grabaciones al terminar.</p></div>
         <div class="form-group"><label class="form-label">Enlace de la sesión (Zoom, Meet, etc.)</label><input class="form-input" id="mLink" value="${item?.link||''}" placeholder="https://..."></div>
-        <div class="form-group" style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;"><label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:.86rem;font-weight:600;"><input type="checkbox" id="mZoomAuto" style="margin-top:3px;"><span>Crear la reunión de Zoom con grabación automática<small style="display:block;font-weight:400;color:var(--text-muted);margin-top:3px;line-height:1.5;">El enlace se llena solo. Al terminar la clase, la grabación se sube sola a Bunny y aparece en Grabaciones. Tú entras como anfitrión; el ponente entra como participante.</small></span></label></div>
+        <div class="form-group" style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;"><label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:.86rem;font-weight:600;"><input type="checkbox" id="mZoomAuto" style="margin-top:3px;"><span>Crear la reunión con grabación automática<small style="display:block;font-weight:400;color:var(--text-muted);margin-top:3px;line-height:1.5;">El enlace se llena solo. Al terminar la clase, la grabación se sube sola a Bunny y aparece en Grabaciones. Entras con la cuenta organizadora; el ponente entra como participante.</small></span></label><div style="margin:10px 0 0 28px;"><label class="form-label" style="margin-bottom:4px;">Plataforma</label><select class="form-input" id="mPlataforma" style="max-width:240px;"><option value="meet">Google Meet</option><option value="zoom">Zoom</option></select></div></div>
         <div class="form-group"><label class="form-label">URL de Thumbnail (imagen de portada)</label><input class="form-input" id="mThumb" value="${item?.thumbnail||''}" placeholder="https://drive.google.com/file/d/.../view"></div>
         <div class="form-group"><label class="form-label">Badge</label><input class="form-input" id="mBadge" value="${item?.badge||''}"></div>
         <hr style="margin:16px 0;border:none;border-top:1px solid var(--border);">
@@ -2380,9 +2380,10 @@
   // Guarda una clase en vivo que es de prueba y/o crea su reunión de Zoom con grabación automática (Zoom → Bunny)
   async function guardarClaseLive(item, conZoom) {
     let zoom = null;
+    const plataforma = ((document.getElementById('mPlataforma') || {}).value === 'zoom') ? 'zoom' : 'meet';
     if (conZoom) {
-      try { zoom = await apiAdmin('/api/admin/clases-auto/zoom', { method: 'POST', body: JSON.stringify({ id: String(item.id), title: item.title, date: item.date, time: item.time, duration: item.duration }) }); item.link = zoom.joinUrl; }
-      catch (e) { toast('No se pudo crear la reunión de Zoom: ' + e.message); return; }
+      try { zoom = await apiAdmin('/api/admin/clases-auto/' + plataforma, { method: 'POST', body: JSON.stringify({ id: String(item.id), title: item.title, date: item.date, time: item.time, duration: item.duration }) }); item.link = zoom.joinUrl; }
+      catch (e) { toast('No se pudo crear la reunión de ' + (plataforma === 'meet' ? 'Google Meet' : 'Zoom') + ': ' + e.message); return; }
     }
     if (modoPrueba) {
       try { await apiAdmin('/api/admin/clases-prueba', { method: 'POST', body: JSON.stringify(item) }); }
@@ -2396,19 +2397,20 @@
     }
     if (zoom) {
       cargarAuto();
-      if (zoom.startUrl) window.prompt('Reunión de Zoom creada con grabación automática.\n\nEste es TU enlace para entrar como ANFITRIÓN (cópialo ahora; el ponente y los alumnos usan el enlace público de la clase):', zoom.startUrl);
+      if (plataforma === 'zoom' && zoom.startUrl) window.prompt('Reunión de Zoom creada con grabación automática.\n\nEste es TU enlace para entrar como ANFITRIÓN (cópialo ahora; el ponente y los alumnos usan el enlace público de la clase):', zoom.startUrl);
+      else if (plataforma === 'meet') window.alert('Reunión de Google Meet creada con grabación automática.\n\nENTRA con la cuenta de Google organizadora (la misma que está conectada al servidor): así la grabación empieza sola.\n\nEnlace de la clase: ' + zoom.joinUrl + '\n\nEl ponente y los alumnos entran con ese mismo enlace como participantes.');
     }
   }
 
   // ===== GRABACIONES AUTOMÁTICAS (Zoom → Bunny): estado de cada clase =====
-  const ESTADO_AUTO = { esperando: 'Esperando la grabación de Zoom', subiendo: 'Subiendo a Bunny', lista: 'Lista', error: 'Con error' };
+  const ESTADO_AUTO = { esperando: 'Esperando la grabación', descargando: 'Pasando el video a Bunny', subiendo: 'Procesando en Bunny', lista: 'Lista', error: 'Con error' };
   async function cargarAuto() {
     const t = document.getElementById('autoTable'), av = document.getElementById('autoAviso'); if (!t) return;
     try {
       const r = await apiAdmin('/api/admin/clases-auto');
-      const faltan = []; if (!r.zoomListo) faltan.push('Zoom'); if (!r.bunnyListo) faltan.push('Bunny');
-      av.textContent = faltan.length ? 'Falta configurar ' + faltan.join(' y ') + ' en el servidor (Railway). Mientras tanto la reunión automática no se puede crear.' : '';
-      t.innerHTML = (r.entradas || []).map(e => '<tr><td><strong>' + escAdm(e.titulo) + '</strong><br><span style="font-size:.78rem;color:var(--text-muted)">' + escAdm(e.claseId) + '</span></td><td>' + escAdm(e.fecha) + '</td><td><span class="badge ' + (e.estado === 'lista' ? 'badge-success' : e.estado === 'error' ? 'badge-danger' : 'badge-info') + '">' + escAdm(ESTADO_AUTO[e.estado] || e.estado) + '</span>' + (e.error ? '<br><span style="font-size:.76rem;color:var(--danger)">' + escAdm(e.error) + '</span>' : '') + '</td><td>' + (e.estado === 'error' || e.estado === 'esperando' ? '<button class="btn btn-o btn-sm" data-id="' + escAdm(e.id) + '" onclick="reintentarAuto(this.dataset.id)">Reintentar</button>' : '') + '</td></tr>').join('')
+      const faltan = []; if (!r.meetListo && !r.zoomListo) faltan.push('Google Meet o Zoom'); if (!r.bunnyListo) faltan.push('Bunny');
+      av.textContent = faltan.length ? 'Falta configurar ' + faltan.join(' y ') + ' en el servidor (Railway). Mientras tanto la reunión automática no se puede crear.' : (!r.meetListo ? 'Solo Zoom está conectado: elige Zoom como plataforma.' : (!r.zoomListo ? 'Solo Google Meet está conectado.' : ''));
+      t.innerHTML = (r.entradas || []).map(e => '<tr><td><strong>' + escAdm(e.titulo) + '</strong><br><span style="font-size:.78rem;color:var(--text-muted)">' + (e.proveedor === 'meet' ? 'Google Meet' : 'Zoom') + ' · ' + escAdm(e.claseId) + '</span></td><td>' + escAdm(e.fecha) + '</td><td><span class="badge ' + (e.estado === 'lista' ? 'badge-success' : e.estado === 'error' ? 'badge-danger' : 'badge-info') + '">' + escAdm(ESTADO_AUTO[e.estado] || e.estado) + '</span>' + (e.error ? '<br><span style="font-size:.76rem;color:var(--danger)">' + escAdm(e.error) + '</span>' : '') + '</td><td>' + (e.estado === 'error' || e.estado === 'esperando' ? '<button class="btn btn-o btn-sm" data-id="' + escAdm(e.id) + '" onclick="reintentarAuto(this.dataset.id)">Reintentar</button>' : '') + '</td></tr>').join('')
         || '<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--text-muted);">Aún no hay clases con Zoom automático</td></tr>';
     } catch (e) { av.textContent = 'No se pudo leer el estado: ' + e.message; }
   }
