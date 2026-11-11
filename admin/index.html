@@ -721,7 +721,15 @@
           .gr-m { display: block; font-weight: 400; font-size: .8rem; color: var(--text-muted); margin-top: 2px; line-height: 1.5; }
           .gr-paso.fallo .gr-m { color: var(--danger, #DC2D3F); }
           .gr-aviso { font-size: .76rem; color: var(--warning, #B45309); margin-top: 8px; }
-          .gr-acc { margin-top: 12px; }
+          .gr-acc { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+          .gr-lista-card { display: grid; grid-template-columns: 190px 1fr; gap: 18px; align-items: stretch; }
+          .gr-cover { position: relative; border-radius: 10px; overflow: hidden; min-height: 108px; background: linear-gradient(135deg, #0A1B33, #11315B); display: grid; place-items: center; }
+          .gr-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+          .gr-cover svg { width: 40px; height: 40px; stroke: rgba(255,255,255,.55); fill: none; stroke-width: 1.4; stroke-linecap: round; }
+          .gr-ok { display: inline-flex; align-items: center; gap: 6px; font-size: .74rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--success, #0F9D6C); margin-bottom: 4px; }
+          .gr-titulo { font-size: 1.02rem; font-weight: 700; margin: 0 0 4px; }
+          .gr-sub { font-size: .8rem; color: var(--text-muted); line-height: 1.5; }
+          @media (max-width: 640px) { .gr-lista-card { grid-template-columns: 1fr; } .gr-cover { min-height: 140px; } }
         </style>
         <div class="gr-lista" id="autoLista"></div>
       </div>
@@ -2367,7 +2375,7 @@
     const lists = { course:'courses', live:'live', pdf:'pdfs', news:'news', member:'members' };
     data[lists[type]] = (data[lists[type]] || []).filter(i => i.id !== id);
     saveData();
-    if (type==='live') apiAdmin('/api/admin/webinars-enlaces/' + encodeURIComponent(String(id)), { method: 'DELETE' }).catch(() => {});
+    if (type==='live') { apiAdmin('/api/admin/webinars-enlaces/' + encodeURIComponent(String(id)), { method: 'DELETE' }).catch(() => {}); quitarEntradaAuto(id, false).then(cargarAuto).catch(() => {}); }
     if (type==='course') renderCourses();
     else if (type==='live') renderLive();
     else if (type==='pdf') renderPdfs();
@@ -2452,28 +2460,69 @@
     if (actual >= 3 && e.archivoNombre) mensajes[2] = e.archivoNombre;
     return { actual, fallo, mensajes };
   }
+  // La clase de una entrada: de prueba (lista de pruebas) o real (sesiones del panel)
+  const claseDeEntrada = e => (pruebas || []).find(x => String(x.id) === String(e.claseId)) || ((data && data.live) || []).find(x => String(x.id) === String(e.claseId)) || null;
+  const imgClase = url => { const m = String(url || '').match(/\/d\/([A-Za-z0-9_-]{10,})/) || String(url || '').match(/[?&]id=([A-Za-z0-9_-]{10,})/); return m ? 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w800' : String(url || ''); };
+  const ICONO_VIVO = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49M7.76 16.24a6 6 0 0 1 0-8.49M19.07 4.93a10 10 0 0 1 0 14.14M4.93 19.07a10 10 0 0 1 0-14.14"/></svg>';
   function tarjetaAuto(e) {
     const { actual, fallo, mensajes } = pasosDe(e);
     const plataforma = e.proveedor === 'meet' ? 'Google Meet (Workspace)' : e.proveedor === 'drive' ? 'Google Meet (Gmail)' : 'Zoom';
+    const clase = claseDeEntrada(e);
+    const botonesFijos = '<button class="btn btn-o btn-sm" data-id="' + escAdm(e.id) + '" onclick="editarClaseAuto(this.dataset.id)">Editar</button><button class="btn btn-d btn-sm" data-id="' + escAdm(e.id) + '" onclick="eliminarClaseAuto(this.dataset.id)">Eliminar</button>';
+    // Terminada: se quita la ruta de pasos y queda la clase, con su carátula
+    if (e.estado === 'lista') {
+      const cover = clase && clase.thumbnail ? '<img src="' + escAdm(imgClase(clase.thumbnail)) + '" alt="" onerror="this.remove()">' : '';
+      return '<div class="gr-card"><div class="gr-lista-card"><div class="gr-cover">' + ICONO_VIVO + cover + '</div><div><div class="gr-ok">✓ Clase ya disponible</div><p class="gr-titulo">' + escAdm(e.titulo) + '</p><div class="gr-sub">' + plataforma + ' · ' + escAdm(e.fecha || '') + (clase && clase.instructor ? ' · ' + escAdm(clase.instructor) : '') + '<br>Ya aparece en Grabaciones del Club' + (clase && clase.prueba ? ' (clase de prueba: solo la ves tú en «Ver como usuario»)' : '') + '.</div><div class="gr-acc">' + botonesFijos + '</div></div></div></div>';
+    }
     const pasos = PASOS_AUTO.map((t, i) => {
-      const n = i + 1, clase = n < actual || actual === 6 ? 'hecho' : n === actual ? (fallo ? 'fallo' : 'activo') : '';
-      const punto = clase === 'hecho' ? '✓' : clase === 'fallo' ? '✕' : clase === 'activo' ? '' : n;
+      const n = i + 1, cls = n < actual || actual === 6 ? 'hecho' : n === actual ? (fallo ? 'fallo' : 'activo') : '';
+      const punto = cls === 'hecho' ? '✓' : cls === 'fallo' ? '✕' : cls === 'activo' ? '' : n;
       const titulo = n === actual && fallo ? 'Falló: ' + t.charAt(0).toLowerCase() + t.slice(1) : t;
-      return '<li class="gr-paso ' + clase + '"><span class="gr-punto">' + punto + '</span><span class="gr-t">' + escAdm(titulo) + (mensajes[n] ? '<span class="gr-m">' + escAdm(mensajes[n]) + '</span>' : '') + '</span></li>';
+      return '<li class="gr-paso ' + cls + '"><span class="gr-punto">' + punto + '</span><span class="gr-t">' + escAdm(titulo) + (mensajes[n] ? '<span class="gr-m">' + escAdm(mensajes[n]) + '</span>' : '') + '</span></li>';
     }).join('');
     // un aviso pasajero (por ejemplo, Google no respondió) NO es un error: el sistema lo vuelve a intentar solo
     const aviso = !fallo && e.estado === 'esperando' && e.error ? '<p class="gr-aviso">Último intento sin resultado: ' + escAdm(e.error) + ' Se vuelve a intentar solo en unos minutos.</p>' : '';
-    const boton = fallo || e.estado === 'esperando' ? '<div class="gr-acc"><button class="btn btn-o btn-sm" data-id="' + escAdm(e.id) + '" onclick="reintentarAuto(this.dataset.id)">' + (fallo ? 'Reintentar' : 'Buscar ahora') + '</button></div>' : '';
-    return '<div class="gr-card"><div class="gr-cab"><strong>' + escAdm(e.titulo) + '</strong><small>' + plataforma + ' · ' + escAdm(e.claseId) + '</small></div><ul class="gr-pasos">' + pasos + '</ul>' + aviso + boton + '</div>';
+    const reintento = fallo || e.estado === 'esperando' ? '<button class="btn btn-o btn-sm" data-id="' + escAdm(e.id) + '" onclick="reintentarAuto(this.dataset.id)">' + (fallo ? 'Reintentar' : 'Buscar ahora') + '</button>' : '';
+    return '<div class="gr-card"><div class="gr-cab"><strong>' + escAdm(e.titulo) + '</strong><small>' + plataforma + ' · ' + escAdm(e.claseId) + '</small></div><ul class="gr-pasos">' + pasos + '</ul>' + aviso + '<div class="gr-acc">' + reintento + botonesFijos + '</div></div>';
   }
-  let autoHayEnCurso = false;
+  function editarClaseAuto(id) {
+    const e = autoEntradas.find(x => x.id === id); if (!e) return;
+    const clase = claseDeEntrada(e);
+    if (!clase) { toast('No encontré la clase. Puede que ya se haya eliminado.'); return; }
+    if (clase.prueba || String(clase.id).startsWith('prueba-')) abrirPrueba(clase); else openModal('live', clase);
+  }
+  // Quita la entrada de grabaciones automáticas de una clase (si la hay); el video de Bunny solo se borra si se pide
+  async function quitarEntradaAuto(claseId, conBunny) {
+    for (const e of autoEntradas.filter(x => String(x.claseId) === String(claseId))) {
+      try { await apiAdmin('/api/admin/clases-auto/' + encodeURIComponent(e.id) + (conBunny ? '?bunny=1' : ''), { method: 'DELETE' }); } catch (err) { throw new Error('No se pudo quitar la grabación automática: ' + err.message); }
+    }
+  }
+  async function eliminarClaseAuto(id) {
+    const e = autoEntradas.find(x => x.id === id); if (!e) return;
+    const clase = claseDeEntrada(e), esPrueba = !!(clase && (clase.prueba || String(clase.id).startsWith('prueba-')));
+    if (!confirm('¿Eliminar la clase «' + e.titulo + '»?\n\nDejará de aparecer en el Club. Esta acción no se puede deshacer.')) return;
+    let conBunny = false;
+    if (e.videoId) conBunny = confirm('¿Borrar también el video de Bunny?\n\nAceptar: se borra el video y se pierde la grabación.\nCancelar: el video se queda en Bunny (ocupando espacio) y solo se quita la clase del Club.');
+    try {
+      await quitarEntradaAuto(e.claseId, conBunny);
+      if (esPrueba) await apiAdmin('/api/admin/clases-prueba/' + encodeURIComponent(String(e.claseId)), { method: 'DELETE' }).catch(() => {});
+      else {
+        data.live = (data.live || []).filter(x => String(x.id) !== String(e.claseId)); saveData();
+        apiAdmin('/api/admin/webinars-enlaces/' + encodeURIComponent(String(e.claseId)), { method: 'DELETE' }).catch(() => {});
+        renderLive(); renderDashboard();
+      }
+      toast(esPrueba ? 'Clase eliminada' : 'Clase eliminada. Recuerda publicar los cambios para que desaparezca del Club.');
+    } catch (err) { toast(err.message); }
+    await cargarPruebas(); await cargarAuto();
+  }
+  let autoHayEnCurso = false, autoEntradas = [];
   async function cargarAuto() {
     const lista = document.getElementById('autoLista'), av = document.getElementById('autoAviso'); if (!lista) return;
     try {
       const r = await apiAdmin('/api/admin/clases-auto');
       const faltan = []; if (!r.meetListo && !r.zoomListo) faltan.push('Google o Zoom'); if (!r.bunnyListo) faltan.push('Bunny');
       av.textContent = faltan.length ? 'Falta configurar ' + faltan.join(' y ') + ' en el servidor (Railway). Mientras tanto la grabación automática no funciona.' : '';
-      const es = r.entradas || [];
+      const es = r.entradas || []; autoEntradas = es;
       autoHayEnCurso = es.some(e => e.estado === 'esperando' || e.estado === 'descargando' || e.estado === 'subiendo');
       lista.innerHTML = es.map(tarjetaAuto).join('') || '<p style="text-align:center;padding:24px;color:var(--text-muted);">Aún no hay clases con grabación automática</p>';
     } catch (e) { av.textContent = 'No se pudo leer el estado: ' + e.message; }
@@ -2487,7 +2536,7 @@
   }
   async function borrarPrueba(id) {
     if (!confirm('¿Eliminar esta clase de prueba?')) return;
-    try { await apiAdmin('/api/admin/clases-prueba/' + encodeURIComponent(id), { method: 'DELETE' }); toast('Clase de prueba eliminada'); await cargarPruebas(); }
+    try { await quitarEntradaAuto(id, false); await apiAdmin('/api/admin/clases-prueba/' + encodeURIComponent(id), { method: 'DELETE' }); toast('Clase de prueba eliminada'); await cargarPruebas(); await cargarAuto(); }
     catch (e) { toast('No se pudo eliminar: ' + e.message); }
   }
 

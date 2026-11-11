@@ -11,7 +11,7 @@
   const pad = n => String(n).padStart(2, '0');
   const conPlan = () => (typeof memberIsPaid !== 'undefined' && memberIsPaid) || window.ftVistaAdmin === true;
   const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-  let tab = 'proximas', inscritas = new Set(), cargadas = false, timer = 0, conGrabacion = new Set(), grabT = 0;
+  let tab = 'proximas', tabManual = false, inscritas = new Set(), cargadas = false, timer = 0, conGrabacion = new Set(), grabT = 0;
 
   // Hora de Ciudad de México (UTC-6 todo el año desde 2022)
   function inicioMs(w) { const t = Date.parse((w.date || '') + 'T' + (/^\d{1,2}:\d{2}$/.test(w.time || '') ? pad(w.time.split(':')[0]) + ':' + w.time.split(':')[1] : '12:00') + ':00-06:00'); return Number.isFinite(t) ? t : 0; }
@@ -94,14 +94,20 @@
       raiz.innerHTML = '<div class="cv-vacio"><b>Aún no hay clases programadas</b><span>Estamos preparando las próximas transmisiones. Te avisaremos en cuanto haya nuevas clases en vivo.</span></div>';
       return;
     }
-    const items = tab === 'grabaciones' ? graba : tab === 'inscritas' ? mias : prox;
-    raiz.innerHTML = (prox[0] ? hero(prox[0], ahora) : '') +
+    // Sin clases próximas la página no queda vacía: se ve la última clase grabada y la lista de grabaciones (grabadas primero)
+    const conGraba = graba.filter(tieneGrabacion), sinGraba = graba.filter(w => !tieneGrabacion(w));
+    const grabaOrdenadas = conGraba.concat(sinGraba);
+    const tabAct = tabManual ? tab : (prox.length ? 'proximas' : 'grabaciones');
+    const items = tabAct === 'grabaciones' ? grabaOrdenadas : tabAct === 'inscritas' ? mias : prox;
+    const aviso = !prox.length ? '<div class="cv-sinprox"><b>Ahora mismo no hay una clase en vivo programada.</b><span>' + (conGraba.length ? 'Mientras tanto, mira las clases que ya se grabaron.' : 'Te avisaremos en cuanto haya una nueva.') + '</span></div>' : '';
+    raiz.innerHTML = aviso + (prox[0] ? hero(prox[0], ahora) : conGraba[0] ? heroGrabada(conGraba[0]) : '') +
       '<div class="cv-tabs" role="tablist">' +
-      [['proximas', 'Próximas', prox.length], ['grabaciones', 'Grabaciones', graba.length], ['inscritas', 'Mis inscritas', mias.length]].map(t => '<button type="button" role="tab" class="cv-tab' + (tab === t[0] ? ' on' : '') + '" data-t="' + t[0] + '">' + t[1] + ' · ' + t[2] + '</button>').join('') + '</div>' +
-      (items.length ? '<div class="cv-grid">' + items.map(w => tarjeta(w, ahora)).join('') + '</div>' : '<div class="cv-vacio"><b>Sin clases</b><span>' + (tab === 'inscritas' ? 'Inscríbete a una clase y aparecerá aquí.' : 'Cambia de pestaña para ver más sesiones.') + '</span></div>');
-    raiz.querySelectorAll('.cv-tab').forEach(b => b.addEventListener('click', () => { tab = b.dataset.t; pintar(); }));
+      [['proximas', 'Próximas', prox.length], ['grabaciones', 'Grabaciones', graba.length], ['inscritas', 'Mis inscritas', mias.length]].map(t => '<button type="button" role="tab" class="cv-tab' + (tabAct === t[0] ? ' on' : '') + '" data-t="' + t[0] + '">' + t[1] + ' · ' + t[2] + '</button>').join('') + '</div>' +
+      (items.length ? '<div class="cv-grid">' + items.map(w => tarjeta(w, ahora)).join('') + '</div>' : '<div class="cv-vacio"><b>Sin clases</b><span>' + (tabAct === 'inscritas' ? 'Inscríbete a una clase y aparecerá aquí.' : 'Cambia de pestaña para ver más sesiones.') + '</span></div>');
+    raiz.querySelectorAll('.cv-tab').forEach(b => b.addEventListener('click', () => { tab = b.dataset.t; tabManual = true; pintar(); }));
+    const hg = raiz.querySelector('.cv-hero.grab [data-a="ver"]'); if (hg) hg.addEventListener('click', () => reproducir(hg.dataset.id));
     raiz.querySelectorAll('.cv-card').forEach(c => { c.addEventListener('click', () => detalle(c.dataset.id)); c.addEventListener('keydown', e => { if (e.key === 'Enter') detalle(c.dataset.id); }); });
-    const h = raiz.querySelector('.cv-hero');
+    const h = raiz.querySelector('.cv-hero:not(.grab)');
     if (h) {
       const w = prox[0], id = String(w.id);
       h.querySelector('[data-a="unir"]').addEventListener('click', () => unir(id));
@@ -109,6 +115,17 @@
       h.querySelector('[data-a="cal"]').addEventListener('click', () => calendario(w));
       cuenta(w);
     }
+  }
+
+  function portada(w) { const img = w.thumbnail && typeof driveImageUrl === 'function' ? driveImageUrl(w.thumbnail) : ''; return img ? '<img src="' + esc(img) + '" alt="" onerror="this.remove()">' : ''; }
+  function heroGrabada(w) {
+    const id = String(w.id), miembro = conPlan();
+    return '<section class="cv-hero grab"><div class="cv-hero-info"><span class="cv-eyebrow">Última clase grabada' + (w.prueba ? ' · prueba' : '') + '</span><h2>' + esc(w.title) + '</h2>' +
+      '<div class="cv-meta"><span>' + esc(fechaLarga(w)) + '</span><span>' + duracion(w) + ' min</span>' + (w.instructor ? '<span>' + esc(w.instructor) + '</span>' : '') + '</div>' +
+      (w.desc ? '<p>' + esc(w.desc) + '</p>' : '') +
+      '<div class="cv-acc"><button type="button" class="cv-btn pri" data-a="ver" data-id="' + esc(id) + '">' + (miembro ? 'Ver la grabación' : 'Ver la grabación · para miembros') + '</button></div>' +
+      (miembro ? '' : '<p class="cv-nota-plan">Las clases en vivo y sus grabaciones son parte de la membresía.</p>') + '</div>' +
+      '<div class="cv-hero-cover">' + portada(w) + '</div></section>';
   }
 
   function hero(w, ahora) {
@@ -139,7 +156,8 @@
     const img = w.thumbnail && typeof driveImageUrl === 'function' ? driveImageUrl(w.thumbnail) : '';
     const dia = Number((w.date || '').slice(8, 10)) || d.getUTCDate(), mes = MESES[(Number((w.date || '').slice(5, 7)) || (d.getUTCMonth() + 1)) - 1];
     const graba = tieneGrabacion(w);
-    const etiqueta = (w.prueba ? '<span class="cv-tag prueba">Prueba</span>' : '') + (prox ? (vivo ? '<span class="cv-tag vivo">En vivo</span>' : inscritas.has(id) ? '<span class="cv-tag ok">Inscrita</span>' : '<span class="cv-tag">Próxima</span>') : (graba ? '<span class="cv-tag ok">Grabación</span>' : '<span class="cv-tag">Finalizada</span>'));
+    const bloqueo = graba && !conPlan() ? '<span class="cv-tag plan">Miembros</span>' : '';
+    const etiqueta = bloqueo + (w.prueba ? '<span class="cv-tag prueba">Prueba</span>' : '') + (prox ? (vivo ? '<span class="cv-tag vivo">En vivo</span>' : inscritas.has(id) ? '<span class="cv-tag ok">Inscrita</span>' : '<span class="cv-tag">Próxima</span>') : (graba ? '<span class="cv-tag ok">Grabación</span>' : '<span class="cv-tag">Finalizada</span>'));
     return '<article class="cv-card" tabindex="0" data-id="' + esc(id) + '"><div class="cv-cover">' + (img ? '<img src="' + esc(img) + '" alt="" loading="lazy" onerror="this.remove()">' : '') + '<div class="cv-fecha"><b>' + dia + '</b><small>' + mes + '</small></div></div>' +
       '<div class="cv-body">' + etiqueta + (w.badge && prox ? '<span class="cv-tag">' + esc(w.badge) + '</span>' : '') + '<h3>' + esc(w.title) + '</h3>' +
       '<div class="cv-meta">' + (w.instructor ? '<span>' + esc(w.instructor) + '</span>' : '') + '<span>' + duracion(w) + ' min</span>' + (w.time ? '<span>' + esc(w.time) + ' h</span>' : '') + '</div></div></article>';
