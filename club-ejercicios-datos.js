@@ -6272,7 +6272,7 @@ window.FT_EJERCICIOS = [
   ],
   "para": "Aumenta la demanda sobre el cuádriceps y el tendón rotuliano al mantener el talón más bajo. Se usa en el trabajo de carga para tendinopatía rotuliana y en readaptación deportiva.",
   "pasos": [
-   "Colócate de pie sobre la cuña con los talones en la parte baja y los pies al ancho de la cadera.",
+   "Colócate de pie sobre la cuña con los talones en la parte alta y los dedos en la parte baja, y los pies al ancho de la cadera.",
    "Baja despacio en 3 segundos hasta una flexión de rodilla cómoda, con el tronco erguido.",
    "Haz una pausa breve sin rebotar y empuja el suelo para subir en 2 segundos.",
    "Mantén las rodillas alineadas con la dirección de los pies."
@@ -6293,7 +6293,7 @@ window.FT_EJERCICIOS = [
    "Detente si el dolor sobre el tendón supera lo moderado o se mantiene al día siguiente.",
    "Consulta si notas inestabilidad o bloqueo."
   ],
-  "escena": "De pie sobre una cuña inclinada con los talones abajo y el tronco erguido. Flexiona las rodillas controlando el descenso hasta una profundidad cómoda y vuelve a la posición inicial.",
+  "escena": "De pie sobre una cuña con los talones sobre la parte alta y los dedos en la parte baja, de perfil, con el tronco erguido. Flexiona las rodillas controlando el descenso, con las rodillas avanzando sobre los pies, hasta una profundidad cómoda, y vuelve a la posición inicial.",
   "fuentes": [
    "Brotzman SB, Manske RC. Clinical Orthopaedic Rehabilitation: An Evidence-Based Approach.",
    "Kisner C, Colby LA. Therapeutic Exercise: Foundations and Techniques."
