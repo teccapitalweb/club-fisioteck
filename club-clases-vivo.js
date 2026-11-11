@@ -21,6 +21,13 @@
   const proxima = (w, ahora) => !!inicioMs(w) && ahora < finMs(w);
   const fechaLarga = w => new Date(inicioMs(w)).toLocaleDateString('es-MX', { timeZone: 'America/Mexico_City', weekday: 'long', day: 'numeric', month: 'long' });
   const hora = w => (w.time || '--:--') + ' h (CDMX) · ' + duracion(w) + ' min';
+  // La portada puede ser «portada:ID» (imagen de assets/clases-en-vivo/), un enlace de Drive o nada (se usa la portada general si existe)
+  function urlPortada(t) {
+    const v = String(t || '');
+    if (/^portada:[a-z0-9-]+$/.test(v)) return 'assets/clases-en-vivo/' + v.slice(8) + '.webp';
+    if (v) return typeof driveImageUrl === 'function' ? driveImageUrl(v) : v;
+    return 'assets/clases-en-vivo/general.webp';
+  }
   const lista = () => ((typeof siteData !== 'undefined' && siteData && siteData.live) || []).filter(w => w && w.title);
 
   // Clases de PRUEBA: solo las ve un administrador en «Ver como usuario» (el servidor las entrega únicamente a administradores; nunca están en content.json,
@@ -117,7 +124,7 @@
     }
   }
 
-  function portada(w) { const img = w.thumbnail && typeof driveImageUrl === 'function' ? driveImageUrl(w.thumbnail) : ''; return img ? '<img src="' + esc(img) + '" alt="" onerror="this.remove()">' : ''; }
+  function portada(w) { return '<img src="' + esc(urlPortada(w.thumbnail)) + '" alt="" onerror="this.remove()">'; }
   function heroGrabada(w) {
     const id = String(w.id), miembro = conPlan();
     return '<section class="cv-hero grab"><div class="cv-hero-info"><span class="cv-eyebrow">Última clase grabada' + (w.prueba ? ' · prueba' : '') + '</span><h2>' + esc(w.title) + '</h2>' +
@@ -153,7 +160,7 @@
 
   function tarjeta(w, ahora) {
     const prox = proxima(w, ahora), vivo = enVivo(w, ahora), id = String(w.id), d = new Date(inicioMs(w) - 6 * 36e5 + 0);
-    const img = w.thumbnail && typeof driveImageUrl === 'function' ? driveImageUrl(w.thumbnail) : '';
+    const img = urlPortada(w.thumbnail);
     const dia = Number((w.date || '').slice(8, 10)) || d.getUTCDate(), mes = MESES[(Number((w.date || '').slice(5, 7)) || (d.getUTCMonth() + 1)) - 1];
     const graba = tieneGrabacion(w);
     const bloqueo = graba && !conPlan() ? '<span class="cv-tag plan">Miembros</span>' : '';

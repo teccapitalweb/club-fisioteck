@@ -1427,7 +1427,7 @@
     document.getElementById('liveTable').innerHTML = data.live.map(c => `
       <tr>
         <td><strong>${c.title}</strong><br><span style="font-size:.78rem;color:var(--text-muted)">${c.desc}</span></td>
-        <td><span class="badge badge-info">${c.category}</span></td>
+        <td>${c.category ? '<span class="badge badge-info">' + c.category + '</span>' : '—'}</td>
         <td>${c.date}</td>
         <td>${c.time}</td>
         <td>${c.link ? `<a href="${c.link}" target="_blank" style="color:var(--primary)">Enlace</a>` : '—'}</td>
@@ -2128,6 +2128,7 @@
     const isEdit = !!item;
     const titles = { course:'Curso Grabado', live:'Webinar', pdf:'Material PDF', news:'Noticia', member:'Miembro' };
     document.getElementById('modalTitle').textContent = (isEdit?'Editar':'Nuevo') + ' ' + titles[type];
+    setTimeout(() => { if (type === 'live') pintarPortadas(); }, 0);
 
     let html = '';
     if (type === 'course') {
@@ -2165,26 +2166,24 @@
       `;
     } else if (type === 'live') {
       html = `
-        <div class="form-group"><label class="form-label">Título del webinar</label><input class="form-input" id="mTitle" value="${item?.title||''}"></div>
+        <div class="form-group"><label class="form-label">Título de la clase</label><input class="form-input" id="mTitle" value="${item?.title||''}"></div>
         <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="mDesc">${item?.desc||''}</textarea></div>
-        <div class="form-group"><label class="form-label">Categoría</label>
-          ${categoryFieldHTML(item?.category||'')}
-        </div>
         <div class="form-group"><label class="form-label">Fecha</label><input class="form-input" type="date" id="mDate" value="${item?.date||''}"></div>
-        <div class="form-group"><label class="form-label">Hora (Ciudad de México)</label><input class="form-input" type="time" id="mTime" value="${item?.time||''}"></div>
+        <div class="form-group"><label class="form-label">Hora de inicio (Ciudad de México)</label><input class="form-input" type="time" id="mTime" value="${item?.time||''}"></div>
         <div class="form-group"><label class="form-label">Duración (minutos)</label><input class="form-input" type="number" id="mDuration" min="15" max="480" step="5" value="${item?.duration||60}"><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">Con la hora y la duración el Club muestra «En vivo ahora» mientras dura la clase y la pasa a Grabaciones al terminar.</p></div>
-        <div class="form-group"><label class="form-label">Enlace de la sesión (Zoom, Meet, etc.)</label><input class="form-input" id="mLink" value="${item?.link||''}" placeholder="https://..."></div>
-        <div class="form-group" style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;"><label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:.86rem;font-weight:600;"><input type="checkbox" id="mZoomAuto" style="margin-top:3px;"><span>Crear la reunión con grabación automática<small style="display:block;font-weight:400;color:var(--text-muted);margin-top:3px;line-height:1.5;">El enlace se llena solo. Al terminar la clase, la grabación se sube sola a Bunny y aparece en Grabaciones. Entras con la cuenta organizadora; el ponente entra como participante.</small></span></label><div style="margin:10px 0 0 28px;"><label class="form-label" style="margin-bottom:4px;">Plataforma</label><select class="form-input" id="mPlataforma" style="max-width:240px;"><option value="drive">Google Meet con Gmail (el enlace se crea solo; yo pulso Grabar)</option><option value="meet">Google Meet con Workspace (se crea y graba solo)</option><option value="zoom">Zoom (se crea y graba solo)</option></select><small style="display:block;margin-top:6px;font-size:.74rem;color:var(--text-muted);line-height:1.5;">Con «Meet con Gmail» <b>deja vacío el enlace de arriba</b>: el panel crea la reunión de Meet solo. Durante la clase pulsas <b>Actividades → Grabación</b> (Google no deja grabar sola en cuentas Gmail). Al terminar, el video que Meet deja en tu Drive se pasa solo a Bunny y aparece en Grabaciones.</small></div></div>
-        <div class="form-group"><label class="form-label">URL de Thumbnail (imagen de portada)</label><input class="form-input" id="mThumb" value="${item?.thumbnail||''}" placeholder="https://drive.google.com/file/d/.../view"></div>
-        <div class="form-group"><label class="form-label">Badge</label><input class="form-input" id="mBadge" value="${item?.badge||''}"></div>
+        <div class="form-group" style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;"><label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:.86rem;font-weight:600;"><input type="checkbox" id="mZoomAuto" ${item && item.link ? '' : 'checked'} style="margin-top:3px;"><span>Crear la reunión de Google Meet automáticamente<small style="display:block;font-weight:400;color:var(--text-muted);margin-top:3px;line-height:1.5;">El enlace se crea solo y queda en la clase. Durante la clase tú pulsas <b>Actividades → Grabación</b> en Meet (Google no deja grabar sola en cuentas Gmail). Al terminar, el video se pasa solo a Bunny y aparece en Grabaciones. Si no la marcas, pega tu propio enlace abajo y sube la grabación a mano.</small></span></label></div>
+        <div class="form-group"><label class="form-label">Enlace de la sesión <span style="font-weight:400;color:var(--text-muted);">(déjalo vacío si marcaste la casilla)</span></label><input class="form-input" id="mLink" value="${item?.link||''}" placeholder="https://meet.google.com/..."></div>
+        <div class="form-group"><label class="form-label">Portada de la clase</label>
+          <input type="hidden" id="mThumb" value="${item?.thumbnail||''}">
+          <div id="portadaGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;margin-bottom:8px;"></div>
+          <p id="portadaVacia" style="display:none;font-size:.76rem;color:var(--text-muted);margin:0 0 8px;">Aún no hay portadas guardadas. Agrega las imágenes en <code>assets/clases-en-vivo/</code> (ver PROMPTS-PORTADAS-CLASES-EN-VIVO.md) y aparecerán aquí.</p>
+          <input class="form-input" id="mThumbUrl" placeholder="O pega el enlace de una imagen de Drive (opcional)" value="${item?.thumbnail && !String(item.thumbnail).startsWith('portada:') ? item.thumbnail : ''}" oninput="document.getElementById('mThumb').value=this.value;marcarPortada('')">
+        </div>
         <hr style="margin:16px 0;border:none;border-top:1px solid var(--border);">
-        <p style="font-size:.82rem;font-weight:600;margin-bottom:12px;">Instructor / Ponente</p>
-        <div class="form-group"><label class="form-label">Nombre del instructor</label><input class="form-input" id="mInstructor" value="${item?.instructor||''}" placeholder="Ej: Dr. García López"></div>
-        <div class="form-group"><label class="form-label">Rol / Especialidad</label><input class="form-input" id="mInstructorRole" value="${item?.instructorRole||''}" placeholder="Ej: Especialista en punción seca"></div>
-        <div class="form-group"><label class="form-label">Imagen de semblanza del ponente (Google Drive)</label><input class="form-input" id="mInstructorImg" value="${item?.instructorImg||''}" placeholder="https://drive.google.com/file/d/.../view"></div>
+        <div class="form-group"><label class="form-label">Nombre del ponente</label><input class="form-input" id="mInstructor" value="${item?.instructor||''}" placeholder="Ej: Dr. García López"></div>
+        <div class="form-group"><label class="form-label">Especialidad del ponente</label><input class="form-input" id="mInstructorRole" value="${item?.instructorRole||''}" placeholder="Ej: Especialista en punción seca"></div>
         <hr style="margin:16px 0;border:none;border-top:1px solid var(--border);">
-        <p style="font-size:.82rem;font-weight:600;margin-bottom:12px;">Grabación (agregar después del evento)</p>
-        <div class="form-group"><label class="form-label">URL de la grabación (Google Drive)</label><input class="form-input" id="mRecordingUrl" value="${item?.recordingUrl||''}" placeholder="https://drive.google.com/file/d/.../view"><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">Después del webinar, sube la grabación a Drive y pega el enlace aquí. Aparecerá en "Grabaciones disponibles".</p></div>
+        <div class="form-group"><label class="form-label">Grabación manual <span style="font-weight:400;color:var(--text-muted);">(solo si el video no se sube solo)</span></label><input class="form-input" id="mRecordingUrl" value="${item?.recordingUrl||''}" placeholder="https://drive.google.com/file/d/.../view"><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">Si usaste la casilla de arriba, no necesitas llenar esto: el video aparece solo.</p></div>
       `;
     } else if (type === 'pdf') {
       html = `
@@ -2291,16 +2290,16 @@
         id: editingId || Date.now(),
         title: document.getElementById('mTitle').value,
         desc: document.getElementById('mDesc').value,
-        category: getCatValue(),
+        category: previoLive().category || '',
         date: document.getElementById('mDate').value,
         time: document.getElementById('mTime').value,
         duration: Math.max(15, Math.min(480, parseInt(document.getElementById('mDuration').value, 10) || 60)),
-        badge: document.getElementById('mBadge').value,
+        badge: previoLive().badge || '',
         link: document.getElementById('mLink').value,
         thumbnail: document.getElementById('mThumb').value,
         instructor: document.getElementById('mInstructor').value,
         instructorRole: document.getElementById('mInstructorRole').value,
-        instructorImg: document.getElementById('mInstructorImg').value,
+        instructorImg: previoLive().instructorImg || '',
         recordingUrl: document.getElementById('mRecordingUrl').value
       };
       if (!item.title) { toast('El título es obligatorio'); return; }
@@ -2385,6 +2384,27 @@
     toast('Eliminado');
   }
 
+  // Datos que ya tenía la clase que se está editando (para no perder lo que el formulario ya no pide)
+  const previoLive = () => (modoPrueba ? pruebas : (data.live || [])).find(x => String(x.id) === String(editingId)) || {};
+  // Portadas: las imágenes que existan en assets/clases-en-vivo/ (el mismo listado que PROMPTS-PORTADAS-CLASES-EN-VIVO.md)
+  const PORTADAS = [["general","Clase en vivo (general)"],["fisioterapia-deportiva","Fisioterapia deportiva"],["rodilla","Rodilla y ligamentos"],["hombro","Hombro"],["columna-lumbar","Columna lumbar"],["cervical","Cuello y cervicales"],["cadera","Cadera"],["tobillo-pie","Tobillo y pie"],["mano-muneca","Mano y muñeca"],["neurologica","Rehabilitación neurológica"],["geriatria","Geriatría"],["pediatria","Fisioterapia pediátrica"],["respiratoria","Fisioterapia respiratoria"],["dolor-cronico","Dolor crónico"],["puncion-seca","Punción seca"],["terapia-manual","Terapia manual"],["ejercicio-terapeutico","Ejercicio terapéutico"],["electroterapia","Electroterapia y agentes físicos"],["vendaje-neuromuscular","Vendaje neuromuscular"],["valoracion","Valoración fisioterapéutica"],["suelo-pelvico","Suelo pélvico"],["postquirurgico","Rehabilitación postquirúrgica"],["ergonomia","Ergonomía y postura"],["equilibrio-caidas","Equilibrio y prevención de caídas"],["casos-clinicos","Casos clínicos"]];
+  function marcarPortada(id) { document.querySelectorAll('#portadaGrid .pt').forEach(b => { b.style.outline = b.dataset.id === id ? '3px solid var(--primary, #2563AB)' : 'none'; }); }
+  function pintarPortadas() {
+    const g = document.getElementById('portadaGrid'); if (!g) return;
+    const actual = (document.getElementById('mThumb') || {}).value || '', elegido = actual.startsWith('portada:') ? actual.slice(8) : '';
+    g.innerHTML = '';
+    let cargadas = 0, probadas = 0;
+    PORTADAS.forEach(([id, nombre]) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'pt'; b.dataset.id = id; b.title = nombre; b.style.cssText = 'border:0;padding:0;border-radius:8px;overflow:hidden;cursor:pointer;background:var(--bg);text-align:left;display:none;';
+      b.innerHTML = '<img src="../assets/clases-en-vivo/' + id + '.webp" alt="" style="display:block;width:100%;aspect-ratio:16/9;object-fit:cover;"><span style="display:block;font-size:.68rem;padding:4px 6px;line-height:1.25;">' + escAdm(nombre) + '</span>';
+      const img = b.querySelector('img');
+      img.onload = () => { b.style.display = 'block'; cargadas++; probadas++; if (id === elegido) marcarPortada(id); };
+      img.onerror = () => { probadas++; if (probadas === PORTADAS.length && !cargadas) { const v = document.getElementById('portadaVacia'); if (v) v.style.display = 'block'; } };
+      b.addEventListener('click', () => { document.getElementById('mThumb').value = 'portada:' + id; const u = document.getElementById('mThumbUrl'); if (u) u.value = ''; marcarPortada(id); });
+      g.appendChild(b);
+    });
+  }
+
   // ===== CLASES DE PRUEBA: solo administradores (no se publican ni avisan a los miembros; se ven en «Ver como usuario») =====
   let modoPrueba = false, pruebas = [];
   function abrirPrueba(item) {
@@ -2406,8 +2426,7 @@
   // Guarda una clase en vivo que es de prueba y/o crea su reunión de Zoom con grabación automática (Zoom → Bunny)
   async function guardarClaseLive(item, conZoom) {
     let zoom = null;
-    const elegida = (document.getElementById('mPlataforma') || {}).value;
-    const plataforma = elegida === 'zoom' ? 'zoom' : elegida === 'meet' ? 'meet' : 'drive';
+    const plataforma = 'drive';
     if (conZoom) {
       try { zoom = await apiAdmin('/api/admin/clases-auto/' + plataforma, { method: 'POST', body: JSON.stringify({ id: String(item.id), title: item.title, date: item.date, time: item.time, duration: item.duration, link: item.link }) }); if (plataforma !== 'drive' || zoom.creado) item.link = zoom.joinUrl; }
       catch (e) { toast((plataforma === 'drive' ? 'No se pudo registrar la clase: ' : 'No se pudo crear la reunión de ' + (plataforma === 'meet' ? 'Google Meet' : 'Zoom') + ': ') + e.message); return; }
@@ -2462,7 +2481,7 @@
   }
   // La clase de una entrada: de prueba (lista de pruebas) o real (sesiones del panel)
   const claseDeEntrada = e => (pruebas || []).find(x => String(x.id) === String(e.claseId)) || ((data && data.live) || []).find(x => String(x.id) === String(e.claseId)) || null;
-  const imgClase = url => { const m = String(url || '').match(/\/d\/([A-Za-z0-9_-]{10,})/) || String(url || '').match(/[?&]id=([A-Za-z0-9_-]{10,})/); return m ? 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w800' : String(url || ''); };
+  const imgClase = url => { if (/^portada:[a-z0-9-]+$/.test(String(url || ''))) return '../assets/clases-en-vivo/' + String(url).slice(8) + '.webp'; const m = String(url || '').match(/\/d\/([A-Za-z0-9_-]{10,})/) || String(url || '').match(/[?&]id=([A-Za-z0-9_-]{10,})/); return m ? 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w800' : String(url || ''); };
   const ICONO_VIVO = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49M7.76 16.24a6 6 0 0 1 0-8.49M19.07 4.93a10 10 0 0 1 0 14.14M4.93 19.07a10 10 0 0 1 0-14.14"/></svg>';
   function tarjetaAuto(e) {
     const { actual, fallo, mensajes } = pasosDe(e);
