@@ -2165,6 +2165,7 @@
         <p style="font-size:.72rem;color:var(--text-muted);margin-top:8px;">Agrega las clases en orden. Cada clase necesita título y URL del video.</p>
       `;
     } else if (type === 'live') {
+      const videoActual = item ? String(item.grabacionVideoId || videosBunny[String(item.id)] || '').replace(/[^0-9a-fA-F-]/g, '') : '';
       html = `
         <div class="form-group"><label class="form-label">Título de la clase</label><input class="form-input" id="mTitle" value="${item?.title||''}"></div>
         <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="mDesc">${item?.desc||''}</textarea></div>
@@ -2183,6 +2184,7 @@
         <div class="form-group"><label class="form-label">Nombre del ponente</label><input class="form-input" id="mInstructor" value="${item?.instructor||''}" placeholder="Ej: Dr. García López"></div>
         <div class="form-group"><label class="form-label">Especialidad del ponente</label><input class="form-input" id="mInstructorRole" value="${item?.instructorRole||''}" placeholder="Ej: Especialista en punción seca"></div>
         <hr style="margin:16px 0;border:none;border-top:1px solid var(--border);">
+        <div class="form-group"><label class="form-label">ID del video en Bunny</label><input class="form-input" id="mBunnyId" value="${videoActual}" placeholder="Se llena solo cuando la grabación se sube sola" autocomplete="off" spellcheck="false" style="font-family:monospace;font-size:.84rem;"><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;line-height:1.5;">${videoActual ? 'Este video se enlazó solo. Si no es el correcto, pega aquí el ID del video correcto (en Bunny: tu biblioteca → el video → <b>Video ID</b>). Si lo dejas vacío, la clase se queda sin grabación.' : 'Cuando la grabación se suba sola, su ID aparecerá aquí. Si la subes a mano, pega el ID del video de Bunny (en Bunny: el video → <b>Video ID</b>).'}</p></div>
         <div class="form-group"><label class="form-label">Grabación manual <span style="font-weight:400;color:var(--text-muted);">(solo si el video no se sube solo)</span></label><input class="form-input" id="mRecordingUrl" value="${item?.recordingUrl||''}" placeholder="https://drive.google.com/file/d/.../view"><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">Si usaste la casilla de arriba, no necesitas llenar esto: el video aparece solo.</p></div>
       `;
     } else if (type === 'pdf') {
@@ -2300,13 +2302,15 @@
         instructor: document.getElementById('mInstructor').value,
         instructorRole: document.getElementById('mInstructorRole').value,
         instructorImg: previoLive().instructorImg || '',
-        recordingUrl: document.getElementById('mRecordingUrl').value
+        recordingUrl: document.getElementById('mRecordingUrl').value,
+        grabacionVideoId: (document.getElementById('mBunnyId') || { value: '' }).value.trim()
       };
       if (!item.title) { toast('El título es obligatorio'); return; }
+      if (item.grabacionVideoId && !/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(item.grabacionVideoId)) { toast('El ID del video de Bunny no es válido: tiene el formato 8-4-4-4-12 letras y números.'); return; }
       const conZoom = !!(document.getElementById('mZoomAuto') || {}).checked;
       if (modoPrueba) item.id = editingId || ('prueba-' + Date.now());
       if (modoPrueba || conZoom) { guardarClaseLive(item, conZoom); return; } // prueba: va al servidor, nunca a content.json
-      guardarWebinarPrivado(item);
+      guardarWebinarPrivado(item); delete item.grabacionVideoId; // el ID del video no se publica en content.json
       if (editingId) { const idx = data.live.findIndex(c=>c.id===editingId); if(idx>=0) data.live[idx]=item; }
       else data.live.unshift(item);
       saveData(); renderLive(); renderDashboard();
@@ -2436,7 +2440,7 @@
       catch (e) { toast('No se pudo guardar la clase de prueba: ' + e.message); return; }
       closeModal(); toast('Clase de prueba guardada. Mírala en «Ver como usuario».'); await cargarPruebas();
     } else {
-      guardarWebinarPrivado(item);
+      guardarWebinarPrivado(item); delete item.grabacionVideoId; // el ID del video no se publica en content.json
       const idx = data.live.findIndex(c => c.id === item.id);
       if (idx >= 0) data.live[idx] = item; else data.live.unshift(item);
       saveData(); renderLive(); renderDashboard(); closeModal(); toast('Guardado. Recuerda publicar los cambios para que los miembros vean la clase.');
@@ -2561,10 +2565,11 @@
 
   // ===== CLASES EN VIVO: el enlace y la grabación viven en el servidor, nunca en content.json =====
   // (content.json es público: solo lleva tieneEnlace / tieneGrabacion y el Club pide el enlace al servidor con membresía)
+  let videosBunny = {}; // id de clase → ID del video de Bunny (solo en el panel: no se publica en content.json)
   async function cargarWebinarsPriv() {
     try {
       const r = await apiAdmin('/api/admin/webinars-enlaces');
-      const mapa = {}; (r.webinars || []).forEach(w => { mapa[String(w.id)] = w; });
+      const mapa = {}; (r.webinars || []).forEach(w => { mapa[String(w.id)] = w; videosBunny[String(w.id)] = w.grabacionVideoId || ''; });
       let cambio = false;
       (data.live || []).forEach(s => {
         const w = mapa[String(s.id)]; if (!w) return;
@@ -2575,7 +2580,8 @@
     } catch (e) { /* sin servidor: el editor muestra lo que haya en este navegador */ }
   }
   async function guardarWebinarPrivado(item) {
-    try { await apiAdmin('/api/admin/webinars-enlaces', { method: 'POST', body: JSON.stringify({ id: String(item.id), titulo: item.title, link: (item.link || '').trim(), recordingUrl: (item.recordingUrl || '').trim() }) }); return true; }
+    const vid = item.grabacionVideoId || ''; // se toma antes: el objeto pierde este dato justo después de llamar
+    try { await apiAdmin('/api/admin/webinars-enlaces', { method: 'POST', body: JSON.stringify({ id: String(item.id), titulo: item.title, link: (item.link || '').trim(), recordingUrl: (item.recordingUrl || '').trim(), grabacionVideoId: vid }) }); videosBunny[String(item.id)] = vid; return true; }
     catch (e) { toast('La sesión se guardó, pero el enlace no llegó al servidor: ' + e.message); return false; }
   }
 
