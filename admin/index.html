@@ -1141,9 +1141,9 @@
         </div>
         <div class="pg-card">
           <div class="pg-cab"><i><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></i><h3>Cursos escalonados</h3></div>
-          <p class="sub">Con membresía, el primer curso (el que eligió en su prueba gratuita) está abierto y los demás se abren uno cada cierto número de días, o antes si el miembro supera retos. Al encenderlo, quienes ya pagaban conservan todo abierto.</p>
+          <p class="sub">Con membresía, el primer curso (el que eligió en su prueba gratuita) está abierto y los demás se abren uno cada cierto número de días, o antes si el miembro supera retos. A los miembros antiguos se les conservan los cursos donde terminaron 2 clases o más, sus certificados y sus premios; lo demás entra a su calendario desde su último pago.</p>
           <div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="cfgEscActivo"> Activar cursos escalonados</label></div>
-          <div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="cfgEscTodos"> Aplicar también a miembros antiguos</label><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">Lo normal es dejarlo SIN marcar: quienes ya pagaban antes de encenderlo conservan su avance, su historial y todo lo que ya tenían abierto. El calendario de cada miembro nuevo empieza cuando paga.</p></div>
+          <div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="cfgEscTodos"> Tratar a los miembros antiguos como nuevos</label><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">Lo normal es dejarlo SIN marcar: a los antiguos se les conserva lo que ya vieron (2 clases o más por curso), sus certificados y sus premios, y lo que no vieron se cierra y se abre cada cierto número de días desde su último pago (sin el adelanto por retos, que es solo para nuevos). Quien nunca pagó ni avanzó se trata como nuevo y su prueba es el primer curso de la fila. MARCADO: el calendario de los antiguos cuenta desde su PRIMER pago, así que a la mayoría se les abriría casi todo.</p></div>
           <div class="form-group"><label class="form-label">Días entre cursos</label><input class="form-input" type="number" min="1" max="60" id="cfgEscDias" value="8"></div>
           <div class="form-group"><label class="form-label">Retos superados para abrir el siguiente curso antes (una sola vez por socio, mínimo 2 de cada tipo)</label><input class="form-input" type="number" min="4" max="17" id="cfgEscRetos" value="12"></div>
           <p id="cfgEscDesde" style="font-size:.78rem;color:var(--text-muted);margin-bottom:12px;"></p>
@@ -1834,7 +1834,7 @@
       document.getElementById('cfgEscTodos').checked = c.escalonadoParaTodos === true;
       document.getElementById('cfgEscDias').value = c.escalonadoDias || 8;
       document.getElementById('cfgEscRetos').value = c.retosParaAdelantar || 12;
-      document.getElementById('cfgEscDesde').textContent = c.escalonadoActivo === true ? 'Activo' + (c.escalonadoDesde ? ' desde ' + c.escalonadoDesde : '') + (c.escalonadoParaTodos === true ? '. Aplica también a miembros antiguos.' : '. Quienes pagaban antes de esa fecha conservan todo abierto; el calendario de cada miembro nuevo empieza cuando paga.') : 'Apagado: todos los miembros tienen todos los cursos abiertos.';
+      document.getElementById('cfgEscDesde').textContent = c.escalonadoActivo === true ? 'Activo' + (c.escalonadoDesde ? ' desde ' + c.escalonadoDesde : '') + (c.escalonadoParaTodos === true ? '. Los antiguos se tratan como nuevos (su calendario cuenta desde su primer pago).' : '. Los antiguos conservan lo visto (2 clases o más por curso) y lo demás entra a su calendario desde su último pago.') : 'Apagado: todos los miembros tienen todos los cursos abiertos.';
     } catch (e) { /* sin permisos o sin conexión */ }
   }
   async function guardarEscalonado() {
