@@ -11,14 +11,17 @@
   const pad = n => String(n).padStart(2, '0');
   const conPlan = () => (typeof memberIsPaid !== 'undefined' && memberIsPaid) || window.ftVistaAdmin === true;
   const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-  let tab = 'proximas', tabManual = false, inscritas = new Set(), cargadas = false, timer = 0, conGrabacion = new Set(), grabT = 0;
+  let tab = 'proximas', tabManual = false, inscritas = new Set(), cargadas = false, timer = 0, conGrabacion = new Set(), grabT = 0, grabadasCargadas = false, ultimaFirma = '';
 
   // Hora de Ciudad de México (UTC-6 todo el año desde 2022)
   function inicioMs(w) { const t = Date.parse((w.date || '') + 'T' + (/^\d{1,2}:\d{2}$/.test(w.time || '') ? pad(w.time.split(':')[0]) + ':' + w.time.split(':')[1] : '12:00') + ':00-06:00'); return Number.isFinite(t) ? t : 0; }
   const duracion = w => Math.max(15, Math.min(480, Number(w.duration) || 60));
   const finMs = w => inicioMs(w) + duracion(w) * 60000;
-  const enVivo = (w, ahora) => { const i = inicioMs(w); return !!i && i <= ahora && ahora < finMs(w); };
-  const proxima = (w, ahora) => !!inicioMs(w) && ahora < finMs(w);
+  // Una clase puede alargarse: despues de la hora programada sigue «En vivo» GRACIA_MS mas, a menos que ya exista su grabacion (entonces seguro termino)
+  const GRACIA_MS = 30 * 60000;
+  const finVisible = w => finMs(w) + (tieneGrabacion(w) ? 0 : GRACIA_MS);
+  const enVivo = (w, ahora) => { const i = inicioMs(w); return !!i && i <= ahora && ahora < finVisible(w); };
+  const proxima = (w, ahora) => !!inicioMs(w) && ahora < finVisible(w);
   const fechaLarga = w => new Date(inicioMs(w)).toLocaleDateString('es-MX', { timeZone: 'America/Mexico_City', weekday: 'long', day: 'numeric', month: 'long' });
   const hora = w => (w.time || '--:--') + ' h (CDMX) · ' + duracion(w) + ' min';
   // La portada puede ser «portada:ID» (imagen de assets/clases-en-vivo/), un enlace de Drive o nada (se usa la portada general si existe)
@@ -48,7 +51,11 @@
   async function cargarGrabaciones() {
     if (!conPlan() || typeof certFetch !== 'function' || typeof auth === 'undefined' || !auth.currentUser || Date.now() - grabT < 20000) return;
     grabT = Date.now();
-    try { const r = await certFetch('/api/webinars/grabaciones'); conGrabacion = new Set((r.ids || []).map(String)); pintar(); } catch (_) { /* sin servidor: se usa lo que diga el contenido publicado */ }
+    try {
+      const r = await certFetch('/api/webinars/grabaciones'), nuevo = new Set((r.ids || []).map(String));
+      const cambio = nuevo.size !== conGrabacion.size || [...nuevo].some(x => !conGrabacion.has(x));
+      conGrabacion = nuevo; if (cambio || !grabadasCargadas) { grabadasCargadas = true; pintar(); }
+    } catch (_) { /* sin servidor: se usa lo que diga el contenido publicado */ }
   }
   const tieneGrabacion = w => !!(w.tieneGrabacion || (w.recordingUrl && String(w.recordingUrl).trim()) || conGrabacion.has(String(w.id)));
 
@@ -90,10 +97,18 @@
     return r;
   }
 
+  // Cambia cuando una clase empieza, termina o recibe su grabacion: sirve para repintar sin recargar la pagina
+  const firma = (todas, ahora) => todas.map(w => String(w.id) + (enVivo(w, ahora) ? 'v' : '') + (proxima(w, ahora) ? 'p' : '') + (tieneGrabacion(w) ? 'g' : '')).join(',');
+  function vigilar() {
+    try { const raiz = $('cvRaiz'); if (!raiz) return; const todas = lista(); if (firma(todas, Date.now()) !== ultimaFirma) pintar(); } catch (_) { /* se reintenta */ }
+  }
+  setInterval(() => { cargarGrabaciones(); vigilar(); }, 30000);
+
   function pintar() {
     const raiz = montar(); if (!raiz) return;
     clearInterval(timer); timer = 0;
     const ahora = Date.now(), todas = lista();
+    ultimaFirma = firma(todas, ahora);
     const prox = todas.filter(w => proxima(w, ahora)).sort((a, b) => inicioMs(a) - inicioMs(b));
     const graba = todas.filter(w => !proxima(w, ahora) && inicioMs(w)).sort((a, b) => inicioMs(b) - inicioMs(a));
     const mias = prox.filter(w => inscritas.has(String(w.id)));
@@ -107,7 +122,7 @@
     const tabAct = tabManual ? tab : (prox.length ? 'proximas' : 'grabaciones');
     const items = tabAct === 'grabaciones' ? grabaOrdenadas : tabAct === 'inscritas' ? mias : prox;
     const aviso = !prox.length ? '<div class="cv-sinprox"><b>Ahora mismo no hay una clase en vivo programada.</b><span>' + (conGraba.length ? 'Mientras tanto, mira las clases que ya se grabaron.' : 'Te avisaremos en cuanto haya una nueva.') + '</span></div>' : '';
-    raiz.innerHTML = aviso + (prox[0] ? hero(prox[0], ahora) : conGraba[0] ? heroGrabada(conGraba[0]) : '') +
+    raiz.innerHTML = aviso + (prox[0] ? hero(prox[0], ahora) : graba[0] ? heroGrabada(graba[0]) : '') +
       '<div class="cv-tabs" role="tablist">' +
       [['proximas', 'Próximas', prox.length], ['grabaciones', 'Grabaciones', graba.length], ['inscritas', 'Mis inscritas', mias.length]].map(t => '<button type="button" role="tab" class="cv-tab' + (tabAct === t[0] ? ' on' : '') + '" data-t="' + t[0] + '">' + t[1] + ' · ' + t[2] + '</button>').join('') + '</div>' +
       (items.length ? '<div class="cv-grid">' + items.map(w => tarjeta(w, ahora)).join('') + '</div>' : '<div class="cv-vacio"><b>Sin clases</b><span>' + (tabAct === 'inscritas' ? 'Inscríbete a una clase y aparecerá aquí.' : 'Cambia de pestaña para ver más sesiones.') + '</span></div>');
@@ -126,12 +141,13 @@
 
   function portada(w) { return '<img src="' + esc(urlPortada(w.thumbnail)) + '" alt="" onerror="this.remove()">'; }
   function heroGrabada(w) {
-    const id = String(w.id), miembro = conPlan();
-    return '<section class="cv-hero grab"><div class="cv-hero-info"><span class="cv-eyebrow">Última clase grabada' + (w.prueba ? ' · prueba' : '') + '</span><h2>' + esc(w.title) + '</h2>' +
+    const id = String(w.id), miembro = conPlan(), lista = tieneGrabacion(w);
+    return '<section class="cv-hero grab"><div class="cv-hero-info"><span class="cv-eyebrow">' + (lista ? 'Última clase grabada' : 'Última clase') + (w.prueba ? ' · prueba' : '') + '</span><h2>' + esc(w.title) + '</h2>' +
       '<div class="cv-meta"><span>' + esc(fechaLarga(w)) + '</span><span>' + duracion(w) + ' min</span>' + (w.instructor ? '<span>' + esc(w.instructor) + '</span>' : '') + '</div>' +
       (w.desc ? '<p>' + esc(w.desc) + '</p>' : '') +
-      '<div class="cv-acc"><button type="button" class="cv-btn pri" data-a="ver" data-id="' + esc(id) + '">' + (miembro ? 'Ver la grabación' : 'Ver la grabación · para miembros') + '</button></div>' +
-      (miembro ? '' : '<p class="cv-nota-plan">Las clases en vivo y sus grabaciones son parte de la membresía.</p>') + '</div>' +
+      (lista ? '<div class="cv-acc"><button type="button" class="cv-btn pri" data-a="ver" data-id="' + esc(id) + '">' + (miembro ? 'Ver la grabación' : 'Ver la grabación · para miembros') + '</button></div>' +
+        (miembro ? '' : '<p class="cv-nota-plan">Las clases en vivo y sus grabaciones son parte de la membresía.</p>')
+        : '<p class="cv-nota-plan">La clase ya terminó. La grabación aparecerá aquí en cuanto termine de procesarse; te avisaremos en la campana.</p>') + '</div>' +
       '<div class="cv-hero-cover">' + portada(w) + '</div></section>';
   }
 
@@ -219,5 +235,5 @@
   window.renderLive = function () { try { pintar(); cargarInscritas(); cargarGrabaciones(); cargarPruebas(); } catch (e) { if (typeof original === 'function') return original.apply(this, arguments); } };
   const pgOriginal = window.showPage;
   window.showPage = function (page) { const r = pgOriginal.apply(this, arguments); if (page === 'courses-live') { pintar(); cargarInscritas(); cargarGrabaciones(); cargarPruebas(); } else { clearInterval(timer); timer = 0; } return r; };
-  window.ftClasesVivo = { pintar, inicioMs, enVivo, proxima, inscritas: () => inscritas };
+  window.ftClasesVivo = { pintar, inicioMs, enVivo, proxima, tieneGrabacion, finMs, refrescarGrabaciones: () => { grabT = 0; return cargarGrabaciones(); }, inscritas: () => inscritas };
 })();

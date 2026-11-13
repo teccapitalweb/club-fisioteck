@@ -27,6 +27,7 @@
         extra.temas = sn.docs.map(d => Object.assign({ id: d.id }, d.data())).filter(p => p.authorId !== yo && p.createdAt && p.createdAt.seconds * 1000 >= corte).slice(0, 8);
       } else extra.temas = [];
     } catch (_) { extra.temas = []; }
+    try { if (window.ftClasesVivo && ftClasesVivo.refrescarGrabaciones) await ftClasesVivo.refrescarGrabaciones(); } catch (_) { /* sin grabaciones */ }
     if (window.ftBarra) ftBarra.refrescar();
   }
 
@@ -52,7 +53,12 @@
       const cv = window.ftClasesVivo, dt = cv ? cv.inicioMs(w) : new Date(w.date + 'T' + (w.time || '20:00') + ':00').getTime();
       if (!dt) return;
       const fin = dt + Math.max(15, Math.min(480, Number(w.duration) || 60)) * 60000, ir = () => showPage('courses-live'), pr = w.prueba ? 'Prueba · ' : '';
-      if (ahora >= dt && ahora < fin) add('live:' + w.id + ':vivo', pr + 'En vivo ahora: ' + w.title, 'La clase ya comenzó. Entra desde Clases en vivo.', ir, 'live');
+      const termino = (cv && cv.finMs ? cv.finMs(w) : fin), hayGrab = !!(cv && cv.tieneGrabacion && cv.tieneGrabacion(w));
+      // Sigue «en vivo» un rato mas si la clase se alarga (mientras no exista su grabacion)
+      const enCurso = cv && cv.enVivo ? cv.enVivo(w, ahora) : (ahora >= dt && ahora < fin);
+      if (enCurso) add('live:' + w.id + ':vivo', pr + 'En vivo ahora: ' + w.title, 'La clase ya comenzó. Entra desde Clases en vivo.', ir, 'live');
+      else if (hayGrab && ahora >= termino && ahora - termino < 7 * DIA) add('live:' + w.id + ':grab', pr + 'Ya está disponible la grabación', w.title + ' · Míralo en Clases en vivo → Grabaciones.', () => { showPage('courses-live'); }, 'live');
+      else if (dt > ahora && dt - ahora <= 5 * 60000) add('live:' + w.id + ':5m', pr + 'Tu clase empieza en 5 minutos', w.title + ' · Ya puedes entrar desde Clases en vivo.', ir, 'live');
       else if (dt > ahora && dt - ahora <= 60 * 60000) add('live:' + w.id + ':1h', pr + 'Tu clase empieza en menos de 1 hora', w.title, ir, 'live');
       else if (dt > ahora && dt - ahora < 2 * DIA) add('live:' + w.id, pr + 'Clase en vivo: ' + w.title, new Date(dt).toLocaleString('es-MX', { timeZone: 'America/Mexico_City', weekday: 'long', day: 'numeric', month: 'long', hour: 'numeric', minute: '2-digit' }), ir, 'live');
     });

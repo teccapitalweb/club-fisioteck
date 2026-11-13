@@ -2129,6 +2129,7 @@
     const titles = { course:'Curso Grabado', live:'Webinar', pdf:'Material PDF', news:'Noticia', member:'Miembro' };
     document.getElementById('modalTitle').textContent = (isEdit?'Editar':'Nuevo') + ' ' + titles[type];
     setTimeout(() => { if (type === 'live') pintarPortadas(); }, 0);
+    if (type === 'live' && item) rellenarVideoId(item);
 
     let html = '';
     if (type === 'course') {
@@ -2168,21 +2169,25 @@
       const videoActual = item ? String(item.grabacionVideoId || videosBunny[String(item.id)] || '').replace(/[^0-9a-fA-F-]/g, '') : '';
       html = `
         <div class="form-group"><label class="form-label">Título de la clase</label><input class="form-input" id="mTitle" value="${item?.title||''}"></div>
+        <div class="form-group"><label class="form-label">Nombre del ponente</label><input class="form-input" id="mInstructor" value="${item?.instructor||''}" placeholder="Ej: Dr. García López"></div>
+        <div class="form-group"><label class="form-label">Especialidad del ponente</label><input class="form-input" id="mInstructorRole" value="${item?.instructorRole||''}" placeholder="Ej: Especialista en punción seca"></div>
+        <hr style="margin:16px 0;border:none;border-top:1px solid var(--border);">
         <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="mDesc">${item?.desc||''}</textarea></div>
         <div class="form-group"><label class="form-label">Fecha</label><input class="form-input" type="date" id="mDate" value="${item?.date||''}"></div>
         <div class="form-group"><label class="form-label">Hora de inicio (Ciudad de México)</label><input class="form-input" type="time" id="mTime" value="${item?.time||''}"></div>
         <div class="form-group"><label class="form-label">Duración (minutos)</label><input class="form-input" type="number" id="mDuration" min="15" max="480" step="5" value="${item?.duration||60}"><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">Con la hora y la duración el Club muestra «En vivo ahora» mientras dura la clase y la pasa a Grabaciones al terminar.</p></div>
+        <hr style="margin:16px 0;border:none;border-top:1px solid var(--border);">
         <div class="form-group" style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;"><label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:.86rem;font-weight:600;"><input type="checkbox" id="mZoomAuto" ${item && item.link ? '' : 'checked'} style="margin-top:3px;"><span>Crear la reunión de Google Meet automáticamente<small style="display:block;font-weight:400;color:var(--text-muted);margin-top:3px;line-height:1.5;">El enlace se crea solo y queda en la clase. Durante la clase tú pulsas <b>Actividades → Grabación</b> en Meet (Google no deja grabar sola en cuentas Gmail). Al terminar, el video se pasa solo a Bunny y aparece en Grabaciones. Si no la marcas, pega tu propio enlace abajo y sube la grabación a mano.</small></span></label></div>
         <div class="form-group"><label class="form-label">Enlace de la sesión <span style="font-weight:400;color:var(--text-muted);">(déjalo vacío si marcaste la casilla)</span></label><input class="form-input" id="mLink" value="${item?.link||''}" placeholder="https://meet.google.com/..."></div>
+        <hr style="margin:16px 0;border:none;border-top:1px solid var(--border);">
         <div class="form-group"><label class="form-label">Portada de la clase</label>
           <input type="hidden" id="mThumb" value="${item?.thumbnail||''}">
-          <div id="portadaGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;margin-bottom:8px;"></div>
+          <div id="portadaElegida" style="display:none;align-items:center;gap:10px;margin-bottom:8px;"><img id="portadaElegidaImg" alt="" style="width:120px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;display:block;"><span id="portadaElegidaNombre" style="font-size:.82rem;font-weight:600;"></span></div>
+          <button type="button" class="btn btn-o btn-sm" id="portadaBtn" onclick="alternarPortadas()" style="margin-bottom:8px;">Selecciona la imagen de tu preferencia</button>
+          <div id="portadaGrid" style="display:none;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;margin-bottom:8px;max-height:320px;overflow-y:auto;padding:2px;"></div>
           <p id="portadaVacia" style="display:none;font-size:.76rem;color:var(--text-muted);margin:0 0 8px;">Aún no hay portadas guardadas. Agrega las imágenes en <code>assets/clases-en-vivo/</code> (ver PROMPTS-PORTADAS-CLASES-EN-VIVO.md) y aparecerán aquí.</p>
           <input class="form-input" id="mThumbUrl" placeholder="O pega el enlace de una imagen de Drive (opcional)" value="${item?.thumbnail && !String(item.thumbnail).startsWith('portada:') ? item.thumbnail : ''}" oninput="document.getElementById('mThumb').value=this.value;marcarPortada('')">
         </div>
-        <hr style="margin:16px 0;border:none;border-top:1px solid var(--border);">
-        <div class="form-group"><label class="form-label">Nombre del ponente</label><input class="form-input" id="mInstructor" value="${item?.instructor||''}" placeholder="Ej: Dr. García López"></div>
-        <div class="form-group"><label class="form-label">Especialidad del ponente</label><input class="form-input" id="mInstructorRole" value="${item?.instructorRole||''}" placeholder="Ej: Especialista en punción seca"></div>
         <hr style="margin:16px 0;border:none;border-top:1px solid var(--border);">
         <div class="form-group"><label class="form-label">ID del video en Bunny</label><input class="form-input" id="mBunnyId" value="${videoActual}" placeholder="Se llena solo cuando la grabación se sube sola" autocomplete="off" spellcheck="false" style="font-family:monospace;font-size:.84rem;"><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;line-height:1.5;">${videoActual ? 'Este video se enlazó solo. Si no es el correcto, pega aquí el ID del video correcto (en Bunny: tu biblioteca → el video → <b>Video ID</b>). Si lo dejas vacío, la clase se queda sin grabación.' : 'Cuando la grabación se suba sola, su ID aparecerá aquí. Si la subes a mano, pega el ID del video de Bunny (en Bunny: el video → <b>Video ID</b>).'}</p></div>
         <div class="form-group"><label class="form-label">Grabación manual <span style="font-weight:400;color:var(--text-muted);">(solo si el video no se sube solo)</span></label><input class="form-input" id="mRecordingUrl" value="${item?.recordingUrl||''}" placeholder="https://drive.google.com/file/d/.../view"><p style="font-size:.72rem;color:var(--text-muted);margin-top:4px;">Si usaste la casilla de arriba, no necesitas llenar esto: el video aparece solo.</p></div>
@@ -2392,7 +2397,21 @@
   const previoLive = () => (modoPrueba ? pruebas : (data.live || [])).find(x => String(x.id) === String(editingId)) || {};
   // Portadas: las imágenes que existan en assets/clases-en-vivo/ (el mismo listado que PROMPTS-PORTADAS-CLASES-EN-VIVO.md)
   const PORTADAS = [["general","Clase en vivo (general)"],["fisioterapia-deportiva","Fisioterapia deportiva"],["rodilla","Rodilla y ligamentos"],["hombro","Hombro"],["columna-lumbar","Columna lumbar"],["cervical","Cuello y cervicales"],["cadera","Cadera"],["tobillo-pie","Tobillo y pie"],["mano-muneca","Mano y muñeca"],["neurologica","Rehabilitación neurológica"],["geriatria","Geriatría"],["pediatria","Fisioterapia pediátrica"],["respiratoria","Fisioterapia respiratoria"],["dolor-cronico","Dolor crónico"],["puncion-seca","Punción seca"],["terapia-manual","Terapia manual"],["ejercicio-terapeutico","Ejercicio terapéutico"],["electroterapia","Electroterapia y agentes físicos"],["vendaje-neuromuscular","Vendaje neuromuscular"],["valoracion","Valoración fisioterapéutica"],["suelo-pelvico","Suelo pélvico"],["postquirurgico","Rehabilitación postquirúrgica"],["ergonomia","Ergonomía y postura"],["equilibrio-caidas","Equilibrio y prevención de caídas"],["casos-clinicos","Casos clínicos"]];
-  function marcarPortada(id) { document.querySelectorAll('#portadaGrid .pt').forEach(b => { b.style.outline = b.dataset.id === id ? '3px solid var(--primary, #2563AB)' : 'none'; }); }
+  function marcarPortada(id) {
+    document.querySelectorAll('#portadaGrid .pt').forEach(b => { b.style.outline = b.dataset.id === id ? '3px solid var(--primary, #2563AB)' : 'none'; });
+    // Vista de la portada elegida y texto del botón
+    const par = PORTADAS.find(p => p[0] === id), caja = document.getElementById('portadaElegida'), btn = document.getElementById('portadaBtn');
+    if (caja) { caja.style.display = par ? 'flex' : 'none'; if (par) { document.getElementById('portadaElegidaImg').src = '../assets/clases-en-vivo/' + id + '.webp'; document.getElementById('portadaElegidaNombre').textContent = par[1]; } }
+    if (btn) { const abierto = (document.getElementById('portadaGrid') || {}).style && document.getElementById('portadaGrid').style.display !== 'none'; btn.textContent = abierto ? 'Ocultar imágenes' : (par ? 'Cambiar imagen' : 'Selecciona la imagen de tu preferencia'); }
+  }
+  // Las portadas están escondidas hasta que se pulsa el botón
+  function alternarPortadas(cerrar) {
+    const g = document.getElementById('portadaGrid'); if (!g) return;
+    const abrir = cerrar === true ? false : g.style.display === 'none';
+    g.style.display = abrir ? 'grid' : 'none';
+    const actual = (document.getElementById('mThumb') || {}).value || '';
+    marcarPortada(actual.startsWith('portada:') ? actual.slice(8) : '');
+  }
   function pintarPortadas() {
     const g = document.getElementById('portadaGrid'); if (!g) return;
     const actual = (document.getElementById('mThumb') || {}).value || '', elegido = actual.startsWith('portada:') ? actual.slice(8) : '';
@@ -2404,7 +2423,7 @@
       const img = b.querySelector('img');
       img.onload = () => { b.style.display = 'block'; cargadas++; probadas++; if (id === elegido) marcarPortada(id); };
       img.onerror = () => { probadas++; if (probadas === PORTADAS.length && !cargadas) { const v = document.getElementById('portadaVacia'); if (v) v.style.display = 'block'; } };
-      b.addEventListener('click', () => { document.getElementById('mThumb').value = 'portada:' + id; const u = document.getElementById('mThumbUrl'); if (u) u.value = ''; marcarPortada(id); });
+      b.addEventListener('click', () => { document.getElementById('mThumb').value = 'portada:' + id; const u = document.getElementById('mThumbUrl'); if (u) u.value = ''; marcarPortada(id); alternarPortadas(true); });
       g.appendChild(b);
     });
   }
@@ -2415,6 +2434,19 @@
     openModal('live', item || null);
     modoPrueba = true; // después de openModal: el modal normal lo deja apagado
     document.getElementById('modalTitle').textContent = (item ? 'Editar' : 'Nueva') + ' clase de prueba (solo administradores)';
+  }
+  // El video de una clase llega solo (Drive a Bunny) cuando la clase ya termino; el formulario puede haberse cargado antes.
+  // Al abrirlo se consulta el ID actual al servidor y se escribe en el campo si esta vacio (nunca pisa lo que la persona haya escrito).
+  async function rellenarVideoId(item) {
+    try {
+      const id = String(item.id), campo = () => document.getElementById('mBunnyId');
+      if (!campo() || campo().value.trim()) return;
+      let vid = '';
+      if (item.prueba || id.startsWith('prueba-')) { const r = await apiAdmin('/api/admin/clases-prueba'); pruebas = r.clases || pruebas; const c = (r.clases || []).find(x => String(x.id) === id); vid = c && c.grabacionVideoId || ''; }
+      else { const r = await apiAdmin('/api/admin/webinars-enlaces'); const w = (r.webinars || []).find(x => String(x.id) === id); vid = w && w.grabacionVideoId || ''; if (vid) videosBunny[id] = vid; }
+      vid = String(vid).replace(/[^0-9a-fA-F-]/g, '');
+      if (vid && campo() && !campo().value.trim()) campo().value = vid;
+    } catch (e) { /* sin servidor: queda el campo como estaba */ }
   }
   async function cargarPruebas() {
     try { const r = await apiAdmin('/api/admin/clases-prueba'); pruebas = r.clases || []; } catch (e) { pruebas = []; }

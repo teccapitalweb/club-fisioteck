@@ -4017,6 +4017,1466 @@ window.FT_RETOS = {
           "e": "El dolor suele aparecer con la elevación del brazo y las actividades por encima de la cabeza."
         }
       ]
+    },
+    {
+      "id": "q-n31",
+      "titulo": "Imagen diagnóstica para el fisioterapeuta",
+      "desc": "Radiografía, resonancia, ecografía y electromiografía",
+      "preguntas": [
+        {
+          "q": "¿Qué estudio es el primero que se suele pedir ante la sospecha de una fractura?",
+          "o": [
+            "Radiografía simple",
+            "Electromiografía",
+            "Espirometría",
+            "Electrocardiograma"
+          ],
+          "c": 0,
+          "e": "La radiografía muestra bien el hueso, es rápida y accesible."
+        },
+        {
+          "q": "¿Qué estudio muestra mejor ligamentos, meniscos y cartílago?",
+          "o": [
+            "Radiografía simple",
+            "Resonancia magnética",
+            "Espirometría",
+            "Densitometría"
+          ],
+          "c": 1,
+          "e": "La resonancia magnética tiene gran detalle de los tejidos blandos."
+        },
+        {
+          "q": "¿Qué ventaja tiene la ecografía musculoesquelética?",
+          "o": [
+            "Usa radiación en dosis altas",
+            "Solo sirve para ver el hueso",
+            "Permite ver tendones y músculos en movimiento y sin radiación",
+            "Necesita sedar al paciente"
+          ],
+          "c": 2,
+          "e": "Es dinámica, no usa radiación y permite comparar con el lado sano."
+        },
+        {
+          "q": "Una resonancia muestra una protrusión discal en una persona sin dolor. ¿Qué conviene hacer?",
+          "o": [
+            "Tratarla siempre con cirugía",
+            "Interpretarla junto con la clínica, porque muchos hallazgos aparecen en personas sin dolor",
+            "Suspender todo ejercicio",
+            "Ignorar por completo la exploración"
+          ],
+          "c": 1,
+          "e": "Los hallazgos de imagen deben correlacionarse con los síntomas y la exploración."
+        },
+        {
+          "q": "¿Qué estudio mide la densidad mineral ósea?",
+          "o": [
+            "Resonancia magnética",
+            "Ecografía",
+            "Electromiografía",
+            "Densitometría ósea (DXA)"
+          ],
+          "c": 3,
+          "e": "La DXA se usa para diagnosticar osteopenia y osteoporosis."
+        },
+        {
+          "q": "¿Qué estudio evalúa la actividad eléctrica del músculo y la conducción nerviosa?",
+          "o": [
+            "Electromiografía y velocidad de conducción",
+            "Radiografía",
+            "Tomografía",
+            "Gammagrafía"
+          ],
+          "c": 0,
+          "e": "Ayuda a distinguir problemas musculares, nerviosos o radiculares."
+        }
+      ]
+    },
+    {
+      "id": "q-n32",
+      "titulo": "Farmacología básica para el fisioterapeuta",
+      "desc": "Fármacos frecuentes y su efecto en la sesión",
+      "preguntas": [
+        {
+          "q": "¿Qué efecto tienen los betabloqueadores durante el ejercicio?",
+          "o": [
+            "Disparan la frecuencia cardíaca",
+            "Limitan el aumento de la frecuencia cardíaca",
+            "Elevan la glucosa",
+            "No tienen ningún efecto"
+          ],
+          "c": 1,
+          "e": "La frecuencia cardíaca deja de ser un buen indicador de intensidad; se usa también la percepción de esfuerzo."
+        },
+        {
+          "q": "El uso prolongado de antiinflamatorios no esteroideos (AINE) puede causar:",
+          "o": [
+            "Hipoglucemia",
+            "Molestias gástricas y riesgo renal o de sangrado",
+            "Aumento de la talla",
+            "Mayor flexibilidad"
+          ],
+          "c": 1,
+          "e": "Por eso su uso prolongado requiere indicación y seguimiento médico."
+        },
+        {
+          "q": "Un paciente con anticoagulantes requiere precaución especial con:",
+          "o": [
+            "Estiramientos suaves",
+            "Caminata ligera",
+            "Técnicas profundas o con impacto por el riesgo de hematomas",
+            "Respiración diafragmática"
+          ],
+          "c": 2,
+          "e": "El riesgo de sangrado aumenta con maniobras intensas o golpes."
+        },
+        {
+          "q": "El uso prolongado de corticoides sistémicos puede provocar:",
+          "o": [
+            "Mayor densidad ósea",
+            "Fortalecimiento del tendón",
+            "Mejor cicatrización",
+            "Debilidad muscular y pérdida de densidad ósea"
+          ],
+          "c": 3,
+          "e": "Debilitan músculo, hueso y tendón; se adapta la carga y se vigila el riesgo de fractura."
+        },
+        {
+          "q": "Un paciente que usa insulina y hace ejercicio debe vigilar:",
+          "o": [
+            "La hipoglucemia",
+            "La talla",
+            "El color del cabello",
+            "La vista cansada"
+          ],
+          "c": 0,
+          "e": "El ejercicio baja la glucosa y, combinado con insulina, puede causar hipoglucemia."
+        },
+        {
+          "q": "Algunos relajantes musculares y analgésicos pueden causar:",
+          "o": [
+            "Excitación excesiva",
+            "Somnolencia y mareo, con riesgo de caída",
+            "Aumento de la fuerza",
+            "Mejor equilibrio"
+          ],
+          "c": 1,
+          "e": "Conviene preguntar por los medicamentos antes de ejercicios de equilibrio o marcha."
+        }
+      ]
+    },
+    {
+      "id": "q-n33",
+      "titulo": "Diabetes y ejercicio",
+      "desc": "Glucosa, pie diabético y seguridad",
+      "preguntas": [
+        {
+          "q": "Antes de ejercitar a una persona con diabetes, conviene revisar:",
+          "o": [
+            "Su glucosa y si tiene síntomas de hipoglucemia",
+            "Solo su peso",
+            "Solo su estatura",
+            "Nada, si se siente bien"
+          ],
+          "c": 0,
+          "e": "Se confirma que la glucosa sea segura y se tiene a la mano una fuente de azúcar."
+        },
+        {
+          "q": "¿Cuál es una señal de hipoglucemia?",
+          "o": [
+            "Piel seca y sed intensa",
+            "Temblor, sudor frío y confusión",
+            "Tos con flemas",
+            "Dolor en la espalda baja"
+          ],
+          "c": 1,
+          "e": "Requiere suspender el ejercicio y dar carbohidrato de acción rápida si está consciente."
+        },
+        {
+          "q": "¿Qué cuidado es clave en el pie diabético?",
+          "o": [
+            "Caminar siempre descalzo",
+            "Usar el mismo calcetín varios días",
+            "Revisar la piel y el calzado a diario por la pérdida de sensibilidad",
+            "Evitar todo ejercicio"
+          ],
+          "c": 2,
+          "e": "La neuropatía oculta heridas y roces; el calzado adecuado previene úlceras."
+        },
+        {
+          "q": "El ejercicio regular en la diabetes tipo 2:",
+          "o": [
+            "Empeora la sensibilidad a la insulina",
+            "No cambia nada",
+            "Eleva siempre la glucosa",
+            "Mejora la sensibilidad a la insulina"
+          ],
+          "c": 3,
+          "e": "El ejercicio aeróbico y de fuerza mejoran el control glucémico."
+        },
+        {
+          "q": "¿Qué complicación de la diabetes afecta sobre todo la sensibilidad de manos y pies?",
+          "o": [
+            "Neuropatía diabética",
+            "Osteoporosis",
+            "Escoliosis",
+            "Bursitis"
+          ],
+          "c": 0,
+          "e": "Aumenta el riesgo de lesiones sin dolor y de caídas."
+        },
+        {
+          "q": "Si la glucosa está muy alta y hay síntomas como náuseas o aliento con olor a fruta, lo correcto es:",
+          "o": [
+            "Aumentar la intensidad del ejercicio",
+            "Posponer el ejercicio y derivar a valoración médica",
+            "Dar azúcar de inmediato",
+            "Hacer solo estiramientos"
+          ],
+          "c": 1,
+          "e": "Puede tratarse de una descompensación metabólica que exige atención médica."
+        }
+      ]
+    },
+    {
+      "id": "q-n34",
+      "titulo": "Hipertensión arterial y ejercicio",
+      "desc": "Presión arterial y prescripción segura",
+      "preguntas": [
+        {
+          "q": "¿Qué tipo de ejercicio es la base en la hipertensión controlada?",
+          "o": [
+            "Aeróbico regular de intensidad moderada",
+            "Solo máxima fuerza",
+            "Reposo absoluto",
+            "Solo estiramientos"
+          ],
+          "c": 0,
+          "e": "Caminata, bicicleta o natación de forma regular reducen la presión en reposo."
+        },
+        {
+          "q": "¿Qué maniobra conviene evitar en los ejercicios de fuerza?",
+          "o": [
+            "Exhalar al esforzarse",
+            "Respirar con calma",
+            "Contener la respiración (Valsalva)",
+            "Calentar antes"
+          ],
+          "c": 2,
+          "e": "Valsalva eleva bruscamente la presión arterial; se exhala durante el esfuerzo."
+        },
+        {
+          "q": "¿Cuál de estas cifras en reposo aconseja no iniciar el ejercicio y pedir valoración médica?",
+          "o": [
+            "120/80 mmHg",
+            "130/85 mmHg",
+            "135/88 mmHg",
+            "Sistólica mayor de 200 o diastólica mayor de 110 mmHg"
+          ],
+          "c": 3,
+          "e": "Con cifras tan altas el riesgo supera el beneficio de esa sesión."
+        },
+        {
+          "q": "Un paciente hipertenso se marea al pasar rápido de acostado a de pie. ¿Qué puede ser?",
+          "o": [
+            "Hipotensión ortostática; los cambios de posición deben ser graduales",
+            "Un buen signo de recuperación",
+            "Siempre un infarto",
+            "Hipoglucemia obligatoriamente"
+          ],
+          "c": 0,
+          "e": "Algunos fármacos antihipertensivos la favorecen; se cambia de posición con calma."
+        },
+        {
+          "q": "El ejercicio aeróbico regular puede reducir la presión arterial en reposo aproximadamente:",
+          "o": [
+            "50 mmHg",
+            "Nada",
+            "De 5 a 8 mmHg",
+            "Más de 40 mmHg"
+          ],
+          "c": 2,
+          "e": "Es una reducción pequeña pero clínicamente relevante."
+        },
+        {
+          "q": "Durante el ejercicio aeróbico, la presión sistólica normalmente:",
+          "o": [
+            "Baja mucho",
+            "Aumenta de forma progresiva",
+            "Se mantiene en cero",
+            "Es igual a la diastólica"
+          ],
+          "c": 1,
+          "e": "La diastólica se mantiene o baja ligeramente; una caída de la sistólica es señal de alarma."
+        }
+      ]
+    },
+    {
+      "id": "q-n35",
+      "titulo": "Escoliosis",
+      "desc": "Curvas de la columna, valoración y manejo",
+      "preguntas": [
+        {
+          "q": "La escoliosis es:",
+          "o": [
+            "Una curva lateral y rotación de la columna mayor de 10° (ángulo de Cobb)",
+            "Un aumento de la lordosis",
+            "Un dolor cervical",
+            "Una hernia de disco"
+          ],
+          "c": 0,
+          "e": "Es una deformidad tridimensional de la columna."
+        },
+        {
+          "q": "¿Qué prueba clínica se usa para detectarla?",
+          "o": [
+            "Prueba de Lasègue",
+            "Prueba de Adams (flexión hacia adelante)",
+            "Prueba de Thomas",
+            "Prueba de Lachman"
+          ],
+          "c": 1,
+          "e": "En flexión se observa la giba costal por la rotación vertebral."
+        },
+        {
+          "q": "¿Con qué método se mide la curva en la radiografía?",
+          "o": [
+            "Goniometría con cinta",
+            "Método de Daniels",
+            "Ángulo de Cobb",
+            "Escala de Borg"
+          ],
+          "c": 2,
+          "e": "El ángulo de Cobb mide la inclinación entre las vértebras más inclinadas de la curva."
+        },
+        {
+          "q": "¿Cuál es el tipo más frecuente en adolescentes?",
+          "o": [
+            "Congénita",
+            "Neuromuscular",
+            "Postraumática",
+            "Idiopática"
+          ],
+          "c": 3,
+          "e": "En la mayoría no se encuentra una causa identificable."
+        },
+        {
+          "q": "¿Cuándo suele indicarse un corsé?",
+          "o": [
+            "En curvas moderadas durante el crecimiento",
+            "En toda desviación postural leve",
+            "Solo en adultos mayores",
+            "Nunca se indica"
+          ],
+          "c": 0,
+          "e": "El objetivo es detener la progresión de la curva mientras el hueso crece."
+        },
+        {
+          "q": "Los ejercicios específicos para escoliosis (como el método Schroth):",
+          "o": [
+            "Sustituyen siempre al corsé y a la cirugía",
+            "Se hacen sin supervisión desde el primer día",
+            "Empeoran la curva",
+            "Complementan el tratamiento y trabajan postura y respiración"
+          ],
+          "c": 3,
+          "e": "Buscan autocorrección, control postural y mejor expansión torácica."
+        }
+      ]
+    },
+    {
+      "id": "q-n36",
+      "titulo": "Parálisis cerebral infantil",
+      "desc": "Tipos, función motora y objetivos",
+      "preguntas": [
+        {
+          "q": "La parálisis cerebral es consecuencia de:",
+          "o": [
+            "Una lesión no progresiva del cerebro en desarrollo",
+            "Una lesión de la médula en la edad adulta",
+            "Una enfermedad muscular",
+            "Un problema de las articulaciones"
+          ],
+          "c": 0,
+          "e": "La lesión es estable, pero sus manifestaciones cambian con el crecimiento."
+        },
+        {
+          "q": "¿Cuál es el tipo más frecuente?",
+          "o": [
+            "Atáxica",
+            "Espástica",
+            "Discinética",
+            "Hipotónica pura"
+          ],
+          "c": 1,
+          "e": "La espástica se caracteriza por aumento del tono y reflejos exaltados."
+        },
+        {
+          "q": "El sistema GMFCS clasifica:",
+          "o": [
+            "El tipo de dolor",
+            "El peso al nacer",
+            "La función motora gruesa en cinco niveles",
+            "La capacidad pulmonar"
+          ],
+          "c": 2,
+          "e": "Ayuda a prever la evolución y planificar los objetivos."
+        },
+        {
+          "q": "Un objetivo central de la rehabilitación es:",
+          "o": [
+            "Que el niño se mueva exactamente como un niño sin lesión",
+            "Evitar todo movimiento",
+            "Solo corregir la forma de los pies",
+            "Mejorar la función, la autonomía y la participación"
+          ],
+          "c": 3,
+          "e": "Se prioriza lo que el niño y su familia necesitan hacer en su vida diaria."
+        },
+        {
+          "q": "¿Qué complicación ortopédica se vigila con frecuencia?",
+          "o": [
+            "Luxación o subluxación de cadera",
+            "Fractura de clavícula",
+            "Hernia inguinal",
+            "Escoliosis lumbar sola"
+          ],
+          "c": 0,
+          "e": "Se controla con valoración clínica y radiografías periódicas."
+        },
+        {
+          "q": "Ante la espasticidad, ¿qué estrategia es útil?",
+          "o": [
+            "Estiramientos bruscos",
+            "Estiramientos suaves, posicionamiento y actividad funcional",
+            "Inmovilizar siempre",
+            "Evitar la carga de peso"
+          ],
+          "c": 1,
+          "e": "Se combina con férulas, ejercicio y, cuando se indica, tratamiento médico."
+        }
+      ]
+    },
+    {
+      "id": "q-n37",
+      "titulo": "Atrapamientos nerviosos y túnel carpiano",
+      "desc": "Nervio mediano y cubital",
+      "preguntas": [
+        {
+          "q": "El síndrome del túnel carpiano comprime el nervio:",
+          "o": [
+            "Mediano",
+            "Radial",
+            "Ciático",
+            "Axilar"
+          ],
+          "c": 0,
+          "e": "Pasa por el túnel carpiano junto con los tendones flexores."
+        },
+        {
+          "q": "Un síntoma típico es:",
+          "o": [
+            "Dolor en la rodilla",
+            "Hormigueo en pulgar, índice y medio, sobre todo de noche",
+            "Pérdida de olfato",
+            "Calambres en los muslos"
+          ],
+          "c": 1,
+          "e": "Muchos pacientes despiertan sacudiendo la mano."
+        },
+        {
+          "q": "¿Qué pruebas se usan para orientar el diagnóstico?",
+          "o": [
+            "Lasègue y Lachman",
+            "Thomas y Ober",
+            "Phalen y Tinel",
+            "Adams y Trendelenburg"
+          ],
+          "c": 2,
+          "e": "Reproducen parestesias al flexionar la muñeca o al percutir sobre el nervio."
+        },
+        {
+          "q": "El atrapamiento del nervio cubital en el codo causa hormigueo en:",
+          "o": [
+            "Pulgar e índice",
+            "Todos los dedos",
+            "Solo la palma",
+            "Anular y meñique"
+          ],
+          "c": 3,
+          "e": "Es el llamado síndrome del túnel cubital."
+        },
+        {
+          "q": "Un manejo conservador inicial del túnel carpiano incluye:",
+          "o": [
+            "Férula en posición neutra, sobre todo de noche, y ajustar las actividades",
+            "Reposo absoluto de todo el cuerpo",
+            "Masaje muy intenso sobre la muñeca",
+            "Colgarse de las manos"
+          ],
+          "c": 0,
+          "e": "Se reduce la presión sobre el nervio y se educa sobre posturas de trabajo."
+        },
+        {
+          "q": "¿Qué signo obliga a derivar con mayor prioridad?",
+          "o": [
+            "Hormigueo leve ocasional",
+            "Dolor al terminar el día",
+            "Atrofia del músculo de la base del pulgar y pérdida de fuerza",
+            "Sudoración leve"
+          ],
+          "c": 2,
+          "e": "Indica compromiso nervioso importante que puede requerir cirugía."
+        }
+      ]
+    },
+    {
+      "id": "q-n38",
+      "titulo": "Prótesis de cadera y de rodilla",
+      "desc": "Precauciones y progresión tras la cirugía",
+      "preguntas": [
+        {
+          "q": "Tras una prótesis total de cadera por vía posterior, ¿qué suele evitarse?",
+          "o": [
+            "Caminar con apoyo",
+            "Flexión de cadera mayor de 90°, aducción y rotación interna",
+            "Respirar profundo",
+            "Mover los tobillos"
+          ],
+          "c": 1,
+          "e": "Esas posiciones aumentan el riesgo de luxación de la prótesis."
+        },
+        {
+          "q": "¿Cuándo suele comenzar la movilización tras la cirugía?",
+          "o": [
+            "A las 6 semanas",
+            "Solo al mes",
+            "En las primeras 24 horas, según indicación",
+            "Después del alta definitiva"
+          ],
+          "c": 2,
+          "e": "La movilización temprana reduce complicaciones y acorta la estancia."
+        },
+        {
+          "q": "¿Qué ejercicio temprano ayuda a prevenir la trombosis?",
+          "o": [
+            "Reposo total",
+            "Contener la respiración",
+            "Evitar mover los pies",
+            "Bombeo de tobillos y movilización precoz"
+          ],
+          "c": 3,
+          "e": "Activa la circulación de retorno de las piernas."
+        },
+        {
+          "q": "Una meta temprana tras la prótesis de rodilla es:",
+          "o": [
+            "Lograr extensión completa y aumentar la flexión de forma progresiva",
+            "Flexión máxima el primer día",
+            "Evitar la extensión",
+            "No apoyar nunca el pie"
+          ],
+          "c": 0,
+          "e": "La extensión completa es clave para una marcha eficiente."
+        },
+        {
+          "q": "¿Qué signo puede indicar una infección de la herida?",
+          "o": [
+            "Rigidez leve matutina",
+            "Cansancio al caminar",
+            "Enrojecimiento, calor, secreción o fiebre",
+            "Hormigueo leve en el pie"
+          ],
+          "c": 2,
+          "e": "Debe comunicarse al equipo médico sin demora."
+        },
+        {
+          "q": "Para caminar al inicio suele usarse:",
+          "o": [
+            "Andador o muletas, con la carga que indique el cirujano",
+            "Ninguna ayuda",
+            "Solo bastón desde el primer día",
+            "Silla de ruedas permanente"
+          ],
+          "c": 0,
+          "e": "La carga permitida depende del tipo de prótesis y de la indicación médica."
+        }
+      ]
+    },
+    {
+      "id": "q-n39",
+      "titulo": "Reconstrucción del ligamento cruzado anterior",
+      "desc": "Del posoperatorio al retorno al deporte",
+      "preguntas": [
+        {
+          "q": "¿Qué función principal tiene el LCA?",
+          "o": [
+            "Frenar la traslación anterior de la tibia y controlar la rotación",
+            "Estabilizar el hombro",
+            "Mover los dedos del pie",
+            "Proteger el menisco lateral únicamente"
+          ],
+          "c": 0,
+          "e": "Aporta estabilidad anterior y rotacional a la rodilla."
+        },
+        {
+          "q": "¿Qué prueba clínica es la más sensible para una rotura del LCA?",
+          "o": [
+            "Prueba de Phalen",
+            "Prueba de Lachman",
+            "Prueba de Thomas",
+            "Prueba de Adams"
+          ],
+          "c": 1,
+          "e": "Se hace con la rodilla en leve flexión, desplazando la tibia hacia adelante."
+        },
+        {
+          "q": "Un mecanismo típico de lesión es:",
+          "o": [
+            "Caída sobre la mano",
+            "Levantar peso con la espalda",
+            "Giro o cambio de dirección con el pie fijo",
+            "Estirar el cuello"
+          ],
+          "c": 2,
+          "e": "Suele ocurrir sin contacto, al desacelerar o girar."
+        },
+        {
+          "q": "Una prioridad en las primeras semanas es:",
+          "o": [
+            "Flexión máxima inmediata",
+            "Correr",
+            "Saltar",
+            "Recuperar la extensión completa y controlar el derrame"
+          ],
+          "c": 3,
+          "e": "La falta de extensión y el edema retrasan toda la recuperación."
+        },
+        {
+          "q": "El retorno al deporte debe basarse en:",
+          "o": [
+            "Solo el tiempo transcurrido",
+            "Pruebas funcionales de fuerza, saltos y control, además del tiempo",
+            "El deseo del paciente",
+            "La edad del paciente"
+          ],
+          "c": 1,
+          "e": "Cumplir criterios objetivos reduce el riesgo de relesión."
+        },
+        {
+          "q": "¿Cuál es un injerto frecuente en la reconstrucción?",
+          "o": [
+            "Tendón del bíceps",
+            "Tendón de Aquiles",
+            "Tendón rotuliano o isquiotibiales",
+            "Ligamento del codo"
+          ],
+          "c": 2,
+          "e": "También se usa el tendón del cuádriceps o aloinjertos."
+        }
+      ]
+    },
+    {
+      "id": "q-n40",
+      "titulo": "Lesiones musculares",
+      "desc": "Desgarros, grados y progresión",
+      "preguntas": [
+        {
+          "q": "Un desgarro muscular de grado III significa:",
+          "o": [
+            "Rotura completa del músculo",
+            "Dolor sin lesión de fibras",
+            "Un calambre",
+            "Una contractura leve"
+          ],
+          "c": 0,
+          "e": "Suele haber defecto palpable, pérdida de función y equimosis."
+        },
+        {
+          "q": "¿Qué músculos se lesionan con mayor frecuencia en la carrera de velocidad?",
+          "o": [
+            "Pectorales",
+            "Isquiotibiales",
+            "Deltoides",
+            "Músculos del cuello"
+          ],
+          "c": 1,
+          "e": "Trabajan de forma excéntrica al frenar la pierna en la fase final del vuelo."
+        },
+        {
+          "q": "En la fase aguda de un desgarro, ¿qué se prioriza?",
+          "o": [
+            "Estiramientos intensos",
+            "Masaje profundo inmediato",
+            "Proteger, controlar el dolor y movilizar sin dolor de forma temprana",
+            "Carga máxima"
+          ],
+          "c": 2,
+          "e": "Una carga demasiado agresiva o demasiado tardía empeora el resultado."
+        },
+        {
+          "q": "¿Qué ejercicio ayuda a prevenir lesiones de isquiotibiales?",
+          "o": [
+            "Solo reposo",
+            "Solo estiramiento pasivo",
+            "Solo ejercicios isométricos suaves",
+            "Ejercicios excéntricos como el nórdico"
+          ],
+          "c": 3,
+          "e": "Aumentan la resistencia del músculo a las fuerzas de elongación."
+        },
+        {
+          "q": "Ante un hematoma intramuscular reciente conviene:",
+          "o": [
+            "Evitar el masaje profundo en los primeros días",
+            "Masajear con fuerza",
+            "Aplicar calor intenso",
+            "Realizar saltos"
+          ],
+          "c": 0,
+          "e": "El masaje agresivo puede aumentar el sangrado y favorecer la calcificación."
+        },
+        {
+          "q": "¿Qué signo exige valoración médica por posible rotura completa?",
+          "o": [
+            "Rigidez leve",
+            "Cansancio",
+            "Defecto palpable en el músculo con equimosis extensa",
+            "Dolor leve tras entrenar"
+          ],
+          "c": 2,
+          "e": "Puede requerir estudio de imagen y valoración quirúrgica."
+        }
+      ]
+    },
+    {
+      "id": "q-n41",
+      "titulo": "Fascitis plantar y dolor de talón",
+      "desc": "Carga, calzado y progresión",
+      "preguntas": [
+        {
+          "q": "El dolor típico de la fascitis plantar aparece:",
+          "o": [
+            "Solo de noche en la espalda",
+            "En el talón, sobre todo con los primeros pasos de la mañana",
+            "En el hombro",
+            "Solo al estar sentado"
+          ],
+          "c": 1,
+          "e": "Mejora al calentar y vuelve tras reposo prolongado o mucha carga."
+        },
+        {
+          "q": "La fascia plantar se origina en:",
+          "o": [
+            "El maléolo lateral",
+            "La cabeza del peroné",
+            "El tubérculo medial del calcáneo",
+            "La rótula"
+          ],
+          "c": 2,
+          "e": "Se inserta en la base de los dedos y sostiene el arco."
+        },
+        {
+          "q": "¿Qué rigidez se asocia a este problema?",
+          "o": [
+            "Rigidez del hombro",
+            "Rigidez cervical",
+            "Rigidez de la mano",
+            "Rigidez de gemelos y limitación de la dorsiflexión"
+          ],
+          "c": 3,
+          "e": "El estiramiento de la pantorrilla y de la fascia suele formar parte del plan."
+        },
+        {
+          "q": "¿Qué tratamiento tiene mejor respaldo?",
+          "o": [
+            "Educación, carga progresiva (elevaciones de talón), plantillas y calzado adecuado",
+            "Reposo absoluto de meses",
+            "Solo hielo",
+            "Cirugía en todos los casos"
+          ],
+          "c": 0,
+          "e": "La carga gradual adapta el tejido y reduce el dolor."
+        },
+        {
+          "q": "Un espolón calcáneo visto en radiografía:",
+          "o": [
+            "Siempre explica el dolor",
+            "Es una infección",
+            "Puede estar presente sin dolor y no explica por sí solo los síntomas",
+            "Solo aparece en niños"
+          ],
+          "c": 2,
+          "e": "Muchas personas lo tienen sin molestias."
+        },
+        {
+          "q": "Un factor de riesgo frecuente es:",
+          "o": [
+            "Caminar descalzo en la arena una vez",
+            "Dormir con almohada alta",
+            "Beber poca agua",
+            "Aumento brusco de carga o calzado poco adecuado"
+          ],
+          "c": 3,
+          "e": "También influyen el peso corporal y trabajos de pie prolongado."
+        }
+      ]
+    },
+    {
+      "id": "q-n42",
+      "titulo": "Rehabilitación vestibular",
+      "desc": "Vértigo, maniobras y ejercicios",
+      "preguntas": [
+        {
+          "q": "El vértigo posicional paroxístico benigno (VPPB) se caracteriza por:",
+          "o": [
+            "Vértigo breve con cambios de posición de la cabeza",
+            "Vértigo continuo durante días sin cambios",
+            "Pérdida de fuerza en un lado",
+            "Dolor de rodilla"
+          ],
+          "c": 0,
+          "e": "Se desencadena al acostarse, girarse en la cama o mirar hacia arriba."
+        },
+        {
+          "q": "¿Qué maniobra diagnostica el VPPB del canal posterior?",
+          "o": [
+            "Prueba de Lachman",
+            "Maniobra de Dix-Hallpike",
+            "Prueba de Phalen",
+            "Prueba de Adams"
+          ],
+          "c": 1,
+          "e": "Se busca vértigo y nistagmo al colocar al paciente en decúbito con la cabeza girada."
+        },
+        {
+          "q": "¿Qué maniobra terapéutica se usa en el VPPB posterior?",
+          "o": [
+            "Maniobra de Valsalva",
+            "Maniobra de Heimlich",
+            "Maniobra de Epley",
+            "Maniobra de Spurling"
+          ],
+          "c": 2,
+          "e": "Reposiciona los otolitos fuera del canal semicircular."
+        },
+        {
+          "q": "Los ejercicios de habituación y estabilización de la mirada sirven para:",
+          "o": [
+            "Aumentar la fuerza de las manos",
+            "Mejorar el equilibrio solo en niños",
+            "Aliviar el dolor de espalda",
+            "Favorecer la compensación vestibular central"
+          ],
+          "c": 3,
+          "e": "Se hacen de forma gradual con movimientos que provocan síntomas leves."
+        },
+        {
+          "q": "Un vértigo con dificultad para hablar, debilidad en un lado o visión doble requiere:",
+          "o": [
+            "Derivación urgente",
+            "Ejercicios en casa",
+            "Esperar una semana",
+            "Solo reposo"
+          ],
+          "c": 0,
+          "e": "Puede tratarse de un evento neurológico agudo."
+        },
+        {
+          "q": "El nistagmo es:",
+          "o": [
+            "Un temblor de la mano",
+            "Un movimiento ocular rítmico e involuntario",
+            "Una contractura del cuello",
+            "Un tipo de dolor"
+          ],
+          "c": 1,
+          "e": "Su dirección y duración ayudan a identificar el origen del vértigo."
+        }
+      ]
+    },
+    {
+      "id": "q-n43",
+      "titulo": "Hernia discal y ciática",
+      "desc": "Raíz nerviosa, banderas rojas y manejo",
+      "preguntas": [
+        {
+          "q": "La ciática suele describirse como dolor:",
+          "o": [
+            "Que baja por la parte posterior de la pierna",
+            "Solo en el cuello",
+            "En el codo",
+            "En la mandíbula"
+          ],
+          "c": 0,
+          "e": "Se debe a la irritación de las raíces lumbosacras o del nervio ciático."
+        },
+        {
+          "q": "¿Qué ocurre con la mayoría de las hernias discales sintomáticas?",
+          "o": [
+            "Siempre requieren cirugía",
+            "Mejoran con manejo conservador en semanas o meses",
+            "Empeoran con cualquier movimiento",
+            "Nunca mejoran"
+          ],
+          "c": 1,
+          "e": "Con educación, actividad progresiva y analgesia suelen resolverse."
+        },
+        {
+          "q": "¿Cuál es una bandera roja que exige derivación urgente?",
+          "o": [
+            "Dolor al estar sentado",
+            "Rigidez matutina",
+            "Retención urinaria y anestesia en silla de montar",
+            "Dolor leve al toser"
+          ],
+          "c": 2,
+          "e": "Sugiere síndrome de cauda equina, una urgencia neuroquirúrgica."
+        },
+        {
+          "q": "¿Qué posición o movimiento aumenta la presión sobre la parte posterior del disco?",
+          "o": [
+            "Caminar con calma",
+            "Estar de pie con buena postura",
+            "Nadar de espaldas",
+            "Flexión lumbar mantenida con carga"
+          ],
+          "c": 3,
+          "e": "Por eso se enseñan estrategias de carga y bisagra de cadera."
+        },
+        {
+          "q": "Respecto al reposo en cama prolongado:",
+          "o": [
+            "No se recomienda; conviene mantener la actividad dentro de lo tolerable",
+            "Se indica por varias semanas",
+            "Es el tratamiento principal",
+            "Es obligatorio"
+          ],
+          "c": 0,
+          "e": "El reposo prolongado debilita y retrasa la recuperación."
+        },
+        {
+          "q": "Una debilidad para elevar el pie y el dedo gordo sugiere afectación de la raíz:",
+          "o": [
+            "C5",
+            "T4",
+            "L5",
+            "S4"
+          ],
+          "c": 2,
+          "e": "L5 inerva los dorsiflexores del tobillo y el extensor largo del dedo gordo."
+        }
+      ]
+    },
+    {
+      "id": "q-n44",
+      "titulo": "Sarcopenia y fragilidad",
+      "desc": "Fuerza, marcha y envejecimiento activo",
+      "preguntas": [
+        {
+          "q": "La sarcopenia es:",
+          "o": [
+            "La pérdida de masa y fuerza muscular asociada al envejecimiento",
+            "Un tipo de artritis",
+            "Un trastorno del sueño",
+            "Una enfermedad infecciosa"
+          ],
+          "c": 0,
+          "e": "Aumenta el riesgo de caídas, discapacidad y hospitalización."
+        },
+        {
+          "q": "¿Qué intervención tiene mejor evidencia?",
+          "o": [
+            "Reposo",
+            "Entrenamiento de fuerza progresivo junto con una ingesta adecuada de proteína",
+            "Solo caminar despacio",
+            "Solo estiramientos"
+          ],
+          "c": 1,
+          "e": "La fuerza es el estímulo más potente para ganar masa y función."
+        },
+        {
+          "q": "¿Qué instrumento mide la fuerza de prensión de la mano?",
+          "o": [
+            "Goniómetro",
+            "Espirómetro",
+            "Dinamómetro",
+            "Oxímetro"
+          ],
+          "c": 2,
+          "e": "La fuerza de prensión se relaciona con la fuerza global y el pronóstico."
+        },
+        {
+          "q": "Una velocidad de marcha baja (por ejemplo, menor de 0,8 m/s) sugiere:",
+          "o": [
+            "Mejor condición física",
+            "Equilibrio normal",
+            "Buena capacidad pulmonar",
+            "Mayor riesgo de fragilidad y mala evolución"
+          ],
+          "c": 3,
+          "e": "Es una medida sencilla y muy informativa."
+        },
+        {
+          "q": "Un programa multicomponente para el adulto mayor incluye:",
+          "o": [
+            "Fuerza, equilibrio y ejercicio aeróbico",
+            "Solo reposo",
+            "Solo levantar mucho peso",
+            "Solo ejercicios de cuello"
+          ],
+          "c": 0,
+          "e": "Combinar componentes reduce caídas y mejora la autonomía."
+        },
+        {
+          "q": "¿Cuál es un criterio de fragilidad de Fried?",
+          "o": [
+            "Buena memoria",
+            "Peso estable",
+            "Marcha lenta",
+            "Alta actividad física"
+          ],
+          "c": 2,
+          "e": "También incluye pérdida de peso, agotamiento, debilidad y baja actividad."
+        }
+      ]
+    },
+    {
+      "id": "q-n45",
+      "titulo": "Movilización temprana en cuidados intensivos",
+      "desc": "Seguridad, criterios y progresión",
+      "preguntas": [
+        {
+          "q": "¿Qué beneficio tiene la movilización temprana en la UCI?",
+          "o": [
+            "Aumenta la debilidad",
+            "Reduce la debilidad adquirida y puede acortar la ventilación",
+            "Prolonga la estancia",
+            "No tiene efecto"
+          ],
+          "c": 1,
+          "e": "Mejora la función física al alta."
+        },
+        {
+          "q": "Antes de movilizar, ¿qué se verifica?",
+          "o": [
+            "La estabilidad hemodinámica y respiratoria, además de tubos, accesos y sedación",
+            "Solo el peso",
+            "Solo la hora",
+            "Nada"
+          ],
+          "c": 0,
+          "e": "La seguridad depende del estado del paciente y de los dispositivos conectados."
+        },
+        {
+          "q": "¿Cuándo se debe suspender la sesión?",
+          "o": [
+            "Si hay aburrimiento",
+            "Si el paciente pide agua",
+            "Si hay caída de la saturación, arritmia, hipotensión o intolerancia marcada",
+            "Nunca"
+          ],
+          "c": 2,
+          "e": "Se retoma cuando el paciente se estabiliza."
+        },
+        {
+          "q": "¿Qué escala valora la debilidad adquirida en la UCI?",
+          "o": [
+            "Escala de Borg",
+            "Escala EVA",
+            "Escala de Braden",
+            "Escala MRC de suma"
+          ],
+          "c": 3,
+          "e": "Suma la fuerza de varios grupos musculares clave."
+        },
+        {
+          "q": "Un paciente que puede participar suele estar:",
+          "o": [
+            "Despierto y capaz de seguir órdenes sencillas",
+            "Con sedación profunda",
+            "En coma",
+            "Con relajantes musculares"
+          ],
+          "c": 0,
+          "e": "Las escalas de sedación, como RASS, ayudan a decidirlo."
+        },
+        {
+          "q": "Un primer escalón de la progresión puede ser:",
+          "o": [
+            "Correr en cinta",
+            "Posicionamiento y ejercicios pasivos o activos asistidos en cama",
+            "Salir a caminar largas distancias",
+            "Subir escaleras"
+          ],
+          "c": 1,
+          "e": "Se avanza a sentarse, ponerse de pie y caminar según tolerancia."
+        }
+      ]
+    },
+    {
+      "id": "q-n46",
+      "titulo": "Fisioterapia en cuidados paliativos",
+      "desc": "Confort, función y acompañamiento",
+      "preguntas": [
+        {
+          "q": "¿Cuál es el objetivo central de la fisioterapia paliativa?",
+          "o": [
+            "Curar la enfermedad",
+            "Mejorar la calidad de vida, el confort y la función posible",
+            "Exigir máximo rendimiento",
+            "Suspender toda actividad"
+          ],
+          "c": 1,
+          "e": "Se adapta a lo que la persona quiere y puede hacer."
+        },
+        {
+          "q": "¿Qué se prioriza al plantear metas?",
+          "o": [
+            "Las del terapeuta únicamente",
+            "Las de los libros",
+            "Las del paciente y su familia",
+            "Las del equipo administrativo"
+          ],
+          "c": 2,
+          "e": "La participación del paciente da sentido al tratamiento."
+        },
+        {
+          "q": "Ante la disnea, ¿qué ayuda?",
+          "o": [
+            "Acostar plano",
+            "Contener la respiración",
+            "Hablar rápido",
+            "Inclinarse hacia adelante, respirar con labios fruncidos y usar un ventilador"
+          ],
+          "c": 3,
+          "e": "Disminuyen la sensación de falta de aire."
+        },
+        {
+          "q": "¿Cuándo puede intervenir la fisioterapia paliativa?",
+          "o": [
+            "En cualquier etapa de la enfermedad avanzada",
+            "Solo en los últimos minutos",
+            "Solo antes del diagnóstico",
+            "Nunca"
+          ],
+          "c": 0,
+          "e": "No se reserva solo para el final de la vida."
+        },
+        {
+          "q": "Para la fatiga se enseña:",
+          "o": [
+            "Hacer todo de una vez",
+            "Evitar las pausas",
+            "Conservar energía, priorizar actividades y descansar",
+            "Dormir todo el día"
+          ],
+          "c": 2,
+          "e": "Planificar y dosificar permite hacer lo más importante."
+        },
+        {
+          "q": "En la comunicación con el paciente se debe:",
+          "o": [
+            "Imponer decisiones",
+            "Escuchar, respetar su autonomía y explicar con claridad",
+            "Evitar las preguntas",
+            "Hablar solo con familiares"
+          ],
+          "c": 1,
+          "e": "El respeto y la claridad generan confianza."
+        }
+      ]
+    },
+    {
+      "id": "q-n47",
+      "titulo": "Primeros auxilios y RCP en la consulta",
+      "desc": "Reconocer y actuar ante una emergencia",
+      "preguntas": [
+        {
+          "q": "Ante una persona inconsciente, lo primero es:",
+          "o": [
+            "Asegurar que la escena sea segura",
+            "Moverla bruscamente",
+            "Darle agua",
+            "Sentarla"
+          ],
+          "c": 0,
+          "e": "Se protege a quien auxilia antes de acercarse."
+        },
+        {
+          "q": "¿Cuál es la frecuencia de las compresiones torácicas en un adulto?",
+          "o": [
+            "60 por minuto",
+            "100 a 120 por minuto",
+            "200 por minuto",
+            "30 por minuto"
+          ],
+          "c": 1,
+          "e": "Es un ritmo constante y sin pausas largas."
+        },
+        {
+          "q": "¿Qué profundidad deben tener las compresiones en un adulto?",
+          "o": [
+            "1 a 2 cm",
+            "2 a 3 cm",
+            "Unos 5 a 6 cm",
+            "10 cm"
+          ],
+          "c": 2,
+          "e": "Permiten bombear sangre; se deja que el pecho vuelva a subir."
+        },
+        {
+          "q": "El desfibrilador externo automático (DEA) debe:",
+          "o": [
+            "Guardarse sin usar",
+            "Usarse solo por médicos",
+            "Usarse solo con permiso por escrito",
+            "Usarse lo antes posible siguiendo sus indicaciones de voz"
+          ],
+          "c": 3,
+          "e": "Está diseñado para que lo use cualquier persona."
+        },
+        {
+          "q": "Con un solo reanimador en un adulto, la relación entre compresiones y ventilaciones es:",
+          "o": [
+            "30 compresiones y 2 ventilaciones",
+            "15 y 1",
+            "5 y 5",
+            "2 y 30"
+          ],
+          "c": 0,
+          "e": "Si no se tiene capacitación en ventilaciones, se hacen compresiones continuas."
+        },
+        {
+          "q": "Ante un atragantamiento con tos eficaz, ¿qué se hace?",
+          "o": [
+            "Golpear con fuerza de inmediato",
+            "Animar a toser",
+            "Dar agua",
+            "Acostar a la persona"
+          ],
+          "c": 1,
+          "e": "Si la obstrucción es completa y no puede toser ni hablar, se hacen compresiones abdominales."
+        }
+      ]
+    },
+    {
+      "id": "q-n48",
+      "titulo": "Lesiones del corredor",
+      "desc": "Carga, técnica y diagnóstico en running",
+      "preguntas": [
+        {
+          "q": "La lesión más frecuente en corredores es:",
+          "o": [
+            "El síndrome femoropatelar (dolor anterior de rodilla)",
+            "La luxación de hombro",
+            "La hernia inguinal",
+            "La epicondilitis"
+          ],
+          "c": 0,
+          "e": "Se relaciona con sobrecarga y control de cadera y rodilla."
+        },
+        {
+          "q": "El síndrome de estrés tibial medial se conoce como:",
+          "o": [
+            "Codo de golfista",
+            "Periostitis tibial o «shin splints»",
+            "Dedo en gatillo",
+            "Cuello rígido"
+          ],
+          "c": 1,
+          "e": "Causa dolor a lo largo del borde medial de la tibia."
+        },
+        {
+          "q": "El dolor en la cara lateral de la rodilla del corredor sugiere:",
+          "o": [
+            "Lesión del manguito",
+            "Hernia discal",
+            "Síndrome de la banda iliotibial",
+            "Esguince de tobillo"
+          ],
+          "c": 2,
+          "e": "Se agrava con kilómetros acumulados y cuestas."
+        },
+        {
+          "q": "¿Cómo debe progresar la carga de entrenamiento?",
+          "o": [
+            "De golpe",
+            "Duplicando cada semana",
+            "Sin descanso",
+            "De forma gradual, evitando aumentos bruscos de volumen o intensidad"
+          ],
+          "c": 3,
+          "e": "Los cambios bruscos son una causa común de lesión."
+        },
+        {
+          "q": "Aumentar ligeramente la cadencia (pasos por minuto) puede:",
+          "o": [
+            "Reducir la carga sobre algunas articulaciones",
+            "Aumentar siempre el riesgo",
+            "No cambiar nada",
+            "Dañar los tendones"
+          ],
+          "c": 0,
+          "e": "Un paso más corto y frecuente disminuye el impacto."
+        },
+        {
+          "q": "Un dolor localizado que aumenta con la carga y también molesta en reposo o de noche puede ser:",
+          "o": [
+            "Una contractura",
+            "Un calambre",
+            "Una fractura por estrés",
+            "Fatiga normal"
+          ],
+          "c": 2,
+          "e": "Requiere descargar y valoración médica."
+        }
+      ]
+    },
+    {
+      "id": "q-n49",
+      "titulo": "Síndrome de dolor regional complejo",
+      "desc": "Reconocimiento y rehabilitación",
+      "preguntas": [
+        {
+          "q": "El SDRC se caracteriza por:",
+          "o": [
+            "Dolor desproporcionado con cambios de color, temperatura, edema o sudoración tras una lesión",
+            "Dolor leve y pasajero",
+            "Fuerza aumentada",
+            "Solo rigidez matutina"
+          ],
+          "c": 0,
+          "e": "El dolor excede lo esperado por la lesión inicial."
+        },
+        {
+          "q": "¿Qué criterios se usan para el diagnóstico?",
+          "o": [
+            "Criterios de Wells",
+            "Criterios de Budapest",
+            "Criterios de Ottawa",
+            "Criterios de Fried"
+          ],
+          "c": 1,
+          "e": "Combinan síntomas y signos sensoriales, vasomotores, sudomotores y motores."
+        },
+        {
+          "q": "¿Qué estrategias se emplean en la rehabilitación?",
+          "o": [
+            "Inmovilizar el miembro por meses",
+            "Evitar tocar la zona siempre",
+            "Movilización progresiva, desensibilización e imaginería motora graduada",
+            "Solo reposo"
+          ],
+          "c": 2,
+          "e": "Se busca recuperar el uso funcional de forma gradual."
+        },
+        {
+          "q": "¿Qué conviene evitar?",
+          "o": [
+            "Educación",
+            "Movimiento graduado",
+            "Ejercicio suave",
+            "La inmovilización prolongada"
+          ],
+          "c": 3,
+          "e": "Favorece rigidez, atrofia y mayor sensibilización."
+        },
+        {
+          "q": "La terapia de espejo se utiliza para:",
+          "o": [
+            "Reducir el dolor y reorganizar la representación cortical",
+            "Aumentar la masa muscular",
+            "Medir la presión",
+            "Mejorar la visión"
+          ],
+          "c": 0,
+          "e": "Se observa el movimiento del miembro sano reflejado."
+        },
+        {
+          "q": "La educación sobre el dolor en este síndrome:",
+          "o": [
+            "Se omite",
+            "Ayuda a entender el problema y a participar en el tratamiento",
+            "Solo confunde",
+            "Se deja para el final"
+          ],
+          "c": 1,
+          "e": "Reduce el miedo al movimiento."
+        }
+      ]
+    },
+    {
+      "id": "q-n50",
+      "titulo": "Telerrehabilitación y educación al paciente",
+      "desc": "Atención a distancia y adherencia",
+      "preguntas": [
+        {
+          "q": "Una ventaja de la telerrehabilitación es:",
+          "o": [
+            "Sustituye siempre la atención presencial",
+            "Aumenta el acceso para personas lejanas o con movilidad limitada",
+            "No necesita conexión",
+            "Evita la valoración"
+          ],
+          "c": 1,
+          "e": "Reduce traslados y facilita el seguimiento."
+        },
+        {
+          "q": "Antes de una sesión a distancia conviene comprobar:",
+          "o": [
+            "Solo el color de la ropa",
+            "Nada",
+            "Que el espacio sea seguro y que la conexión y la cámara funcionen",
+            "Que haya música"
+          ],
+          "c": 2,
+          "e": "Un entorno despejado previene accidentes."
+        },
+        {
+          "q": "¿Qué ayuda a la adherencia al programa de ejercicio?",
+          "o": [
+            "Pautas largas y complejas",
+            "Evitar el seguimiento",
+            "No dar instrucciones escritas",
+            "Programas sencillos, recordatorios y seguimiento"
+          ],
+          "c": 3,
+          "e": "La adherencia depende de claridad y de apoyo continuo."
+        },
+        {
+          "q": "Una limitación de la atención a distancia es:",
+          "o": [
+            "No permite la palpación ni ciertas pruebas manuales",
+            "Es siempre más cara",
+            "Nunca puede usarse",
+            "No admite ejercicio"
+          ],
+          "c": 0,
+          "e": "Se compensa con observación estructurada y pruebas funcionales."
+        },
+        {
+          "q": "¿Qué técnica comprueba que el paciente entendió?",
+          "o": [
+            "Hablar más rápido",
+            "Pedirle que explique con sus palabras lo que hará (teach-back)",
+            "Repetir en voz alta",
+            "Dar más folletos"
+          ],
+          "c": 1,
+          "e": "Detecta dudas antes de que se conviertan en errores."
+        },
+        {
+          "q": "¿Qué requisito de privacidad es importante?",
+          "o": [
+            "Grabar sin avisar",
+            "Compartir las sesiones en redes",
+            "Usar plataformas seguras y contar con el consentimiento",
+            "Guardar datos en cualquier aplicación"
+          ],
+          "c": 2,
+          "e": "Los datos de salud son sensibles y requieren protección."
+        }
+      ]
     }
   ],
   "orden": [
@@ -4666,6 +6126,246 @@ window.FT_RETOS = {
         "Inspirar profundo por la nariz",
         "Mantener el aire unos segundos",
         "Exhalar lentamente por la boca"
+      ]
+    },
+    {
+      "id": "o-n31",
+      "titulo": "Medición de la presión arterial",
+      "desc": "Toma correcta en consulta",
+      "pasos": [
+        "Sentar al paciente en reposo unos 5 minutos",
+        "Colocar el brazalete a la altura del corazón en el brazo descubierto",
+        "Inflar hasta superar la presión estimada",
+        "Desinflar despacio y registrar sistólica y diastólica",
+        "Anotar el valor y el brazo usado en el expediente"
+      ]
+    },
+    {
+      "id": "o-n32",
+      "titulo": "Uso del pulsioxímetro",
+      "desc": "Saturación de oxígeno y pulso",
+      "pasos": [
+        "Limpiar el dedo y retirar el esmalte de uñas",
+        "Colocar el sensor con la mano relajada",
+        "Esperar a que la lectura se estabilice",
+        "Registrar la saturación y el pulso",
+        "Retirar el sensor y limpiarlo"
+      ]
+    },
+    {
+      "id": "o-n33",
+      "titulo": "Giro del paciente en bloque",
+      "desc": "Movilizar sin torcer la columna",
+      "pasos": [
+        "Explicar el procedimiento y pedir ayuda a otra persona",
+        "Alinear cabeza, tronco y pelvis y cruzar los brazos sobre el pecho",
+        "Girar a la vez, a una cuenta, manteniendo todo el cuerpo alineado",
+        "Colocar almohadas entre las rodillas y en la espalda",
+        "Comprobar la comodidad y registrar"
+      ]
+    },
+    {
+      "id": "o-n34",
+      "titulo": "Sentar al paciente en la orilla de la cama",
+      "desc": "Primer paso hacia la bipedestación",
+      "pasos": [
+        "Explicar y preguntar por mareo o síntomas",
+        "Elevar el respaldo de la cama poco a poco",
+        "Girar las piernas fuera de la cama mientras se incorpora el tronco",
+        "Mantener sentado con los pies apoyados y vigilar el mareo",
+        "Registrar cómo lo toleró"
+      ]
+    },
+    {
+      "id": "o-n35",
+      "titulo": "Levantarse de una silla de forma segura",
+      "desc": "Pasar de sentado a de pie",
+      "pasos": [
+        "Deslizarse al borde de la silla con los pies hacia atrás",
+        "Inclinar el tronco hacia adelante",
+        "Impulsarse con las piernas",
+        "Extender cadera y rodillas hasta quedar erguido",
+        "Estabilizar el equilibrio antes de caminar"
+      ]
+    },
+    {
+      "id": "o-n36",
+      "titulo": "Subir un escalón con bastón",
+      "desc": "Pierna sana primero al subir",
+      "pasos": [
+        "Colocarse de frente al escalón con el bastón del lado sano",
+        "Subir primero la pierna sana",
+        "Subir después el bastón y la pierna afectada",
+        "Comprobar el equilibrio con los dos pies",
+        "Repetir el patrón en el siguiente escalón"
+      ]
+    },
+    {
+      "id": "o-n37",
+      "titulo": "Prueba de elevación de pierna recta",
+      "desc": "Prueba de Lasègue",
+      "pasos": [
+        "Colocar al paciente acostado boca arriba y relajado",
+        "Elevar la pierna con la rodilla extendida, despacio",
+        "Detenerse cuando aparece el dolor y anotar el ángulo",
+        "Bajar un poco y dorsiflexionar el pie para confirmar",
+        "Registrar el ángulo y el sitio del dolor"
+      ]
+    },
+    {
+      "id": "o-n38",
+      "titulo": "Medición de la longitud de las piernas",
+      "desc": "Comparación entre ambos lados",
+      "pasos": [
+        "Acostar al paciente boca arriba con la pelvis nivelada",
+        "Localizar la espina ilíaca anterosuperior",
+        "Localizar el maléolo medial del tobillo",
+        "Medir con la cinta de uno a otro punto",
+        "Comparar ambos lados y registrar la diferencia"
+      ]
+    },
+    {
+      "id": "o-n39",
+      "titulo": "Medición de perímetros para valorar edema",
+      "desc": "Cinta métrica en el miembro",
+      "pasos": [
+        "Marcar puntos de referencia iguales en ambos miembros",
+        "Colocar la cinta perpendicular al miembro, sin apretar",
+        "Medir a la misma altura en cada lado",
+        "Repetir en cada nivel marcado",
+        "Comparar los valores y registrar la diferencia"
+      ]
+    },
+    {
+      "id": "o-n40",
+      "titulo": "Colocación de una prótesis de miembro inferior",
+      "desc": "Pasos para ponerse la prótesis",
+      "pasos": [
+        "Revisar la piel del muñón",
+        "Colocar el liner o el calcetín de muñón sin arrugas",
+        "Introducir el muñón en el encaje",
+        "Asegurar el sistema de suspensión",
+        "Ponerse de pie y comprobar el ajuste y la comodidad"
+      ]
+    },
+    {
+      "id": "o-n41",
+      "titulo": "Vendaje del muñón",
+      "desc": "Vendaje compresivo tras amputación",
+      "pasos": [
+        "Revisar la piel y retirar el vendaje anterior",
+        "Iniciar en la parte distal con mayor tensión",
+        "Subir en diagonal o en ocho disminuyendo la tensión",
+        "Fijar sin arrugas ni anillos apretados",
+        "Comprobar color, temperatura y sensibilidad"
+      ]
+    },
+    {
+      "id": "o-n42",
+      "titulo": "Baños de contraste",
+      "desc": "Alternar agua caliente y fría",
+      "pasos": [
+        "Verificar la sensibilidad y las contraindicaciones",
+        "Preparar agua caliente y agua fría con termómetro",
+        "Sumergir primero en agua caliente unos minutos",
+        "Pasar al agua fría por menos tiempo",
+        "Alternar el ciclo, secar y revisar la piel"
+      ]
+    },
+    {
+      "id": "o-n43",
+      "titulo": "Preparación de la piel antes de electroterapia",
+      "desc": "Contacto seguro de electrodos",
+      "pasos": [
+        "Revisar que la piel no tenga heridas ni irritación",
+        "Retirar joyería y objetos metálicos",
+        "Limpiar y secar la zona",
+        "Recortar el vello si es necesario",
+        "Colocar los electrodos con buen contacto"
+      ]
+    },
+    {
+      "id": "o-n44",
+      "titulo": "Sesión de rehabilitación cardíaca",
+      "desc": "Estructura de una sesión",
+      "pasos": [
+        "Registrar signos vitales y síntomas",
+        "Calentamiento de baja intensidad",
+        "Fase de ejercicio aeróbico a la intensidad prescrita",
+        "Enfriamiento gradual",
+        "Registrar signos vitales finales y la respuesta"
+      ]
+    },
+    {
+      "id": "o-n45",
+      "titulo": "Prueba de caminata de 6 minutos",
+      "desc": "Capacidad funcional",
+      "pasos": [
+        "Explicar la prueba y registrar signos vitales en reposo",
+        "Pedir que camine lo más lejos posible a su ritmo durante 6 minutos",
+        "Dar ánimo con frases estándar cada minuto",
+        "Detener la prueba a los 6 minutos y medir la distancia",
+        "Registrar signos vitales, disnea y fatiga finales"
+      ]
+    },
+    {
+      "id": "o-n46",
+      "titulo": "Técnica de tos asistida",
+      "desc": "Ayudar a eliminar secreciones",
+      "pasos": [
+        "Sentar al paciente erguido y explicar la técnica",
+        "Pedir una inspiración profunda",
+        "Colocar las manos sobre el abdomen o la parte baja del tórax",
+        "Al toser, aplicar presión hacia adentro y arriba",
+        "Dejar descansar y revisar las secreciones"
+      ]
+    },
+    {
+      "id": "o-n47",
+      "titulo": "Drenaje postural",
+      "desc": "Higiene bronquial",
+      "pasos": [
+        "Identificar el segmento afectado por auscultación",
+        "Colocar la posición que favorece su drenaje",
+        "Mantenerla con respiración tranquila",
+        "Aplicar percusión o vibración si está indicado",
+        "Pedir tos para eliminar secreciones y registrar"
+      ]
+    },
+    {
+      "id": "o-n48",
+      "titulo": "Hipoglucemia durante la sesión",
+      "desc": "Qué hacer si baja la glucosa",
+      "pasos": [
+        "Reconocer temblor, sudor frío o confusión",
+        "Suspender el ejercicio y sentar al paciente",
+        "Dar carbohidrato de acción rápida si está consciente",
+        "Volver a medir la glucosa a los 15 minutos",
+        "Registrar y avisar al médico"
+      ]
+    },
+    {
+      "id": "o-n49",
+      "titulo": "Reanimación cardiopulmonar básica en adultos",
+      "desc": "Secuencia inicial",
+      "pasos": [
+        "Verificar que la escena sea segura",
+        "Comprobar la respuesta y la respiración",
+        "Pedir ayuda, llamar a emergencias y traer el DEA",
+        "Iniciar compresiones torácicas de 100 a 120 por minuto",
+        "Usar el DEA en cuanto esté disponible"
+      ]
+    },
+    {
+      "id": "o-n50",
+      "titulo": "Crisis convulsiva durante la sesión",
+      "desc": "Actuar con calma",
+      "pasos": [
+        "Mantener la calma y anotar la hora de inicio",
+        "Retirar objetos cercanos y proteger la cabeza",
+        "No sujetar a la persona ni introducir nada en la boca",
+        "Al terminar, colocar de lado en posición de seguridad",
+        "Vigilar la respiración, avisar y registrar"
       ]
     }
   ],
