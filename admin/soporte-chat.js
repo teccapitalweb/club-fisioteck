@@ -1,6 +1,6 @@
 /* Panel FisioTeck — «Buzón privado»: chat privado con cada miembro (como ICADEM).
    Lista de conversaciones (Pendientes / Todas / Resueltas, buscador y no-leídos), hilo con burbujas,
-   responder (el miembro recibe aviso en su campana), Marcar resuelto / Reabrir. Se refresca solo cada 20 s.
+   responder (el miembro recibe aviso en su campana), Cerrar conversación / Reabrir. Se refresca solo cada 20 s.
    Datos: GET /api/admin/soporte-chat · GET/POST /api/admin/soporte-chat/:uid[/mensajes|/estado].
    Depende de index.html: apiAdmin, toast, showSection. */
 (function () {
@@ -8,7 +8,7 @@
   const $ = id => document.getElementById(id);
   const e = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const TEMA = { membresia: 'Membresía', cobros: 'Cobros', cuenta: 'Cuenta', cursos: 'Cursos', otro: 'Otro' };
-  let previoSinLeer = null, D = { conversaciones: [] }, filtro = 'pendiente', busca = '', elegida = null, reloj = null, pedido = 0, enviando = false, reintento = null;
+  let manual = false, previoSinLeer = null, D = { conversaciones: [] }, filtro = 'pendiente', busca = '', elegida = null, reloj = null, pedido = 0, enviando = false, reintento = null;
   const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '' + Math.random()).replace(/-/g, '').slice(0, 32);
 
   const st = document.createElement('style');
@@ -19,6 +19,8 @@
   #sec-buzon .bz-tools { padding:12px; border-bottom:1px solid var(--border); display:flex; flex-direction:column; gap:9px; }
   #sec-buzon .bz-filtros { display:flex; gap:6px; } #sec-buzon .bz-filtros button { flex:1; padding:7px 4px; border:1px solid var(--border); border-radius:9px; background:var(--surface-2); font-size:.74rem; font-weight:700; cursor:pointer; color:var(--text-muted); }
   #sec-buzon .bz-filtros button.on { background:var(--blue); border-color:var(--blue); color:#fff; }
+  #sec-buzon .bz-ayuda { font-size:.66rem; line-height:1.5; color:var(--text-muted); } #sec-buzon .bz-ayuda b { color:var(--text); }
+  #sec-buzon .bz-prev { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   #sec-buzon .bz-items { max-height:62vh; overflow-y:auto; }
   #sec-buzon .bz-item { display:flex; gap:10px; width:100%; text-align:left; padding:12px; border:0; border-bottom:1px solid var(--border); background:none; cursor:pointer; align-items:center; }
   #sec-buzon .bz-item.on { background:var(--surface-2); box-shadow:inset 3px 0 0 var(--blue); }
@@ -63,17 +65,17 @@
     s.className = 'admin-section'; s.id = 'sec-buzon';
     s.innerHTML = '<div class="admin-page-header"><div><div class="admin-page-title">Buzón privado</div><div class="admin-page-sub">Responde, acompaña y conserva cada seguimiento en un espacio seguro</div></div><button class="btn btn-o" onclick="bzCargar()">Actualizar</button></div>' +
       '<div class="bz-cols"><div class="bz-lista"><div class="bz-tools"><input class="form-input" type="search" id="bzBusca" placeholder="Buscar miembro, tema o mensaje" aria-label="Buscar conversaciones">' +
-      '<div class="bz-filtros"><button class="on" data-bzf="pendiente">Pendientes</button><button data-bzf="respondida">Respondidas</button><button data-bzf="todas">Todas</button><button data-bzf="resuelto">Resueltas</button></div></div>' +
+      '<div class="bz-filtros"><button class="on" data-bzf="pendiente">Pendientes</button><button data-bzf="respondida">En espera</button><button data-bzf="resuelto">Cerradas</button><button data-bzf="todas">Todas</button></div><div class="bz-ayuda"><b>Pendientes:</b> esperan tu respuesta · <b>En espera:</b> ya respondiste y falta el miembro · <b>Cerradas:</b> las que marcaste como resueltas</div></div>' +
       '<div class="bz-items" id="bzItems"><div class="bz-vacio">Cargando conversaciones…</div></div></div>' +
       '<div class="bz-hilo" id="bzHilo"><div class="bz-vacio"><b>Tu espacio de atención privada</b>Selecciona una conversación para ver el historial y responder sin salir del panel.</div></div></div>';
     refSec.insertAdjacentElement('beforebegin', s);
     $('bzBusca').addEventListener('input', ev => { busca = (ev.target.value || '').toLowerCase(); lista(); });
-    s.querySelectorAll('[data-bzf]').forEach(b => b.addEventListener('click', () => { filtro = b.dataset.bzf; s.querySelectorAll('[data-bzf]').forEach(x => x.classList.toggle('on', x === b)); lista(); }));
+    s.querySelectorAll('[data-bzf]').forEach(b => b.addEventListener('click', () => { filtro = b.dataset.bzf; s.querySelectorAll('[data-bzf]').forEach(x => x.classList.toggle('on', x === b)); if (elegida && !filtradas().some(x => x.uid === elegida)) { elegida = null; manual = true; pedido++; const h = $('bzHilo'); if (h) h.innerHTML = '<div class="bz-vacio"><b>Selecciona una conversación</b>Elige una de la lista para ver el historial y responder.</div>'; } lista(); }));
   }
 
   // Por responder = el miembro escribió y el equipo aún no contesta; Respondida = el equipo contestó y sigue abierta; Resuelta = cerrada
   const estadoDe = x => (x.estado === 'resuelto' ? 'resuelto' : (x.ultimoDe === 'admin' ? 'respondida' : 'pendiente'));
-  const NOMBRE_ESTADO = { pendiente: 'Por responder', respondida: 'Respondida', resuelto: 'Resuelta' }, CLASE_ESTADO = { pendiente: 'ab', respondida: 'rs', resuelto: 're' };
+  const NOMBRE_ESTADO = { pendiente: 'Por responder', respondida: 'Esperando al miembro', resuelto: 'Cerrada' }, CLASE_ESTADO = { pendiente: 'ab', respondida: 'rs', resuelto: 're' };
   const fmt = ms => { if (!ms) return ''; const d = new Date(ms); return d.toDateString() === new Date().toDateString() ? new Intl.DateTimeFormat('es-MX', { hour: 'numeric', minute: '2-digit' }).format(d) : new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short' }).format(d); };
   const iniciales = (n, c) => { const p = String(n || c || '?').split(/[\s@.]+/).filter(Boolean); return ((p[0] || '?')[0] + (p[1] || '')).slice(0, 2).toUpperCase(); };
 
@@ -86,7 +88,7 @@
     caja.innerHTML = l.length ? l.map(x =>
       '<button class="bz-item' + (elegida === x.uid ? ' on' : '') + '" data-bzuid="' + e(x.uid) + '"><span class="bz-ava">' + e(iniciales(x.nombre, x.correo)) + '</span>' +
       '<span class="bz-cuerpo"><span class="fila1"><b>' + e(x.nombre || 'Miembro') + '</b><small>' + e(fmt(x.actualizadoMs)) + '</small></span>' +
-      '<small>' + (x.ultimoDe === 'miembro' ? 'Mensaje del miembro' : x.ultimoDe === 'admin' ? 'Respuesta de administración' : 'Sin mensajes') + '</small>' +
+      '<small class="bz-prev">' + e(x.ultimoDe === 'admin' ? 'Tú: ' + x.ultimoMensaje : x.ultimoDe === 'miembro' ? String(x.nombre || 'Miembro').split(' ')[0] + ': ' + x.ultimoMensaje : 'Sin mensajes') + '</small>' +
       '<span class="bz-tags"><span class="bz-tag">' + e(TEMA[x.tema] || 'Otro') + '</span><span class="bz-tag ' + CLASE_ESTADO[estadoDe(x)] + '">' + NOMBRE_ESTADO[estadoDe(x)] + '</span></span></span>' +
       (x.sinLeerAdmin ? '<span class="bz-noleido">' + Math.min(99, x.sinLeerAdmin) + '</span>' : '') + '</button>').join('')
       : '<div class="bz-vacio"><b>' + (filtro === 'pendiente' ? 'Bandeja al día' : 'Sin resultados') + '</b>' + (filtro === 'pendiente' ? 'Los mensajes que esperan tu respuesta aparecerán aquí.' : 'Prueba con otra búsqueda o cambia el filtro.') + '</div>';
@@ -102,7 +104,7 @@
       if ($('bzItems')) {
         lista();
         const dentro = $('sec-buzon') && $('sec-buzon').classList.contains('active');
-        if (dentro && !elegida && (D.conversaciones || []).length) {
+        if (dentro && !elegida && !manual && (D.conversaciones || []).length) {
           const pref = D.conversaciones.find(x => x.sinLeerAdmin > 0) || D.conversaciones.find(x => estadoDe(x) === 'pendiente') || D.conversaciones[0];
           if (pref) abrir(pref.uid);
         }
@@ -117,7 +119,7 @@
       const d = m.creadoMs ? new Date(m.creadoMs).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
       const sep = d && d !== dia ? '<div class="bz-dia">' + e(d) + '</div>' : ''; dia = d;
       const hora = m.creadoMs ? new Intl.DateTimeFormat('es-MX', { hour: 'numeric', minute: '2-digit' }).format(new Date(m.creadoMs)) : '';
-      return sep + '<div class="bz-m ' + (m.de === 'admin' ? 'admin' : '') + '"><div class="bz-bur"><small>' + (m.de === 'admin' ? 'Administración FisioTeck' : 'Miembro') + '</small>' + e(m.texto) + '<time>' + e(hora) + '</time></div></div>';
+      return sep + '<div class="bz-m ' + (m.de === 'admin' ? 'admin' : '') + '"><div class="bz-bur"><small>' + (m.de === 'admin' ? 'Administración FisioTeck' : 'Miembro') + (m.importado ? ' · reporte anterior' : '') + '</small>' + e(m.texto) + '<time>' + e(hora) + '</time></div></div>';
     }).join('');
   }
 
@@ -131,7 +133,7 @@
       const c = r.conversacion, cerrada = c.estado === 'resuelto';
       raiz.innerHTML = '<div class="bz-cab"><span class="bz-ava">' + e(iniciales(c.nombre, c.correo)) + '</span><div><b>' + e(c.nombre || 'Miembro') + '</b><a href="mailto:' + encodeURIComponent(c.correo || '') + '">' + e(c.correo || c.uid) + '</a></div>' +
         '<div class="der"><span class="bz-tag ' + CLASE_ESTADO[estadoDe(c)] + '">' + e(TEMA[c.tema] || 'Otro') + ' · ' + NOMBRE_ESTADO[estadoDe(c)] + '</span>' +
-        '<button class="btn ' + (cerrada ? 'btn-o' : 'btn-p') + ' btn-sm" id="bzEstado" data-estado="' + (cerrada ? 'abierto' : 'resuelto') + '">' + (cerrada ? 'Reabrir' : 'Marcar resuelto') + '</button></div></div>' +
+        '<button class="btn ' + (cerrada ? 'btn-o' : 'btn-p') + ' btn-sm" id="bzEstado" data-estado="' + (cerrada ? 'abierto' : 'resuelto') + '">' + (cerrada ? 'Reabrir' : 'Cerrar conversación') + '</button></div></div>' +
         '<div class="bz-msgs" id="bzMsgs">' + htmlMsgs(r.mensajes || []) + '</div>' +
         '<form class="bz-escribir" id="bzForm"><div class="bz-fila"><textarea id="bzTexto" maxlength="3000" rows="1" placeholder="Escribe tu respuesta…" aria-label="Respuesta al miembro" required></textarea><button class="btn btn-p" type="submit" id="bzEnviar" style="height:42px;">Responder</button></div>' +
         '<div class="bz-pie"><span>Solo este miembro y administración pueden ver la respuesta.</span><span id="bzCuenta">0 / 3000</span></div><div class="bz-envio" id="bzEnvio" role="status"></div></form>';
@@ -140,7 +142,7 @@
       const b = $('bzBadge'), pend = (D.conversaciones || []).reduce((n, x) => n + (x.sinLeerAdmin || 0), 0); if (b) { b.textContent = pend; b.style.display = pend ? '' : 'none'; }
       $('bzEstado').addEventListener('click', async ev => {
         const estado = ev.currentTarget.dataset.estado;
-        try { await apiAdmin('/api/admin/soporte-chat/' + encodeURIComponent(uid) + '/estado', { method: 'POST', body: JSON.stringify({ estado }) }); toast(estado === 'resuelto' ? 'Conversación resuelta. El historial se conserva.' : 'Conversación reabierta.'); await bzCargar(true); await abrir(uid, true); }
+        try { await apiAdmin('/api/admin/soporte-chat/' + encodeURIComponent(uid) + '/estado', { method: 'POST', body: JSON.stringify({ estado }) }); toast(estado === 'resuelto' ? 'Conversación cerrada. El historial se conserva.' : 'Conversación reabierta.'); await bzCargar(true); await abrir(uid, true); }
         catch (err) { toast(err.message); }
       });
       const form = $('bzForm'), texto = $('bzTexto'), btn = $('bzEnviar'), envio = $('bzEnvio');
@@ -172,7 +174,7 @@
   const showOriginal = window.showSection;
   window.showSection = function (sec) {
     showOriginal.apply(this, arguments);
-    if (sec === 'buzon') { montar(); bzCargar(); clearInterval(reloj); reloj = setInterval(latido, 20000); }
+    if (sec === 'buzon') { manual = false; montar(); bzCargar(); clearInterval(reloj); reloj = setInterval(latido, 20000); }
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', montar); else montar();
   // El globo rojo debe aparecer apenas el administrador entra al panel: se arranca cuando su sesión está lista
