@@ -39,8 +39,8 @@
     // Avisos que crea el servidor: certificado emitido, insignia nueva, premio ganado (como Zoorigen)
     const PAGINAS = { certificates: 'certificates', achievements: 'achievements', pdfs: 'pdfs', library: 'library' };
     (extra.sistema || []).forEach(a => {
-      const id = 'srv:' + a.id, destino = PAGINAS[a.pagina] || 'home';
-      out.push({ id: 'av:' + id, title: a.titulo || 'Aviso', message: a.fragmento || '', category: a.tipo === 'certificado' ? 'course' : 'sistema', read: a.leido === true || ya.has('av:' + id), sintetico: true, servidorId: a.id, accion: () => showPage(destino) });
+      const id = 'srv:' + a.id, destino = PAGINAS[a.pagina] || 'home', esSoporte = a.pagina === 'settings' || a.pagina === 'account' || a.titulo === 'Respondimos tu reporte';
+      out.push({ id: 'av:' + id, title: a.titulo || 'Aviso', message: a.fragmento || '', category: a.tipo === 'certificado' ? 'course' : 'sistema', read: a.leido === true || ya.has('av:' + id), sintetico: true, servidorId: a.id, accion: () => { if (esSoporte && window.ftSoporte) ftSoporte.abrir(); else showPage(destino); } });
     });
     // Respuestas a tus temas del foro (las crea el servidor cuando alguien responde)
     extra.foro.forEach(a => { const id = 'foro:' + a.id; const general = a.tipo === 'foro-act'; out.push({ id: 'av:' + id, title: general ? 'Hay nuevas respuestas en el foro' : a.quien + ' respondió tu tema', message: general ? '«' + a.titulo + '»' : '«' + a.titulo + '» · ' + a.fragmento, category: 'foro', read: a.leido === true || ya.has('av:' + id), sintetico: true, servidorId: a.id, accion: () => { try { showPage('forum'); setTimeout(() => { if (typeof openThread === 'function') openThread(a.postId); }, 350); } catch (_) { /* sin foro */ } } }); });
