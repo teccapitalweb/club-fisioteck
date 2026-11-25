@@ -8,7 +8,7 @@
   const $ = id => document.getElementById(id);
   const e = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const TEMA = { membresia: 'Membresía', cobros: 'Cobros', cuenta: 'Cuenta', cursos: 'Cursos', otro: 'Otro' };
-  let previoSinLeer = null, D = { conversaciones: [] }, filtro = 'abierto', busca = '', elegida = null, reloj = null, pedido = 0, enviando = false, reintento = null;
+  let previoSinLeer = null, D = { conversaciones: [] }, filtro = 'pendiente', busca = '', elegida = null, reloj = null, pedido = 0, enviando = false, reintento = null;
   const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '' + Math.random()).replace(/-/g, '').slice(0, 32);
 
   const st = document.createElement('style');
@@ -27,7 +27,7 @@
   #sec-buzon .bz-cuerpo { flex:1; min-width:0; } #sec-buzon .bz-cuerpo .fila1 { display:flex; justify-content:space-between; gap:8px; align-items:baseline; }
   #sec-buzon .bz-tags { display:flex; gap:5px; margin-top:4px; }
   #sec-buzon .bz-tag { font:700 .6rem 'JetBrains Mono',monospace; letter-spacing:.05em; padding:2px 8px; border-radius:100px; background:var(--surface-2); border:1px solid var(--border); color:var(--text-muted); }
-  #sec-buzon .bz-tag.ab { color:#B45309; border-color:#B4530933; } #sec-buzon .bz-tag.re { color:#0F9D6C; border-color:#0F9D6C33; }
+  #sec-buzon .bz-tag.ab { color:#B45309; border-color:#B4530933; } #sec-buzon .bz-tag.rs { color:#1D6FB8; border-color:#1D6FB833; } #sec-buzon .bz-tag.re { color:#0F9D6C; border-color:#0F9D6C33; }
   #sec-buzon .bz-noleido { flex:0 0 auto; min-width:20px; height:20px; border-radius:10px; background:var(--danger); color:#fff; font-size:.68rem; font-weight:800; display:flex; align-items:center; justify-content:center; padding:0 5px; }
   #sec-buzon .bz-hilo { border:1px solid var(--border); border-radius:14px; background:var(--surface); display:flex; flex-direction:column; min-height:430px; max-height:72vh; }
   #sec-buzon .bz-cab { display:flex; align-items:center; gap:10px; padding:12px 14px; border-bottom:1px solid var(--border); flex-wrap:wrap; }
@@ -63,7 +63,7 @@
     s.className = 'admin-section'; s.id = 'sec-buzon';
     s.innerHTML = '<div class="admin-page-header"><div><div class="admin-page-title">Buzón privado</div><div class="admin-page-sub">Responde, acompaña y conserva cada seguimiento en un espacio seguro</div></div><button class="btn btn-o" onclick="bzCargar()">Actualizar</button></div>' +
       '<div class="bz-cols"><div class="bz-lista"><div class="bz-tools"><input class="form-input" type="search" id="bzBusca" placeholder="Buscar miembro, tema o mensaje" aria-label="Buscar conversaciones">' +
-      '<div class="bz-filtros"><button class="on" data-bzf="abierto">Pendientes</button><button data-bzf="todas">Todas</button><button data-bzf="resuelto">Resueltas</button></div></div>' +
+      '<div class="bz-filtros"><button class="on" data-bzf="pendiente">Pendientes</button><button data-bzf="respondida">Respondidas</button><button data-bzf="todas">Todas</button><button data-bzf="resuelto">Resueltas</button></div></div>' +
       '<div class="bz-items" id="bzItems"><div class="bz-vacio">Cargando conversaciones…</div></div></div>' +
       '<div class="bz-hilo" id="bzHilo"><div class="bz-vacio"><b>Tu espacio de atención privada</b>Selecciona una conversación para ver el historial y responder sin salir del panel.</div></div></div>';
     refSec.insertAdjacentElement('beforebegin', s);
@@ -71,11 +71,14 @@
     s.querySelectorAll('[data-bzf]').forEach(b => b.addEventListener('click', () => { filtro = b.dataset.bzf; s.querySelectorAll('[data-bzf]').forEach(x => x.classList.toggle('on', x === b)); lista(); }));
   }
 
+  // Por responder = el miembro escribió y el equipo aún no contesta; Respondida = el equipo contestó y sigue abierta; Resuelta = cerrada
+  const estadoDe = x => (x.estado === 'resuelto' ? 'resuelto' : (x.ultimoDe === 'admin' ? 'respondida' : 'pendiente'));
+  const NOMBRE_ESTADO = { pendiente: 'Por responder', respondida: 'Respondida', resuelto: 'Resuelta' }, CLASE_ESTADO = { pendiente: 'ab', respondida: 'rs', resuelto: 're' };
   const fmt = ms => { if (!ms) return ''; const d = new Date(ms); return d.toDateString() === new Date().toDateString() ? new Intl.DateTimeFormat('es-MX', { hour: 'numeric', minute: '2-digit' }).format(d) : new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short' }).format(d); };
   const iniciales = (n, c) => { const p = String(n || c || '?').split(/[\s@.]+/).filter(Boolean); return ((p[0] || '?')[0] + (p[1] || '')).slice(0, 2).toUpperCase(); };
 
   function filtradas() {
-    return (D.conversaciones || []).filter(x => (filtro === 'todas' || x.estado === filtro) && (!busca || [x.nombre, x.correo, x.ultimoMensaje, TEMA[x.tema]].join(' ').toLowerCase().includes(busca)));
+    return (D.conversaciones || []).filter(x => (filtro === 'todas' || estadoDe(x) === filtro) && (!busca || [x.nombre, x.correo, x.ultimoMensaje, TEMA[x.tema]].join(' ').toLowerCase().includes(busca)));
   }
   function lista() {
     const caja = $('bzItems'); if (!caja) return;
@@ -84,9 +87,9 @@
       '<button class="bz-item' + (elegida === x.uid ? ' on' : '') + '" data-bzuid="' + e(x.uid) + '"><span class="bz-ava">' + e(iniciales(x.nombre, x.correo)) + '</span>' +
       '<span class="bz-cuerpo"><span class="fila1"><b>' + e(x.nombre || 'Miembro') + '</b><small>' + e(fmt(x.actualizadoMs)) + '</small></span>' +
       '<small>' + (x.ultimoDe === 'miembro' ? 'Mensaje del miembro' : x.ultimoDe === 'admin' ? 'Respuesta de administración' : 'Sin mensajes') + '</small>' +
-      '<span class="bz-tags"><span class="bz-tag">' + e(TEMA[x.tema] || 'Otro') + '</span><span class="bz-tag ' + (x.estado === 'resuelto' ? 're' : 'ab') + '">' + (x.estado === 'resuelto' ? 'Resuelto' : 'Abierto') + '</span></span></span>' +
+      '<span class="bz-tags"><span class="bz-tag">' + e(TEMA[x.tema] || 'Otro') + '</span><span class="bz-tag ' + CLASE_ESTADO[estadoDe(x)] + '">' + NOMBRE_ESTADO[estadoDe(x)] + '</span></span></span>' +
       (x.sinLeerAdmin ? '<span class="bz-noleido">' + Math.min(99, x.sinLeerAdmin) + '</span>' : '') + '</button>').join('')
-      : '<div class="bz-vacio"><b>' + (filtro === 'abierto' ? 'Bandeja al día' : 'Sin resultados') + '</b>' + (filtro === 'abierto' ? 'Los nuevos mensajes de los miembros aparecerán aquí.' : 'Prueba con otra búsqueda o cambia el filtro.') + '</div>';
+      : '<div class="bz-vacio"><b>' + (filtro === 'pendiente' ? 'Bandeja al día' : 'Sin resultados') + '</b>' + (filtro === 'pendiente' ? 'Los mensajes que esperan tu respuesta aparecerán aquí.' : 'Prueba con otra búsqueda o cambia el filtro.') + '</div>';
     caja.querySelectorAll('[data-bzuid]').forEach(b => b.addEventListener('click', () => abrir(b.dataset.bzuid)));
   }
 
@@ -100,7 +103,7 @@
         lista();
         const dentro = $('sec-buzon') && $('sec-buzon').classList.contains('active');
         if (dentro && !elegida && (D.conversaciones || []).length) {
-          const pref = D.conversaciones.find(x => x.sinLeerAdmin > 0) || D.conversaciones.find(x => x.estado === 'abierto') || D.conversaciones[0];
+          const pref = D.conversaciones.find(x => x.sinLeerAdmin > 0) || D.conversaciones.find(x => estadoDe(x) === 'pendiente') || D.conversaciones[0];
           if (pref) abrir(pref.uid);
         }
       }
@@ -127,7 +130,7 @@
       if (elegida !== uid || ticket !== pedido || !raiz.isConnected) return;
       const c = r.conversacion, cerrada = c.estado === 'resuelto';
       raiz.innerHTML = '<div class="bz-cab"><span class="bz-ava">' + e(iniciales(c.nombre, c.correo)) + '</span><div><b>' + e(c.nombre || 'Miembro') + '</b><a href="mailto:' + encodeURIComponent(c.correo || '') + '">' + e(c.correo || c.uid) + '</a></div>' +
-        '<div class="der"><span class="bz-tag ' + (cerrada ? 're' : 'ab') + '">' + e(TEMA[c.tema] || 'Otro') + ' · ' + (cerrada ? 'Resuelto' : 'Abierto') + '</span>' +
+        '<div class="der"><span class="bz-tag ' + CLASE_ESTADO[estadoDe(c)] + '">' + e(TEMA[c.tema] || 'Otro') + ' · ' + NOMBRE_ESTADO[estadoDe(c)] + '</span>' +
         '<button class="btn ' + (cerrada ? 'btn-o' : 'btn-p') + ' btn-sm" id="bzEstado" data-estado="' + (cerrada ? 'abierto' : 'resuelto') + '">' + (cerrada ? 'Reabrir' : 'Marcar resuelto') + '</button></div></div>' +
         '<div class="bz-msgs" id="bzMsgs">' + htmlMsgs(r.mensajes || []) + '</div>' +
         '<form class="bz-escribir" id="bzForm"><div class="bz-fila"><textarea id="bzTexto" maxlength="3000" rows="1" placeholder="Escribe tu respuesta…" aria-label="Respuesta al miembro" required></textarea><button class="btn btn-p" type="submit" id="bzEnviar" style="height:42px;">Responder</button></div>' +
