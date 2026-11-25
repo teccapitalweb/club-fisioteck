@@ -72,7 +72,7 @@
   }
 
   // ───── Estado ─────
-  let cargando = false, primeraVez = true, temaActual = 'membresia', guardandoTema = false, reintento = null, enviando = false, reloj = null;
+  let cargando = false, primeraVez = true, previoMsgs = null, previoSinLeer = 0, temaActual = 'membresia', guardandoTema = false, reintento = null, enviando = false, reloj = null;
   const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '' + Math.random()).replace(/-/g, '').slice(0, 32);
   const api = (ruta, opts) => certFetch(ruta, opts);
   const enSoporte = () => { const s = $('page-soporte'); return !!(s && s.classList.contains('active')); };
@@ -125,12 +125,23 @@
     const n = $('ftchTemaSel'); if (n) n.textContent = (TEMAS.find(x => x[0] === t) || TEMAS[4])[1];
   }
 
+  // La campana se actualiza en cuanto el equipo responde (sin esperar su revisión de cada minuto)
+  async function refrescarCampana() {
+    try {
+      if (window.ftAvisos) await ftAvisos.recargar();
+      if (typeof renderMemberNotifs === 'function') renderMemberNotifs();
+      if (typeof updateBellBadge === 'function') updateBellBadge();
+      if (window.ftBarra) ftBarra.refrescar();
+    } catch (_) { /* la campana se pone al día sola en un minuto */ }
+  }
+
   async function cargar(silencio) {
     if (cargando || !$('ftchMsgs')) return; cargando = true;
     try {
       const r = await api('/api/soporte-chat');
       if (!$('ftchMsgs')) return;
       sincronizar($('ftchMsgs'), htmlMensajes(r.mensajes || []), primeraVez); primeraVez = false;
+      const n = (r.mensajes || []).length; if (previoMsgs !== null && n > previoMsgs) refrescarCampana(); previoMsgs = n;
       pintarEstado(r.conversacion);
       if (r.conversacion && !guardandoTema) pintarTema(r.conversacion.tema);
       const dot = $('ftchDot'); if (dot) dot.hidden = true;
@@ -143,7 +154,9 @@
     try {
       if (!auth.currentUser) return;
       const r = await api('/api/soporte-chat?vistazo=1');
-      const dot = $('ftchDot'); if (dot) dot.hidden = !(r.conversacion && r.conversacion.sinLeerMiembro > 0);
+      const hay = r.conversacion ? Number(r.conversacion.sinLeerMiembro) || 0 : 0;
+      const dot = $('ftchDot'); if (dot) dot.hidden = !(hay > 0);
+      if (hay > previoSinLeer) refrescarCampana(); previoSinLeer = hay;
     } catch (_) { /* sin conexión: sin punto */ }
   }
 
@@ -157,7 +170,7 @@
 
   function pintar() {
     const raiz = $('ftchRaiz'); if (!raiz) return;
-    primeraVez = true;
+    primeraVez = true; previoMsgs = null;
     raiz.innerHTML =
       '<div class="ftch-hero"><i>' + ICO.audifonos + '</i><div><div class="ey">FISIOTECK · ATENCIÓN PERSONALIZADA</div><h1>Soporte privado</h1><p>Estamos aquí para ayudarte con tu membresía, cobros, acceso o cursos.</p></div><div class="ftch-priv">' + ICO.escudo + ' Solo tú y administración</div></div>' +
       '<div class="ftch-cols"><aside class="ftch-caso"><h3>¿Sobre qué necesitas ayuda?</h3><div class="ftch-temas" id="ftchTemas">' +

@@ -2788,54 +2788,6 @@
           <p style="font-size:.75rem;color:var(--text-muted);margin-top:6px;line-height:1.5;">Si te encuentras en otra zona horaria, los horarios de clases en vivo se muestran en hora centro de México, por favor verificar zona horaria con anticipación.</p>
         </div>
       </div>
-
-      <div class="settings-section card" id="ftSoporte">
-        <h3>Soporte</h3>
-        <p style="font-size:.9rem;color:var(--text-light);margin-bottom:20px;">¿Tienes un problema, una queja o una sugerencia? Cuéntanoslo aquí: tu reporte le llega directo al equipo y la respuesta la verás en esta misma pantalla y en tus notificaciones.</p>
-        
-        <div class="form-group">
-          <label class="form-label">¿Cuál es el motivo de tu contacto?</label>
-          <select class="form-input" id="supportReason" style="cursor:pointer;" onchange="toggleSupportOther()">
-            <option value="">— Selecciona una opción —</option>
-            <option value="Problema con mi cuenta">Problema con mi cuenta</option>
-            <option value="No puedo acceder a un curso">No puedo acceder a un curso</option>
-            <option value="Problema con un PDF o material">Problema con un PDF o material</option>
-            <option value="Dudas sobre mi suscripción o pago">Dudas sobre mi suscripción o pago</option>
-            <option value="Quiero cancelar o pausar mi membresía">Quiero cancelar o pausar mi membresía</option>
-            <option value="Sugerencia de contenido o mejora">Sugerencia de contenido o mejora</option>
-            <option value="Error técnico en la plataforma">Error técnico en la plataforma</option>
-            <option value="Otro">Otro</option>
-          </select>
-        </div>
-
-        <div class="form-group" id="supportOtherGroup" style="display:none;">
-          <label class="form-label">Especifica el motivo</label>
-          <input class="form-input" id="supportOtherText" placeholder="Escribe aquí tu motivo...">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Descríbenos brevemente tu situación</label>
-          <textarea class="form-input" id="supportDetail" rows="3" style="resize:vertical;min-height:80px;" placeholder="Cuéntanos qué pasó o qué necesitas para ayudarte mejor..."></textarea>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">¿Qué tan urgente es?</label>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <label style="display:flex;align-items:center;gap:6px;padding:8px 16px;border:1px solid var(--border);border-radius:20px;cursor:pointer;font-size:.85rem;transition:var(--transition);" class="urgency-opt">
-              <input type="radio" name="urgency" value="Baja" style="accent-color:var(--primary);"> Baja
-            </label>
-            <label style="display:flex;align-items:center;gap:6px;padding:8px 16px;border:1px solid var(--border);border-radius:20px;cursor:pointer;font-size:.85rem;transition:var(--transition);" class="urgency-opt">
-              <input type="radio" name="urgency" value="Media" checked style="accent-color:var(--primary);"> Media
-            </label>
-            <label style="display:flex;align-items:center;gap:6px;padding:8px 16px;border:1px solid var(--border);border-radius:20px;cursor:pointer;font-size:.85rem;transition:var(--transition);" class="urgency-opt">
-              <input type="radio" name="urgency" value="Urgente" style="accent-color:var(--danger);"> Urgente
-            </label>
-          </div>
-        </div>
-
-        <button type="button" class="btn-primary" id="supportSend" onclick="sendSupport()">Enviar reporte</button>
-        <div id="ftSoporteMios" style="margin-top:22px;"></div>
-      </div>
     </section>
 
     <!-- DISCOUNT -->
@@ -7403,7 +7355,7 @@
 <script src="club-visitas.js?v=20261026"></script>
 <script src="club-barra.js?v=20261191"></script>
 <script src="club-perfil.js?v=20261116"></script>
-<script src="club-avisos.js?v=20261125b"></script>
+<script src="club-avisos.js?v=20261125c"></script>
 <script src="club-avatar.js?v=20261125"></script>
 <script src="club-movil.js?v=20261124"></script>
 <script src="club-mascota.js?v=20261026"></script>
@@ -7424,8 +7376,8 @@
 <script src="club-lector.js?v=20261150"></script>
 <script src="club-suscripcion.js?v=20261172"></script>
 <script src="club-config.js?v=20261170"></script>
-<script src="club-soporte.js?v=20261190"></script>
-<script src="club-soporte-chat.js?v=20261225"></script>
+<script src="club-soporte.js?v=20261191"></script>
+<script src="club-soporte-chat.js?v=20261226"></script>
 <script src="club-curso-premio.js?v=20261160"></script>
 <script src="club-libros.js?v=20261150"></script>
 <script src="club-cuenta.js?v=20261112"></script>

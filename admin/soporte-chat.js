@@ -8,7 +8,7 @@
   const $ = id => document.getElementById(id);
   const e = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const TEMA = { membresia: 'Membresía', cobros: 'Cobros', cuenta: 'Cuenta', cursos: 'Cursos', otro: 'Otro' };
-  let D = { conversaciones: [] }, filtro = 'abierto', busca = '', elegida = null, reloj = null, pedido = 0, enviando = false, reintento = null;
+  let previoSinLeer = null, D = { conversaciones: [] }, filtro = 'abierto', busca = '', elegida = null, reloj = null, pedido = 0, enviando = false, reintento = null;
   const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '' + Math.random()).replace(/-/g, '').slice(0, 32);
 
   const st = document.createElement('style');
@@ -94,9 +94,12 @@
     try {
       D = await apiAdmin('/api/admin/soporte-chat');
       const b = $('bzBadge'); if (b) { b.textContent = D.sinLeer || 0; b.style.display = D.sinLeer ? '' : 'none'; }
+      if (previoSinLeer !== null && (D.sinLeer || 0) > previoSinLeer) toast('Nuevo mensaje en el Buzón privado');
+      previoSinLeer = D.sinLeer || 0;
       if ($('bzItems')) {
         lista();
-        if (!elegida && (D.conversaciones || []).length) {
+        const dentro = $('sec-buzon') && $('sec-buzon').classList.contains('active');
+        if (dentro && !elegida && (D.conversaciones || []).length) {
           const pref = D.conversaciones.find(x => x.sinLeerAdmin > 0) || D.conversaciones.find(x => x.estado === 'abierto') || D.conversaciones[0];
           if (pref) abrir(pref.uid);
         }
@@ -169,5 +172,9 @@
     if (sec === 'buzon') { montar(); bzCargar(); clearInterval(reloj); reloj = setInterval(latido, 20000); }
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', montar); else montar();
-  setTimeout(() => { montar(); if (window.firebase && firebase.auth().currentUser) { bzCargar(true); clearInterval(reloj); reloj = setInterval(latido, 20000); } }, 4500);
+  // El globo rojo debe aparecer apenas el administrador entra al panel: se arranca cuando su sesión está lista
+  function iniciar() { montar(); bzCargar(true); clearInterval(reloj); reloj = setInterval(latido, 20000); }
+  window.bzIniciar = iniciar;
+  if (window.firebase) { try { firebase.auth().onAuthStateChanged(u => { if (u) iniciar(); }); } catch (_) { /* sin firebase */ } }
+  setTimeout(() => { montar(); if (window.firebase && firebase.auth().currentUser && !reloj) iniciar(); }, 4500);
 })();

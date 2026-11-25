@@ -59,10 +59,8 @@
     } catch (_) { /* sin servidor: no se muestra la lista */ }
   }
 
-  function abrir() {
-    showPage('settings');
-    setTimeout(() => { const s = $('ftSoporte'); if (s) { s.scrollIntoView({ behavior: 'smooth', block: 'start' }); const d = $('supportReason'); if (d) d.focus({ preventScroll: true }); } }, 250);
-  }
+  // El soporte vive en «Soporte privado» (chat con administración); el formulario de Configuración ya no existe
+  function abrir() { showPage('soporte'); }
 
   // ---------- ¿Olvidaste tu contraseña? en Mi perfil ----------
   function correoCuenta() {

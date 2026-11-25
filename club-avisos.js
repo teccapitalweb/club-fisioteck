@@ -37,7 +37,7 @@
     if (extra.creditos) add('cred:' + (extra.creditos.ms || 0), '¡Recibiste ' + extra.creditos.cantidad + ' créditos!', extra.creditos.mensaje || 'Úsalos para abrir material descargable.', () => { try { if (window.ftCreditos && ftCreditos.visto) ftCreditos.visto(); } catch (_) { /* sigue */ } showPage('pdfs'); });
     if (extra.cupon) add('cup:' + (extra.cupon.venceMs || 0), 'Hay un cupón para ti', extra.cupon.creditos + ' créditos para canjear en Material PDF.', () => showPage('pdfs'), 'promo');
     // Avisos que crea el servidor: certificado emitido, insignia nueva, premio ganado (como Zoorigen)
-    const PAGINAS = { certificates: 'certificates', achievements: 'achievements', pdfs: 'pdfs', library: 'library' };
+    const PAGINAS = { certificates: 'certificates', achievements: 'achievements', pdfs: 'pdfs', library: 'library', soporte: 'soporte' };
     (extra.sistema || []).forEach(a => {
       const id = 'srv:' + a.id, destino = PAGINAS[a.pagina] || 'home', esSoporte = a.pagina === 'settings' || a.pagina === 'account' || a.titulo === 'Respondimos tu reporte';
       out.push({ id: 'av:' + id, title: a.titulo || 'Aviso', message: a.fragmento || '', category: a.tipo === 'certificado' ? 'course' : 'sistema', read: a.leido === true || ya.has('av:' + id), sintetico: true, servidorId: a.id, accion: () => { if (esSoporte && window.ftSoporte) ftSoporte.abrir(); else showPage(destino); } });
