@@ -78,7 +78,7 @@
   .dir-fila-acc { display:flex; gap:8px; align-items:center; } .dir-fila-nota { font-size:.72rem; color:var(--text-muted); }
   .dr-alcance { display:flex; align-items:center; gap:8px; margin:-6px 0 10px; } .dr-alcance small { font-size:.68rem; color:var(--text-muted); white-space:nowrap; }
   .dr-alcance select { flex:1; padding:7px 10px; border:1px solid var(--border); border-radius:9px; background:var(--surface-2); color:var(--text); font-size:.76rem; }
-  .dr-portada-vip { margin:4px 0 12px; } .dr-portada-vip .fila { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:6px; }`;
+  .dr-quitar-link { display:block; margin-top:7px; border:0; background:none; color:var(--accent); font-size:.76rem; font-weight:700; text-decoration:underline; cursor:pointer; padding:0; }`;
   document.head.appendChild(stRed);
 
   const S = { tarjetas: [], propia: null, meta: { cargado: false, viewerVip: false, vip: new Set(), certificados: {}, contactos: {}, miContacto: {}, ocultas: new Set(), portadas: {} }, texto: '', esp: '', vista: 'todos', tab: 'directorio',
@@ -331,6 +331,8 @@
         filas.length ? '<ul class="dir-det-lista">' + filas.map(f => '<li><i>' + I[f[0]] + '</i><span><small>' + f[1] + '</small><b>' + esc(f[2]) + '</b></span></li>').join('') + '</ul>' : '<p class="dir-sin">Sin datos de contacto</p>');
     const m = ventana('drDetalle', 'Tarjeta profesional', id === uid() ? 'Tu tarjeta en el directorio' : 'Directorio VIP', cuerpo, [{ texto: 'Cerrar', suave: true, clic: (b, cer) => cer() }]);
     const l = m.o.querySelector('[data-dirlock]'); if (l) l.onclick = () => { m.cerrar(); showPaywallOverlay(); };
+    const vp = m.o.querySelector('[data-verperfil]'); if (vp) vp.onclick = () => { m.cerrar(); if (window.ftPerfilPro) ftPerfilPro.abrir(vp.dataset.verperfil); };
+    const rd = m.o.querySelector('[data-red]'); if (rd) rd.onclick = () => { m.cerrar(); accionRed(rd.dataset.red, rd.dataset.reduid); };
   }
 
   // ---------- Mi tarjeta ----------
@@ -340,14 +342,14 @@
     const campo = (id, et, val, ph, max, tipo, op) => '<label class="dr-lbl">' + et + (op ? ' <small>(opcional)</small>' : '') + '<input id="' + id + '" ' + (tipo ? 'type="' + tipo + '" ' : '') + 'maxlength="' + (max || 60) + '" placeholder="' + esc(ph || '') + '" value="' + esc(val || '') + '"></label>';
     let color = portada(m.portadaColor);
     const alcance = c => { const a = ((S.meta.miContacto || {}).alcances || {})[c]; return ['miembros', 'conexiones', 'oculto'].includes(a) ? a : 'miembros'; };
-    // Portada personalizada (VIP): null = sin cambios; { reset } | { hex } | { fotoDataUrl }
-    S.portadaEdit = null;
     const portadaActual = S.meta.portadas[uid()] || null;
+    S.portadaEdit = null; // solo se usa si había una foto de portada guardada de antes y la quitas (ver más abajo)
     S.fotoEdit = typeof m.foto === 'string' ? m.foto : '';
     S.avatarEdit = /^a(0[1-9]|1[0-6])$/.test(m.avatar || '') ? m.avatar : (/^a(0[1-9]|1[0-6])$/.test((window.ftAvatarActual && ftAvatarActual()) || '') ? ftAvatarActual() : '');
+    // Una sola foto (la de perfil, abajo): la portada solo se personaliza con un color, para no repetir el mismo paso dos veces.
     const cuerpo = '<div class="dr-form"><div class="dr-prev" id="drPrev"></div>' +
-      '<div class="dr-lbl">Color de tu portada' + (S.meta.viewerVip ? ' <small>(o sube una foto de portada, abajo)</small>' : '') + '<div class="dr-colores" id="drColores">' + Object.keys(PORTADAS).map(k => '<button type="button" data-c="' + k + '" class="' + (k === color && !(portadaActual && portadaActual.foto) ? 'on' : '') + '" style="background:' + PORTADAS[k][1] + '" aria-label="' + PORTADAS[k][0] + '" title="' + PORTADAS[k][0] + '"></button>').join('') + '</div></div>' +
-      (S.meta.viewerVip ? '<div class="dr-lbl dr-portada-vip">Foto de portada <small>(opcional · beneficio VIP)</small><div class="fila"><button type="button" class="dr-btn-foto" id="drPortadaFotoBtn">' + (portadaActual && portadaActual.foto ? 'Cambiar foto de portada' : 'Subir foto de portada') + '</button><button type="button" class="dr-btn-foto quitar" id="drPortadaReset"' + (portadaActual && portadaActual.foto ? '' : ' hidden') + '>Quitar foto de portada</button><input type="file" id="drPortadaArchivo" accept="image/*" hidden></div><small class="dr-foto-nota" id="drPortadaNota">' + (portadaActual && portadaActual.foto ? 'Hoy usas una foto de portada: cubre el color elegido arriba.' : 'Se recorta panorámica y se reduce sola. Si no subes foto, se usa el color que elijas arriba.') + '</small></div>' : '') +
+      '<div class="dr-lbl">Color de tu portada<div class="dr-colores" id="drColores">' + Object.keys(PORTADAS).map(k => '<button type="button" data-c="' + k + '" class="' + (k === color && !(portadaActual && portadaActual.foto) ? 'on' : '') + '" style="background:' + PORTADAS[k][1] + '" aria-label="' + PORTADAS[k][0] + '" title="' + PORTADAS[k][0] + '"></button>').join('') +
+      '</div>' + (portadaActual && portadaActual.foto ? '<button type="button" class="dr-quitar-link" id="drPortadaReset">Quitar la foto de portada que tenías y usar este color</button>' : '') + '</div>' +
       '<div class="dr-lbl">Tu foto <small>(opcional)</small><div class="dr-foto"><div class="dr-foto-vista" id="drFotoVista"></div><div class="dr-foto-acc"><button type="button" class="dr-btn-foto" id="drFotoBtn">Subir foto</button><button type="button" class="dr-btn-foto quitar" id="drFotoQuitar">Quitar</button><input type="file" id="drFotoArchivo" accept="image/*" hidden></div></div><small class="dr-foto-nota">Se recorta en círculo y se reduce sola. Si no subes foto se muestra tu avatar o tus iniciales.</small></div>' +
       '<div class="dr-lbl">Tu avatar <small>(se usa si no subes foto)</small><div class="dr-avatares" id="drAvatares" role="radiogroup" aria-label="Avatares">' + (window.ftAvatar ? ftAvatar.IDS.map((id, i) => '<button type="button" role="radio" data-av="' + id + '" aria-label="Avatar ' + (i + 1) + '"><img src="' + esc(ftAvatar.url(id)) + '" alt="" loading="lazy"></button>').join('') : '') + '</div><button type="button" class="dr-btn-foto quitar" id="drAvatarIni">Usar mis iniciales</button></div>' +
       '<label class="dr-lbl">Estado profesional <small>(opcional)</small><select id="drEstado"><option value="">Sin indicar</option>' + Object.keys(ESTADOS).map(k => '<option value="' + k + '"' + (m.estado === k ? ' selected' : '') + '>' + ESTADOS[k][0] + '</option>').join('') + '</select></label>' +
@@ -369,14 +371,10 @@
     const w = ventana('drEditor', 'Mi tarjeta profesional', publicada ? 'Publicada en el Directorio VIP' : 'Privada · solo tú la ves', cuerpo, pie);
     const leer = () => { const v = id => (($(id) || {}).value || '').trim(); return { id: uid(), foto: S.fotoEdit, nombre: v('drNombre'), puesto: v('drPuesto'), empresa: v('drEmpresa'), ciudad: v('drCiudad'), especialidad: v('drEsp'), bio: v('drBio'), estado: v('drEstado'), portadaColor: color, avatar: S.avatarEdit,
       whatsapp: v('drWa'), email: v('drMail'), linkedin: v('drLi'), web: v('drWeb'), instagram: v('drIg'), cedula: $('drCedVis') && $('drCedVis').checked ? v('drCed') : '' }; };
-    S.portadaFotoPreview = (portadaActual && portadaActual.foto) || '';
-    const prev = () => { const p = $('drPrev'); if (p) p.innerHTML = tarjeta(leer(), { vip: S.meta.viewerVip, pistas: true, portadaPreview: { foto: S.portadaFotoPreview } }); };
-    w.o.querySelectorAll('#drColores [data-c]').forEach(b => b.onclick = () => {
-      color = b.dataset.c; w.o.querySelectorAll('#drColores [data-c]').forEach(x => x.classList.toggle('on', x === b));
-      // Elegir un color de la cuadrícula siempre lo deja como la portada: si había una foto, se quita
-      if (S.portadaFotoPreview) { S.portadaFotoPreview = ''; S.portadaEdit = { reset: true }; const n = $('drPortadaNota'); if (n) n.textContent = 'Se recorta panorámica y se reduce sola. Si no subes foto, se usa el color que elijas arriba.'; const r = $('drPortadaReset'); if (r) r.hidden = true; const fb = $('drPortadaFotoBtn'); if (fb) fb.textContent = 'Subir foto de portada'; }
-      prev();
-    });
+    // La vista previa respeta tu foto de portada guardada hasta que la quites; elegir un color no la quita sola (solo el botón de abajo lo hace)
+    const prev = () => { const p = $('drPrev'); if (p) p.innerHTML = tarjeta(leer(), { vip: S.meta.viewerVip, pistas: true, portadaPreview: S.portadaEdit && S.portadaEdit.reset ? {} : undefined }); };
+    w.o.querySelectorAll('#drColores [data-c]').forEach(b => b.onclick = () => { color = b.dataset.c; w.o.querySelectorAll('#drColores [data-c]').forEach(x => x.classList.toggle('on', x === b)); prev(); });
+    if ($('drPortadaReset')) $('drPortadaReset').onclick = () => { S.portadaEdit = { reset: true }; const btn = $('drPortadaReset'); if (btn) btn.remove(); prev(); };
     w.o.querySelector('.dr-form').addEventListener('input', prev); w.o.querySelector('.dr-form').addEventListener('change', prev); prev();
     const pintarFoto = () => { const vista = $('drFotoVista'); if (!vista) return; vista.style.backgroundImage = S.fotoEdit ? 'url(' + S.fotoEdit + ')' : ''; vista.classList.toggle('vacia', !S.fotoEdit); $('drFotoBtn').textContent = S.fotoEdit ? 'Cambiar foto' : 'Subir foto'; $('drFotoQuitar').hidden = !S.fotoEdit; prev(); };
     $('drFotoBtn').onclick = () => $('drFotoArchivo').click();
@@ -387,35 +385,7 @@
     w.o.querySelectorAll('#drAvatares [data-av]').forEach(b => b.onclick = () => { S.avatarEdit = b.dataset.av; pintarAvatares(); });
     if ($('drAvatarIni')) $('drAvatarIni').onclick = () => { S.avatarEdit = ''; pintarAvatares(); };
     pintarAvatares();
-    // Foto de portada (VIP, opcional): se aplica al guardar; cubre el color elegido en la cuadrícula
-    const notaPortada = t => { const n = $('drPortadaNota'); if (n) n.textContent = t; const r = $('drPortadaReset'); if (r) r.hidden = false; };
-    if ($('drPortadaFotoBtn')) $('drPortadaFotoBtn').onclick = () => $('drPortadaArchivo').click();
-    if ($('drPortadaReset')) $('drPortadaReset').onclick = () => { S.portadaEdit = { reset: true }; S.portadaFotoPreview = ''; notaPortada('Se recorta panorámica y se reduce sola. Si no subes foto, se usa el color que elijas arriba.'); $('drPortadaReset').hidden = true; $('drPortadaFotoBtn').textContent = 'Subir foto de portada'; prev(); };
-    if ($('drPortadaArchivo')) $('drPortadaArchivo').onchange = async ev => {
-      const a = ev.target.files && ev.target.files[0]; ev.target.value = ''; if (!a) return; $('drError').textContent = '';
-      try { const foto = await reducirPortada(a); S.portadaEdit = { fotoDataUrl: foto }; S.portadaFotoPreview = foto; notaPortada('Foto de portada lista: se aplica al guardar.'); $('drPortadaFotoBtn').textContent = 'Cambiar foto de portada'; prev(); }
-      catch (e) { $('drError').textContent = e.message; }
-    };
   };
-  // La foto de portada se recorta panorámica (1200 × 300), se reduce en el navegador y el servidor solo la valida y la guarda
-  function reducirPortada(archivo) {
-    return new Promise((ok, mal) => {
-      if (!archivo.type || archivo.type.indexOf('image/') !== 0) return mal(new Error('Elige una imagen (JPG, PNG o WebP).'));
-      if (archivo.size > 15 * 1024 * 1024) return mal(new Error('La imagen es demasiado pesada. Elige una de menos de 15 MB.'));
-      const url = URL.createObjectURL(archivo), img = new Image();
-      img.onerror = () => { URL.revokeObjectURL(url); mal(new Error('No pudimos leer esa imagen. Prueba con otra.')); };
-      img.onload = () => {
-        URL.revokeObjectURL(url);
-        const c = document.createElement('canvas'); c.width = 1200; c.height = 300;
-        const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, 1200, 300);
-        const r = Math.max(1200 / img.width, 300 / img.height), w = img.width * r, h = img.height * r;
-        g.drawImage(img, (1200 - w) / 2, (300 - h) / 2, w, h);
-        for (let q = 0.82; q >= 0.4; q -= 0.1) { const d = c.toDataURL('image/jpeg', q); if (d.length <= 185000) return ok(d); }
-        mal(new Error('No pudimos reducir esa imagen lo suficiente. Prueba con otra.'));
-      };
-      img.src = url;
-    });
-  }
   // La foto se recorta cuadrada, se reduce a 320 px y se guarda dentro de la tarjeta como JPEG (unos 20 a 40 KB); no se sube a ningún otro servicio
   const FOTO_MAX = 60000;
   function reducirFoto(archivo) {

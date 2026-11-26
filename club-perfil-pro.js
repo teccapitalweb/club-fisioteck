@@ -58,6 +58,13 @@
   #page-perfil-pro .fpp-sec h3 { margin:0 0 10px; font-size:.95rem; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
   #page-perfil-pro .fpp-sec h3 svg { width:16px; height:16px; color:var(--accent); flex:0 0 auto; }
   #page-perfil-pro .fpp-vis { margin-left:auto; font:600 .64rem 'JetBrains Mono',monospace; letter-spacing:.05em; padding:3px 10px; border-radius:100px; background:var(--surface-2); color:var(--text-muted); }
+  #page-perfil-pro .fpp-editic { display:inline-flex; color:var(--accent); flex:0 0 auto; }
+  #page-perfil-pro .fpp-editic svg { width:13px; height:13px; }
+  #page-perfil-pro .fpp-editable { cursor:pointer; transition:border-color .15s, box-shadow .15s; }
+  #page-perfil-pro .fpp-editable:hover { border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset; }
+  #page-perfil-pro .fpp-pista { margin:10px 0 0; font-size:.76rem; color:var(--text-muted); }
+  #page-perfil-pro .fpp-ed-tarjeta { display:inline-flex; align-items:center; gap:6px; margin-top:12px; padding:8px 14px; border-radius:10px; border:1px solid var(--border); background:var(--surface); font-size:.78rem; font-weight:700; color:var(--text); cursor:pointer; }
+  #page-perfil-pro .fpp-ed-tarjeta svg { width:13px; height:13px; }
   #page-perfil-pro .fpp-sec p { margin:0; font-size:.86rem; line-height:1.55; white-space:pre-line; }
   #page-perfil-pro .fpp-item { padding:9px 0; border-top:1px solid var(--border); } #page-perfil-pro .fpp-item:first-of-type { border-top:0; }
   #page-perfil-pro .fpp-item b { display:block; font-size:.86rem; } #page-perfil-pro .fpp-item small { color:var(--text-muted); font-size:.74rem; }
@@ -85,12 +92,12 @@
     if ($('page-perfil-pro') || !$('page-directorio')) return;
     $('page-directorio').insertAdjacentHTML('beforebegin', '<section class="section" id="page-perfil-pro"><div id="fppRaiz"></div></section>');
   }
-  const E = { uid: '', datos: null, tarjeta: null, editando: false };
+  const E = { uid: '', datos: null, tarjeta: null, editando: false, foco: null };
   const colorDe = id => { let h = 0; for (const ch of String(id)) h = (h * 31 + ch.charCodeAt(0)) % 360; return 'hsl(' + h + ',55%,42%)'; };
 
   async function abrir(quien) {
     montar();
-    E.uid = quien || uidMio(); E.editando = false;
+    E.uid = quien || uidMio(); E.editando = false; E.foco = null;
     showPage('perfil-pro');
     const raiz = $('fppRaiz'); if (!raiz) return;
     raiz.innerHTML = '<div class="dr-vacio">Cargando perfil…</div>';
@@ -114,32 +121,37 @@
     const conex = mio ? (red.total || 0) : null;
     const fondo = (window.ftDirPortada && ftDirPortada(c, E.uid)) || 'background:linear-gradient(135deg,#cfe3f7,#5aa6e0)';
     const estadoRed = red.estados[E.uid] || 'ninguna';
-    const botones = mio
-      ? '<button type="button" class="fpp-btn p" id="fppEditar">' + I.lapiz + ' Editar mi perfil profesional</button><button type="button" class="fpp-btn" onclick="ftDirEditar()">Mi tarjeta, foto y portada</button>'
-      : (estadoRed === 'conectado' ? '<span class="dir-conectar ok" style="cursor:default">' + I.check + ' Conectados</span>' : estadoRed === 'enviada' ? '<span class="dir-conectar envia" style="cursor:default">Solicitud enviada</span>' : '<button type="button" class="fpp-btn p" id="fppConectar">Conectar</button>');
+    // Para ti: un solo botón, para editar tu tarjeta (nombre, foto, portada, contacto); el currículum se edita tocando cada apartado de abajo.
+    // Para otra persona: el botón de Conectar, con su estado.
+    const accion = mio ? '' : (estadoRed === 'conectado' ? '<span class="dir-conectar ok" style="cursor:default">' + I.check + ' Conectados</span>' : estadoRed === 'enviada' ? '<span class="dir-conectar envia" style="cursor:default">Solicitud enviada</span>' : '<div class="fpp-acc"><button type="button" class="fpp-btn p" id="fppConectar">Conectar</button></div>');
     return '<button type="button" class="fpp-volver" onclick="showPage(\'directorio\')">← Volver al directorio</button>' +
       '<div class="fpp-cab"><div class="fpp-cover" style="' + fondo + '"></div><div class="fpp-cuerpo"><div class="fpp-av">' + av + '</div>' +
       '<div class="fpp-ey">PERFIL PROFESIONAL</div><h1>' + esc(nombre) + '</h1>' +
       '<div class="fpp-sub">' + esc([c.puesto, c.empresa, c.ciudad].filter(Boolean).join(' · ') || '') + '</div>' +
       (conex === null ? '' : '<div class="fpp-red">Red profesional · <b>' + conex + '</b> conexi' + (conex === 1 ? 'ón' : 'ones') + '</div>') +
-      '<div class="fpp-acc">' + botones + '</div>' +
-      (mio ? '<div class="fpp-avance"><span>Avance de tu currículum</span><i><b style="width:' + (E.datos.avance || 0) + '%"></b></i><span>' + (E.datos.avance || 0) + '%</span></div>' : '') +
+      accion +
+      (mio ? '<button type="button" class="fpp-ed-tarjeta" id="fppEditarTarjeta">' + I.lapiz + ' Editar tarjeta (nombre, foto, portada)</button>' +
+        '<div class="fpp-avance"><span>Avance de tu currículum</span><i><b style="width:' + (E.datos.avance || 0) + '%"></b></i><span>' + (E.datos.avance || 0) + '%</span></div>' +
+        '<p class="fpp-pista">Toca cualquier apartado de abajo para editarlo.</p>' : '') +
       '</div></div>';
   }
 
   function verSeccion(clave, titulo, visibilidad) {
     const p = E.datos.perfil || {}, mio = E.uid === uidMio();
-    const etiqueta = mio && visibilidad ? '<span class="fpp-vis">' + (VIS.find(v => v[0] === visibilidad[clave]) || VIS[0])[1] + '</span>' : '';
+    const etiqueta = mio && visibilidad ? '<span class="fpp-vis">' + (VIS.find(v => v[0] === visibilidad[clave]) || VIS[0])[1] + '</span><span class="fpp-editic">' + I.lapiz + '</span>' : '';
+    // En tu propio perfil, toda la sección es un botón que te lleva a editarla (sin un botón global aparte)
+    const abre = mio ? ' data-editsec="' + clave + '" role="button" tabindex="0" aria-label="Editar ' + esc(titulo) + '"' : '';
+    const clase = 'fpp-sec' + (mio ? ' fpp-editable' : '');
     if (clave === 'certificaciones') {
       const certs = E.datos.certificados || [];
       if (!certs.length && !mio) return '';
-      return '<section class="fpp-sec"><h3>' + I.medalla + ' ' + titulo + etiqueta + '</h3>' + (certs.length ? certs.map(x => '<div class="fpp-cert"><i>' + I.check + '</i><div><b>' + esc(x.curso) + '</b><small>Folio ' + esc(x.folio) + (x.fecha ? ' · ' + esc(x.fecha) : '') + ' · verificable con QR</small></div></div>').join('') : '<p class="fpp-vacia">Termina un curso del Club y tu certificado aparecerá aquí solo (con folio verificable).</p>') + '</section>';
+      return '<section class="' + clase + '"' + abre + '><h3>' + I.medalla + ' ' + titulo + etiqueta + '</h3>' + (certs.length ? certs.map(x => '<div class="fpp-cert"><i>' + I.check + '</i><div><b>' + esc(x.curso) + '</b><small>Folio ' + esc(x.folio) + (x.fecha ? ' · ' + esc(x.fecha) : '') + ' · verificable con QR</small></div></div>').join('') : '<p class="fpp-vacia">Termina un curso del Club y tu certificado aparecerá aquí solo (con folio verificable).</p>') + '</section>';
     }
     const valor = p[clave];
-    if (valor === undefined) return mio ? '' : ''; // sección reservada: el servidor ya la filtró
+    if (valor === undefined) return ''; // sección reservada: el servidor ya la filtró
     if (clave === 'sobreMi') {
       if (!valor && !mio) return '';
-      return '<section class="fpp-sec"><h3>' + I.usuario + ' ' + titulo + etiqueta + '</h3>' + (valor ? '<p>' + esc(valor) + '</p>' : '<p class="fpp-vacia">Cuenta en unas líneas quién eres y qué te apasiona de la fisioterapia.</p>') + '</section>';
+      return '<section class="' + clase + '"' + abre + '><h3>' + I.usuario + ' ' + titulo + etiqueta + '</h3>' + (valor ? '<p>' + esc(valor) + '</p>' : '<p class="fpp-vacia">Cuenta en unas líneas quién eres y qué te apasiona de la fisioterapia.</p>') + '</section>';
     }
     const lista = Array.isArray(valor) ? valor : [];
     if (!lista.length && !mio) return '';
@@ -149,7 +161,7 @@
     else if (clave === 'enlaces') cuerpo = lista.length ? lista.map(x => { const u = String(x.url || ''); const seguro = /^https?:\/\//i.test(u) ? u : 'https://' + u.replace(/^[a-z]+:\/\//i, ''); return '<div class="fpp-item"><b>' + esc(x.titulo || u) + '</b><small><a href="' + esc(seguro) + '" target="_blank" rel="noopener noreferrer">' + esc(u) + '</a></small></div>'; }).join('') : '<p class="fpp-vacia">Comparte tu sitio, agenda o redes profesionales.</p>';
     else cuerpo = lista.length ? lista.map(x => '<div class="fpp-item"><b>' + esc(x.puesto || x.titulo || x.nombre || '') + '</b><small>' + esc([x.lugar || x.escuela || x.emisor, x.periodo || x.anio].filter(Boolean).join(' · ')) + '</small>' + (x.descripcion ? '<p>' + esc(x.descripcion) + '</p>' : '') + '</div>').join('') : '<p class="fpp-vacia">Aún no hay nada en esta sección.</p>';
     const iconos = { experiencia: I.maletin, formacion: I.gorro, idiomas: I.globo, habilidades: I.rayo, certificacionesExternas: I.medalla, proyectos: I.carpeta, enlaces: I.enlace };
-    return '<section class="fpp-sec"><h3>' + (iconos[clave] || '') + ' ' + titulo + etiqueta + '</h3>' + cuerpo + '</section>';
+    return '<section class="' + clase + '"' + abre + '><h3>' + (iconos[clave] || '') + ' ' + titulo + etiqueta + '</h3>' + cuerpo + '</section>';
   }
 
   function pintar() {
@@ -159,12 +171,17 @@
     const vis = (E.datos.perfil || {}).visibilidad || null;
     raiz.innerHTML = cabecera(mio) + SEC.map(s => verSeccion(s[0], s[1], vis)).join('') +
       (!mio && E.datos.conectado === false ? '<div class="fpp-sec fpp-cerrada">' + I.candado + ' Algunas secciones de este perfil son solo para sus conexiones.</div>' : '');
-    const be = $('fppEditar'); if (be) be.onclick = () => { E.editando = true; pintar(); };
+    const bt = $('fppEditarTarjeta'); if (bt) bt.onclick = () => { if (window.ftDirEditar) ftDirEditar(); };
     const bc = $('fppConectar'); if (bc) bc.onclick = async () => {
       bc.disabled = true;
       try { await certFetch('/api/red/solicitar', { method: 'POST', body: JSON.stringify({ uid: E.uid }) }); showToast('Solicitud enviada.'); if (window.ftRed) ftRed.estados[E.uid] = 'enviada'; pintar(); }
       catch (e) { bc.disabled = false; showToast(e.message || 'No se pudo enviar la solicitud.'); }
     };
+    // Tocar cualquier apartado (menos un enlace que lleve a otro lado) abre el editor, ya en ese apartado
+    if (mio) raiz.querySelectorAll('[data-editsec]').forEach(sec => {
+      sec.onclick = e => { if (e.target.closest('a')) return; E.foco = sec.dataset.editsec; E.editando = true; pintar(); };
+      sec.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sec.click(); } };
+    });
   }
 
   // ---------- Editor (solo el dueño) ----------
@@ -175,17 +192,22 @@
       ? '<textarea data-campo="' + c[0] + '" maxlength="' + c[2] + '" rows="2" placeholder="' + esc(c[1]) + '">' + esc((fila || {})[c[0]] || '') + '</textarea>'
       : '<input data-campo="' + c[0] + '" maxlength="' + c[2] + '" placeholder="' + esc(c[1]) + '" value="' + esc((fila || {})[c[0]] || '') + '">')).join('') +
       '<button type="button" class="fpp-quitar">Quitar</button></div>';
-    const secLista = (clave, titulo) => '<section class="fpp-sec"><h3>' + titulo + selVis(clave) + '</h3><div data-lista="' + clave + '">' + (Array.isArray(p[clave]) ? p[clave] : []).map(f => filaEd(clave, f)).join('') + '</div><button type="button" class="fpp-agregar" data-agregar="' + clave + '">+ Agregar</button></section>';
+    const secLista = (clave, titulo) => '<section class="fpp-sec" data-seced="' + clave + '"><h3>' + titulo + selVis(clave) + '</h3><div data-lista="' + clave + '">' + (Array.isArray(p[clave]) ? p[clave] : []).map(f => filaEd(clave, f)).join('') + '</div><button type="button" class="fpp-agregar" data-agregar="' + clave + '">+ Agregar</button></section>';
     raiz.innerHTML = '<button type="button" class="fpp-volver" id="fppCancelar">← Cancelar (sin guardar)</button>' +
       '<div class="fpp-cab"><div class="fpp-cuerpo" style="padding-top:18px"><div class="fpp-ey">EDITAR PERFIL PROFESIONAL</div><h1>Tu currículum</h1><div class="fpp-sub">Cada sección tiene su propia visibilidad: pública, solo conexiones o privada. Los certificados FisioTeck se agregan solos al terminar un curso.</div></div></div>' +
-      '<section class="fpp-sec"><h3>Sobre mí' + selVis('sobreMi') + '</h3><label class="fpp-ed-lbl"><textarea id="fppSobre" maxlength="600" rows="4" placeholder="Quién eres, qué te apasiona y a quién ayudas…">' + esc(p.sobreMi || '') + '</textarea></label></section>' +
-      '<section class="fpp-sec"><h3>Certificados FisioTeck' + selVis('certificaciones') + '</h3><p class="fpp-vacia">Esta sección no se edita: muestra tus certificados reales del Club con folio verificable (' + (E.datos.certificados || []).length + ' hasta hoy). Aquí solo eliges quién la ve.</p></section>' +
+      '<section class="fpp-sec" data-seced="sobreMi"><h3>Sobre mí' + selVis('sobreMi') + '</h3><label class="fpp-ed-lbl"><textarea id="fppSobre" maxlength="600" rows="4" placeholder="Quién eres, qué te apasiona y a quién ayudas…">' + esc(p.sobreMi || '') + '</textarea></label></section>' +
+      '<section class="fpp-sec" data-seced="certificaciones"><h3>Certificados FisioTeck' + selVis('certificaciones') + '</h3><p class="fpp-vacia">Esta sección no se edita: muestra tus certificados reales del Club con folio verificable (' + (E.datos.certificados || []).length + ' hasta hoy). Aquí solo eliges quién la ve.</p></section>' +
       secLista('experiencia', I.maletin + ' Experiencia') + secLista('formacion', I.gorro + ' Formación') + secLista('idiomas', I.globo + ' Idiomas') + secLista('habilidades', I.rayo + ' Habilidades') +
       secLista('certificacionesExternas', I.medalla + ' Otras certificaciones') + secLista('proyectos', I.carpeta + ' Proyectos') + secLista('enlaces', I.enlace + ' Enlaces') +
       '<div class="fpp-acc" style="margin:4px 0 30px"><button type="button" class="fpp-btn p" id="fppGuardar">Guardar mi perfil</button><button type="button" class="fpp-btn" id="fppCancelar2">Cancelar</button></div>';
     const enlazarFilas = () => raiz.querySelectorAll('.fpp-quitar').forEach(b => b.onclick = () => b.closest('.fpp-ed-fila').remove());
     enlazarFilas();
     raiz.querySelectorAll('[data-agregar]').forEach(b => b.onclick = () => { raiz.querySelector('[data-lista="' + b.dataset.agregar + '"]').insertAdjacentHTML('beforeend', filaEd(b.dataset.agregar, {})); enlazarFilas(); });
+    // Si llegaste tocando un apartado en particular, el editor se desplaza directo a él
+    if (E.foco) {
+      const destino = raiz.querySelector('[data-seced="' + E.foco + '"]'); E.foco = null;
+      if (destino) setTimeout(() => { destino.scrollIntoView({ behavior: 'smooth', block: 'start' }); const t = destino.querySelector('textarea, input'); if (t) try { t.focus({ preventScroll: true }); } catch (_) { /* sigue */ } }, 60);
+    }
     const salir = () => { E.editando = false; pintar(); };
     $('fppCancelar').onclick = salir; $('fppCancelar2').onclick = salir;
     $('fppGuardar').onclick = async () => {
