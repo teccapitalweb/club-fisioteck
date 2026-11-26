@@ -129,9 +129,12 @@
     const conex = mio ? (red.total || 0) : null;
     const fondo = (window.ftDirPortada && ftDirPortada(c, E.uid)) || 'background:linear-gradient(135deg,#cfe3f7,#5aa6e0)';
     const estadoRed = red.estados[E.uid] || 'ninguna';
+    const viewerVip = !!((window.ftDirMeta && ftDirMeta().viewerVip));
     // Para ti: un solo botón, para editar tu tarjeta (nombre, foto, portada, contacto); el currículum se edita tocando cada apartado de abajo.
-    // Para otra persona: el botón de Conectar, con su estado.
-    const accion = mio ? '' : (estadoRed === 'conectado' ? '<span class="dir-conectar ok" style="cursor:default">' + I.check + ' Conectados</span>' : estadoRed === 'enviada' ? '<span class="dir-conectar envia" style="cursor:default">Solicitud enviada</span>' : '<div class="fpp-acc"><button type="button" class="fpp-btn p" id="fppConectar">Conectar</button></div>');
+    // Para otra persona: el botón de Conectar (beneficio VIP, igual que el Directorio), con su estado.
+    const accion = mio ? '' : (estadoRed === 'conectado' ? '<span class="dir-conectar ok" style="cursor:default">' + I.check + ' Conectados</span>' : estadoRed === 'enviada' ? '<span class="dir-conectar envia" style="cursor:default">Solicitud enviada</span>' :
+      !viewerVip ? '<div class="fpp-acc"><button type="button" class="dir-lock" id="fppConectarVip">' + I.candado + ' Conectar · solo VIP</button></div>' :
+      '<div class="fpp-acc"><button type="button" class="fpp-btn p" id="fppConectar">Conectar</button></div>');
     return '<button type="button" class="fpp-volver" onclick="showPage(\'directorio\')">← Volver al directorio</button>' +
       '<div class="fpp-cab"><div class="fpp-cover" style="' + fondo + '"></div><div class="fpp-cuerpo"><div class="fpp-av">' + av + '</div>' +
       '<div class="fpp-ey">PERFIL PROFESIONAL</div><h1>' + esc(nombre) + '</h1>' +
@@ -266,6 +269,7 @@
       try { await certFetch('/api/red/solicitar', { method: 'POST', body: JSON.stringify({ uid: E.uid }) }); showToast('Solicitud enviada.'); if (window.ftRed) ftRed.estados[E.uid] = 'enviada'; pintar(); }
       catch (e) { bc.disabled = false; showToast(e.message || 'No se pudo enviar la solicitud.'); }
     };
+    const bcv = $('fppConectarVip'); if (bcv) bcv.onclick = () => { if (window.showPaywallOverlay) showPaywallOverlay(); };
     // Currículum: tocar cualquier apartado (menos un enlace que lleve a otro lado) abre el editor grande, ya en ese apartado
     if (mio) raiz.querySelectorAll('[data-editsec]').forEach(sec => {
       sec.onclick = e => { if (e.target.closest('a')) return; E.foco = sec.dataset.editsec; E.editando = true; pintar(); };

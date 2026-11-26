@@ -161,6 +161,8 @@
     if (e === 'conectado') return '<button type="button" class="dir-conectar ok" data-red="eliminar" data-reduid="' + esc(id) + '" title="Conectados · toca para deshacer">' + I.check + ' Conectados</button>';
     if (e === 'enviada') return '<button type="button" class="dir-conectar envia" data-red="cancelar" data-reduid="' + esc(id) + '" title="Solicitud enviada · toca para cancelarla">' + I.check + ' Enviada</button>';
     if (e === 'recibida') return '<button type="button" class="dir-conectar recibe" data-red="tab" data-reduid="' + esc(id) + '">Responder</button>';
+    // Conectar es un beneficio VIP (igual que ver el contacto); el servidor también lo exige en /api/red/solicitar
+    if (!S.meta.viewerVip) return '<button type="button" class="dir-lock" data-dirlock>' + I.lock + ' Conectar · solo VIP</button>';
     return '<button type="button" class="dir-conectar" data-red="solicitar" data-reduid="' + esc(id) + '">' + I.red + ' Conectar</button>';
   }
   // Portada de una tarjeta VIP: foto personalizada (del servidor, o una vista previa explícita mientras se edita), o el color elegido.
@@ -332,7 +334,7 @@
       (bloq ? '<button type="button" class="dir-lock grande" data-dirlock>' + I.lock + ' Contactar · solo VIP</button>' :
         filas.length ? '<ul class="dir-det-lista">' + filas.map(f => '<li><i>' + I[f[0]] + '</i><span><small>' + f[1] + '</small><b>' + esc(f[2]) + '</b></span></li>').join('') + '</ul>' : '<p class="dir-sin">Sin datos de contacto</p>');
     const m = ventana('drDetalle', 'Tarjeta profesional', id === uid() ? 'Tu tarjeta en el directorio' : 'Directorio VIP', cuerpo, [{ texto: 'Cerrar', suave: true, clic: (b, cer) => cer() }]);
-    const l = m.o.querySelector('[data-dirlock]'); if (l) l.onclick = () => { m.cerrar(); showPaywallOverlay(); };
+    m.o.querySelectorAll('[data-dirlock]').forEach(l => l.onclick = () => { m.cerrar(); showPaywallOverlay(); });
     const vp = m.o.querySelector('[data-verperfil]'); if (vp) vp.onclick = () => { m.cerrar(); if (window.ftPerfilPro) ftPerfilPro.abrir(vp.dataset.verperfil); };
     const rd = m.o.querySelector('[data-red]'); if (rd) rd.onclick = () => { m.cerrar(); accionRed(rd.dataset.red, rd.dataset.reduid); };
   }
