@@ -143,6 +143,9 @@
       accion +
       (mio ? '<div class="fpp-avance"><span>Avance de tu currículum</span><i><b style="width:' + (E.datos.avance || 0) + '%"></b></i><span>' + (E.datos.avance || 0) + '%</span></div>' +
         '<p class="fpp-pista">Toca cualquier apartado de abajo para editarlo.</p>' : '') +
+      (mio && c.nombre ? '<div class="fpp-acc" style="margin-top:12px">' +
+        (c.publicado ? '<button type="button" class="fpp-btn" id="fppDespublicar">Dejar de publicar</button>' : '<button type="button" class="fpp-btn p" id="fppPublicar">Publicar mi tarjeta</button>') +
+        '<button type="button" class="fpp-btn" id="fppEliminarTarjeta" style="color:#C0392B">Eliminar tarjeta</button></div>' : '') +
       '</div></div>';
   }
 
@@ -270,6 +273,23 @@
       catch (e) { bc.disabled = false; showToast(e.message || 'No se pudo enviar la solicitud.'); }
     };
     const bcv = $('fppConectarVip'); if (bcv) bcv.onclick = () => { if (window.showPaywallOverlay) showPaywallOverlay(); };
+    // Publicar / dejar de publicar / eliminar la tarjeta, sin salir de "Ver mi perfil" (antes solo estaba en el botón aparte del Directorio)
+    const pub = $('fppPublicar'); if (pub) pub.onclick = async () => {
+      pub.disabled = true;
+      try { await db.collection('directorio').doc(uidMio()).set({ publicado: true, actualizado: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true }); if (window.ftDirRecargar) try { ftDirRecargar(); } catch (_) { /* sigue */ } showToast('Tarjeta publicada.'); await abrir(uidMio()); }
+      catch (e) { pub.disabled = false; showToast(e.message || 'No se pudo publicar.'); }
+    };
+    const despub = $('fppDespublicar'); if (despub) despub.onclick = async () => {
+      despub.disabled = true;
+      try { await db.collection('directorio').doc(uidMio()).set({ publicado: false, actualizado: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true }); if (window.ftDirRecargar) try { ftDirRecargar(); } catch (_) { /* sigue */ } showToast('Tu tarjeta ya no está publicada.'); await abrir(uidMio()); }
+      catch (e) { despub.disabled = false; showToast(e.message || 'No se pudo actualizar.'); }
+    };
+    const elim = $('fppEliminarTarjeta'); if (elim) elim.onclick = async () => {
+      if (!confirm('¿Eliminar tu tarjeta del directorio? Podrás crearla de nuevo cuando quieras.')) return;
+      elim.disabled = true;
+      try { await db.collection('directorio').doc(uidMio()).delete(); if (window.ftDirRecargar) try { ftDirRecargar(); } catch (_) { /* sigue */ } showToast('Tarjeta eliminada.'); await abrir(uidMio()); }
+      catch (e) { elim.disabled = false; showToast('No se pudo eliminar la tarjeta.'); }
+    };
     // Currículum: tocar cualquier apartado (menos un enlace que lleve a otro lado) abre el editor grande, ya en ese apartado
     if (mio) raiz.querySelectorAll('[data-editsec]').forEach(sec => {
       sec.onclick = e => { if (e.target.closest('a')) return; E.foco = sec.dataset.editsec; E.editando = true; pintar(); };

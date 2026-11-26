@@ -223,7 +223,7 @@
       // Banda con contadores y accesos (como ICADEM): membresías VIP, miembros, tu perfil y tu tarjeta
       '<div class="dir-banda"><div class="dir-banda-ic">' + I.red + '</div><div class="dir-banda-txt">Tu próxima conexión puede empezar aquí.</div>' +
       '<div class="dir-banda-nums"><span><b>' + S.meta.vip.size + '</b><small>' + I.corona + 'Membresías VIP</small></span><span><b>' + S.tarjetas.length + '</b><small>Miembros</small></span></div>' +
-      '<div class="dir-banda-acc"><button type="button" class="dir-bbtn claro" data-verperfil="' + esc(uid()) + '">' + I.usuario + ' Ver mi perfil ' + I.flecha + '</button><button type="button" class="dir-bbtn" onclick="ftDirEditar()">' + I.lapiz + ' ' + (S.propia ? 'Editar mi tarjeta' : 'Crear mi tarjeta') + '</button></div></div>' +
+      '<div class="dir-banda-acc"><button type="button" class="dir-bbtn claro" data-verperfil="' + esc(uid()) + '">' + I.usuario + ' Ver mi perfil ' + I.flecha + '</button></div></div>' +
       // Pestañas
       '<div class="dir-tabs" role="tablist"><button type="button" class="' + (S.tab === 'directorio' ? 'on' : '') + '" data-dirtab="directorio">' + I.red + ' Directorio</button>' +
       '<button type="button" class="' + (S.tab === 'solicitudes' ? 'on' : '') + '" data-dirtab="solicitudes">Solicitudes' + (pend ? '<span class="dir-tab-badge">' + pend + '</span>' : '') + '</button>' +
@@ -340,57 +340,6 @@
     const rd = m.o.querySelector('[data-red]'); if (rd) rd.onclick = () => { m.cerrar(); accionRed(rd.dataset.red, rd.dataset.reduid); };
   }
 
-  // ---------- Mi tarjeta ----------
-  window.ftDirEditar = function () {
-    const m = Object.assign({ portadaColor: 'azul', estado: '' }, S.propia || {}, S.meta.miContacto || {});
-    const u = auth.currentUser, existe = !!S.propia, publicada = !!(S.propia && S.propia.publicado === true);
-    const campo = (id, et, val, ph, max, tipo, op) => '<label class="dr-lbl">' + et + (op ? ' <small>(opcional)</small>' : '') + '<input id="' + id + '" ' + (tipo ? 'type="' + tipo + '" ' : '') + 'maxlength="' + (max || 60) + '" placeholder="' + esc(ph || '') + '" value="' + esc(val || '') + '"></label>';
-    let color = portada(m.portadaColor);
-    const alcance = c => { const a = ((S.meta.miContacto || {}).alcances || {})[c]; return ['miembros', 'conexiones', 'oculto'].includes(a) ? a : 'miembros'; };
-    const portadaActual = S.meta.portadas[uid()] || null;
-    S.portadaEdit = null; // solo se usa si había una foto de portada guardada de antes y la quitas (ver más abajo)
-    S.fotoEdit = typeof m.foto === 'string' ? m.foto : '';
-    S.avatarEdit = /^a(0[1-9]|1[0-6])$/.test(m.avatar || '') ? m.avatar : (/^a(0[1-9]|1[0-6])$/.test((window.ftAvatarActual && ftAvatarActual()) || '') ? ftAvatarActual() : '');
-    // Una sola foto (la de perfil, abajo): la portada solo se personaliza con un color, para no repetir el mismo paso dos veces.
-    const cuerpo = '<div class="dr-form"><div class="dr-prev" id="drPrev"></div>' +
-      '<div id="drBqColor"><div class="dr-lbl">Color de tu portada<div class="dr-colores" id="drColores">' + Object.keys(PORTADAS).map(k => '<button type="button" data-c="' + k + '" class="' + (k === color && !(portadaActual && portadaActual.foto) ? 'on' : '') + '" style="background:' + PORTADAS[k][1] + '" aria-label="' + PORTADAS[k][0] + '" title="' + PORTADAS[k][0] + '"></button>').join('') +
-      '</div>' + (portadaActual && portadaActual.foto ? '<button type="button" class="dr-quitar-link" id="drPortadaReset">Quitar la foto de portada que tenías y usar este color</button>' : '') + '</div></div>' +
-      '<div id="drBqFoto"><div class="dr-lbl">Tu foto <small>(opcional)</small><div class="dr-foto"><div class="dr-foto-vista" id="drFotoVista"></div><div class="dr-foto-acc"><button type="button" class="dr-btn-foto" id="drFotoBtn">Subir foto</button><button type="button" class="dr-btn-foto quitar" id="drFotoQuitar">Quitar</button><input type="file" id="drFotoArchivo" accept="image/*" hidden></div></div><small class="dr-foto-nota">Se recorta en círculo y se reduce sola. Si no subes foto se muestra tu avatar o tus iniciales.</small></div>' +
-      '<div class="dr-lbl">Tu avatar <small>(se usa si no subes foto)</small><div class="dr-avatares" id="drAvatares" role="radiogroup" aria-label="Avatares">' + (window.ftAvatar ? ftAvatar.IDS.map((id, i) => '<button type="button" role="radio" data-av="' + id + '" aria-label="Avatar ' + (i + 1) + '"><img src="' + esc(ftAvatar.url(id)) + '" alt="" loading="lazy"></button>').join('') : '') + '</div><button type="button" class="dr-btn-foto quitar" id="drAvatarIni">Usar mis iniciales</button></div></div>' +
-      '<div id="drBqIdentidad"><label class="dr-lbl">Estado profesional <small>(opcional)</small><select id="drEstado"><option value="">Sin indicar</option>' + Object.keys(ESTADOS).map(k => '<option value="' + k + '"' + (m.estado === k ? ' selected' : '') + '>' + ESTADOS[k][0] + '</option>').join('') + '</select></label>' +
-      campo('drNombre', 'Nombre completo', m.nombre || u.displayName, '', 60) + campo('drPuesto', 'Puesto / cargo', m.puesto, 'Ej. Fisioterapeuta') + campo('drEmpresa', 'Consultorio / empresa', m.empresa, 'Ej. Clínica Movimiento') +
-      campo('drCiudad', 'Ubicación profesional', m.ciudad, 'Ej. Puebla, Puebla', 60, '', true) +
-      '<label class="dr-lbl">Especialidad<select id="drEsp"><option value="">Selecciona…</option>' + ESPECIALIDADES.map(e => '<option' + (e === m.especialidad ? ' selected' : '') + '>' + esc(e) + '</option>').join('') + '</select></label>' +
-      '<label class="dr-lbl">Bio breve <small>(opcional)</small><textarea id="drBio" maxlength="200" rows="3" placeholder="Una línea sobre tu experiencia…">' + esc(m.bio || '') + '</textarea></label></div>' +
-      '<div id="drBqContacto"><p class="dr-sub">Contacto <small>(opcional · decide quién ve cada dato)</small></p>' +
-      [['drWa', 'WhatsApp', 'whatsapp', m.whatsapp, 'Ej. 52 238 123 4567', 20, 'tel'], ['drMail', 'Correo', 'email', m.email, 'tucorreo@ejemplo.com', 80, 'email'], ['drLi', 'LinkedIn', 'linkedin', m.linkedin, 'linkedin.com/in/tu-perfil', 120, ''], ['drWeb', 'Sitio web', 'web', m.web, 'tusitio.com', 120, ''], ['drIg', 'Instagram profesional', 'instagram', m.instagram, '@tuusuario', 60, '']]
-        .map(f => campo(f[0], f[1], f[3], f[4], f[5], f[6]) +
-          '<div class="dr-alcance"><small>¿Quién lo ve?</small><select data-alcance="' + f[2] + '"><option value="miembros"' + (alcance(f[2]) === 'miembros' ? ' selected' : '') + '>Todos los miembros VIP</option><option value="conexiones"' + (alcance(f[2]) === 'conexiones' ? ' selected' : '') + '>Solo mis conexiones</option><option value="oculto"' + (alcance(f[2]) === 'oculto' ? ' selected' : '') + '>Oculto (nadie)</option></select></div>').join('') +
-      '<p class="dr-sub">Cédula profesional <small>(opcional)</small></p>' + campo('drCed', 'Cédula profesional', m.cedula, '12345678', 20) +
-      '<label class="dr-check"><input type="checkbox" id="drCedVis"' + (m.cedulaVisible ? ' checked' : '') + '> Mostrar cédula en el directorio</label></div>' +
-      '<p class="dr-nota">Revisa tus datos antes de publicar: los miembros del club verán lo que aparece en la tarjeta. Mientras no la publiques, solo tú la ves.</p><p class="ftp-error" id="drError" role="alert"></p></div>';
-    const pie = [];
-    if (existe) pie.push({ texto: 'Eliminar tarjeta', suave: true, peligro: true, clic: async (b, cer) => { if (!confirm('¿Eliminar tu tarjeta del directorio? Podrás crearla de nuevo cuando quieras.')) return; try { await db.collection('directorio').doc(uid()).delete(); cer(); showToast('Tarjeta eliminada.'); cargar(); } catch (e) { showToast('No se pudo eliminar la tarjeta.'); } } });
-    if (publicada) { pie.push({ texto: 'Dejar de publicar', suave: true, clic: (b, cer) => guardar(b, cer, () => color, false) }); pie.push({ texto: 'Guardar cambios', clic: (b, cer) => guardar(b, cer, () => color, true) }); }
-    else { pie.push({ texto: 'Guardar como privada', suave: true, clic: (b, cer) => guardar(b, cer, () => color, false) }); pie.push({ texto: 'Guardar y publicar', clic: (b, cer) => guardar(b, cer, () => color, true) }); }
-    const w = ventana('drEditor', 'Mi tarjeta profesional', publicada ? 'Publicada en el Directorio VIP' : 'Privada · solo tú la ves', cuerpo, pie);
-    const leer = () => { const v = id => (($(id) || {}).value || '').trim(); return { id: uid(), foto: S.fotoEdit, nombre: v('drNombre'), puesto: v('drPuesto'), empresa: v('drEmpresa'), ciudad: v('drCiudad'), especialidad: v('drEsp'), bio: v('drBio'), estado: v('drEstado'), portadaColor: color, avatar: S.avatarEdit,
-      whatsapp: v('drWa'), email: v('drMail'), linkedin: v('drLi'), web: v('drWeb'), instagram: v('drIg'), cedula: $('drCedVis') && $('drCedVis').checked ? v('drCed') : '' }; };
-    // La vista previa respeta tu foto de portada guardada hasta que la quites; elegir un color no la quita sola (solo el botón de abajo lo hace)
-    const prev = () => { const p = $('drPrev'); if (p) p.innerHTML = tarjeta(leer(), { vip: S.meta.viewerVip, pistas: true, portadaPreview: S.portadaEdit && S.portadaEdit.reset ? {} : undefined }); };
-    w.o.querySelectorAll('#drColores [data-c]').forEach(b => b.onclick = () => { color = b.dataset.c; w.o.querySelectorAll('#drColores [data-c]').forEach(x => x.classList.toggle('on', x === b)); prev(); });
-    if ($('drPortadaReset')) $('drPortadaReset').onclick = () => { S.portadaEdit = { reset: true }; const btn = $('drPortadaReset'); if (btn) btn.remove(); prev(); };
-    w.o.querySelector('.dr-form').addEventListener('input', prev); w.o.querySelector('.dr-form').addEventListener('change', prev); prev();
-    const pintarFoto = () => { const vista = $('drFotoVista'); if (!vista) return; vista.style.backgroundImage = S.fotoEdit ? 'url(' + S.fotoEdit + ')' : ''; vista.classList.toggle('vacia', !S.fotoEdit); $('drFotoBtn').textContent = S.fotoEdit ? 'Cambiar foto' : 'Subir foto'; $('drFotoQuitar').hidden = !S.fotoEdit; prev(); };
-    $('drFotoBtn').onclick = () => $('drFotoArchivo').click();
-    $('drFotoQuitar').onclick = () => { S.fotoEdit = ''; pintarFoto(); };
-    $('drFotoArchivo').onchange = async ev => { const a = ev.target.files && ev.target.files[0]; ev.target.value = ''; if (!a) return; $('drError').textContent = ''; try { S.fotoEdit = await reducirFoto(a); pintarFoto(); } catch (e) { $('drError').textContent = e.message; } };
-    pintarFoto();
-    const pintarAvatares = () => { w.o.querySelectorAll('#drAvatares [data-av]').forEach(b => { const on = b.dataset.av === S.avatarEdit; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(on)); }); const ini = $('drAvatarIni'); if (ini) ini.hidden = !S.avatarEdit; prev(); };
-    w.o.querySelectorAll('#drAvatares [data-av]').forEach(b => b.onclick = () => { S.avatarEdit = b.dataset.av; pintarAvatares(); });
-    if ($('drAvatarIni')) $('drAvatarIni').onclick = () => { S.avatarEdit = ''; pintarAvatares(); };
-    pintarAvatares();
-  };
   // La foto se recorta cuadrada, se reduce a 320 px y se guarda dentro de la tarjeta como JPEG (unos 20 a 40 KB); no se sube a ningún otro servicio
   const FOTO_MAX = 60000;
   function reducirFoto(archivo) {
@@ -420,24 +369,6 @@
     if (v.cedula && !/^[A-Za-z0-9 -]{4,20}$/.test(v.cedula)) return 'Escribe tu cédula solo con letras y números.';
     return '';
   }
-  async function guardar(btn, cer, color, publicar) {
-    const v = id => ($(id).value || '').trim(), err = $('drError'); err.textContent = '';
-    if (v('drNombre').length < 2) { err.textContent = 'Escribe tu nombre.'; return; }
-    const botones = btn.parentNode.querySelectorAll('.ftm-btn'), texto = btn.textContent;
-    botones.forEach(x => { x.disabled = true; }); btn.textContent = 'Guardando…';
-    const avatar = S.avatarEdit || '';
-    const tarj = { nombre: v('drNombre').slice(0, 60), puesto: v('drPuesto').slice(0, 60), empresa: v('drEmpresa').slice(0, 60), ciudad: v('drCiudad').slice(0, 60), especialidad: $('drEsp').value, bio: v('drBio').slice(0, 200),
-      estado: ESTADOS[$('drEstado').value] ? $('drEstado').value : '', portadaColor: portada(color()), avatar: /^a(0[1-9]|1[0-6])$/.test(avatar) ? avatar : '', ...(S.fotoEdit ? { foto: S.fotoEdit } : {}), publicado: publicar, actualizado: firebase.firestore.FieldValue.serverTimestamp() };
-    const alcances = {}; document.querySelectorAll('#drEditor [data-alcance]').forEach(s => { alcances[s.dataset.alcance] = s.value; });
-    try {
-      await certFetch('/api/directorio/contacto', { method: 'POST', body: JSON.stringify({ whatsapp: v('drWa'), email: v('drMail'), linkedin: v('drLi'), web: v('drWeb'), instagram: v('drIg'), cedula: v('drCed'), cedulaVisible: $('drCedVis').checked, alcances }) });
-      if (S.portadaEdit) { try { await certFetch('/api/directorio/portada', { method: 'POST', body: JSON.stringify(S.portadaEdit) }); } catch (e) { showToast(e.message || 'No se pudo guardar la portada.'); } S.portadaEdit = null; }
-      await db.collection('directorio').doc(uid()).set(tarj);
-      if (window.ftAvatar && avatar !== (ftAvatarActual() || '')) { try { await ftAvatar.elegir(avatar); } catch (_) { /* el perfil se actualiza la próxima vez */ } }
-      cer(); showToast(publicar ? 'Tu tarjeta ya está en el directorio.' : 'Tarjeta guardada. Sigue privada: solo tú la ves.'); cargar();
-    } catch (e) { err.textContent = e.message && e.status ? e.message : 'No se pudo guardar. Intenta de nuevo.'; botones.forEach(x => { x.disabled = false; }); btn.textContent = texto; }
-  }
-
   // ---------- Certificados: resumen y vacío con acciones ----------
   const certOriginal = window.loadCertificates;
   if (typeof certOriginal === 'function') {
