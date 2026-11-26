@@ -97,6 +97,11 @@ service cloud.firestore {
     match /directorioModeracion/{userId} { allow read, write: if false; } // la moderación la maneja solo el servidor
     // Buzón privado (chat miembro ↔ administración): SOLO el servidor lo lee y escribe; el navegador habla con /api/soporte-chat
     match /soporte_conversaciones/{userId}/{resto=**} { allow read, write: if false; }
+    // Red profesional del directorio (conexiones, límites, perfil profesional y portadas): SOLO el servidor; el navegador habla con /api/red, /api/perfil y /api/directorio
+    match /conexiones/{doc} { allow read, write: if false; }
+    match /conexionesLimites/{doc} { allow read, write: if false; }
+    match /perfilProfesional/{doc} { allow read, write: if false; }
+    match /directorioExtra/{doc} { allow read, write: if false; }
 
     // Avisos para los socios: todos leen, solo el administrador publica
     match /member_notifications/{doc} {
