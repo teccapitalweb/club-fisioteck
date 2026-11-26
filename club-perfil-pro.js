@@ -99,12 +99,13 @@
     if ($('page-perfil-pro') || !$('page-directorio')) return;
     $('page-directorio').insertAdjacentHTML('beforebegin', '<section class="section" id="page-perfil-pro"><div id="fppRaiz"></div></section>');
   }
-  const E = { uid: '', datos: null, tarjeta: null, editando: false, foco: null };
+  const E = { uid: '', datos: null, tarjeta: null, editando: false, foco: null, identEditando: null, fotoDraft: null, avatarDraft: null, colorDraft: null, portadaReset: null };
+  const datosBase = () => { const meta = (window.ftDirMeta && ftDirMeta()) || { miContacto: {}, portadas: {} }; return { tarjeta: Object.assign({ portadaColor: 'azul', estado: '' }, E.tarjeta || {}), contacto: meta.miContacto || {}, portadas: meta.portadas || {} }; };
   const colorDe = id => { let h = 0; for (const ch of String(id)) h = (h * 31 + ch.charCodeAt(0)) % 360; return 'hsl(' + h + ',55%,42%)'; };
 
   async function abrir(quien) {
     montar();
-    E.uid = quien || uidMio(); E.editando = false; E.foco = null;
+    E.uid = quien || uidMio(); E.editando = false; E.foco = null; E.identEditando = null; E.fotoDraft = null; E.avatarDraft = null; E.colorDraft = null; E.portadaReset = null;
     showPage('perfil-pro');
     const raiz = $('fppRaiz'); if (!raiz) return;
     raiz.innerHTML = '<div class="dr-vacio">Cargando perfil…</div>';
@@ -142,17 +143,87 @@
       '</div></div>';
   }
 
-  // Tu nombre, tu foto/avatar, el color de tu tarjeta y tu contacto: se tocan igual que un apartado del currículum
-  // y se editan en línea, en esta misma página (sin abrir ninguna tarjeta ni ventana aparte).
+  // Tu nombre, tu foto/avatar, el color de tu tarjeta y tu contacto: cada apartado se abre y se guarda por su cuenta,
+  // justo donde lo tocaste (sin mostrar los demás apartados ni volver a preguntar lo que ya contestaste en otro).
   function seccionesIdentidad() {
-    const c = E.tarjeta || {};
+    const util = window.ftDirUtils || {};
+    const PORTADAS = util.PORTADAS || {}, ESTADOS = util.ESTADOS || {};
+    const CANALES = (util.CONTACTOS || []).filter(k => k !== 'cedula');
+    const base = datosBase(), c = base.tarjeta, contacto = base.contacto;
     const av = String(c.foto || '').indexOf('data:image/jpeg;base64,') === 0 ? '<img src="' + esc(c.foto) + '" alt="">' : (c.avatar && window.ftAvatarUrl ? '<img src="' + esc(ftAvatarUrl(c.avatar)) + '" alt="">' : '<i style="background:' + colorDe(E.uid) + '">' + esc((String(c.nombre || '?').trim()[0] || '?').toUpperCase()) + '</i>');
     const fondoColor = (window.ftDirPortada && ftDirPortada(c, E.uid)) || 'background:linear-gradient(135deg,#cfe3f7,#5aa6e0)';
-    const tarjeta = (clave, icono, titulo, cuerpo) => '<section class="fpp-sec fpp-editable" data-editsec="' + clave + '" role="button" tabindex="0" aria-label="Editar ' + esc(titulo) + '"><h3>' + icono + ' ' + titulo + '<span class="fpp-editic">' + I.lapiz + '</span></h3>' + cuerpo + '</section>';
-    return tarjeta('identidad', I.idcard, 'Nombre y datos de tu tarjeta', '<p>' + esc([c.nombre, c.puesto, c.empresa, c.ciudad, c.especialidad].filter(Boolean).join(' · ') || 'Agrega tu nombre, puesto, consultorio, ciudad y especialidad.') + '</p>') +
-      tarjeta('foto', I.camara, 'Foto y avatar', '<div class="fpp-mini-av">' + av + '</div>') +
-      tarjeta('color', I.paleta, 'Color de tu portada', '<div class="fpp-mini-color" style="' + fondoColor + '"></div>') +
-      tarjeta('contacto', I.mail, 'Información de contacto', '<p class="fpp-vacia">WhatsApp, correo, LinkedIn, sitio web e Instagram. Tú decides quién ve cada dato.</p>');
+    const etqCanal = { whatsapp: ['WhatsApp', 'Ej. 52 238 123 4567'], email: ['Correo', 'tucorreo@ejemplo.com'], linkedin: ['LinkedIn', 'linkedin.com/in/tu-perfil'], web: ['Sitio web', 'tusitio.com'], instagram: ['Instagram profesional', '@tuusuario'] };
+    const campo = (id, et, val, ph, max) => '<label class="dr-lbl">' + et + '<input id="' + id + '" maxlength="' + (max || 60) + '" placeholder="' + esc(ph || '') + '" value="' + esc(val || '') + '"></label>';
+    const alcanceDe = ch => { const a = (contacto.alcances || {})[ch]; return ['miembros', 'conexiones', 'oculto'].includes(a) ? a : 'miembros'; };
+    const botones = clave => '<div class="fpp-acc" style="margin-top:14px"><button type="button" class="fpp-btn p" data-guardarident="' + clave + '">Guardar</button><button type="button" class="fpp-btn" data-cancelarident>Cancelar</button></div>';
+    const seccion = (clave, icono, titulo, resumen, formulario) => {
+      const abierto = E.identEditando === clave;
+      return '<section class="fpp-sec' + (abierto ? '' : ' fpp-editable') + '"' + (abierto ? '' : ' data-editident="' + clave + '" role="button" tabindex="0" aria-label="Editar ' + esc(titulo) + '"') + '>' +
+        '<h3>' + icono + ' ' + titulo + (abierto ? '' : '<span class="fpp-editic">' + I.lapiz + '</span>') + '</h3>' +
+        (abierto ? formulario() + botones(clave) : resumen) + '</section>';
+    };
+    return seccion('identidad', I.idcard, 'Nombre y datos de tu tarjeta',
+      '<p>' + esc([c.nombre, c.puesto, c.empresa, c.ciudad, c.especialidad].filter(Boolean).join(' · ') || 'Agrega tu nombre, puesto, consultorio, ciudad y especialidad.') + '</p>',
+      () => '<label class="dr-lbl">Estado profesional <small>(opcional)</small><select id="fppIdEstado"><option value="">Sin indicar</option>' + Object.keys(ESTADOS).map(k => '<option value="' + k + '"' + (c.estado === k ? ' selected' : '') + '>' + ESTADOS[k][0] + '</option>').join('') + '</select></label>' +
+        campo('fppIdNombre', 'Nombre completo', c.nombre || (auth.currentUser || {}).displayName, '') +
+        campo('fppIdPuesto', 'Puesto / cargo', c.puesto, 'Ej. Fisioterapeuta') +
+        campo('fppIdEmpresa', 'Consultorio / empresa', c.empresa, 'Ej. Clínica Movimiento') +
+        campo('fppIdCiudad', 'Ubicación profesional', c.ciudad, 'Ej. Puebla, Puebla') +
+        '<label class="dr-lbl">Especialidad<select id="fppIdEsp"><option value="">Selecciona…</option>' + (window.ftDirEspecialidades || []).map(e => '<option' + (e === c.especialidad ? ' selected' : '') + '>' + esc(e) + '</option>').join('') + '</select></label>' +
+        '<label class="dr-lbl">Bio breve <small>(se ve en tu tarjeta del directorio)</small><textarea id="fppIdBio" maxlength="200" rows="3" placeholder="Una línea sobre tu experiencia…">' + esc(c.bio || '') + '</textarea></label>') +
+      seccion('foto', I.camara, 'Foto y avatar', '<div class="fpp-mini-av">' + av + '</div>',
+        () => '<div class="dr-lbl">Tu foto <small>(opcional)</small><div class="dr-foto"><div class="dr-foto-vista" id="fppIdFotoVista"></div><div class="dr-foto-acc"><button type="button" class="dr-btn-foto" id="fppIdFotoBtn">Subir foto</button><button type="button" class="dr-btn-foto quitar" id="fppIdFotoQuitar">Quitar</button><input type="file" id="fppIdFotoArchivo" accept="image/*" hidden></div></div><small class="dr-foto-nota">Se recorta en círculo y se reduce sola. Si no subes foto se muestra tu avatar o tus iniciales.</small></div>' +
+          '<div class="dr-lbl">Tu avatar <small>(se usa si no subes foto)</small><div class="dr-avatares" id="fppIdAvatares" role="radiogroup" aria-label="Avatares">' + (window.ftAvatar ? ftAvatar.IDS.map((id, i) => '<button type="button" role="radio" data-av="' + id + '" aria-label="Avatar ' + (i + 1) + '"><img src="' + esc(ftAvatar.url(id)) + '" alt="" loading="lazy"></button>').join('') : '') + '</div><button type="button" class="dr-btn-foto quitar" id="fppIdAvatarIni">Usar mis iniciales</button></div>') +
+      seccion('color', I.paleta, 'Color de tu portada', '<div class="fpp-mini-color" style="' + fondoColor + '"></div>',
+        () => { const portadaActual = base.portadas[uidMio()] || null, colorActual = PORTADAS[c.portadaColor] ? c.portadaColor : 'azul';
+          return '<div class="dr-colores" id="fppIdColores">' + Object.keys(PORTADAS).map(k => '<button type="button" data-c="' + k + '" class="' + (k === colorActual && !(portadaActual && portadaActual.foto) ? 'on' : '') + '" style="background:' + PORTADAS[k][1] + '" aria-label="' + PORTADAS[k][0] + '" title="' + PORTADAS[k][0] + '"></button>').join('') + '</div>' +
+            (portadaActual && portadaActual.foto ? '<button type="button" class="dr-quitar-link" id="fppIdPortadaReset">Quitar la foto de portada que tenías y usar este color</button>' : ''); }) +
+      seccion('contacto', I.mail, 'Información de contacto', '<p class="fpp-vacia">WhatsApp, correo, LinkedIn, sitio web e Instagram. Tú decides quién ve cada dato.</p>',
+        () => '<p class="fpp-vacia" style="margin-bottom:10px">Decide quién ve cada dato.</p>' +
+          CANALES.map(ch => campo('fppIdC_' + ch, etqCanal[ch][0], contacto[ch], etqCanal[ch][1]) +
+            '<div class="dr-alcance"><small>¿Quién lo ve?</small><select data-alcance="' + ch + '"><option value="miembros"' + (alcanceDe(ch) === 'miembros' ? ' selected' : '') + '>Todos los miembros VIP</option><option value="conexiones"' + (alcanceDe(ch) === 'conexiones' ? ' selected' : '') + '>Solo mis conexiones</option><option value="oculto"' + (alcanceDe(ch) === 'oculto' ? ' selected' : '') + '>Oculto (nadie)</option></select></div>').join('') +
+          '<p class="dr-sub">Cédula profesional <small>(opcional)</small></p>' + campo('fppIdCed', 'Cédula profesional', contacto.cedula, '12345678') +
+          '<label class="dr-check"><input type="checkbox" id="fppIdCedVis"' + (contacto.cedulaVisible ? ' checked' : '') + '> Mostrar cédula en el directorio</label>');
+  }
+
+  // Guarda SOLO el apartado de identidad abierto (el resto de la tarjeta queda tal cual estaba) y refresca el Directorio.
+  async function guardarIdentidad(btn, clave) {
+    const base = datosBase(), util = window.ftDirUtils || {};
+    const tarj = Object.assign({}, base.tarjeta);
+    let contactoVals = null;
+    if (clave === 'identidad') {
+      const nombre = ($('fppIdNombre').value || '').trim();
+      if (nombre.length < 2) { showToast('Escribe tu nombre.'); $('fppIdNombre').focus(); return; }
+      const ESTADOS = util.ESTADOS || {};
+      tarj.nombre = nombre.slice(0, 60); tarj.puesto = ($('fppIdPuesto').value || '').trim().slice(0, 60); tarj.empresa = ($('fppIdEmpresa').value || '').trim().slice(0, 60);
+      tarj.ciudad = ($('fppIdCiudad').value || '').trim().slice(0, 60); tarj.especialidad = $('fppIdEsp').value; tarj.bio = ($('fppIdBio').value || '').trim().slice(0, 200);
+      tarj.estado = ESTADOS[$('fppIdEstado').value] ? $('fppIdEstado').value : '';
+    } else if (clave === 'foto') {
+      if (E.avatarDraft !== null) tarj.avatar = /^a(0[1-9]|1[0-6])$/.test(E.avatarDraft) ? E.avatarDraft : '';
+      if (E.fotoDraft !== null) { if (E.fotoDraft) tarj.foto = E.fotoDraft; else delete tarj.foto; }
+    } else if (clave === 'color') {
+      const PORTADAS = util.PORTADAS || {}, elegido = E.colorDraft || tarj.portadaColor;
+      tarj.portadaColor = PORTADAS[elegido] ? elegido : 'azul';
+    } else if (clave === 'contacto') {
+      const CANALES = (util.CONTACTOS || []).filter(k => k !== 'cedula');
+      contactoVals = {}; CANALES.forEach(ch => { contactoVals[ch] = ($('fppIdC_' + ch).value || '').trim(); });
+      const error = util.contactoLimpio ? util.contactoLimpio(contactoVals) : '';
+      if (error) { showToast(error); return; }
+      contactoVals.cedula = ($('fppIdCed').value || '').trim(); contactoVals.cedulaVisible = $('fppIdCedVis').checked;
+      contactoVals.alcances = {}; document.querySelectorAll('[data-alcance]').forEach(s => { contactoVals.alcances[s.dataset.alcance] = s.value; });
+    }
+    btn.disabled = true; btn.textContent = 'Guardando…';
+    tarj.publicado = E.tarjeta && E.tarjeta.publicado === true;
+    tarj.actualizado = firebase.firestore.FieldValue.serverTimestamp();
+    try {
+      if (contactoVals) await certFetch('/api/directorio/contacto', { method: 'POST', body: JSON.stringify(contactoVals) });
+      if (clave === 'color' && E.portadaReset) { try { await certFetch('/api/directorio/portada', { method: 'POST', body: JSON.stringify({ reset: true }) }); } catch (_) { /* no bloquea el resto */ } }
+      await db.collection('directorio').doc(uidMio()).set(tarj);
+      if (window.ftDirRecargar) try { ftDirRecargar(); } catch (_) { /* el Directorio se refresca solo al visitarlo */ }
+      E.identEditando = null; E.fotoDraft = null; E.avatarDraft = null; E.colorDraft = null; E.portadaReset = null;
+      showToast('Guardado.');
+      await abrir(uidMio());
+    } catch (e) { btn.disabled = false; btn.textContent = 'Guardar'; showToast(e.message || 'No se pudo guardar.'); }
   }
 
   function verSeccion(clave, titulo, visibilidad) {
@@ -195,30 +266,55 @@
       try { await certFetch('/api/red/solicitar', { method: 'POST', body: JSON.stringify({ uid: E.uid }) }); showToast('Solicitud enviada.'); if (window.ftRed) ftRed.estados[E.uid] = 'enviada'; pintar(); }
       catch (e) { bc.disabled = false; showToast(e.message || 'No se pudo enviar la solicitud.'); }
     };
-    // Tocar cualquier apartado (identidad, foto, color, contacto o currículum; menos un enlace que lleve a otro lado)
-    // edita en línea aquí mismo, ya en ese apartado — nunca abre una tarjeta ni ventana aparte
+    // Currículum: tocar cualquier apartado (menos un enlace que lleve a otro lado) abre el editor grande, ya en ese apartado
     if (mio) raiz.querySelectorAll('[data-editsec]').forEach(sec => {
       sec.onclick = e => { if (e.target.closest('a')) return; E.foco = sec.dataset.editsec; E.editando = true; pintar(); };
       sec.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sec.click(); } };
     });
+    // Identidad: cada apartado (nombre, foto, color, contacto) se abre, se guarda y se cancela por su cuenta, en su propio lugar
+    if (mio) {
+      raiz.querySelectorAll('[data-editident]').forEach(sec => {
+        sec.onclick = () => { E.identEditando = sec.dataset.editident; E.fotoDraft = null; E.avatarDraft = null; E.colorDraft = null; E.portadaReset = null; pintar(); };
+        sec.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sec.click(); } };
+      });
+      raiz.querySelectorAll('[data-cancelarident]').forEach(b => b.onclick = () => { E.identEditando = null; E.fotoDraft = null; E.avatarDraft = null; E.colorDraft = null; E.portadaReset = null; pintar(); });
+      raiz.querySelectorAll('[data-guardarident]').forEach(b => b.onclick = () => guardarIdentidad(b, b.dataset.guardarident));
+      if (E.identEditando === 'foto') {
+        const c = datosBase().tarjeta;
+        const pintarFotoLocal = () => {
+          const vista = $('fppIdFotoVista'); if (!vista) return;
+          const valor = E.fotoDraft !== null ? E.fotoDraft : (c.foto || '');
+          vista.style.backgroundImage = valor ? 'url(' + valor + ')' : ''; vista.classList.toggle('vacia', !valor);
+          $('fppIdFotoBtn').textContent = valor ? 'Cambiar foto' : 'Subir foto'; $('fppIdFotoQuitar').hidden = !valor;
+        };
+        if ($('fppIdFotoBtn')) $('fppIdFotoBtn').onclick = () => $('fppIdFotoArchivo').click();
+        if ($('fppIdFotoQuitar')) $('fppIdFotoQuitar').onclick = () => { E.fotoDraft = ''; pintarFotoLocal(); };
+        if ($('fppIdFotoArchivo')) $('fppIdFotoArchivo').onchange = async ev => {
+          const a = ev.target.files && ev.target.files[0]; ev.target.value = ''; if (!a) return;
+          const util = window.ftDirUtils || {}; if (!util.reducirFoto) return;
+          try { E.fotoDraft = await util.reducirFoto(a); pintarFotoLocal(); }
+          catch (e) { showToast(e.message || 'No se pudo usar esa imagen.'); }
+        };
+        pintarFotoLocal();
+        const pintarAvataresLocal = () => {
+          const actual = E.avatarDraft !== null ? E.avatarDraft : (c.avatar || '');
+          raiz.querySelectorAll('#fppIdAvatares [data-av]').forEach(b => { const on = b.dataset.av === actual; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(on)); });
+          const ini = $('fppIdAvatarIni'); if (ini) ini.hidden = !actual;
+        };
+        raiz.querySelectorAll('#fppIdAvatares [data-av]').forEach(b => b.onclick = () => { E.avatarDraft = b.dataset.av; pintarAvataresLocal(); });
+        if ($('fppIdAvatarIni')) $('fppIdAvatarIni').onclick = () => { E.avatarDraft = ''; pintarAvataresLocal(); };
+        pintarAvataresLocal();
+      }
+      if (E.identEditando === 'color') {
+        raiz.querySelectorAll('#fppIdColores [data-c]').forEach(b => b.onclick = () => { E.colorDraft = b.dataset.c; raiz.querySelectorAll('#fppIdColores [data-c]').forEach(x => x.classList.toggle('on', x === b)); });
+        if ($('fppIdPortadaReset')) $('fppIdPortadaReset').onclick = () => { E.portadaReset = true; $('fppIdPortadaReset').remove(); };
+      }
+    }
   }
 
-  // ---------- Editor (solo el dueño) ----------
-  // Nombre/foto/color/contacto se editan aquí mismo, en línea, con las mismas piezas que usa la tarjeta del
-  // Directorio (window.ftDirUtils / ftDirMeta) para no duplicar ni desalinear su validación, recorte de foto o paleta.
+  // ---------- Editor del currículum (solo el dueño) ----------
   function editor(raiz) {
     const p = E.datos.perfil || {}, vis = p.visibilidad || {};
-    const util = window.ftDirUtils || {}, meta = (window.ftDirMeta && ftDirMeta()) || { miContacto: {}, portadas: {} };
-    const PORTADAS = util.PORTADAS || {}, ESTADOS = util.ESTADOS || {}, CANALES = (util.CONTACTOS || []).filter(k => k !== 'cedula');
-    const u = auth.currentUser || {}, m = Object.assign({ portadaColor: 'azul', estado: '' }, E.tarjeta || {}, meta.miContacto || {});
-    let color = PORTADAS[m.portadaColor] ? m.portadaColor : 'azul';
-    let fotoEdit = typeof m.foto === 'string' ? m.foto : '';
-    let avatarEdit = /^a(0[1-9]|1[0-6])$/.test(m.avatar || '') ? m.avatar : (/^a(0[1-9]|1[0-6])$/.test((window.ftAvatarActual && ftAvatarActual()) || '') ? ftAvatarActual() : '');
-    const portadaActual = (meta.portadas || {})[uidMio()] || null;
-    let portadaReset = null;
-    const alcanceDe = ch => { const a = (m.alcances || {})[ch]; return ['miembros', 'conexiones', 'oculto'].includes(a) ? a : 'miembros'; };
-    const campo = (id, et, val, ph, max, op) => '<label class="dr-lbl">' + et + (op ? ' <small>(opcional)</small>' : '') + '<input id="' + id + '" maxlength="' + (max || 60) + '" placeholder="' + esc(ph || '') + '" value="' + esc(val || '') + '"></label>';
-    const etqCanal = { whatsapp: ['WhatsApp', 'Ej. 52 238 123 4567'], email: ['Correo', 'tucorreo@ejemplo.com'], linkedin: ['LinkedIn', 'linkedin.com/in/tu-perfil'], web: ['Sitio web', 'tusitio.com'], instagram: ['Instagram profesional', '@tuusuario'] };
     const selVis = clave => '<select class="fpp-selvis" data-vis="' + clave + '">' + VIS.map(v => '<option value="' + v[0] + '"' + ((vis[clave] || 'publico') === v[0] ? ' selected' : '') + '>' + v[1] + '</option>').join('') + '</select>';
     const filaEd = (clave, fila) => '<div class="fpp-ed-fila" data-fila="' + clave + '">' + LISTAS[clave].map(c => (c[0] === 'descripcion'
       ? '<textarea data-campo="' + c[0] + '" maxlength="' + c[2] + '" rows="2" placeholder="' + esc(c[1]) + '">' + esc((fila || {})[c[0]] || '') + '</textarea>'
@@ -226,31 +322,7 @@
       '<button type="button" class="fpp-quitar">Quitar</button></div>';
     const secLista = (clave, titulo) => '<section class="fpp-sec" data-seced="' + clave + '"><h3>' + titulo + selVis(clave) + '</h3><div data-lista="' + clave + '">' + (Array.isArray(p[clave]) ? p[clave] : []).map(f => filaEd(clave, f)).join('') + '</div><button type="button" class="fpp-agregar" data-agregar="' + clave + '">+ Agregar</button></section>';
     raiz.innerHTML = '<button type="button" class="fpp-volver" id="fppCancelar">← Cancelar (sin guardar)</button>' +
-      '<div class="fpp-cab"><div class="fpp-cuerpo" style="padding-top:18px"><div class="fpp-ey">EDITAR PERFIL PROFESIONAL</div><h1>Tu perfil</h1><div class="fpp-sub">Tu tarjeta, tu contacto y tu currículum, todo en un solo lugar. Cada sección del currículum tiene su propia visibilidad: pública, solo conexiones o privada.</div></div></div>' +
-      '<section class="fpp-sec" data-seced="identidad"><h3>' + I.idcard + ' Nombre y datos de tu tarjeta</h3>' +
-        '<label class="dr-lbl">Estado profesional <small>(opcional)</small><select id="fppEstado"><option value="">Sin indicar</option>' + Object.keys(ESTADOS).map(k => '<option value="' + k + '"' + (m.estado === k ? ' selected' : '') + '>' + ESTADOS[k][0] + '</option>').join('') + '</select></label>' +
-        campo('fppNombre', 'Nombre completo', m.nombre || u.displayName, '') +
-        campo('fppPuesto', 'Puesto / cargo', m.puesto, 'Ej. Fisioterapeuta') +
-        campo('fppEmpresa', 'Consultorio / empresa', m.empresa, 'Ej. Clínica Movimiento') +
-        campo('fppCiudad', 'Ubicación profesional', m.ciudad, 'Ej. Puebla, Puebla', 60, true) +
-        '<label class="dr-lbl">Especialidad<select id="fppEsp"><option value="">Selecciona…</option>' + (window.ftDirEspecialidades || []).map(e => '<option' + (e === m.especialidad ? ' selected' : '') + '>' + esc(e) + '</option>').join('') + '</select></label>' +
-        '<label class="dr-lbl">Bio breve <small>(se ve en tu tarjeta del directorio)</small><textarea id="fppBio" maxlength="200" rows="3" placeholder="Una línea sobre tu experiencia…">' + esc(m.bio || '') + '</textarea></label>' +
-      '</section>' +
-      '<section class="fpp-sec" data-seced="foto"><h3>' + I.camara + ' Foto y avatar</h3>' +
-        '<div class="dr-lbl">Tu foto <small>(opcional)</small><div class="dr-foto"><div class="dr-foto-vista" id="fppFotoVista"></div><div class="dr-foto-acc"><button type="button" class="dr-btn-foto" id="fppFotoBtn">Subir foto</button><button type="button" class="dr-btn-foto quitar" id="fppFotoQuitar">Quitar</button><input type="file" id="fppFotoArchivo" accept="image/*" hidden></div></div><small class="dr-foto-nota">Se recorta en círculo y se reduce sola. Si no subes foto se muestra tu avatar o tus iniciales.</small></div>' +
-        '<div class="dr-lbl">Tu avatar <small>(se usa si no subes foto)</small><div class="dr-avatares" id="fppAvatares" role="radiogroup" aria-label="Avatares">' + (window.ftAvatar ? ftAvatar.IDS.map((id, i) => '<button type="button" role="radio" data-av="' + id + '" aria-label="Avatar ' + (i + 1) + '"><img src="' + esc(ftAvatar.url(id)) + '" alt="" loading="lazy"></button>').join('') : '') + '</div><button type="button" class="dr-btn-foto quitar" id="fppAvatarIni">Usar mis iniciales</button></div>' +
-      '</section>' +
-      '<section class="fpp-sec" data-seced="color"><h3>' + I.paleta + ' Color de tu portada</h3>' +
-        '<div class="dr-colores" id="fppColores">' + Object.keys(PORTADAS).map(k => '<button type="button" data-c="' + k + '" class="' + (k === color && !(portadaActual && portadaActual.foto) ? 'on' : '') + '" style="background:' + PORTADAS[k][1] + '" aria-label="' + PORTADAS[k][0] + '" title="' + PORTADAS[k][0] + '"></button>').join('') + '</div>' +
-        (portadaActual && portadaActual.foto ? '<button type="button" class="dr-quitar-link" id="fppPortadaReset">Quitar la foto de portada que tenías y usar este color</button>' : '') +
-      '</section>' +
-      '<section class="fpp-sec" data-seced="contacto"><h3>' + I.mail + ' Información de contacto</h3>' +
-        '<p class="fpp-vacia" style="margin-bottom:10px">Decide quién ve cada dato.</p>' +
-        CANALES.map(ch => campo('fppC_' + ch, etqCanal[ch][0], m[ch], etqCanal[ch][1]) +
-          '<div class="dr-alcance"><small>¿Quién lo ve?</small><select data-alcance="' + ch + '"><option value="miembros"' + (alcanceDe(ch) === 'miembros' ? ' selected' : '') + '>Todos los miembros VIP</option><option value="conexiones"' + (alcanceDe(ch) === 'conexiones' ? ' selected' : '') + '>Solo mis conexiones</option><option value="oculto"' + (alcanceDe(ch) === 'oculto' ? ' selected' : '') + '>Oculto (nadie)</option></select></div>').join('') +
-        '<p class="dr-sub">Cédula profesional <small>(opcional)</small></p>' + campo('fppCed', 'Cédula profesional', m.cedula, '12345678') +
-        '<label class="dr-check"><input type="checkbox" id="fppCedVis"' + (m.cedulaVisible ? ' checked' : '') + '> Mostrar cédula en el directorio</label>' +
-      '</section>' +
+      '<div class="fpp-cab"><div class="fpp-cuerpo" style="padding-top:18px"><div class="fpp-ey">EDITAR CURRÍCULUM</div><h1>Tu currículum</h1><div class="fpp-sub">Cada sección tiene su propia visibilidad: pública, solo conexiones o privada. Los certificados FisioTeck se agregan solos al terminar un curso.</div></div></div>' +
       '<section class="fpp-sec" data-seced="sobreMi"><h3>Sobre mí' + selVis('sobreMi') + '</h3><label class="fpp-ed-lbl"><textarea id="fppSobre" maxlength="600" rows="4" placeholder="Quién eres, qué te apasiona y a quién ayudas…">' + esc(p.sobreMi || '') + '</textarea></label></section>' +
       '<section class="fpp-sec" data-seced="certificaciones"><h3>Certificados FisioTeck' + selVis('certificaciones') + '</h3><p class="fpp-vacia">Esta sección no se edita: muestra tus certificados reales del Club con folio verificable (' + (E.datos.certificados || []).length + ' hasta hoy). Aquí solo eliges quién la ve.</p></section>' +
       secLista('experiencia', I.maletin + ' Experiencia') + secLista('formacion', I.gorro + ' Formación') + secLista('idiomas', I.globo + ' Idiomas') + secLista('habilidades', I.rayo + ' Habilidades') +
@@ -259,24 +331,6 @@
     const enlazarFilas = () => raiz.querySelectorAll('.fpp-quitar').forEach(b => b.onclick = () => b.closest('.fpp-ed-fila').remove());
     enlazarFilas();
     raiz.querySelectorAll('[data-agregar]').forEach(b => b.onclick = () => { raiz.querySelector('[data-lista="' + b.dataset.agregar + '"]').insertAdjacentHTML('beforeend', filaEd(b.dataset.agregar, {})); enlazarFilas(); });
-    // Color de portada
-    raiz.querySelectorAll('#fppColores [data-c]').forEach(b => b.onclick = () => { color = b.dataset.c; raiz.querySelectorAll('#fppColores [data-c]').forEach(x => x.classList.toggle('on', x === b)); });
-    if ($('fppPortadaReset')) $('fppPortadaReset').onclick = () => { portadaReset = { reset: true }; $('fppPortadaReset').remove(); };
-    // Foto de perfil
-    const pintarFotoPerfil = () => { const vista = $('fppFotoVista'); if (!vista) return; vista.style.backgroundImage = fotoEdit ? 'url(' + fotoEdit + ')' : ''; vista.classList.toggle('vacia', !fotoEdit); $('fppFotoBtn').textContent = fotoEdit ? 'Cambiar foto' : 'Subir foto'; $('fppFotoQuitar').hidden = !fotoEdit; };
-    if ($('fppFotoBtn')) $('fppFotoBtn').onclick = () => $('fppFotoArchivo').click();
-    if ($('fppFotoQuitar')) $('fppFotoQuitar').onclick = () => { fotoEdit = ''; pintarFotoPerfil(); };
-    if ($('fppFotoArchivo')) $('fppFotoArchivo').onchange = async ev => {
-      const a = ev.target.files && ev.target.files[0]; ev.target.value = ''; if (!a || !util.reducirFoto) return;
-      try { fotoEdit = await util.reducirFoto(a); pintarFotoPerfil(); }
-      catch (e) { showToast(e.message || 'No se pudo usar esa imagen.'); }
-    };
-    pintarFotoPerfil();
-    // Avatar
-    const pintarAvatares = () => { raiz.querySelectorAll('#fppAvatares [data-av]').forEach(b => { const on = b.dataset.av === avatarEdit; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(on)); }); const ini = $('fppAvatarIni'); if (ini) ini.hidden = !avatarEdit; };
-    raiz.querySelectorAll('#fppAvatares [data-av]').forEach(b => b.onclick = () => { avatarEdit = b.dataset.av; pintarAvatares(); });
-    if ($('fppAvatarIni')) $('fppAvatarIni').onclick = () => { avatarEdit = ''; pintarAvatares(); };
-    pintarAvatares();
     // Si llegaste tocando un apartado en particular, el editor se desplaza directo a él
     if (E.foco) {
       const destino = raiz.querySelector('[data-seced="' + E.foco + '"]'); E.foco = null;
@@ -285,36 +339,14 @@
     const salir = () => { E.editando = false; pintar(); };
     $('fppCancelar').onclick = salir; $('fppCancelar2').onclick = salir;
     $('fppGuardar').onclick = async () => {
-      const b = $('fppGuardar');
-      const nombre = ($('fppNombre').value || '').trim();
-      if (nombre.length < 2) { showToast('Escribe tu nombre.'); $('fppNombre').focus(); return; }
-      const contactoVals = {}; CANALES.forEach(ch => { contactoVals[ch] = ($('fppC_' + ch).value || '').trim(); });
-      const errorContacto = util.contactoLimpio ? util.contactoLimpio(contactoVals) : '';
-      if (errorContacto) { showToast(errorContacto); return; }
-      b.disabled = true; b.textContent = 'Guardando…';
-      const alcances = {}; raiz.querySelectorAll('[data-alcance]').forEach(s => { alcances[s.dataset.alcance] = s.value; });
+      const b = $('fppGuardar'); b.disabled = true; b.textContent = 'Guardando…';
       const cuerpo = { sobreMi: $('fppSobre').value, visibilidad: {} };
       raiz.querySelectorAll('[data-vis]').forEach(s => { cuerpo.visibilidad[s.dataset.vis] = s.value; });
       Object.keys(LISTAS).forEach(clave => {
         cuerpo[clave] = [...raiz.querySelectorAll('[data-lista="' + clave + '"] .fpp-ed-fila')].map(f => { const o = {}; f.querySelectorAll('[data-campo]').forEach(i => { o[i.dataset.campo] = i.value; }); return o; });
       });
-      const tarj = {
-        nombre: nombre.slice(0, 60), puesto: ($('fppPuesto').value || '').trim().slice(0, 60), empresa: ($('fppEmpresa').value || '').trim().slice(0, 60),
-        ciudad: ($('fppCiudad').value || '').trim().slice(0, 60), especialidad: $('fppEsp').value, bio: ($('fppBio').value || '').trim().slice(0, 200),
-        estado: ESTADOS[$('fppEstado').value] ? $('fppEstado').value : '', portadaColor: (PORTADAS[color] ? color : 'azul'),
-        avatar: /^a(0[1-9]|1[0-6])$/.test(avatarEdit || '') ? avatarEdit : '', publicado: E.tarjeta && E.tarjeta.publicado === true,
-        actualizado: firebase.firestore.FieldValue.serverTimestamp()
-      };
-      if (fotoEdit) tarj.foto = fotoEdit;
-      try {
-        await certFetch('/api/directorio/contacto', { method: 'POST', body: JSON.stringify(Object.assign({}, contactoVals, { cedula: ($('fppCed').value || '').trim(), cedulaVisible: $('fppCedVis').checked, alcances })) });
-        if (portadaReset) { try { await certFetch('/api/directorio/portada', { method: 'POST', body: JSON.stringify(portadaReset) }); } catch (_) { /* no bloquea el resto */ } }
-        await db.collection('directorio').doc(uidMio()).set(tarj);
-        const r = await certFetch('/api/perfil', { method: 'POST', body: JSON.stringify(cuerpo) });
-        if (window.ftDirRecargar) try { ftDirRecargar(); } catch (_) { /* el Directorio se refresca solo al visitarlo */ }
-        showToast('Perfil guardado (' + (r.avance || 0) + '% de tu currículum).');
-        await abrir(uidMio());
-      } catch (e) { b.disabled = false; b.textContent = 'Guardar mi perfil'; showToast(e.message || 'No se pudo guardar.'); }
+      try { const r = await certFetch('/api/perfil', { method: 'POST', body: JSON.stringify(cuerpo) }); showToast('Currículum guardado (' + (r.avance || 0) + '% completo).'); await abrir(uidMio()); }
+      catch (e) { b.disabled = false; b.textContent = 'Guardar mi perfil'; showToast(e.message || 'No se pudo guardar.'); }
     };
   }
 
