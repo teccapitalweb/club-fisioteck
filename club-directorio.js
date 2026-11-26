@@ -152,7 +152,7 @@
   }
   function barraAvance(c) {
     const p = avanceTarjeta(c);
-    return '<div class="dir-avance"><small>' + (p >= 100 ? 'Perfil completo' : 'Perfil por completar') + '</small><i><b style="width:' + p + '%"></b></i></div>';
+    return '<div class="dir-avance"><small>' + (p >= 100 ? 'Tarjeta completa' : 'Tarjeta por completar') + '</small><i><b style="width:' + p + '%"></b></i></div>';
   }
   // Botón Conectar según el estado de la relación con esa persona
   function botonRed(id) {
@@ -171,6 +171,8 @@
     return 'background:' + PORTADAS[portada(c.portadaColor)][1];
   }
   window.ftDirPortada = fondoPortada; // club-perfil-pro.js pinta la misma portada en el encabezado del CV
+  window.ftDirMeta = () => S.meta; // club-perfil-pro.js lee tu contacto guardado (con sus alcances) para prellenar su formulario
+  window.ftDirRecargar = cargar; // club-perfil-pro.js la llama tras guardar, para que el Directorio (tarjetas, avance) quede al día sin que lo visites
   // o: { mia, pistas, vip, bloqueado, certs, id }
   function tarjeta(c, o) {
     o = o || {};
@@ -336,7 +338,7 @@
   }
 
   // ---------- Mi tarjeta ----------
-  window.ftDirEditar = function (foco) {
+  window.ftDirEditar = function () {
     const m = Object.assign({ portadaColor: 'azul', estado: '' }, S.propia || {}, S.meta.miContacto || {});
     const u = auth.currentUser, existe = !!S.propia, publicada = !!(S.propia && S.propia.publicado === true);
     const campo = (id, et, val, ph, max, tipo, op) => '<label class="dr-lbl">' + et + (op ? ' <small>(opcional)</small>' : '') + '<input id="' + id + '" ' + (tipo ? 'type="' + tipo + '" ' : '') + 'maxlength="' + (max || 60) + '" placeholder="' + esc(ph || '') + '" value="' + esc(val || '') + '"></label>';
@@ -385,16 +387,6 @@
     w.o.querySelectorAll('#drAvatares [data-av]').forEach(b => b.onclick = () => { S.avatarEdit = b.dataset.av; pintarAvatares(); });
     if ($('drAvatarIni')) $('drAvatarIni').onclick = () => { S.avatarEdit = ''; pintarAvatares(); };
     pintarAvatares();
-    // Si se abrió desde un apartado del perfil profesional (identidad, foto, color o contacto), el formulario se desplaza directo ahí
-    // (el que realmente hace scroll adentro del modal es .dr-form, no el modal completo, así que se calcula a mano)
-    if (foco) {
-      const destino = { identidad: 'drBqIdentidad', foto: 'drBqFoto', color: 'drBqColor', contacto: 'drBqContacto' }[foco];
-      const el = destino && $(destino), form = w.o.querySelector('.dr-form');
-      if (el && form) setTimeout(() => {
-        form.scrollTo({ top: Math.max(0, form.scrollTop + (el.getBoundingClientRect().top - form.getBoundingClientRect().top) - 10), behavior: 'smooth' });
-        const campo = el.querySelector('input, textarea'); if (campo) try { campo.focus({ preventScroll: true }); } catch (_) { /* sigue */ }
-      }, 60);
-    }
   };
   // La foto se recorta cuadrada, se reduce a 320 px y se guarda dentro de la tarjeta como JPEG (unos 20 a 40 KB); no se sube a ningún otro servicio
   const FOTO_MAX = 60000;
@@ -414,6 +406,16 @@
       };
       img.src = url;
     });
+  }
+  // El perfil profesional (club-perfil-pro.js) reutiliza estas mismas piezas para que su edición en línea
+  // (nombre, foto, color, contacto) sea idéntica a la de aquí, sin duplicar ni desalinear reglas.
+  window.ftDirUtils = { reducirFoto, PORTADAS, ESTADOS, CONTACTOS, contactoLimpio: contactoClienteValido };
+  // Validación mínima del lado del navegador (el servidor igual revalida todo): solo decide si deshabilitar "Guardar".
+  function contactoClienteValido(v) {
+    if (v.whatsapp && !/^[0-9+() -]{8,20}$/.test(v.whatsapp)) return 'Escribe tu WhatsApp con lada, solo números.';
+    if (v.email && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(v.email)) return 'Escribe un correo válido.';
+    if (v.cedula && !/^[A-Za-z0-9 -]{4,20}$/.test(v.cedula)) return 'Escribe tu cédula solo con letras y números.';
+    return '';
   }
   async function guardar(btn, cer, color, publicar) {
     const v = id => ($(id).value || '').trim(), err = $('drError'); err.textContent = '';
