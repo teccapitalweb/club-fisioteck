@@ -161,8 +161,9 @@
     if (e === 'conectado') return '<button type="button" class="dir-conectar ok" data-red="eliminar" data-reduid="' + esc(id) + '" title="Conectados · toca para deshacer">' + I.check + ' Conectados</button>';
     if (e === 'enviada') return '<button type="button" class="dir-conectar envia" data-red="cancelar" data-reduid="' + esc(id) + '" title="Solicitud enviada · toca para cancelarla">' + I.check + ' Enviada</button>';
     if (e === 'recibida') return '<button type="button" class="dir-conectar recibe" data-red="tab" data-reduid="' + esc(id) + '">Responder</button>';
-    // Conectar es un beneficio VIP (igual que ver el contacto); el servidor también lo exige en /api/red/solicitar
-    if (!S.meta.viewerVip) return '<button type="button" class="dir-lock" data-dirlock>' + I.lock + ' Conectar · solo VIP</button>';
+    // Conectar es un beneficio VIP (igual que ver el contacto); el servidor también lo exige en /api/red/solicitar.
+    // No se repite el aviso aquí: la tarjeta ya muestra su propia pastilla "Contactar · solo VIP" para lo mismo.
+    if (!S.meta.viewerVip) return '';
     return '<button type="button" class="dir-conectar" data-red="solicitar" data-reduid="' + esc(id) + '">' + I.red + ' Conectar</button>';
   }
   // Portada de una tarjeta VIP: foto personalizada (del servidor, o una vista previa explícita mientras se edita), o el color elegido.
