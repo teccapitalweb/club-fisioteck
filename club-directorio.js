@@ -336,7 +336,7 @@
   }
 
   // ---------- Mi tarjeta ----------
-  window.ftDirEditar = function () {
+  window.ftDirEditar = function (foco) {
     const m = Object.assign({ portadaColor: 'azul', estado: '' }, S.propia || {}, S.meta.miContacto || {});
     const u = auth.currentUser, existe = !!S.propia, publicada = !!(S.propia && S.propia.publicado === true);
     const campo = (id, et, val, ph, max, tipo, op) => '<label class="dr-lbl">' + et + (op ? ' <small>(opcional)</small>' : '') + '<input id="' + id + '" ' + (tipo ? 'type="' + tipo + '" ' : '') + 'maxlength="' + (max || 60) + '" placeholder="' + esc(ph || '') + '" value="' + esc(val || '') + '"></label>';
@@ -348,21 +348,21 @@
     S.avatarEdit = /^a(0[1-9]|1[0-6])$/.test(m.avatar || '') ? m.avatar : (/^a(0[1-9]|1[0-6])$/.test((window.ftAvatarActual && ftAvatarActual()) || '') ? ftAvatarActual() : '');
     // Una sola foto (la de perfil, abajo): la portada solo se personaliza con un color, para no repetir el mismo paso dos veces.
     const cuerpo = '<div class="dr-form"><div class="dr-prev" id="drPrev"></div>' +
-      '<div class="dr-lbl">Color de tu portada<div class="dr-colores" id="drColores">' + Object.keys(PORTADAS).map(k => '<button type="button" data-c="' + k + '" class="' + (k === color && !(portadaActual && portadaActual.foto) ? 'on' : '') + '" style="background:' + PORTADAS[k][1] + '" aria-label="' + PORTADAS[k][0] + '" title="' + PORTADAS[k][0] + '"></button>').join('') +
-      '</div>' + (portadaActual && portadaActual.foto ? '<button type="button" class="dr-quitar-link" id="drPortadaReset">Quitar la foto de portada que tenías y usar este color</button>' : '') + '</div>' +
-      '<div class="dr-lbl">Tu foto <small>(opcional)</small><div class="dr-foto"><div class="dr-foto-vista" id="drFotoVista"></div><div class="dr-foto-acc"><button type="button" class="dr-btn-foto" id="drFotoBtn">Subir foto</button><button type="button" class="dr-btn-foto quitar" id="drFotoQuitar">Quitar</button><input type="file" id="drFotoArchivo" accept="image/*" hidden></div></div><small class="dr-foto-nota">Se recorta en círculo y se reduce sola. Si no subes foto se muestra tu avatar o tus iniciales.</small></div>' +
-      '<div class="dr-lbl">Tu avatar <small>(se usa si no subes foto)</small><div class="dr-avatares" id="drAvatares" role="radiogroup" aria-label="Avatares">' + (window.ftAvatar ? ftAvatar.IDS.map((id, i) => '<button type="button" role="radio" data-av="' + id + '" aria-label="Avatar ' + (i + 1) + '"><img src="' + esc(ftAvatar.url(id)) + '" alt="" loading="lazy"></button>').join('') : '') + '</div><button type="button" class="dr-btn-foto quitar" id="drAvatarIni">Usar mis iniciales</button></div>' +
-      '<label class="dr-lbl">Estado profesional <small>(opcional)</small><select id="drEstado"><option value="">Sin indicar</option>' + Object.keys(ESTADOS).map(k => '<option value="' + k + '"' + (m.estado === k ? ' selected' : '') + '>' + ESTADOS[k][0] + '</option>').join('') + '</select></label>' +
+      '<div id="drBqColor"><div class="dr-lbl">Color de tu portada<div class="dr-colores" id="drColores">' + Object.keys(PORTADAS).map(k => '<button type="button" data-c="' + k + '" class="' + (k === color && !(portadaActual && portadaActual.foto) ? 'on' : '') + '" style="background:' + PORTADAS[k][1] + '" aria-label="' + PORTADAS[k][0] + '" title="' + PORTADAS[k][0] + '"></button>').join('') +
+      '</div>' + (portadaActual && portadaActual.foto ? '<button type="button" class="dr-quitar-link" id="drPortadaReset">Quitar la foto de portada que tenías y usar este color</button>' : '') + '</div></div>' +
+      '<div id="drBqFoto"><div class="dr-lbl">Tu foto <small>(opcional)</small><div class="dr-foto"><div class="dr-foto-vista" id="drFotoVista"></div><div class="dr-foto-acc"><button type="button" class="dr-btn-foto" id="drFotoBtn">Subir foto</button><button type="button" class="dr-btn-foto quitar" id="drFotoQuitar">Quitar</button><input type="file" id="drFotoArchivo" accept="image/*" hidden></div></div><small class="dr-foto-nota">Se recorta en círculo y se reduce sola. Si no subes foto se muestra tu avatar o tus iniciales.</small></div>' +
+      '<div class="dr-lbl">Tu avatar <small>(se usa si no subes foto)</small><div class="dr-avatares" id="drAvatares" role="radiogroup" aria-label="Avatares">' + (window.ftAvatar ? ftAvatar.IDS.map((id, i) => '<button type="button" role="radio" data-av="' + id + '" aria-label="Avatar ' + (i + 1) + '"><img src="' + esc(ftAvatar.url(id)) + '" alt="" loading="lazy"></button>').join('') : '') + '</div><button type="button" class="dr-btn-foto quitar" id="drAvatarIni">Usar mis iniciales</button></div></div>' +
+      '<div id="drBqIdentidad"><label class="dr-lbl">Estado profesional <small>(opcional)</small><select id="drEstado"><option value="">Sin indicar</option>' + Object.keys(ESTADOS).map(k => '<option value="' + k + '"' + (m.estado === k ? ' selected' : '') + '>' + ESTADOS[k][0] + '</option>').join('') + '</select></label>' +
       campo('drNombre', 'Nombre completo', m.nombre || u.displayName, '', 60) + campo('drPuesto', 'Puesto / cargo', m.puesto, 'Ej. Fisioterapeuta') + campo('drEmpresa', 'Consultorio / empresa', m.empresa, 'Ej. Clínica Movimiento') +
       campo('drCiudad', 'Ubicación profesional', m.ciudad, 'Ej. Puebla, Puebla', 60, '', true) +
       '<label class="dr-lbl">Especialidad<select id="drEsp"><option value="">Selecciona…</option>' + ESPECIALIDADES.map(e => '<option' + (e === m.especialidad ? ' selected' : '') + '>' + esc(e) + '</option>').join('') + '</select></label>' +
-      '<label class="dr-lbl">Bio breve <small>(opcional)</small><textarea id="drBio" maxlength="200" rows="3" placeholder="Una línea sobre tu experiencia…">' + esc(m.bio || '') + '</textarea></label>' +
-      '<p class="dr-sub">Contacto <small>(opcional · decide quién ve cada dato)</small></p>' +
+      '<label class="dr-lbl">Bio breve <small>(opcional)</small><textarea id="drBio" maxlength="200" rows="3" placeholder="Una línea sobre tu experiencia…">' + esc(m.bio || '') + '</textarea></label></div>' +
+      '<div id="drBqContacto"><p class="dr-sub">Contacto <small>(opcional · decide quién ve cada dato)</small></p>' +
       [['drWa', 'WhatsApp', 'whatsapp', m.whatsapp, 'Ej. 52 238 123 4567', 20, 'tel'], ['drMail', 'Correo', 'email', m.email, 'tucorreo@ejemplo.com', 80, 'email'], ['drLi', 'LinkedIn', 'linkedin', m.linkedin, 'linkedin.com/in/tu-perfil', 120, ''], ['drWeb', 'Sitio web', 'web', m.web, 'tusitio.com', 120, ''], ['drIg', 'Instagram profesional', 'instagram', m.instagram, '@tuusuario', 60, '']]
         .map(f => campo(f[0], f[1], f[3], f[4], f[5], f[6]) +
           '<div class="dr-alcance"><small>¿Quién lo ve?</small><select data-alcance="' + f[2] + '"><option value="miembros"' + (alcance(f[2]) === 'miembros' ? ' selected' : '') + '>Todos los miembros VIP</option><option value="conexiones"' + (alcance(f[2]) === 'conexiones' ? ' selected' : '') + '>Solo mis conexiones</option><option value="oculto"' + (alcance(f[2]) === 'oculto' ? ' selected' : '') + '>Oculto (nadie)</option></select></div>').join('') +
       '<p class="dr-sub">Cédula profesional <small>(opcional)</small></p>' + campo('drCed', 'Cédula profesional', m.cedula, '12345678', 20) +
-      '<label class="dr-check"><input type="checkbox" id="drCedVis"' + (m.cedulaVisible ? ' checked' : '') + '> Mostrar cédula en el directorio</label>' +
+      '<label class="dr-check"><input type="checkbox" id="drCedVis"' + (m.cedulaVisible ? ' checked' : '') + '> Mostrar cédula en el directorio</label></div>' +
       '<p class="dr-nota">Revisa tus datos antes de publicar: los miembros del club verán lo que aparece en la tarjeta. Mientras no la publiques, solo tú la ves.</p><p class="ftp-error" id="drError" role="alert"></p></div>';
     const pie = [];
     if (existe) pie.push({ texto: 'Eliminar tarjeta', suave: true, peligro: true, clic: async (b, cer) => { if (!confirm('¿Eliminar tu tarjeta del directorio? Podrás crearla de nuevo cuando quieras.')) return; try { await db.collection('directorio').doc(uid()).delete(); cer(); showToast('Tarjeta eliminada.'); cargar(); } catch (e) { showToast('No se pudo eliminar la tarjeta.'); } } });
@@ -385,6 +385,16 @@
     w.o.querySelectorAll('#drAvatares [data-av]').forEach(b => b.onclick = () => { S.avatarEdit = b.dataset.av; pintarAvatares(); });
     if ($('drAvatarIni')) $('drAvatarIni').onclick = () => { S.avatarEdit = ''; pintarAvatares(); };
     pintarAvatares();
+    // Si se abrió desde un apartado del perfil profesional (identidad, foto, color o contacto), el formulario se desplaza directo ahí
+    // (el que realmente hace scroll adentro del modal es .dr-form, no el modal completo, así que se calcula a mano)
+    if (foco) {
+      const destino = { identidad: 'drBqIdentidad', foto: 'drBqFoto', color: 'drBqColor', contacto: 'drBqContacto' }[foco];
+      const el = destino && $(destino), form = w.o.querySelector('.dr-form');
+      if (el && form) setTimeout(() => {
+        form.scrollTo({ top: Math.max(0, form.scrollTop + (el.getBoundingClientRect().top - form.getBoundingClientRect().top) - 10), behavior: 'smooth' });
+        const campo = el.querySelector('input, textarea'); if (campo) try { campo.focus({ preventScroll: true }); } catch (_) { /* sigue */ }
+      }, 60);
+    }
   };
   // La foto se recorta cuadrada, se reduce a 320 px y se guarda dentro de la tarjeta como JPEG (unos 20 a 40 KB); no se sube a ningún otro servicio
   const FOTO_MAX = 60000;

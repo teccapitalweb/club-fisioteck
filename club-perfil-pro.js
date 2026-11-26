@@ -21,7 +21,11 @@
     carpeta: ic('<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/>'),
     enlace: ic('<path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1.5-1.5"/>'),
     check: ic('<path d="M5 12.5l4.5 4.5L19 7"/>'), lapiz: ic('<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>'),
-    candado: ic('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>')
+    candado: ic('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'),
+    idcard: ic('<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M14 9h4M14 13h4M5 17c.6-2 2-3 4-3s3.4 1 4 3"/>'),
+    camara: ic('<path d="M4 7h3l2-3h6l2 3h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="4"/>'),
+    paleta: ic('<path d="M12 2a10 10 0 1 0 0 20c1.5 0 2-.8 2-2a2 2 0 0 1 2-2h1a3 3 0 0 0 3-3c0-6-3.6-13-8-13z"/><circle cx="7.5" cy="10.5" r="1.3"/><circle cx="12" cy="6.5" r="1.3"/><circle cx="16.5" cy="10.5" r="1.3"/>'),
+    mail: ic('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>')
   };
   const SEC = [
     ['sobreMi', 'Sobre mí'], ['experiencia', 'Experiencia'], ['formacion', 'Formación'], ['idiomas', 'Idiomas'],
@@ -62,6 +66,9 @@
   #page-perfil-pro .fpp-editic svg { width:13px; height:13px; }
   #page-perfil-pro .fpp-editable { cursor:pointer; transition:border-color .15s, box-shadow .15s; }
   #page-perfil-pro .fpp-editable:hover { border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset; }
+  #page-perfil-pro .fpp-mini-av { width:46px; height:46px; border-radius:14px; overflow:hidden; background:var(--surface-2); }
+  #page-perfil-pro .fpp-mini-av img { width:100%; height:100%; object-fit:cover; } #page-perfil-pro .fpp-mini-av i { display:flex; width:100%; height:100%; align-items:center; justify-content:center; color:#fff; font-style:normal; font-weight:800; }
+  #page-perfil-pro .fpp-mini-color { width:60px; height:28px; border-radius:9px; border:1px solid var(--border); }
   #page-perfil-pro .fpp-pista { margin:10px 0 0; font-size:.76rem; color:var(--text-muted); }
   #page-perfil-pro .fpp-ed-tarjeta { display:inline-flex; align-items:center; gap:6px; margin-top:12px; padding:8px 14px; border-radius:10px; border:1px solid var(--border); background:var(--surface); font-size:.78rem; font-weight:700; color:var(--text); cursor:pointer; }
   #page-perfil-pro .fpp-ed-tarjeta svg { width:13px; height:13px; }
@@ -130,10 +137,22 @@
       '<div class="fpp-sub">' + esc([c.puesto, c.empresa, c.ciudad].filter(Boolean).join(' · ') || '') + '</div>' +
       (conex === null ? '' : '<div class="fpp-red">Red profesional · <b>' + conex + '</b> conexi' + (conex === 1 ? 'ón' : 'ones') + '</div>') +
       accion +
-      (mio ? '<button type="button" class="fpp-ed-tarjeta" id="fppEditarTarjeta">' + I.lapiz + ' Editar tarjeta (nombre, foto, portada)</button>' +
-        '<div class="fpp-avance"><span>Avance de tu currículum</span><i><b style="width:' + (E.datos.avance || 0) + '%"></b></i><span>' + (E.datos.avance || 0) + '%</span></div>' +
+      (mio ? '<div class="fpp-avance"><span>Avance de tu currículum</span><i><b style="width:' + (E.datos.avance || 0) + '%"></b></i><span>' + (E.datos.avance || 0) + '%</span></div>' +
         '<p class="fpp-pista">Toca cualquier apartado de abajo para editarlo.</p>' : '') +
       '</div></div>';
+  }
+
+  // Tu nombre, tu foto/avatar, el color de tu tarjeta y tu contacto: se tocan igual que un apartado del currículum,
+  // pero abren el editor de la tarjeta (ya existente) enfocado en esa parte, en vez de duplicar aquí sus controles.
+  function seccionesIdentidad() {
+    const c = E.tarjeta || {};
+    const av = String(c.foto || '').indexOf('data:image/jpeg;base64,') === 0 ? '<img src="' + esc(c.foto) + '" alt="">' : (c.avatar && window.ftAvatarUrl ? '<img src="' + esc(ftAvatarUrl(c.avatar)) + '" alt="">' : '<i style="background:' + colorDe(E.uid) + '">' + esc((String(c.nombre || '?').trim()[0] || '?').toUpperCase()) + '</i>');
+    const fondoColor = (window.ftDirPortada && ftDirPortada(c, E.uid)) || 'background:linear-gradient(135deg,#cfe3f7,#5aa6e0)';
+    const tarjeta = (clave, icono, titulo, cuerpo) => '<section class="fpp-sec fpp-editable" data-abrirtarjeta="' + clave + '" role="button" tabindex="0" aria-label="Editar ' + esc(titulo) + '"><h3>' + icono + ' ' + titulo + '<span class="fpp-editic">' + I.lapiz + '</span></h3>' + cuerpo + '</section>';
+    return tarjeta('identidad', I.idcard, 'Nombre y datos de tu tarjeta', '<p>' + esc([c.nombre, c.puesto, c.empresa, c.ciudad, c.especialidad].filter(Boolean).join(' · ') || 'Agrega tu nombre, puesto, consultorio, ciudad y especialidad.') + '</p>') +
+      tarjeta('foto', I.camara, 'Foto y avatar', '<div class="fpp-mini-av">' + av + '</div>') +
+      tarjeta('color', I.paleta, 'Color de tu portada', '<div class="fpp-mini-color" style="' + fondoColor + '"></div>') +
+      tarjeta('contacto', I.mail, 'Información de contacto', '<p class="fpp-vacia">WhatsApp, correo, LinkedIn, sitio web e Instagram. Tú decides quién ve cada dato.</p>');
   }
 
   function verSeccion(clave, titulo, visibilidad) {
@@ -169,15 +188,19 @@
     const mio = E.uid === uidMio();
     if (E.editando) return editor(raiz);
     const vis = (E.datos.perfil || {}).visibilidad || null;
-    raiz.innerHTML = cabecera(mio) + SEC.map(s => verSeccion(s[0], s[1], vis)).join('') +
+    raiz.innerHTML = cabecera(mio) + (mio ? seccionesIdentidad() : '') + SEC.map(s => verSeccion(s[0], s[1], vis)).join('') +
       (!mio && E.datos.conectado === false ? '<div class="fpp-sec fpp-cerrada">' + I.candado + ' Algunas secciones de este perfil son solo para sus conexiones.</div>' : '');
-    const bt = $('fppEditarTarjeta'); if (bt) bt.onclick = () => { if (window.ftDirEditar) ftDirEditar(); };
     const bc = $('fppConectar'); if (bc) bc.onclick = async () => {
       bc.disabled = true;
       try { await certFetch('/api/red/solicitar', { method: 'POST', body: JSON.stringify({ uid: E.uid }) }); showToast('Solicitud enviada.'); if (window.ftRed) ftRed.estados[E.uid] = 'enviada'; pintar(); }
       catch (e) { bc.disabled = false; showToast(e.message || 'No se pudo enviar la solicitud.'); }
     };
-    // Tocar cualquier apartado (menos un enlace que lleve a otro lado) abre el editor, ya en ese apartado
+    // Nombre, foto/avatar, color y contacto abren el editor de la tarjeta, ya en ese apartado
+    if (mio) raiz.querySelectorAll('[data-abrirtarjeta]').forEach(sec => {
+      sec.onclick = () => { if (window.ftDirEditar) ftDirEditar(sec.dataset.abrirtarjeta); };
+      sec.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sec.click(); } };
+    });
+    // Tocar cualquier apartado del currículum (menos un enlace que lleve a otro lado) abre el editor, ya en ese apartado
     if (mio) raiz.querySelectorAll('[data-editsec]').forEach(sec => {
       sec.onclick = e => { if (e.target.closest('a')) return; E.foco = sec.dataset.editsec; E.editando = true; pintar(); };
       sec.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sec.click(); } };
