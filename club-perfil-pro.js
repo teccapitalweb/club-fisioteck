@@ -99,13 +99,13 @@
     if ($('page-perfil-pro') || !$('page-directorio')) return;
     $('page-directorio').insertAdjacentHTML('beforebegin', '<section class="section" id="page-perfil-pro"><div id="fppRaiz"></div></section>');
   }
-  const E = { uid: '', datos: null, tarjeta: null, editando: false, foco: null, identEditando: null, fotoDraft: null, avatarDraft: null, colorDraft: null, portadaReset: null };
+  const E = { uid: '', datos: null, tarjeta: null, cvEditando: null, identEditando: null, fotoDraft: null, avatarDraft: null, colorDraft: null, portadaReset: null };
   const datosBase = () => { const meta = (window.ftDirMeta && ftDirMeta()) || { miContacto: {}, portadas: {} }; return { tarjeta: Object.assign({ portadaColor: 'azul', estado: '' }, E.tarjeta || {}), contacto: meta.miContacto || {}, portadas: meta.portadas || {} }; };
   const colorDe = id => { let h = 0; for (const ch of String(id)) h = (h * 31 + ch.charCodeAt(0)) % 360; return 'hsl(' + h + ',55%,42%)'; };
 
   async function abrir(quien) {
     montar();
-    E.uid = quien || uidMio(); E.editando = false; E.foco = null; E.identEditando = null; E.fotoDraft = null; E.avatarDraft = null; E.colorDraft = null; E.portadaReset = null;
+    E.uid = quien || uidMio(); E.cvEditando = null; E.identEditando = null; E.fotoDraft = null; E.avatarDraft = null; E.colorDraft = null; E.portadaReset = null;
     showPage('perfil-pro');
     const raiz = $('fppRaiz'); if (!raiz) return;
     raiz.innerHTML = '<div class="dr-vacio">Cargando perfil…</div>';
@@ -232,8 +232,42 @@
     } catch (e) { btn.disabled = false; btn.textContent = 'Guardar'; showToast(e.message || 'No se pudo guardar.'); }
   }
 
+  const ICONOS_CV = { sobreMi: I.usuario, experiencia: I.maletin, formacion: I.gorro, idiomas: I.globo, habilidades: I.rayo, certificaciones: I.medalla, certificacionesExternas: I.medalla, proyectos: I.carpeta, enlaces: I.enlace };
+  const filaEdCV = (clave, fila) => '<div class="fpp-ed-fila">' + LISTAS[clave].map(c => (c[0] === 'descripcion'
+    ? '<textarea data-campo="' + c[0] + '" maxlength="' + c[2] + '" rows="2" placeholder="' + esc(c[1]) + '">' + esc((fila || {})[c[0]] || '') + '</textarea>'
+    : '<input data-campo="' + c[0] + '" maxlength="' + c[2] + '" placeholder="' + esc(c[1]) + '" value="' + esc((fila || {})[c[0]] || '') + '">')).join('') +
+    '<button type="button" class="fpp-quitar">Quitar</button></div>';
+
+  // Cada sección del currículum se abre, se guarda y se cancela por su cuenta, aquí mismo (sin ir a otra pantalla).
+  function editorSeccionCV(clave, titulo, p, visibilidad) {
+    const selVis = '<select class="fpp-selvis" id="fppCvVis">' + VIS.map(v => '<option value="' + v[0] + '"' + ((visibilidad[clave] || 'publico') === v[0] ? ' selected' : '') + '>' + v[1] + '</option>').join('') + '</select>';
+    let cuerpo;
+    if (clave === 'certificaciones') cuerpo = '<p class="fpp-vacia">Esta sección no se edita: muestra tus certificados reales del Club con folio verificable (' + (E.datos.certificados || []).length + ' hasta hoy). Aquí solo eliges quién la ve.</p>';
+    else if (clave === 'sobreMi') cuerpo = '<label class="fpp-ed-lbl"><textarea id="fppCvSobre" maxlength="600" rows="4" placeholder="Quién eres, qué te apasiona y a quién ayudas…">' + esc(p.sobreMi || '') + '</textarea></label>';
+    else cuerpo = '<div id="fppCvLista">' + (Array.isArray(p[clave]) ? p[clave] : []).map(f => filaEdCV(clave, f)).join('') + '</div><button type="button" class="fpp-agregar" id="fppCvAgregar">+ Agregar</button>';
+    return '<section class="fpp-sec"><h3>' + (ICONOS_CV[clave] || '') + ' ' + titulo + selVis + '</h3>' + cuerpo +
+      '<div class="fpp-acc" style="margin-top:14px"><button type="button" class="fpp-btn p" id="fppCvGuardar">Guardar</button><button type="button" class="fpp-btn" id="fppCvCancelar">Cancelar</button></div></section>';
+  }
+
+  async function guardarCV(btn, clave) {
+    const p = E.datos.perfil || {};
+    const cuerpo = { sobreMi: p.sobreMi || '', visibilidad: Object.assign({}, p.visibilidad || {}) };
+    Object.keys(LISTAS).forEach(k => { cuerpo[k] = Array.isArray(p[k]) ? p[k] : []; });
+    cuerpo.visibilidad[clave] = $('fppCvVis').value;
+    if (clave === 'sobreMi') cuerpo.sobreMi = $('fppCvSobre').value;
+    else if (clave !== 'certificaciones') cuerpo[clave] = [...document.querySelectorAll('#fppCvLista .fpp-ed-fila')].map(f => { const o = {}; f.querySelectorAll('[data-campo]').forEach(i => { o[i.dataset.campo] = i.value; }); return o; });
+    btn.disabled = true; btn.textContent = 'Guardando…';
+    try {
+      const r = await certFetch('/api/perfil', { method: 'POST', body: JSON.stringify(cuerpo) });
+      E.cvEditando = null;
+      showToast('Guardado (' + (r.avance || 0) + '% de tu currículum).');
+      await abrir(uidMio());
+    } catch (e) { btn.disabled = false; btn.textContent = 'Guardar'; showToast(e.message || 'No se pudo guardar.'); }
+  }
+
   function verSeccion(clave, titulo, visibilidad) {
     const p = E.datos.perfil || {}, mio = E.uid === uidMio();
+    if (mio && E.cvEditando === clave) return editorSeccionCV(clave, titulo, p, visibilidad || {});
     const etiqueta = mio && visibilidad ? '<span class="fpp-vis">' + (VIS.find(v => v[0] === visibilidad[clave]) || VIS[0])[1] + '</span><span class="fpp-editic">' + I.lapiz + '</span>' : '';
     // En tu propio perfil, toda la sección es un botón que te lleva a editarla (sin un botón global aparte)
     const abre = mio ? ' data-editsec="' + clave + '" role="button" tabindex="0" aria-label="Editar ' + esc(titulo) + '"' : '';
@@ -263,7 +297,6 @@
   function pintar() {
     const raiz = $('fppRaiz'); if (!raiz) return;
     const mio = E.uid === uidMio();
-    if (E.editando) return editor(raiz);
     const vis = (E.datos.perfil || {}).visibilidad || null;
     raiz.innerHTML = cabecera(mio) + (mio ? seccionesIdentidad() : '') + SEC.map(s => verSeccion(s[0], s[1], vis)).join('') +
       (!mio && E.datos.conectado === false ? '<div class="fpp-sec fpp-cerrada">' + I.candado + ' Algunas secciones de este perfil son solo para sus conexiones.</div>' : '');
@@ -290,11 +323,21 @@
       try { await db.collection('directorio').doc(uidMio()).delete(); if (window.ftDirRecargar) try { ftDirRecargar(); } catch (_) { /* sigue */ } showToast('Tarjeta eliminada.'); await abrir(uidMio()); }
       catch (e) { elim.disabled = false; showToast('No se pudo eliminar la tarjeta.'); }
     };
-    // Currículum: tocar cualquier apartado (menos un enlace que lleve a otro lado) abre el editor grande, ya en ese apartado
-    if (mio) raiz.querySelectorAll('[data-editsec]').forEach(sec => {
-      sec.onclick = e => { if (e.target.closest('a')) return; E.foco = sec.dataset.editsec; E.editando = true; pintar(); };
-      sec.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sec.click(); } };
-    });
+    // Currículum: cada apartado se abre, se guarda y se cancela por su cuenta, aquí mismo (sin ir a otra pantalla)
+    if (mio) {
+      raiz.querySelectorAll('[data-editsec]').forEach(sec => {
+        sec.onclick = e => { if (e.target.closest('a')) return; E.cvEditando = sec.dataset.editsec; pintar(); };
+        sec.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sec.click(); } };
+      });
+      if (E.cvEditando) {
+        const clave = E.cvEditando;
+        const enlazarQuitarCV = () => raiz.querySelectorAll('.fpp-quitar').forEach(b => b.onclick = () => b.closest('.fpp-ed-fila').remove());
+        enlazarQuitarCV();
+        if ($('fppCvAgregar')) $('fppCvAgregar').onclick = () => { $('fppCvLista').insertAdjacentHTML('beforeend', filaEdCV(clave, {})); enlazarQuitarCV(); };
+        if ($('fppCvCancelar')) $('fppCvCancelar').onclick = () => { E.cvEditando = null; pintar(); };
+        if ($('fppCvGuardar')) $('fppCvGuardar').onclick = () => guardarCV($('fppCvGuardar'), clave);
+      }
+    }
     // Identidad: cada apartado (nombre, foto, color, contacto) se abre, se guarda y se cancela por su cuenta, en su propio lugar
     if (mio) {
       raiz.querySelectorAll('[data-editident]').forEach(sec => {
@@ -334,44 +377,6 @@
         if ($('fppIdPortadaReset')) $('fppIdPortadaReset').onclick = () => { E.portadaReset = true; $('fppIdPortadaReset').remove(); };
       }
     }
-  }
-
-  // ---------- Editor del currículum (solo el dueño) ----------
-  function editor(raiz) {
-    const p = E.datos.perfil || {}, vis = p.visibilidad || {};
-    const selVis = clave => '<select class="fpp-selvis" data-vis="' + clave + '">' + VIS.map(v => '<option value="' + v[0] + '"' + ((vis[clave] || 'publico') === v[0] ? ' selected' : '') + '>' + v[1] + '</option>').join('') + '</select>';
-    const filaEd = (clave, fila) => '<div class="fpp-ed-fila" data-fila="' + clave + '">' + LISTAS[clave].map(c => (c[0] === 'descripcion'
-      ? '<textarea data-campo="' + c[0] + '" maxlength="' + c[2] + '" rows="2" placeholder="' + esc(c[1]) + '">' + esc((fila || {})[c[0]] || '') + '</textarea>'
-      : '<input data-campo="' + c[0] + '" maxlength="' + c[2] + '" placeholder="' + esc(c[1]) + '" value="' + esc((fila || {})[c[0]] || '') + '">')).join('') +
-      '<button type="button" class="fpp-quitar">Quitar</button></div>';
-    const secLista = (clave, titulo) => '<section class="fpp-sec" data-seced="' + clave + '"><h3>' + titulo + selVis(clave) + '</h3><div data-lista="' + clave + '">' + (Array.isArray(p[clave]) ? p[clave] : []).map(f => filaEd(clave, f)).join('') + '</div><button type="button" class="fpp-agregar" data-agregar="' + clave + '">+ Agregar</button></section>';
-    raiz.innerHTML = '<button type="button" class="fpp-volver" id="fppCancelar">← Cancelar (sin guardar)</button>' +
-      '<div class="fpp-cab"><div class="fpp-cuerpo" style="padding-top:18px"><div class="fpp-ey">EDITAR CURRÍCULUM</div><h1>Tu currículum</h1><div class="fpp-sub">Cada sección tiene su propia visibilidad: pública, solo conexiones o privada. Los certificados FisioTeck se agregan solos al terminar un curso.</div></div></div>' +
-      '<section class="fpp-sec" data-seced="sobreMi"><h3>Sobre mí' + selVis('sobreMi') + '</h3><label class="fpp-ed-lbl"><textarea id="fppSobre" maxlength="600" rows="4" placeholder="Quién eres, qué te apasiona y a quién ayudas…">' + esc(p.sobreMi || '') + '</textarea></label></section>' +
-      '<section class="fpp-sec" data-seced="certificaciones"><h3>Certificados FisioTeck' + selVis('certificaciones') + '</h3><p class="fpp-vacia">Esta sección no se edita: muestra tus certificados reales del Club con folio verificable (' + (E.datos.certificados || []).length + ' hasta hoy). Aquí solo eliges quién la ve.</p></section>' +
-      secLista('experiencia', I.maletin + ' Experiencia') + secLista('formacion', I.gorro + ' Formación') + secLista('idiomas', I.globo + ' Idiomas') + secLista('habilidades', I.rayo + ' Habilidades') +
-      secLista('certificacionesExternas', I.medalla + ' Otras certificaciones') + secLista('proyectos', I.carpeta + ' Proyectos') + secLista('enlaces', I.enlace + ' Enlaces') +
-      '<div class="fpp-acc" style="margin:4px 0 30px"><button type="button" class="fpp-btn p" id="fppGuardar">Guardar mi perfil</button><button type="button" class="fpp-btn" id="fppCancelar2">Cancelar</button></div>';
-    const enlazarFilas = () => raiz.querySelectorAll('.fpp-quitar').forEach(b => b.onclick = () => b.closest('.fpp-ed-fila').remove());
-    enlazarFilas();
-    raiz.querySelectorAll('[data-agregar]').forEach(b => b.onclick = () => { raiz.querySelector('[data-lista="' + b.dataset.agregar + '"]').insertAdjacentHTML('beforeend', filaEd(b.dataset.agregar, {})); enlazarFilas(); });
-    // Si llegaste tocando un apartado en particular, el editor se desplaza directo a él
-    if (E.foco) {
-      const destino = raiz.querySelector('[data-seced="' + E.foco + '"]'); E.foco = null;
-      if (destino) setTimeout(() => { destino.scrollIntoView({ behavior: 'smooth', block: 'start' }); const t = destino.querySelector('textarea, input'); if (t) try { t.focus({ preventScroll: true }); } catch (_) { /* sigue */ } }, 60);
-    }
-    const salir = () => { E.editando = false; pintar(); };
-    $('fppCancelar').onclick = salir; $('fppCancelar2').onclick = salir;
-    $('fppGuardar').onclick = async () => {
-      const b = $('fppGuardar'); b.disabled = true; b.textContent = 'Guardando…';
-      const cuerpo = { sobreMi: $('fppSobre').value, visibilidad: {} };
-      raiz.querySelectorAll('[data-vis]').forEach(s => { cuerpo.visibilidad[s.dataset.vis] = s.value; });
-      Object.keys(LISTAS).forEach(clave => {
-        cuerpo[clave] = [...raiz.querySelectorAll('[data-lista="' + clave + '"] .fpp-ed-fila')].map(f => { const o = {}; f.querySelectorAll('[data-campo]').forEach(i => { o[i.dataset.campo] = i.value; }); return o; });
-      });
-      try { const r = await certFetch('/api/perfil', { method: 'POST', body: JSON.stringify(cuerpo) }); showToast('Currículum guardado (' + (r.avance || 0) + '% completo).'); await abrir(uidMio()); }
-      catch (e) { b.disabled = false; b.textContent = 'Guardar mi perfil'; showToast(e.message || 'No se pudo guardar.'); }
-    };
   }
 
   window.ftPerfilPro = { abrir };
